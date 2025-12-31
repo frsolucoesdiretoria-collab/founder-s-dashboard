@@ -10,48 +10,137 @@ interface KPIChartProps {
   goals: NotionGoal[];
 }
 
-// Generate mock chart data based on periodicity
+// Generate chart data from real Goals
 function generateChartData(kpi: NotionKPI, goals: NotionGoal[]) {
+  const kpiGoals = goals.filter(g => g.KPI === kpi.id);
+  
+  if (kpiGoals.length === 0) {
+    return null; // No goals configured
+  }
+
   if (kpi.Periodicity === 'Anual') {
-    return [
-      { name: 'Jan', projetado: 10, realizado: 8 },
-      { name: 'Fev', projetado: 20, realizado: 18 },
-      { name: 'Mar', projetado: 30, realizado: 28 },
-      { name: 'Abr', projetado: 40, realizado: 35 },
-      { name: 'Mai', projetado: 50, realizado: 48 },
-      { name: 'Jun', projetado: 60, realizado: 55 },
-      { name: 'Jul', projetado: 70, realizado: 68 },
-      { name: 'Ago', projetado: 80, realizado: 75 },
-      { name: 'Set', projetado: 90, realizado: 85 },
-      { name: 'Out', projetado: 100, realizado: 92 },
-      { name: 'Nov', projetado: 110, realizado: 105 },
-      { name: 'Dez', projetado: 120, realizado: null },
-    ];
+    // Annual: Cumulative projection vs actual by month
+    const currentYear = new Date().getFullYear();
+    const yearGoals = kpiGoals.filter(g => g.Year === currentYear);
+    
+    if (yearGoals.length === 0) {
+      return null;
+    }
+
+    const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    const data: Array<{ name: string; projetado: number; realizado: number | null }> = [];
+    let cumulativeTarget = 0;
+    let cumulativeActual = 0;
+
+    for (let month = 0; month < 12; month++) {
+      const monthGoal = yearGoals.find(g => g.Month === month + 1);
+      
+      if (monthGoal) {
+        cumulativeTarget += monthGoal.Target;
+        cumulativeActual += monthGoal.Actual || 0;
+      }
+      
+      const isFuture = month + 1 > new Date().getMonth() + 1;
+      data.push({
+        name: months[month],
+        projetado: cumulativeTarget,
+        realizado: isFuture ? null : cumulativeActual
+      });
+    }
+
+    return data;
   }
   
   if (kpi.Periodicity === 'Mensal') {
-    return [
-      { name: 'S1', meta: 3, realizado: 2 },
-      { name: 'S2', meta: 3, realizado: 4 },
-      { name: 'S3', meta: 3, realizado: 3 },
-      { name: 'S4', meta: 3, realizado: 2 },
-    ];
+    // Monthly: Aggregation by week (S1, S2, S3, S4)
+    const currentMonth = new Date().getMonth() + 1;
+    const currentYear = new Date().getFullYear();
+    const monthGoals = kpiGoals.filter(g => g.Month === currentMonth && g.Year === currentYear);
+    
+    if (monthGoals.length === 0) {
+      return null;
+    }
+
+    // Group by week (WeekKey format: YYYY-WW)
+    const weekData: Record<string, { target: number; actual: number }> = {};
+    
+    monthGoals.forEach(goal => {
+      if (goal.WeekKey) {
+        const weekNum = goal.WeekKey.split('-W')[1] || '1';
+        const weekLabel = `S${weekNum}`;
+        
+        if (!weekData[weekLabel]) {
+          weekData[weekLabel] = { target: 0, actual: 0 };
+        }
+        weekData[weekLabel].target += goal.Target;
+        weekData[weekLabel].actual += goal.Actual || 0;
+      }
+    });
+
+    // Convert to array, ensure S1-S4 order
+    const data = ['S1', 'S2', 'S3', 'S4'].map(week => ({
+      name: week,
+      meta: weekData[week]?.target || 0,
+      realizado: weekData[week]?.actual || 0
+    }));
+
+    return data;
   }
   
-  // Weekly
-  return [
-    { name: 'Seg', acumulado: 1 },
-    { name: 'Ter', acumulado: 2 },
-    { name: 'Qua', acumulado: 3 },
-    { name: 'Qui', acumulado: 4 },
-    { name: 'Sex', acumulado: 5 },
-    { name: 'Sáb', acumulado: 5 },
-    { name: 'Dom', acumulado: 5 },
-  ];
+  // Weekly: Cumulative by day of week
+  const currentWeek = getWeekKey(new Date());
+  const weekGoals = kpiGoals.filter(g => g.WeekKey === currentWeek);
+  
+  if (weekGoals.length === 0) {
+    return null;
+  }
+
+  const days = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+  const today = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
+  const dayIndex = today === 0 ? 6 : today - 1; // Convert to Monday = 0
+  
+  const data = days.map((day, idx) => {
+    // Cumulative actual from goals
+    const cumulative = weekGoals.reduce((sum, goal) => sum + (goal.Actual || 0), 0);
+    const isFuture = idx > dayIndex;
+    
+    return {
+      name: day,
+      acumulado: isFuture ? null : cumulative
+    };
+  });
+
+  return data;
+}
+
+// Helper: Get week key in format YYYY-WW
+function getWeekKey(date: Date): string {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  const weekNum = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+  return `${d.getUTCFullYear()}-W${weekNum.toString().padStart(2, '0')}`;
 }
 
 export function KPIChart({ kpi, goals }: KPIChartProps) {
   const data = generateChartData(kpi, goals);
+  
+  // No goals configured
+  if (data === null) {
+    return (
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-medium">{kpi.Name}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8 text-muted-foreground text-sm">
+            Sem meta configurada
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
   
   const renderChart = () => {
     if (kpi.Periodicity === 'Anual') {

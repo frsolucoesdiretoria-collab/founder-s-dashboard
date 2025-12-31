@@ -6,12 +6,14 @@ import { AlertCircle, Coffee, Users, FileText, Cog, Zap, Bot, BookOpen } from 'l
 import { cn } from '@/lib/utils';
 import { canMarkActionDone } from '@/lib/notion/guards';
 import type { NotionAction } from '@/lib/notion/types';
+import type { Action } from '@/types/action';
 import { toast } from 'sonner';
 
 interface ActionChecklistProps {
-  actions: NotionAction[];
+  actions: Action[] | NotionAction[];
   onToggle: (actionId: string, done: boolean) => void;
   journalBlocked: boolean;
+  refreshing?: boolean;
 }
 
 const typeIcons: Record<string, React.ElementType> = {
@@ -36,10 +38,10 @@ const typeColors: Record<string, string> = {
   'Diário': 'bg-secondary/10 text-secondary border-secondary/20',
 };
 
-export function ActionChecklist({ actions, onToggle, journalBlocked }: ActionChecklistProps) {
+export function ActionChecklist({ actions, onToggle, journalBlocked, refreshing = false }: ActionChecklistProps) {
   const [localActions, setLocalActions] = useState(actions);
 
-  const handleToggle = (action: NotionAction) => {
+  const handleToggle = (action: Action | NotionAction) => {
     if (journalBlocked && !action.Done) {
       toast.error('Preencha o diário de ontem antes de concluir ações');
       return;
@@ -88,60 +90,61 @@ export function ActionChecklist({ actions, onToggle, journalBlocked }: ActionChe
           </p>
         ) : (
           localActions.map((action) => {
-            const Icon = typeIcons[action.Type] || Cog;
-            const hasNoGoal = !action.Goal || action.Goal.trim() === '';
+            const actionTyped = action as NotionAction;
+            const Icon = typeIcons[actionTyped.Type] || Cog;
+            const hasNoGoal = !actionTyped.Goal || actionTyped.Goal.trim() === '';
             
             return (
               <div
                 key={action.id}
                 className={cn(
                   "flex items-start gap-3 p-3 rounded-lg border transition-all",
-                  action.Done 
+                  actionTyped.Done 
                     ? "bg-muted/50 border-muted" 
                     : "bg-card border-border hover:border-primary/30",
-                  hasNoGoal && !action.Done && "border-destructive/30 bg-destructive/5"
+                  hasNoGoal && !actionTyped.Done && "border-destructive/30 bg-destructive/5"
                 )}
               >
                 <Checkbox
-                  checked={action.Done}
-                  onCheckedChange={() => handleToggle(action)}
-                  disabled={journalBlocked && !action.Done}
+                  checked={actionTyped.Done}
+                  onCheckedChange={() => handleToggle(actionTyped)}
+                  disabled={(journalBlocked && !actionTyped.Done) || refreshing || hasNoGoal}
                   className="mt-1"
                 />
                 <div className="flex-1 min-w-0">
                   <p className={cn(
                     "font-medium text-sm",
-                    action.Done && "line-through text-muted-foreground"
+                    actionTyped.Done && "line-through text-muted-foreground"
                   )}>
-                    {action.Name}
+                    {actionTyped.Name}
                   </p>
                   <div className="flex flex-wrap gap-2 mt-2">
                     <Badge 
                       variant="outline" 
-                      className={cn("text-xs", typeColors[action.Type])}
+                      className={cn("text-xs", typeColors[actionTyped.Type])}
                     >
                       <Icon className="h-3 w-3 mr-1" />
-                      {action.Type}
+                      {actionTyped.Type}
                     </Badge>
-                    {action.Contact && (
+                    {actionTyped.Contact && (
                       <Badge variant="outline" className="text-xs">
-                        {action.Contact}
+                        {actionTyped.Contact}
                       </Badge>
                     )}
-                    {action.Client && (
+                    {actionTyped.Client && (
                       <Badge variant="outline" className="text-xs">
-                        {action.Client}
+                        {actionTyped.Client}
                       </Badge>
                     )}
-                    {hasNoGoal && !action.Done && (
+                    {hasNoGoal && !actionTyped.Done && (
                       <Badge variant="destructive" className="text-xs">
                         Sem meta
                       </Badge>
                     )}
                   </div>
-                  {action.Notes && (
+                  {actionTyped.Notes && (
                     <p className="text-xs text-muted-foreground mt-2">
-                      {action.Notes}
+                      {actionTyped.Notes}
                     </p>
                   )}
                 </div>

@@ -16,12 +16,13 @@ import type { NotionJournal } from '@/lib/notion/types';
 
 interface JournalModalProps {
   open: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   onSubmit: (journal: Partial<NotionJournal>) => Promise<void>;
   date: string;
+  required?: boolean; // Se true, não pode fechar sem preencher
 }
 
-export function JournalModal({ open, onClose, onSubmit, date }: JournalModalProps) {
+export function JournalModal({ open, onClose, onSubmit, date, required = false }: JournalModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     Summary: '',
@@ -61,15 +62,26 @@ export function JournalModal({ open, onClose, onSubmit, date }: JournalModalProp
   });
 
   return (
-    <Dialog open={open} onOpenChange={() => {}}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+    <Dialog open={open} onOpenChange={required ? undefined : onClose}>
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto" onPointerDownOutside={required ? (e) => e.preventDefault() : undefined}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <BookOpen className="h-5 w-5 text-primary" />
             Diário de {formattedDate}
+            {required && (
+              <span className="ml-2 text-xs bg-destructive/10 text-destructive px-2 py-1 rounded">
+                Obrigatório
+              </span>
+            )}
           </DialogTitle>
           <DialogDescription>
-            Preencha seu diário antes de continuar. Isso alimenta seu RAG para insights futuros.
+            {required ? (
+              <span className="text-destructive font-medium">
+                ⚠️ Execução bloqueada: Preencha o diário de ontem para continuar.
+              </span>
+            ) : (
+              'Preencha seu diário antes de continuar. Isso alimenta seu RAG para insights futuros.'
+            )}
           </DialogDescription>
         </DialogHeader>
 

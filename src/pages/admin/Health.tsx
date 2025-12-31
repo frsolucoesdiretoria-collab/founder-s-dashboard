@@ -17,7 +17,7 @@ export default function AdminHealth() {
   const runCheck = async () => {
     setLoading(true);
     try {
-      const result = await runHealthCheck();
+      const result = await runHealthCheck(passcode);
       setHealthResult(result);
     } catch (error) {
       console.error('Health check error:', error);

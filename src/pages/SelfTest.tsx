@@ -16,7 +16,7 @@ export default function SelfTest() {
 
   const runTests = async () => {
     setRunning(true);
-    try { setTestResult(await runSelfTests()); } catch (e) { console.error(e); }
+    try { setTestResult(await runSelfTests(passcode)); } catch (e) { console.error(e); }
     finally { setRunning(false); }
   };
 
