@@ -30,6 +30,7 @@ export const NOTION_SCHEMA: Record<string, DatabaseSchema> = {
       { name: 'Periodicity', type: 'select', required: true, description: 'Periodicidade: Anual, Mensal, Semanal, Diário' },
       { name: 'ChartType', type: 'select', required: true, description: 'Tipo de gráfico: line, bar, area, number' },
       { name: 'Unit', type: 'rich_text', required: false, description: 'Unidade de medida' },
+      { name: 'TargetValue', type: 'number', required: false, description: 'Valor alvo (meta) do KPI' },
       { name: 'VisiblePublic', type: 'checkbox', required: true, description: 'Visível no dashboard público' },
       { name: 'VisibleAdmin', type: 'checkbox', required: true, description: 'Visível no admin' },
       { name: 'IsFinancial', type: 'checkbox', required: true, description: 'Indica se é KPI financeiro (R$)' },
@@ -144,12 +145,8 @@ export const NOTION_SCHEMA: Record<string, DatabaseSchema> = {
     properties: [
       { name: 'Name', type: 'title', required: true, description: 'Nome da oportunidade' },
       { name: 'Client', type: 'relation', required: false, description: 'Cliente' },
-      { name: 'Type', type: 'select', required: false, description: 'Tipo (Upsell/Cross-sell)' },
-      { name: 'Status', type: 'select', required: false, description: 'Status (Identificado/Em Negociação/Fechado/Perdido)' },
-      { name: 'Stage', type: 'select', required: false, description: 'Estágio do pipeline' },
-      { name: 'Trigger', type: 'select', required: false, description: 'Gatilho (GOLMoment, Manual, etc)' },
-      { name: 'PlannedDate', type: 'date', required: false, description: 'Data planejada' },
-      { name: 'Health', type: 'select', required: false, description: 'Health do cliente (Green/Yellow/Red)' },
+      { name: 'Type', type: 'select', required: false, description: 'Tipo' },
+      { name: 'Status', type: 'select', required: false, description: 'Status' },
       { name: 'Notes', type: 'rich_text', required: false, description: 'Notas' }
     ]
   },
@@ -161,12 +158,7 @@ export const NOTION_SCHEMA: Record<string, DatabaseSchema> = {
       { name: 'Name', type: 'title', required: true, description: 'Nome da vitória' },
       { name: 'Client', type: 'relation', required: false, description: 'Cliente' },
       { name: 'Date', type: 'date', required: true, description: 'Data' },
-      { name: 'Description', type: 'rich_text', required: false, description: 'Descrição' },
-      { name: 'WinType', type: 'select', required: false, description: 'Tipo de vitória' },
-      { name: 'Evidence', type: 'rich_text', required: false, description: 'Evidência' },
-      { name: 'Score', type: 'number', required: false, description: 'Pontuação (0-10)' },
-      { name: 'UpsellRecommended', type: 'checkbox', required: false, description: 'Upsell recomendado' },
-      { name: 'IsGOL', type: 'checkbox', required: false, description: 'É momento GOL (Score >= 8)' }
+      { name: 'Description', type: 'rich_text', required: false, description: 'Descrição' }
     ]
   },
   FinanceMetrics: {

@@ -131,6 +131,7 @@ function pageToKPI(page: any): NotionKPI {
     Periodicity: extractSelect(props.Periodicity) as any,
     ChartType: extractSelect(props.ChartType) as any,
     Unit: extractText(props.Unit),
+    TargetValue: extractNumber(props.TargetValue),
     VisiblePublic: extractBoolean(props.VisiblePublic),
     VisibleAdmin: extractBoolean(props.VisibleAdmin),
     IsFinancial: extractBoolean(props.IsFinancial),
@@ -254,62 +255,6 @@ export async function getKPIsAdmin(): Promise<NotionKPI[]> {
   );
 
   return response.results.map(pageToKPI);
-}
-
-/**
- * Update KPI properties
- * Enforcement: If IsFinancial=true, force VisiblePublic=false server-side
- */
-export async function updateKPI(
-  kpiId: string,
-  updates: {
-    VisiblePublic?: boolean;
-    VisibleAdmin?: boolean;
-    SortOrder?: number;
-    Active?: boolean;
-    Periodicity?: string;
-    ChartType?: string;
-    IsFinancial?: boolean;
-  }
-): Promise<void> {
-  const client = initNotionClient();
-  
-  // Get current KPI to check IsFinancial
-  const dbId = getDatabaseId('KPIs');
-  if (!dbId) throw new Error('NOTION_DB_KPIS not configured');
-  
-  const page = await retryWithBackoff(() =>
-    client.pages.retrieve({ page_id: kpiId })
-  );
-  
-  const currentKPI = pageToKPI(page);
-  const willBeFinancial = updates.IsFinancial !== undefined ? updates.IsFinancial : currentKPI.IsFinancial;
-  
-  // Enforcement: If financial, force VisiblePublic=false
-  const props: any = {};
-  
-  if (updates.VisiblePublic !== undefined) {
-    props.VisiblePublic = { checkbox: willBeFinancial ? false : updates.VisiblePublic };
-  }
-  if (updates.VisibleAdmin !== undefined) props.VisibleAdmin = { checkbox: updates.VisibleAdmin };
-  if (updates.SortOrder !== undefined) props.SortOrder = { number: updates.SortOrder };
-  if (updates.Active !== undefined) props.Active = { checkbox: updates.Active };
-  if (updates.Periodicity !== undefined) props.Periodicity = { select: { name: updates.Periodicity } };
-  if (updates.ChartType !== undefined) props.ChartType = { select: { name: updates.ChartType } };
-  if (updates.IsFinancial !== undefined) {
-    props.IsFinancial = { checkbox: updates.IsFinancial };
-    // If setting to financial, force VisiblePublic=false
-    if (updates.IsFinancial) {
-      props.VisiblePublic = { checkbox: false };
-    }
-  }
-
-  await retryWithBackoff(() =>
-    client.pages.update({
-      page_id: kpiId,
-      properties: props
-    })
-  );
 }
 
 /**
@@ -529,192 +474,6 @@ export async function createCoffeeDiagnostic(payload: {
 }
 
 /**
- * Convert Notion page to CustomerWin
- */
-function pageToCustomerWin(page: any): any {
-  const props = page.properties;
-  const score = extractNumber(props.Score);
-  return {
-    id: page.id,
-    Name: extractText(props.Name),
-    Client: extractRelation(props.Client)[0] || '',
-    Date: extractDate(props.Date),
-    Description: extractText(props.Description),
-    WinType: extractSelect(props.WinType),
-    Evidence: extractText(props.Evidence),
-    Score: score,
-    UpsellRecommended: extractBoolean(props.UpsellRecommended),
-    IsGOL: extractBoolean(props.IsGOL) || (score >= 8)
-  };
-}
-
-/**
- * Convert Notion page to ExpansionOpportunity
- */
-function pageToExpansionOpportunity(page: any): any {
-  const props = page.properties;
-  return {
-    id: page.id,
-    Name: extractText(props.Name),
-    Client: extractRelation(props.Client)[0] || '',
-    Type: extractSelect(props.Type),
-    Status: extractSelect(props.Status),
-    Stage: extractSelect(props.Stage),
-    Trigger: extractSelect(props.Trigger),
-    PlannedDate: extractDate(props.PlannedDate),
-    Health: extractSelect(props.Health),
-    Notes: extractText(props.Notes)
-  };
-}
-
-/**
- * Get customer wins (optionally filtered by IsGOL and date range)
- */
-export async function getCustomerWins(filters?: { isGOL?: boolean; lastDays?: number }): Promise<any[]> {
-  const client = initNotionClient();
-  const dbId = getDatabaseId('CustomerWins');
-  if (!dbId) throw new Error('NOTION_DB_CUSTOMERWINS not configured');
-
-  const filter: any = {};
-  
-  if (filters?.isGOL !== undefined || filters?.lastDays) {
-    filter.and = [];
-    
-    if (filters.isGOL !== undefined) {
-      filter.and.push({ property: 'IsGOL', checkbox: { equals: filters.isGOL } });
-    }
-    
-    if (filters.lastDays) {
-      const cutoffDate = new Date();
-      cutoffDate.setDate(cutoffDate.getDate() - filters.lastDays);
-      filter.and.push({ 
-        property: 'Date', 
-        date: { on_or_after: cutoffDate.toISOString().split('T')[0] }
-      });
-    }
-  }
-
-  const response = await retryWithBackoff(() =>
-    client.databases.query({
-      database_id: dbId,
-      filter: Object.keys(filter).length > 0 ? filter : undefined,
-      sorts: [{ property: 'Date', direction: 'descending' }]
-    })
-  );
-
-  return response.results.map(pageToCustomerWin);
-}
-
-/**
- * Get expansion opportunities (optionally filtered by Stage)
- */
-export async function getExpansionOpportunities(filters?: { stage?: string }): Promise<any[]> {
-  const client = initNotionClient();
-  const dbId = getDatabaseId('ExpansionOpportunities');
-  if (!dbId) throw new Error('NOTION_DB_EXPANSIONOPPORTUNITIES not configured');
-
-  const filter: any = {};
-  
-  if (filters?.stage) {
-    filter.property = 'Stage';
-    filter.select = { equals: filters.stage };
-  }
-
-  const response = await retryWithBackoff(() =>
-    client.databases.query({
-      database_id: dbId,
-      filter: Object.keys(filter).length > 0 ? filter : undefined,
-      sorts: [{ property: 'Name', direction: 'ascending' }]
-    })
-  );
-
-  return response.results.map(pageToExpansionOpportunity);
-}
-
-/**
- * Get clients
- */
-export async function getClients(): Promise<any[]> {
-  const client = initNotionClient();
-  const dbId = getDatabaseId('Clients');
-  if (!dbId) return []; // Optional database
-
-  const response = await retryWithBackoff(() =>
-    client.databases.query({
-      database_id: dbId
-    })
-  );
-
-  return response.results.map((page: any) => ({
-    id: page.id,
-    Name: extractText(page.properties.Name)
-  }));
-}
-
-/**
- * Get goal by name (for finding specific goals like GOL_Moments_Detected)
- */
-export async function getGoalByName(name: string): Promise<any | null> {
-  const client = initNotionClient();
-  const dbId = getDatabaseId('Goals');
-  if (!dbId) throw new Error('NOTION_DB_GOALS not configured');
-
-  const response = await retryWithBackoff(() =>
-    client.databases.query({
-      database_id: dbId,
-      filter: {
-        property: 'Name',
-        title: { contains: name }
-      },
-      page_size: 1
-    })
-  );
-
-  if (response.results.length === 0) return null;
-  return pageToGoal(response.results[0]);
-}
-
-/**
- * Create action
- */
-export async function createAction(payload: {
-  Name: string;
-  Type: string;
-  Date: string;
-  Done?: boolean;
-  Contribution?: number;
-  Goal?: string;
-  Client?: string;
-  Notes?: string;
-}): Promise<string> {
-  const client = initNotionClient();
-  const dbId = getDatabaseId('Actions');
-  if (!dbId) throw new Error('NOTION_DB_ACTIONS not configured');
-
-  const props: any = {
-    Name: { title: [{ text: { content: payload.Name } }] },
-    Type: { select: { name: payload.Type } },
-    Date: { date: { start: payload.Date } },
-    Done: { checkbox: payload.Done || false },
-    PublicVisible: { checkbox: false }
-  };
-
-  if (payload.Contribution !== undefined) props.Contribution = { number: payload.Contribution };
-  if (payload.Goal) props.Goal = { relation: [{ id: payload.Goal }] };
-  if (payload.Client) props.Client = { relation: [{ id: payload.Client }] };
-  if (payload.Notes) props.Notes = { rich_text: [{ text: { content: payload.Notes } }] };
-
-  const page = await retryWithBackoff(() =>
-    client.pages.create({
-      parent: { database_id: dbId },
-      properties: props
-    })
-  );
-
-  return page.id;
-}
-
-/**
  * Create customer win
  */
 export async function createCustomerWin(payload: {
@@ -722,31 +481,18 @@ export async function createCustomerWin(payload: {
   Client?: string;
   Date: string;
   Description?: string;
-  WinType?: string;
-  Evidence?: string;
-  Score?: number;
-  UpsellRecommended?: boolean;
-  IsGOL?: boolean;
 }): Promise<string> {
   const client = initNotionClient();
   const dbId = getDatabaseId('CustomerWins');
   if (!dbId) throw new Error('NOTION_DB_CUSTOMERWINS not configured');
 
-  const score = payload.Score || 0;
-  const isGOL = payload.IsGOL !== undefined ? payload.IsGOL : (score >= 8);
-
   const props: any = {
     Name: { title: [{ text: { content: payload.Name } }] },
-    Date: { date: { start: payload.Date } },
-    IsGOL: { checkbox: isGOL }
+    Date: { date: { start: payload.Date } }
   };
 
   if (payload.Description) props.Description = { rich_text: [{ text: { content: payload.Description } }] };
   if (payload.Client) props.Client = { relation: [{ id: payload.Client }] };
-  if (payload.WinType) props.WinType = { select: { name: payload.WinType } };
-  if (payload.Evidence) props.Evidence = { rich_text: [{ text: { content: payload.Evidence } }] };
-  if (payload.Score !== undefined) props.Score = { number: payload.Score };
-  if (payload.UpsellRecommended !== undefined) props.UpsellRecommended = { checkbox: payload.UpsellRecommended };
 
   const page = await retryWithBackoff(() =>
     client.pages.create({
@@ -766,10 +512,6 @@ export async function createExpansionOpportunity(payload: {
   Client?: string;
   Type?: string;
   Status?: string;
-  Stage?: string;
-  Trigger?: string;
-  PlannedDate?: string;
-  Health?: string;
   Notes?: string;
 }): Promise<string> {
   const client = initNotionClient();
@@ -783,10 +525,6 @@ export async function createExpansionOpportunity(payload: {
   if (payload.Notes) props.Notes = { rich_text: [{ text: { content: payload.Notes } }] };
   if (payload.Type) props.Type = { select: { name: payload.Type } };
   if (payload.Status) props.Status = { select: { name: payload.Status } };
-  if (payload.Stage) props.Stage = { select: { name: payload.Stage } };
-  if (payload.Trigger) props.Trigger = { select: { name: payload.Trigger } };
-  if (payload.PlannedDate) props.PlannedDate = { date: { start: payload.PlannedDate } };
-  if (payload.Health) props.Health = { select: { name: payload.Health } };
   if (payload.Client) props.Client = { relation: [{ id: payload.Client }] };
 
   const page = await retryWithBackoff(() =>

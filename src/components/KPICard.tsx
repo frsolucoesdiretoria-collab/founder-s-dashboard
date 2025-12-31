@@ -10,13 +10,19 @@ interface KPICardProps {
 }
 
 export function KPICard({ kpi, goal }: KPICardProps) {
-  const progress = goal?.ProgressPct ?? 0;
   const actual = goal?.Actual ?? 0;
-  const target = goal?.Target ?? 0;
+  const targetValue = kpi.TargetValue ?? 0;
+  
+  // Calculate progress: CurrentValue / TargetValue
+  // If TargetValue is 0 or empty, progress is 0
+  const progress = targetValue > 0 ? Math.min(100, (actual / targetValue) * 100) : 0;
   
   const trend = progress >= 100 ? 'up' : progress >= 50 ? 'neutral' : 'down';
   
   const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus;
+  
+  // Format target display: show "—" if TargetValue is empty/zero
+  const targetDisplay = targetValue > 0 ? targetValue.toString() : '—';
   
   return (
     <Card className="overflow-hidden">
@@ -46,7 +52,7 @@ export function KPICard({ kpi, goal }: KPICardProps) {
             {actual}
           </span>
           <span className="text-sm text-muted-foreground">
-            / {target} {kpi.Unit}
+            / {targetDisplay}{kpi.Unit ? ` ${kpi.Unit}` : ''}
           </span>
         </div>
         

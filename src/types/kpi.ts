@@ -7,6 +7,7 @@ export interface KPI {
   Periodicity: 'Anual' | 'Mensal' | 'Semanal' | 'Diário';
   ChartType: 'line' | 'bar' | 'area' | 'number';
   Unit: string;
+  TargetValue: number;
   VisiblePublic: boolean;
   VisibleAdmin: boolean;
   IsFinancial: boolean;

@@ -8,6 +8,7 @@ export interface NotionKPI {
   Periodicity: 'Anual' | 'Mensal' | 'Semanal' | 'Diário';
   ChartType: 'line' | 'bar' | 'area' | 'number';
   Unit: string;
+  TargetValue: number;
   VisiblePublic: boolean;
   VisibleAdmin: boolean;
   IsFinancial: boolean;
@@ -37,7 +38,7 @@ export interface NotionGoal {
 export interface NotionAction {
   id: string;
   Name: string;
-  Type: 'Café' | 'Ativação de Rede' | 'Proposta' | 'Processo' | 'Rotina' | 'Automação' | 'Agente' | 'Diário' | 'GOL_Detected' | 'Upsell_Meeting_Scheduled';
+  Type: 'Café' | 'Ativação de Rede' | 'Proposta' | 'Processo' | 'Rotina' | 'Automação' | 'Agente' | 'Diário';
   Date: string;
   Done: boolean;
   Contribution: number;
@@ -100,10 +101,6 @@ export interface NotionExpansionOpportunity {
   Client: string;
   Type: string;
   Status: string;
-  Stage?: string;
-  Trigger?: string;
-  PlannedDate?: string;
-  Health?: string;
   Notes: string;
 }
 
@@ -113,11 +110,6 @@ export interface NotionCustomerWin {
   Client: string;
   Date: string;
   Description: string;
-  WinType?: string;
-  Evidence?: string;
-  Score?: number;
-  UpsellRecommended?: boolean;
-  IsGOL?: boolean;
 }
 
 // Phase 2 types (feature flag)
