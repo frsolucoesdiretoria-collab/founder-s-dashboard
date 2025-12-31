@@ -4,7 +4,7 @@ export interface KPI {
   id: string;
   Name: string;
   Category: string;
-  Periodicity: 'Anual' | 'Mensal' | 'Semanal' | 'Diário';
+  Periodicity: 'Anual' | 'Mensal' | 'Trimestral' | 'Semestral' | 'Semanal' | 'Diário';
   ChartType: 'line' | 'bar' | 'area' | 'number';
   Unit: string;
   TargetValue: number;

@@ -1,55 +1,50 @@
 // FR Tech OS - Finance Service
-// Service for financial KPIs and metrics
 
 import type { KPI } from '@/types/kpi';
 
 /**
- * Get financial KPIs only (requires admin passcode)
+ * Get financial KPIs
  */
-export async function getFinancialKPIs(passcode: string): Promise<KPI[]> {
+export async function getFinancialKPIs(passcode?: string): Promise<KPI[]> {
   try {
-    const response = await fetch('/api/kpis/financial', {
+    const response = await fetch('/api/kpis/admin', {
       headers: {
-        'x-admin-passcode': passcode
+        'x-admin-passcode': passcode || localStorage.getItem('admin_passcode') || ''
       }
     });
-    
-    if (response.status === 401) {
-      throw new Error('Unauthorized: Invalid passcode');
-    }
     
     if (!response.ok) {
       throw new Error(`Failed to fetch financial KPIs: ${response.statusText}`);
     }
-    return response.json();
+    
+    const allKPIs: KPI[] = await response.json();
+    // Filter only financial KPIs
+    return allKPIs.filter(kpi => kpi.IsFinancial === true);
   } catch (error) {
     console.error('Error fetching financial KPIs:', error);
-    throw error;
+    return [];
   }
 }
 
 /**
- * Get finance metrics from DB11 (FinanceMetrics database)
+ * Get finance metrics
  */
-export async function getFinanceMetrics(passcode: string): Promise<any[]> {
+export async function getFinanceMetrics(passcode?: string): Promise<any[]> {
   try {
     const response = await fetch('/api/finance/metrics', {
       headers: {
-        'x-admin-passcode': passcode
+        'x-admin-passcode': passcode || localStorage.getItem('admin_passcode') || ''
       }
     });
-    
-    if (response.status === 401) {
-      throw new Error('Unauthorized: Invalid passcode');
-    }
     
     if (!response.ok) {
       throw new Error(`Failed to fetch finance metrics: ${response.statusText}`);
     }
+    
     return response.json();
   } catch (error) {
     console.error('Error fetching finance metrics:', error);
-    throw error;
+    return [];
   }
 }
 

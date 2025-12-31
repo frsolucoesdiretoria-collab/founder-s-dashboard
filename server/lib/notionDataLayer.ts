@@ -310,7 +310,7 @@ export async function updateKPI(
   updates: Partial<{
     Name: string;
     Category: string;
-    Periodicity: 'Anual' | 'Mensal' | 'Semanal' | 'Diário';
+    Periodicity: 'Anual' | 'Mensal' | 'Trimestral' | 'Semestral' | 'Semanal' | 'Diário';
     ChartType: 'line' | 'bar' | 'area' | 'number';
     Unit: string;
     TargetValue: number;
@@ -378,7 +378,7 @@ export async function updateKPI(
 export async function createKPI(kpi: {
   Name: string;
   Category: string;
-  Periodicity: 'Anual' | 'Mensal' | 'Semanal' | 'Diário';
+  Periodicity: 'Anual' | 'Mensal' | 'Trimestral' | 'Semestral' | 'Semanal' | 'Diário';
   ChartType: 'line' | 'bar' | 'area' | 'number';
   Unit?: string;
   TargetValue?: number;
@@ -423,6 +423,61 @@ export async function createKPI(kpi: {
   );
 
   return pageToKPI(created);
+}
+
+/**
+ * Create a new Goal
+ */
+export async function createGoal(goal: {
+  Name: string;
+  KPI: string; // KPI ID
+  Year: number;
+  Month?: number | null;
+  WeekKey?: string;
+  PeriodStart: string; // ISO date string
+  PeriodEnd: string; // ISO date string
+  Target: number;
+  Actual?: number;
+  VisiblePublic?: boolean;
+  VisibleAdmin?: boolean;
+  Notes?: string;
+}): Promise<NotionGoal> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Goals');
+  if (!dbId) throw new Error('NOTION_DB_GOALS not configured');
+
+  const properties: any = {
+    Name: { title: [{ text: { content: goal.Name } }] },
+    KPI: { relation: [{ id: goal.KPI }] },
+    Year: { number: goal.Year },
+    PeriodStart: { date: { start: goal.PeriodStart } },
+    PeriodEnd: { date: { start: goal.PeriodEnd } },
+    Target: { number: goal.Target },
+    VisiblePublic: { checkbox: goal.VisiblePublic ?? true },
+    VisibleAdmin: { checkbox: goal.VisibleAdmin ?? true }
+  };
+
+  if (goal.Month !== undefined && goal.Month !== null) {
+    properties.Month = { number: goal.Month };
+  }
+  if (goal.WeekKey !== undefined) {
+    properties.WeekKey = { rich_text: [{ text: { content: goal.WeekKey } }] };
+  }
+  if (goal.Actual !== undefined) {
+    properties.Actual = { number: goal.Actual };
+  }
+  if (goal.Notes !== undefined) {
+    properties.Notes = { rich_text: [{ text: { content: goal.Notes } }] };
+  }
+
+  const created = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToGoal(created);
 }
 
 /**

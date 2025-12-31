@@ -60,8 +60,23 @@ export default function Dashboard() {
         checkYesterdayJournal()
       ]);
 
+      // Remove duplicate KPIs by name (keep first occurrence, prefer higher SortOrder)
+      const uniqueKPIs = new Map<string, KPI>();
+      kpisData.forEach(kpi => {
+        const key = kpi.Name.trim().toLowerCase();
+        const existing = uniqueKPIs.get(key);
+        if (!existing) {
+          uniqueKPIs.set(key, kpi);
+        } else {
+          // Keep the one with higher SortOrder (or first if equal)
+          if ((kpi.SortOrder || 0) > (existing.SortOrder || 0)) {
+            uniqueKPIs.set(key, kpi);
+          }
+        }
+      });
+
       // Sort KPIs by SortOrder (ascending)
-      const sortedKpis = [...kpisData].sort((a, b) => (a.SortOrder || 0) - (b.SortOrder || 0));
+      const sortedKpis = Array.from(uniqueKPIs.values()).sort((a, b) => (a.SortOrder || 0) - (b.SortOrder || 0));
       setKpis(sortedKpis);
       setGoals(goalsData);
       setActions(actionsData);

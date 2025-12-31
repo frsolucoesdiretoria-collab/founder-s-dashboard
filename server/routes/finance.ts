@@ -1,5 +1,5 @@
 // FR Tech OS - Finance Route
-// Endpoints for finance metrics (DB11)
+// Admin only - handles finance metrics
 
 import { Router } from 'express';
 import { getFinanceMetrics } from '../lib/notionDataLayer';
@@ -9,8 +9,8 @@ export const financeRouter = Router();
 
 /**
  * GET /api/finance/metrics
- * Get finance metrics from DB11 (FinanceMetrics database)
- * Requires admin passcode
+ * Get finance metrics from FinanceMetrics database (DB11)
+ * Admin only
  */
 financeRouter.get('/metrics', async (req, res) => {
   const passcode = req.headers['x-admin-passcode'] as string;

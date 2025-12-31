@@ -27,7 +27,7 @@ export const NOTION_SCHEMA: Record<string, DatabaseSchema> = {
     properties: [
       { name: 'Name', type: 'title', required: true, description: 'Nome do KPI' },
       { name: 'Category', type: 'select', required: true, description: 'Categoria do KPI' },
-      { name: 'Periodicity', type: 'select', required: true, description: 'Periodicidade: Anual, Mensal, Semanal, Diário' },
+      { name: 'Periodicity', type: 'select', required: true, description: 'Periodicidade: Anual, Mensal, Trimestral, Semestral, Semanal, Diário' },
       { name: 'ChartType', type: 'select', required: true, description: 'Tipo de gráfico: line, bar, area, number' },
       { name: 'Unit', type: 'rich_text', required: false, description: 'Unidade de medida' },
       { name: 'TargetValue', type: 'number', required: false, description: 'Valor alvo (meta) do KPI' },

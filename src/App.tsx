@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
+import DashboardV02 from "./pages/DashboardV02";
 import CoffeePage from "./pages/Coffee";
 import ExpansionPage from "./pages/Expansion";
 import FinancePage from "./pages/Finance";
@@ -29,6 +30,7 @@ const App = () => (
           
           {/* Public routes */}
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard-v02" element={<DashboardV02 />} />
           <Route path="/coffee" element={<CoffeePage />} />
           <Route path="/expansion" element={<ExpansionPage />} />
           <Route path="/finance" element={<FinancePage />} />
