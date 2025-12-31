@@ -6,15 +6,22 @@ import { ActionChecklist } from '@/components/ActionChecklist';
 import { JournalModal } from '@/components/JournalModal';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  getPublicKPIs, getPublicGoals, getDailyActions, 
-  checkYesterdayJournal, updateActionDone, createJournalEntry 
-} from '@/lib/notion/data-layer';
-import type { NotionKPI, NotionGoal, NotionAction, NotionJournal } from '@/lib/notion/types';
+  getPublicKPIs, 
+  getPublicGoals, 
+  getDailyActions, 
+  checkYesterdayJournal, 
+  updateActionDone, 
+  createJournalEntry 
+} from '@/services';
+import type { KPI } from '@/types/kpi';
+import type { Goal } from '@/types/goal';
+import type { Action } from '@/types/action';
+import type { Journal } from '@/types/journal';
 
 export default function Dashboard() {
-  const [kpis, setKpis] = useState<NotionKPI[]>([]);
-  const [goals, setGoals] = useState<NotionGoal[]>([]);
-  const [actions, setActions] = useState<NotionAction[]>([]);
+  const [kpis, setKpis] = useState<KPI[]>([]);
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [actions, setActions] = useState<Action[]>([]);
   const [journalBlocked, setJournalBlocked] = useState(false);
   const [showJournalModal, setShowJournalModal] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -50,21 +57,18 @@ export default function Dashboard() {
 
   const handleToggleAction = async (actionId: string, done: boolean) => {
     await updateActionDone(actionId, done);
+    // Refresh actions
+    const actionsData = await getDailyActions();
+    setActions(actionsData);
   };
 
-  const handleJournalSubmit = async (journal: Partial<NotionJournal>) => {
+  const handleJournalSubmit = async (journal: Partial<Journal>) => {
     await createJournalEntry(journal);
     setJournalBlocked(false);
+    setShowJournalModal(false);
   };
 
   const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-
-  // Group KPIs by category
-  const kpisByCategory = kpis.reduce((acc, kpi) => {
-    if (!acc[kpi.Category]) acc[kpi.Category] = [];
-    acc[kpi.Category].push(kpi);
-    return acc;
-  }, {} as Record<string, NotionKPI[]>);
 
   if (loading) {
     return (

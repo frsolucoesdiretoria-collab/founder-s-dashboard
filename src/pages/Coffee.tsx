@@ -8,13 +8,15 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Coffee, User, Building, MessageSquare, ArrowRight, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { createCoffeeDiagnostic } from '@/services';
+import type { CoffeeFormData } from '@/types/coffee';
 
 export default function CoffeePage() {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<CoffeeFormData>({
     contactName: '',
     contactRole: '',
     company: '',
@@ -35,12 +37,33 @@ export default function CoffeePage() {
 
     setIsSubmitting(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    setIsSubmitting(false);
-    setSubmitted(true);
-    toast.success('Diagnóstico de café registrado!');
+    try {
+      await createCoffeeDiagnostic(formData);
+      setSubmitted(true);
+      toast.success('Diagnóstico de café registrado!');
+    } catch (error) {
+      toast.error('Erro ao registrar café');
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const resetForm = () => {
+    setSubmitted(false);
+    setStep(1);
+    setFormData({
+      contactName: '',
+      contactRole: '',
+      company: '',
+      source: '',
+      mainChallenge: '',
+      currentSituation: '',
+      desiredOutcome: '',
+      urgency: '',
+      nextSteps: '',
+      notes: '',
+    });
   };
 
   if (submitted) {
@@ -54,22 +77,7 @@ export default function CoffeePage() {
           <p className="text-muted-foreground mb-6">
             O diagnóstico foi salvo e a ação foi criada.
           </p>
-          <Button onClick={() => {
-            setSubmitted(false);
-            setStep(1);
-            setFormData({
-              contactName: '',
-              contactRole: '',
-              company: '',
-              source: '',
-              mainChallenge: '',
-              currentSituation: '',
-              desiredOutcome: '',
-              urgency: '',
-              nextSteps: '',
-              notes: '',
-            });
-          }}>
+          <Button onClick={resetForm}>
             <Coffee className="h-4 w-4 mr-2" />
             Registrar outro café
           </Button>
