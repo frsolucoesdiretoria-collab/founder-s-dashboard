@@ -90,6 +90,20 @@ export interface NotionCoffeeDiagnostic {
   Name: string;
   Date: string;
   Contact: string;
+  Segment: string;
+  TeamSize: number;
+  Channels: string[];
+  WhatsAppPrimary: boolean;
+  ResponseSpeed: string;
+  MainPain: string;
+  Symptoms: string;
+  FunnelLeak: string;
+  Goal30: string;
+  Goal60: string;
+  Goal90: string;
+  ScopeLockAccepted: boolean;
+  AdditivesPolicyAccepted: boolean;
+  NextStepAgreed: string;
   Notes: string;
   NextSteps: string;
 }
