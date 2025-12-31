@@ -663,6 +663,104 @@ async function getGoalById(id: string): Promise<NotionGoal | null> {
 }
 
 /**
+ * Find Goal by name (fuzzy match)
+ */
+export async function findGoalByName(namePattern: string): Promise<NotionGoal | null> {
+  // Get all Goals and search by name
+  const allGoals = await getGoals();
+  
+  // Try exact match first
+  let found = allGoals.find(goal => 
+    goal.Name.toLowerCase() === namePattern.toLowerCase()
+  );
+  
+  // Try fuzzy match (contains)
+  if (!found) {
+    found = allGoals.find(goal => 
+      goal.Name.toLowerCase().includes(namePattern.toLowerCase()) ||
+      namePattern.toLowerCase().includes(goal.Name.toLowerCase())
+    );
+  }
+  
+  return found || null;
+}
+
+/**
+ * Update Goal properties
+ */
+export async function updateGoal(
+  goalId: string,
+  updates: Partial<{
+    Name: string;
+    KPI: string;
+    Year: number;
+    Month: number | null;
+    WeekKey: string;
+    PeriodStart: string;
+    PeriodEnd: string;
+    Target: number;
+    Actual: number;
+    VisiblePublic: boolean;
+    VisibleAdmin: boolean;
+    Notes: string;
+  }>
+): Promise<NotionGoal> {
+  const client = initNotionClient();
+
+  const properties: any = {};
+  
+  if (updates.Name !== undefined) {
+    properties.Name = { title: [{ text: { content: updates.Name } }] };
+  }
+  if (updates.KPI !== undefined) {
+    properties.KPI = { relation: [{ id: updates.KPI }] };
+  }
+  if (updates.Year !== undefined) {
+    properties.Year = { number: updates.Year };
+  }
+  if (updates.Month !== undefined) {
+    if (updates.Month === null) {
+      properties.Month = { number: null };
+    } else {
+      properties.Month = { number: updates.Month };
+    }
+  }
+  if (updates.WeekKey !== undefined) {
+    properties.WeekKey = { rich_text: [{ text: { content: updates.WeekKey } }] };
+  }
+  if (updates.PeriodStart !== undefined) {
+    properties.PeriodStart = { date: { start: updates.PeriodStart } };
+  }
+  if (updates.PeriodEnd !== undefined) {
+    properties.PeriodEnd = { date: { start: updates.PeriodEnd } };
+  }
+  if (updates.Target !== undefined) {
+    properties.Target = { number: updates.Target };
+  }
+  if (updates.Actual !== undefined) {
+    properties.Actual = { number: updates.Actual };
+  }
+  if (updates.VisiblePublic !== undefined) {
+    properties.VisiblePublic = { checkbox: updates.VisiblePublic };
+  }
+  if (updates.VisibleAdmin !== undefined) {
+    properties.VisibleAdmin = { checkbox: updates.VisibleAdmin };
+  }
+  if (updates.Notes !== undefined) {
+    properties.Notes = { rich_text: [{ text: { content: updates.Notes } }] };
+  }
+
+  const updated = await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: goalId,
+      properties
+    })
+  );
+
+  return pageToGoal(updated);
+}
+
+/**
  * Update related Goal when Action is completed
  */
 export async function updateRelatedGoal(actionId: string): Promise<void> {

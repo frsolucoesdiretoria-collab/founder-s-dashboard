@@ -317,3 +317,5 @@ Após criar ou modificar uma database, você pode:
 2. Atualizar o schema em `src/lib/notion/schema.ts` se for uma database do sistema
 3. Criar funções de acesso em `server/lib/notionDataLayer.ts` para interagir com a nova database
 
+
+

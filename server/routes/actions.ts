@@ -33,21 +33,32 @@ actionsRouter.get('/', async (req, res) => {
 /**
  * POST /api/actions
  * Create a new action
- * Body: { Name, Type, Date, Goal?, KPI?, Contact?, Client?, Notes?, ... }
+ * Body: { Name, Type, Date, Goal, Contribution?, Notes?, Contact?, PublicVisible? }
  */
 actionsRouter.post('/', async (req, res) => {
   try {
-    const actionData = req.body;
+    const { Name, Type, Date, Goal, Contribution, Notes, Contact, PublicVisible } = req.body;
     
-    // Basic validation
-    if (!actionData.Name || !actionData.Type || !actionData.Date) {
+    if (!Name || !Type || !Date || !Goal) {
       return res.status(400).json({ 
-        error: 'Missing required fields: Name, Type, Date' 
+        error: 'Missing required fields',
+        required: ['Name', 'Type', 'Date', 'Goal']
       });
     }
 
-    const newAction = await createAction(actionData);
-    res.status(201).json(newAction);
+    const action = await createAction({
+      Name,
+      Type,
+      Date,
+      Goal,
+      Contribution,
+      Notes,
+      Contact,
+      PublicVisible: PublicVisible ?? true,
+      Done: false
+    });
+
+    res.status(201).json(action);
   } catch (error: any) {
     console.error('Error creating action:', error);
     res.status(500).json({ 
@@ -82,14 +93,13 @@ actionsRouter.patch('/:id/done', async (req, res) => {
 
     await toggleActionDone(id, done);
     
-    // If completed, update related Goal
-    if (done) {
-      try {
-        await updateRelatedGoal(id);
-      } catch (err) {
-        console.warn('Could not update related goal:', err);
-        // Don't fail the request if goal update fails
-      }
+    // Atualizar Goal relacionado quando ação é marcada como concluída ou reaberta
+    try {
+      await updateRelatedGoal(id);
+    } catch (goalError: any) {
+      // Log erro mas não falha a requisição (a ação já foi atualizada)
+      console.error('Error updating related goal:', goalError);
+      // Continua mesmo se falhar atualização do goal
     }
     
     res.json({ success: true, done });

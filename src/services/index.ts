@@ -8,3 +8,4 @@ export * from './expansion.service';
 export * from './coffee.service';
 export * from './health.service';
 export * from './finance.service';
+export * from './contacts.service';

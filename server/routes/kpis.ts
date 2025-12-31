@@ -51,27 +51,3 @@ kpisRouter.get('/admin', async (req, res) => {
   }
 });
 
-/**
- * GET /api/kpis/financial
- * Get financial KPIs only (requires admin passcode)
- */
-kpisRouter.get('/financial', async (req, res) => {
-  const passcode = req.headers['x-admin-passcode'] as string;
-  if (!passcode || !validateAdminPasscode(passcode)) {
-    return res.status(401).json({ error: 'Unauthorized: Invalid passcode' });
-  }
-
-  try {
-    // Get all KPIs and filter only financial ones
-    const allKPIs = await getKPIsAdmin();
-    const financialKPIs = allKPIs.filter(kpi => kpi.IsFinancial === true);
-    res.json(financialKPIs);
-  } catch (error: any) {
-    console.error('Error fetching financial KPIs:', error);
-    res.status(500).json({ 
-      error: 'Failed to fetch financial KPIs',
-      message: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-});
-

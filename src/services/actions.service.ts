@@ -99,16 +99,12 @@ export async function createAction(action: Omit<Action, 'id'>): Promise<Action> 
       },
       body: JSON.stringify(action)
     });
-    
-    if (response.status === 429) {
-      throw new Error('Rate limit: Muitas requisições. Aguarde alguns segundos.');
-    }
-    
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.error || error.message || 'Failed to create action');
+      throw new Error(error.message || error.error || 'Failed to create action');
     }
-    
+
     return response.json();
   } catch (error) {
     console.error('Error creating action:', error);
