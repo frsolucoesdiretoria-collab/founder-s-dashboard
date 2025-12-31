@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { TrendingUp, Trophy, Sparkles, ArrowUpRight, Plus } from 'lucide-react';
-import { getExpansionOpportunities, getCustomerWins } from '@/lib/notion/data-layer';
-import type { NotionExpansionOpportunity, NotionCustomerWin } from '@/lib/notion/types';
+import { getExpansionOpportunities, getCustomerWins, createOpportunity, createCustomerWin } from '@/services';
+import type { ExpansionOpportunity, CustomerWin } from '@/types/expansion';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -34,28 +34,82 @@ const typeColors: Record<string, string> = {
 };
 
 export default function ExpansionPage() {
-  const [opportunities, setOpportunities] = useState<NotionExpansionOpportunity[]>([]);
-  const [customerWins, setCustomerWins] = useState<NotionCustomerWin[]>([]);
+  const [opportunities, setOpportunities] = useState<ExpansionOpportunity[]>([]);
+  const [customerWins, setCustomerWins] = useState<CustomerWin[]>([]);
   const [loading, setLoading] = useState(true);
   const [showNewOpportunity, setShowNewOpportunity] = useState(false);
+  const [showNewWin, setShowNewWin] = useState(false);
+  
+  // New opportunity form
+  const [newOpp, setNewOpp] = useState({
+    client: '',
+    type: '' as 'Upsell' | 'Cross-sell' | '',
+    notes: ''
+  });
+  
+  // New win form
+  const [newWin, setNewWin] = useState({
+    client: '',
+    description: ''
+  });
+
+  const loadData = async () => {
+    try {
+      const [opps, wins] = await Promise.all([
+        getExpansionOpportunities(),
+        getCustomerWins()
+      ]);
+      setOpportunities(opps);
+      setCustomerWins(wins);
+    } catch (error) {
+      console.error('Error loading expansion data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function loadData() {
-      try {
-        const [opps, wins] = await Promise.all([
-          getExpansionOpportunities(),
-          getCustomerWins()
-        ]);
-        setOpportunities(opps);
-        setCustomerWins(wins);
-      } catch (error) {
-        console.error('Error loading expansion data:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
     loadData();
   }, []);
+
+  const handleCreateOpportunity = async () => {
+    if (!newOpp.client || !newOpp.type) {
+      toast.error('Preencha cliente e tipo');
+      return;
+    }
+    
+    await createOpportunity({
+      Name: `${newOpp.type} - ${newOpp.client}`,
+      Client: newOpp.client,
+      Type: newOpp.type as 'Upsell' | 'Cross-sell',
+      Status: 'Identificado',
+      Notes: newOpp.notes
+    });
+    
+    toast.success('Oportunidade registrada!');
+    setShowNewOpportunity(false);
+    setNewOpp({ client: '', type: '', notes: '' });
+    loadData();
+  };
+
+  const handleCreateWin = async () => {
+    if (!newWin.client || !newWin.description) {
+      toast.error('Preencha cliente e descrição');
+      return;
+    }
+    
+    await createCustomerWin({
+      Name: `Momento GOL - ${newWin.client}`,
+      Client: newWin.client,
+      Date: new Date().toISOString().split('T')[0],
+      Description: newWin.description
+    });
+    
+    toast.success('Momento GOL registrado!');
+    setShowNewWin(false);
+    setNewWin({ client: '', description: '' });
+    loadData();
+  };
 
   if (loading) {
     return (
@@ -99,33 +153,41 @@ export default function ExpansionPage() {
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
                   <Label>Cliente</Label>
-                  <Input placeholder="Nome do cliente" />
+                  <Input 
+                    placeholder="Nome do cliente"
+                    value={newOpp.client}
+                    onChange={(e) => setNewOpp(prev => ({ ...prev, client: e.target.value }))}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label>Tipo</Label>
-                  <Select>
+                  <Select
+                    value={newOpp.type}
+                    onValueChange={(value) => setNewOpp(prev => ({ ...prev, type: value as 'Upsell' | 'Cross-sell' }))}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione..." />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="upsell">Upsell</SelectItem>
-                      <SelectItem value="crosssell">Cross-sell</SelectItem>
+                      <SelectItem value="Upsell">Upsell</SelectItem>
+                      <SelectItem value="Cross-sell">Cross-sell</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
                   <Label>Descrição</Label>
-                  <Textarea placeholder="Descreva a oportunidade..." />
+                  <Textarea 
+                    placeholder="Descreva a oportunidade..."
+                    value={newOpp.notes}
+                    onChange={(e) => setNewOpp(prev => ({ ...prev, notes: e.target.value }))}
+                  />
                 </div>
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setShowNewOpportunity(false)}>
                   Cancelar
                 </Button>
-                <Button onClick={() => {
-                  toast.success('Oportunidade registrada!');
-                  setShowNewOpportunity(false);
-                }}>
+                <Button onClick={handleCreateOpportunity}>
                   Salvar
                 </Button>
               </DialogFooter>
@@ -134,19 +196,67 @@ export default function ExpansionPage() {
         </div>
 
         {/* Momento GOL - Customer Wins */}
-        {customerWins.length > 0 && (
-          <Card className="border-primary/20 bg-primary/5">
-            <CardHeader>
+        <Card className="border-primary/20 bg-primary/5">
+          <CardHeader>
+            <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <Trophy className="h-5 w-5 text-primary" />
                 Momento GOL
               </CardTitle>
-              <CardDescription>
-                Clientes que atingiram marcos importantes
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {customerWins.map((win) => (
+              <Dialog open={showNewWin} onOpenChange={setShowNewWin}>
+                <DialogTrigger asChild>
+                  <Button size="sm" variant="outline">
+                    <Plus className="h-4 w-4 mr-1" />
+                    Registrar GOL
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Registrar Momento GOL</DialogTitle>
+                    <DialogDescription>
+                      Cliente atingiu um marco importante
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label>Cliente</Label>
+                      <Input 
+                        placeholder="Nome do cliente"
+                        value={newWin.client}
+                        onChange={(e) => setNewWin(prev => ({ ...prev, client: e.target.value }))}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>O que aconteceu?</Label>
+                      <Textarea 
+                        placeholder="Descreva o marco atingido..."
+                        value={newWin.description}
+                        onChange={(e) => setNewWin(prev => ({ ...prev, description: e.target.value }))}
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setShowNewWin(false)}>
+                      Cancelar
+                    </Button>
+                    <Button onClick={handleCreateWin}>
+                      Registrar
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+            <CardDescription>
+              Clientes que atingiram marcos importantes
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {customerWins.length === 0 ? (
+              <p className="text-muted-foreground text-sm text-center py-4">
+                Nenhum momento GOL registrado
+              </p>
+            ) : (
+              customerWins.map((win) => (
                 <div 
                   key={win.id}
                   className="flex items-start gap-3 p-3 rounded-lg bg-card border border-border"
@@ -163,10 +273,10 @@ export default function ExpansionPage() {
                     <ArrowUpRight className="h-4 w-4" />
                   </Button>
                 </div>
-              ))}
-            </CardContent>
-          </Card>
-        )}
+              ))
+            )}
+          </CardContent>
+        </Card>
 
         {/* Expansion Opportunities */}
         <Card>
