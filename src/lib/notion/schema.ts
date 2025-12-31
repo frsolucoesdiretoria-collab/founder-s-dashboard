@@ -132,21 +132,7 @@ export const NOTION_SCHEMA: Record<string, DatabaseSchema> = {
     properties: [
       { name: 'Name', type: 'title', required: true, description: 'Nome do diagnóstico' },
       { name: 'Date', type: 'date', required: true, description: 'Data' },
-      { name: 'Contact', type: 'relation', required: true, description: 'Contato (obrigatório)' },
-      { name: 'Segment', type: 'rich_text', required: false, description: 'Segmento' },
-      { name: 'TeamSize', type: 'number', required: false, description: 'Tamanho do time' },
-      { name: 'Channels', type: 'multi_select', required: false, description: 'Canais' },
-      { name: 'WhatsAppPrimary', type: 'checkbox', required: false, description: 'WhatsApp como canal primário' },
-      { name: 'ResponseSpeed', type: 'select', required: false, description: 'Velocidade de resposta' },
-      { name: 'MainPain', type: 'rich_text', required: false, description: 'Principal dor' },
-      { name: 'Symptoms', type: 'rich_text', required: false, description: 'Sintomas' },
-      { name: 'FunnelLeak', type: 'rich_text', required: false, description: 'Vazamento no funil' },
-      { name: 'Goal30', type: 'rich_text', required: false, description: 'Objetivo 30 dias' },
-      { name: 'Goal60', type: 'rich_text', required: false, description: 'Objetivo 60 dias' },
-      { name: 'Goal90', type: 'rich_text', required: false, description: 'Objetivo 90 dias' },
-      { name: 'ScopeLockAccepted', type: 'checkbox', required: true, description: 'Escopo travado aceito (obrigatório)' },
-      { name: 'AdditivesPolicyAccepted', type: 'checkbox', required: true, description: 'Política de aditivos aceita (obrigatório)' },
-      { name: 'NextStepAgreed', type: 'rich_text', required: false, description: 'Próximo passo acordado' },
+      { name: 'Contact', type: 'relation', required: false, description: 'Contato' },
       { name: 'Notes', type: 'rich_text', required: false, description: 'Notas' },
       { name: 'NextSteps', type: 'rich_text', required: false, description: 'Próximos passos' }
     ]
@@ -158,8 +144,12 @@ export const NOTION_SCHEMA: Record<string, DatabaseSchema> = {
     properties: [
       { name: 'Name', type: 'title', required: true, description: 'Nome da oportunidade' },
       { name: 'Client', type: 'relation', required: false, description: 'Cliente' },
-      { name: 'Type', type: 'select', required: false, description: 'Tipo' },
-      { name: 'Status', type: 'select', required: false, description: 'Status' },
+      { name: 'Type', type: 'select', required: false, description: 'Tipo (Upsell/Cross-sell)' },
+      { name: 'Status', type: 'select', required: false, description: 'Status (Identificado/Em Negociação/Fechado/Perdido)' },
+      { name: 'Stage', type: 'select', required: false, description: 'Estágio do pipeline' },
+      { name: 'Trigger', type: 'select', required: false, description: 'Gatilho (GOLMoment, Manual, etc)' },
+      { name: 'PlannedDate', type: 'date', required: false, description: 'Data planejada' },
+      { name: 'Health', type: 'select', required: false, description: 'Health do cliente (Green/Yellow/Red)' },
       { name: 'Notes', type: 'rich_text', required: false, description: 'Notas' }
     ]
   },
@@ -171,7 +161,12 @@ export const NOTION_SCHEMA: Record<string, DatabaseSchema> = {
       { name: 'Name', type: 'title', required: true, description: 'Nome da vitória' },
       { name: 'Client', type: 'relation', required: false, description: 'Cliente' },
       { name: 'Date', type: 'date', required: true, description: 'Data' },
-      { name: 'Description', type: 'rich_text', required: false, description: 'Descrição' }
+      { name: 'Description', type: 'rich_text', required: false, description: 'Descrição' },
+      { name: 'WinType', type: 'select', required: false, description: 'Tipo de vitória' },
+      { name: 'Evidence', type: 'rich_text', required: false, description: 'Evidência' },
+      { name: 'Score', type: 'number', required: false, description: 'Pontuação (0-10)' },
+      { name: 'UpsellRecommended', type: 'checkbox', required: false, description: 'Upsell recomendado' },
+      { name: 'IsGOL', type: 'checkbox', required: false, description: 'É momento GOL (Score >= 8)' }
     ]
   },
   FinanceMetrics: {

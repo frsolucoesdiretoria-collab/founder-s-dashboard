@@ -11,7 +11,8 @@ import { kpisRouter } from './routes/kpis';
 import { goalsRouter } from './routes/goals';
 import { actionsRouter } from './routes/actions';
 import { journalRouter } from './routes/journal';
-import { coffeeRouter } from './routes/coffee';
+import { expansionRouter } from './routes/expansion';
+import { financeRouter } from './routes/finance';
 import { assertEnvVars } from './lib/envValidator';
 
 // Load environment variables (priority: .env.local > .env)
@@ -50,7 +51,8 @@ app.use('/api/kpis', kpisRouter);
 app.use('/api/goals', goalsRouter);
 app.use('/api/actions', actionsRouter);
 app.use('/api/journal', journalRouter);
-app.use('/api/coffee', coffeeRouter);
+app.use('/api/expansion', expansionRouter);
+app.use('/api/finance', financeRouter);
 
 // Error handler
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {

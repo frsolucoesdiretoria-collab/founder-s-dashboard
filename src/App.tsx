@@ -11,6 +11,10 @@ import AdminSettings from "./pages/admin/Settings";
 import AdminFinance from "./pages/admin/Finance";
 import SelfTest from "./pages/SelfTest";
 import NotFound from "./pages/NotFound";
+import { isPartnerFeatureEnabled } from "./utils/featureFlags";
+import PartnerLogin from "./pages/partner/PartnerLogin";
+import PartnerDashboard from "./pages/partner/PartnerDashboard";
+import PartnerShare from "./pages/partner/PartnerShare";
 
 const queryClient = new QueryClient();
 
@@ -37,10 +41,14 @@ const App = () => (
           {/* Self test (passcode protected) */}
           <Route path="/__selftest" element={<SelfTest />} />
           
-          {/* Phase 2 partner routes - not exposed yet */}
-          {/* <Route path="/partner/login" element={<PartnerLogin />} /> */}
-          {/* <Route path="/partner/dashboard" element={<PartnerDashboard />} /> */}
-          {/* <Route path="/partner/share/:token" element={<PartnerShare />} /> */}
+          {/* Partner routes (feature flag protected) */}
+          {isPartnerFeatureEnabled() && (
+            <>
+              <Route path="/partner/login" element={<PartnerLogin />} />
+              <Route path="/partner/dashboard" element={<PartnerDashboard />} />
+              <Route path="/partner/share/:token" element={<PartnerShare />} />
+            </>
+          )}
           
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />

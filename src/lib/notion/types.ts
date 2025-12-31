@@ -37,7 +37,7 @@ export interface NotionGoal {
 export interface NotionAction {
   id: string;
   Name: string;
-  Type: 'Café' | 'Ativação de Rede' | 'Proposta' | 'Processo' | 'Rotina' | 'Automação' | 'Agente' | 'Diário';
+  Type: 'Café' | 'Ativação de Rede' | 'Proposta' | 'Processo' | 'Rotina' | 'Automação' | 'Agente' | 'Diário' | 'GOL_Detected' | 'Upsell_Meeting_Scheduled';
   Date: string;
   Done: boolean;
   Contribution: number;
@@ -90,20 +90,6 @@ export interface NotionCoffeeDiagnostic {
   Name: string;
   Date: string;
   Contact: string;
-  Segment: string;
-  TeamSize: number;
-  Channels: string[];
-  WhatsAppPrimary: boolean;
-  ResponseSpeed: string;
-  MainPain: string;
-  Symptoms: string;
-  FunnelLeak: string;
-  Goal30: string;
-  Goal60: string;
-  Goal90: string;
-  ScopeLockAccepted: boolean;
-  AdditivesPolicyAccepted: boolean;
-  NextStepAgreed: string;
   Notes: string;
   NextSteps: string;
 }
@@ -114,6 +100,10 @@ export interface NotionExpansionOpportunity {
   Client: string;
   Type: string;
   Status: string;
+  Stage?: string;
+  Trigger?: string;
+  PlannedDate?: string;
+  Health?: string;
   Notes: string;
 }
 
@@ -123,6 +113,11 @@ export interface NotionCustomerWin {
   Client: string;
   Date: string;
   Description: string;
+  WinType?: string;
+  Evidence?: string;
+  Score?: number;
+  UpsellRecommended?: boolean;
+  IsGOL?: boolean;
 }
 
 // Phase 2 types (feature flag)

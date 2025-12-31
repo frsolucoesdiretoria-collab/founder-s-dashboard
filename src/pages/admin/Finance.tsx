@@ -1,17 +1,57 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DollarSign, Lock, ArrowLeft, TrendingUp, TrendingDown, Wallet } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { getFinanceMetrics } from '@/services/finance.service';
+import type { FinanceMetrics } from '@/services/finance.service';
+import { toast } from 'sonner';
 
 export default function AdminFinance() {
   const [passcode, setPasscode] = useState('');
   const [authenticated, setAuthenticated] = useState(false);
+  const [financialData, setFinancialData] = useState<FinanceMetrics | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleAuth = () => {
-    if (passcode.trim()) {
+  const handleAuth = async () => {
+    if (!passcode.trim()) {
+      toast.error('Digite o passcode');
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      const data = await getFinanceMetrics(passcode);
+      setFinancialData(data);
       setAuthenticated(true);
+    } catch (error: any) {
+      toast.error(error.message || 'Erro ao autenticar. Verifique o passcode.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (authenticated && !financialData) {
+      loadFinancialData();
+    }
+  }, [authenticated]);
+
+  const loadFinancialData = async () => {
+    if (!authenticated) return;
+    setLoading(true);
+    try {
+      const data = await getFinanceMetrics(passcode);
+      setFinancialData(data);
+    } catch (error: any) {
+      toast.error('Erro ao carregar dados financeiros: ' + (error.message || 'Erro desconhecido'));
+      if (error.message?.includes('Unauthorized')) {
+        setAuthenticated(false);
+        setFinancialData(null);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -36,8 +76,8 @@ export default function AdminFinance() {
               onChange={(e) => setPasscode(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleAuth()}
             />
-            <Button className="w-full" onClick={handleAuth}>
-              Entrar
+            <Button className="w-full" onClick={handleAuth} disabled={loading}>
+              {loading ? 'Autenticando...' : 'Entrar'}
             </Button>
             <Link to="/dashboard" className="block">
               <Button variant="ghost" className="w-full">
@@ -51,15 +91,13 @@ export default function AdminFinance() {
     );
   }
 
-  // Mock financial data - only visible to admin
-  const financialData = {
-    mrr: 15000,
-    arr: 180000,
-    churn: 2.5,
-    nrr: 115,
-    expansion: 3500,
-    contraction: 500,
-  };
+  if (!financialData) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="text-muted-foreground">Carregando dados financeiros...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
