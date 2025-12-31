@@ -52,39 +52,3 @@ export async function getKPIById(id: string): Promise<KPI | undefined> {
   const kpis = await getPublicKPIs();
   return kpis.find(kpi => kpi.id === id);
 }
-
-/**
- * Update KPI (admin only)
- */
-export async function updateKPI(
-  id: string,
-  updates: {
-    VisiblePublic?: boolean;
-    VisibleAdmin?: boolean;
-    SortOrder?: number;
-    Active?: boolean;
-    Periodicity?: string;
-    ChartType?: string;
-    IsFinancial?: boolean;
-  },
-  passcode: string
-): Promise<void> {
-  try {
-    const response = await fetch(`/api/kpis/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-admin-passcode': passcode
-      },
-      body: JSON.stringify(updates)
-    });
-    
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || `Failed to update KPI: ${response.statusText}`);
-    }
-  } catch (error) {
-    console.error('Error updating KPI:', error);
-    throw error;
-  }
-}

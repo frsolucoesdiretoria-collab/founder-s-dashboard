@@ -6,15 +6,14 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import CoffeePage from "./pages/Coffee";
 import ExpansionPage from "./pages/Expansion";
+import FinancePage from "./pages/Finance";
+import ActionsCreatePage from "./pages/ActionsCreate";
+import ApresentacaoPage from "./pages/Apresentacao";
 import AdminHealth from "./pages/admin/Health";
 import AdminSettings from "./pages/admin/Settings";
 import AdminFinance from "./pages/admin/Finance";
 import SelfTest from "./pages/SelfTest";
 import NotFound from "./pages/NotFound";
-import { isPartnerFeatureEnabled } from "./utils/featureFlags";
-import PartnerLogin from "./pages/partner/PartnerLogin";
-import PartnerDashboard from "./pages/partner/PartnerDashboard";
-import PartnerShare from "./pages/partner/PartnerShare";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +31,9 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/coffee" element={<CoffeePage />} />
           <Route path="/expansion" element={<ExpansionPage />} />
+          <Route path="/finance" element={<FinancePage />} />
+          <Route path="/tasks" element={<ActionsCreatePage />} />
+          <Route path="/apresentacao" element={<ApresentacaoPage />} />
           
           {/* Admin routes (passcode protected) */}
           <Route path="/admin/health" element={<AdminHealth />} />
@@ -41,14 +43,10 @@ const App = () => (
           {/* Self test (passcode protected) */}
           <Route path="/__selftest" element={<SelfTest />} />
           
-          {/* Partner routes (feature flag protected) */}
-          {isPartnerFeatureEnabled() && (
-            <>
-              <Route path="/partner/login" element={<PartnerLogin />} />
-              <Route path="/partner/dashboard" element={<PartnerDashboard />} />
-              <Route path="/partner/share/:token" element={<PartnerShare />} />
-            </>
-          )}
+          {/* Phase 2 partner routes - not exposed yet */}
+          {/* <Route path="/partner/login" element={<PartnerLogin />} /> */}
+          {/* <Route path="/partner/dashboard" element={<PartnerDashboard />} /> */}
+          {/* <Route path="/partner/share/:token" element={<PartnerShare />} /> */}
           
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />

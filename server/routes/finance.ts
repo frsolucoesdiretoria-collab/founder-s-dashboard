@@ -1,26 +1,23 @@
 // FR Tech OS - Finance Route
-// Admin only - requires passcode
+// Endpoints for finance metrics (DB11)
 
 import { Router } from 'express';
-import { getFinanceMetrics } from '../lib/financeDataLayer';
+import { getFinanceMetrics } from '../lib/notionDataLayer';
 import { validateAdminPasscode } from '../lib/guards';
 
 export const financeRouter = Router();
 
-// Middleware: validate passcode for all routes
-financeRouter.use((req, res, next) => {
+/**
+ * GET /api/finance/metrics
+ * Get finance metrics from DB11 (FinanceMetrics database)
+ * Requires admin passcode
+ */
+financeRouter.get('/metrics', async (req, res) => {
   const passcode = req.headers['x-admin-passcode'] as string;
   if (!passcode || !validateAdminPasscode(passcode)) {
     return res.status(401).json({ error: 'Unauthorized: Invalid passcode' });
   }
-  next();
-});
 
-/**
- * GET /api/finance/metrics
- * Get finance metrics (admin only)
- */
-financeRouter.get('/metrics', async (req, res) => {
   try {
     const metrics = await getFinanceMetrics();
     res.json(metrics);

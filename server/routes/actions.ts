@@ -1,7 +1,7 @@
 // FR Tech OS - Actions Route
 
 import { Router } from 'express';
-import { getActions, toggleActionDone, ensureActionHasGoal } from '../lib/notionDataLayer';
+import { getActions, toggleActionDone, ensureActionHasGoal, createAction, updateRelatedGoal } from '../lib/notionDataLayer';
 import { canMarkActionDone } from '../lib/guards';
 
 export const actionsRouter = Router();
@@ -31,6 +31,33 @@ actionsRouter.get('/', async (req, res) => {
 });
 
 /**
+ * POST /api/actions
+ * Create a new action
+ * Body: { Name, Type, Date, Goal?, KPI?, Contact?, Client?, Notes?, ... }
+ */
+actionsRouter.post('/', async (req, res) => {
+  try {
+    const actionData = req.body;
+    
+    // Basic validation
+    if (!actionData.Name || !actionData.Type || !actionData.Date) {
+      return res.status(400).json({ 
+        error: 'Missing required fields: Name, Type, Date' 
+      });
+    }
+
+    const newAction = await createAction(actionData);
+    res.status(201).json(newAction);
+  } catch (error: any) {
+    console.error('Error creating action:', error);
+    res.status(500).json({ 
+      error: 'Failed to create action',
+      message: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+/**
  * PATCH /api/actions/:id/done
  * Toggle action done status
  * Body: { done: boolean }
@@ -54,6 +81,17 @@ actionsRouter.patch('/:id/done', async (req, res) => {
     }
 
     await toggleActionDone(id, done);
+    
+    // If completed, update related Goal
+    if (done) {
+      try {
+        await updateRelatedGoal(id);
+      } catch (err) {
+        console.warn('Could not update related goal:', err);
+        // Don't fail the request if goal update fails
+      }
+    }
+    
     res.json({ success: true, done });
   } catch (error: any) {
     console.error('Error updating action:', error);

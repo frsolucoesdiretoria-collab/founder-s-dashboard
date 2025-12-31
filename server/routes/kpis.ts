@@ -2,7 +2,7 @@
 // Public and admin endpoints
 
 import { Router } from 'express';
-import { getKPIsPublic, getKPIsAdmin, updateKPI } from '../lib/notionDataLayer';
+import { getKPIsPublic, getKPIsAdmin } from '../lib/notionDataLayer';
 import { assertNoFinancialKPIs } from '../lib/guards';
 import { validateAdminPasscode } from '../lib/guards';
 
@@ -52,27 +52,24 @@ kpisRouter.get('/admin', async (req, res) => {
 });
 
 /**
- * PATCH /api/kpis/:id
- * Update KPI properties (admin only)
- * Body: { VisiblePublic?, VisibleAdmin?, SortOrder?, Active?, Periodicity?, ChartType?, IsFinancial? }
- * Enforcement: If IsFinancial=true, VisiblePublic is forced to false server-side
+ * GET /api/kpis/financial
+ * Get financial KPIs only (requires admin passcode)
  */
-kpisRouter.patch('/:id', async (req, res) => {
+kpisRouter.get('/financial', async (req, res) => {
   const passcode = req.headers['x-admin-passcode'] as string;
   if (!passcode || !validateAdminPasscode(passcode)) {
     return res.status(401).json({ error: 'Unauthorized: Invalid passcode' });
   }
 
   try {
-    const { id } = req.params;
-    const updates = req.body;
-    
-    await updateKPI(id, updates);
-    res.json({ success: true });
+    // Get all KPIs and filter only financial ones
+    const allKPIs = await getKPIsAdmin();
+    const financialKPIs = allKPIs.filter(kpi => kpi.IsFinancial === true);
+    res.json(financialKPIs);
   } catch (error: any) {
-    console.error('Error updating KPI:', error);
+    console.error('Error fetching financial KPIs:', error);
     res.status(500).json({ 
-      error: 'Failed to update KPI',
+      error: 'Failed to fetch financial KPIs',
       message: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }

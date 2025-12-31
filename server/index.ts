@@ -11,8 +11,8 @@ import { kpisRouter } from './routes/kpis';
 import { goalsRouter } from './routes/goals';
 import { actionsRouter } from './routes/actions';
 import { journalRouter } from './routes/journal';
-import { expansionRouter } from './routes/expansion';
 import { financeRouter } from './routes/finance';
+import { databasesRouter } from './routes/databases';
 import { assertEnvVars } from './lib/envValidator';
 
 // Load environment variables (priority: .env.local > .env)
@@ -46,12 +46,12 @@ app.get('/api/health', (req, res) => {
 
 // API Routes
 app.use('/api/admin/health', healthRouter);
+app.use('/api/admin/databases', databasesRouter);
 app.use('/api/__selftest', selftestRouter);
 app.use('/api/kpis', kpisRouter);
 app.use('/api/goals', goalsRouter);
 app.use('/api/actions', actionsRouter);
 app.use('/api/journal', journalRouter);
-app.use('/api/expansion', expansionRouter);
 app.use('/api/finance', financeRouter);
 
 // Error handler

@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { NotionKPI, NotionGoal } from '@/lib/notion/types';
 
@@ -17,10 +17,6 @@ export function KPICard({ kpi, goal }: KPICardProps) {
   // If TargetValue is 0 or empty, progress is 0
   const progress = targetValue > 0 ? Math.min(100, (actual / targetValue) * 100) : 0;
   
-  const trend = progress >= 100 ? 'up' : progress >= 50 ? 'neutral' : 'down';
-  
-  const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus;
-  
   // Format target display: show "—" if TargetValue is empty/zero
   const targetDisplay = targetValue > 0 ? targetValue.toString() : '—';
   
@@ -36,13 +32,8 @@ export function KPICard({ kpi, goal }: KPICardProps) {
               {kpi.Name}
             </CardTitle>
           </div>
-          <div className={cn(
-            "p-2 rounded-full",
-            trend === 'up' && "bg-primary/10 text-primary",
-            trend === 'neutral' && "bg-muted text-muted-foreground",
-            trend === 'down' && "bg-destructive/10 text-destructive"
-          )}>
-            <TrendIcon className="h-4 w-4" />
+          <div className="p-2 rounded-full bg-green-50 dark:bg-green-950/20">
+            <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-500" />
           </div>
         </div>
       </CardHeader>
@@ -62,12 +53,7 @@ export function KPICard({ kpi, goal }: KPICardProps) {
           <span className="text-xs text-muted-foreground">
             {kpi.Periodicity}
           </span>
-          <span className={cn(
-            "text-sm font-medium",
-            trend === 'up' && "text-primary",
-            trend === 'neutral' && "text-muted-foreground",
-            trend === 'down' && "text-destructive"
-          )}>
+          <span className="text-sm font-medium text-primary">
             {progress.toFixed(0)}%
           </span>
         </div>

@@ -88,9 +88,30 @@ export async function updateActionDone(actionId: string, done: boolean): Promise
 }
 
 /**
- * Create a new action (not implemented in API yet - would need to be added)
+ * Create a new action
  */
 export async function createAction(action: Omit<Action, 'id'>): Promise<Action> {
-  // TODO: Implement in API if needed
-  throw new Error('Create action not yet implemented in API');
+  try {
+    const response = await fetch('/api/actions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(action)
+    });
+    
+    if (response.status === 429) {
+      throw new Error('Rate limit: Muitas requisições. Aguarde alguns segundos.');
+    }
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || error.message || 'Failed to create action');
+    }
+    
+    return response.json();
+  } catch (error) {
+    console.error('Error creating action:', error);
+    throw error;
+  }
 }

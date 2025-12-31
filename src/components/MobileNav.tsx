@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Coffee, TrendingUp, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Coffee, TrendingUp, DollarSign, CheckSquare, Menu, X, Presentation } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -8,6 +8,9 @@ const navItems = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/coffee', label: 'Café', icon: Coffee },
   { path: '/expansion', label: 'Expansão', icon: TrendingUp },
+  { path: '/finance', label: 'Financeiro', icon: DollarSign },
+  { path: '/tasks', label: 'Tarefas', icon: CheckSquare },
+  { path: '/apresentacao', label: 'Apresentação', icon: Presentation },
 ];
 
 export function MobileNav() {

@@ -258,6 +258,174 @@ export async function getKPIsAdmin(): Promise<NotionKPI[]> {
 }
 
 /**
+ * Get all KPIs including inactive ones
+ */
+export async function getAllKPIsIncludingInactive(): Promise<NotionKPI[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('KPIs');
+  if (!dbId) throw new Error('NOTION_DB_KPIS not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      sorts: [{ property: 'SortOrder', direction: 'ascending' }]
+    })
+  );
+
+  return response.results.map(pageToKPI);
+}
+
+/**
+ * Find KPI by name (fuzzy match)
+ */
+export async function findKPIByName(namePattern: string): Promise<NotionKPI | null> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('KPIs');
+  if (!dbId) throw new Error('NOTION_DB_KPIS not configured');
+
+  // Get all KPIs and search by name
+  const allKPIs = await getAllKPIsIncludingInactive();
+  
+  // Try exact match first
+  let found = allKPIs.find(kpi => 
+    kpi.Name.toLowerCase() === namePattern.toLowerCase()
+  );
+  
+  // Try fuzzy match (contains)
+  if (!found) {
+    found = allKPIs.find(kpi => 
+      kpi.Name.toLowerCase().includes(namePattern.toLowerCase()) ||
+      namePattern.toLowerCase().includes(kpi.Name.toLowerCase())
+    );
+  }
+  
+  return found || null;
+}
+
+/**
+ * Update KPI properties
+ */
+export async function updateKPI(
+  kpiId: string,
+  updates: Partial<{
+    Name: string;
+    Category: string;
+    Periodicity: 'Anual' | 'Mensal' | 'Semanal' | 'Diário';
+    ChartType: 'line' | 'bar' | 'area' | 'number';
+    Unit: string;
+    TargetValue: number;
+    VisiblePublic: boolean;
+    VisibleAdmin: boolean;
+    IsFinancial: boolean;
+    SortOrder: number;
+    Active: boolean;
+    Description: string;
+  }>
+): Promise<NotionKPI> {
+  const client = initNotionClient();
+  const properties: any = {};
+
+  if (updates.Name !== undefined) {
+    properties.Name = { title: [{ text: { content: updates.Name } }] };
+  }
+  if (updates.Category !== undefined) {
+    properties.Category = { select: { name: updates.Category } };
+  }
+  if (updates.Periodicity !== undefined) {
+    properties.Periodicity = { select: { name: updates.Periodicity } };
+  }
+  if (updates.ChartType !== undefined) {
+    properties.ChartType = { select: { name: updates.ChartType } };
+  }
+  if (updates.Unit !== undefined) {
+    properties.Unit = { rich_text: [{ text: { content: updates.Unit } }] };
+  }
+  if (updates.TargetValue !== undefined) {
+    properties.TargetValue = { number: updates.TargetValue };
+  }
+  if (updates.VisiblePublic !== undefined) {
+    properties.VisiblePublic = { checkbox: updates.VisiblePublic };
+  }
+  if (updates.VisibleAdmin !== undefined) {
+    properties.VisibleAdmin = { checkbox: updates.VisibleAdmin };
+  }
+  if (updates.IsFinancial !== undefined) {
+    properties.IsFinancial = { checkbox: updates.IsFinancial };
+  }
+  if (updates.SortOrder !== undefined) {
+    properties.SortOrder = { number: updates.SortOrder };
+  }
+  if (updates.Active !== undefined) {
+    properties.Active = { checkbox: updates.Active };
+  }
+  if (updates.Description !== undefined) {
+    properties.Description = { rich_text: [{ text: { content: updates.Description } }] };
+  }
+
+  const updated = await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: kpiId,
+      properties
+    })
+  );
+
+  return pageToKPI(updated);
+}
+
+/**
+ * Create a new KPI
+ */
+export async function createKPI(kpi: {
+  Name: string;
+  Category: string;
+  Periodicity: 'Anual' | 'Mensal' | 'Semanal' | 'Diário';
+  ChartType: 'line' | 'bar' | 'area' | 'number';
+  Unit?: string;
+  TargetValue?: number;
+  VisiblePublic?: boolean;
+  VisibleAdmin?: boolean;
+  IsFinancial?: boolean;
+  SortOrder?: number;
+  Active?: boolean;
+  Description?: string;
+}): Promise<NotionKPI> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('KPIs');
+  if (!dbId) throw new Error('NOTION_DB_KPIS not configured');
+
+  const properties: any = {
+    Name: { title: [{ text: { content: kpi.Name } }] },
+    Category: { select: { name: kpi.Category } },
+    Periodicity: { select: { name: kpi.Periodicity } },
+    ChartType: { select: { name: kpi.ChartType } },
+    VisiblePublic: { checkbox: kpi.VisiblePublic ?? true },
+    VisibleAdmin: { checkbox: kpi.VisibleAdmin ?? true },
+    IsFinancial: { checkbox: kpi.IsFinancial ?? false },
+    SortOrder: { number: kpi.SortOrder ?? 999 },
+    Active: { checkbox: kpi.Active ?? true }
+  };
+
+  if (kpi.Unit !== undefined) {
+    properties.Unit = { rich_text: [{ text: { content: kpi.Unit } }] };
+  }
+  if (kpi.TargetValue !== undefined) {
+    properties.TargetValue = { number: kpi.TargetValue };
+  }
+  if (kpi.Description !== undefined) {
+    properties.Description = { rich_text: [{ text: { content: kpi.Description } }] };
+  }
+
+  const created = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToKPI(created);
+}
+
+/**
  * Get goals within a date range
  */
 export async function getGoals(range?: { start?: string; end?: string }): Promise<NotionGoal[]> {
@@ -354,6 +522,126 @@ export async function ensureActionHasGoal(actionId: string): Promise<{ allowed: 
   }
 
   return { allowed: true };
+}
+
+/**
+ * Create a new action in Actions database (DB3)
+ */
+export async function createAction(
+  payload: Partial<NotionAction>
+): Promise<NotionAction> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Actions');
+  if (!dbId) throw new Error('NOTION_DB_ACTIONS not configured');
+
+  // Build Notion properties
+  const properties: any = {
+    Name: { title: [{ text: { content: payload.Name || '' } }] },
+    Type: { select: { name: payload.Type || '' } },
+    Date: { date: { start: payload.Date || new Date().toISOString().split('T')[0] } },
+    Done: { checkbox: false },
+    PublicVisible: { checkbox: payload.PublicVisible ?? true },
+  };
+
+  // Add optional fields
+  if (payload.Contribution !== undefined) {
+    properties.Contribution = { number: payload.Contribution };
+  }
+  if (payload.Earned !== undefined) {
+    properties.Earned = { number: payload.Earned };
+  }
+  if (payload.Goal) {
+    properties.Goal = { relation: [{ id: payload.Goal }] };
+  }
+  if (payload.Notes) {
+    properties.Notes = { rich_text: [{ text: { content: payload.Notes } }] };
+  }
+  if (payload.Contact) {
+    properties.Contact = { relation: [{ id: payload.Contact }] };
+  }
+  if (payload.Client) {
+    properties.Client = { relation: [{ id: payload.Client }] };
+  }
+  if (payload.Proposal) {
+    properties.Proposal = { relation: [{ id: payload.Proposal }] };
+  }
+  if (payload.Diagnostic) {
+    properties.Diagnostic = { relation: [{ id: payload.Diagnostic }] };
+  }
+  if (payload.WeekKey) {
+    properties.WeekKey = { rich_text: [{ text: { content: payload.WeekKey } }] };
+  }
+  if (payload.Month !== undefined) {
+    properties.Month = { number: payload.Month };
+  }
+
+  const response = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToAction(response);
+}
+
+/**
+ * Get action by ID
+ */
+async function getActionById(id: string): Promise<NotionAction | null> {
+  const client = initNotionClient();
+  const page = await retryWithBackoff(() =>
+    client.pages.retrieve({ page_id: id })
+  );
+  return pageToAction(page);
+}
+
+/**
+ * Get goal by ID
+ */
+async function getGoalById(id: string): Promise<NotionGoal | null> {
+  const client = initNotionClient();
+  const page = await retryWithBackoff(() =>
+    client.pages.retrieve({ page_id: id })
+  );
+  return pageToGoal(page);
+}
+
+/**
+ * Update related Goal when Action is completed
+ */
+export async function updateRelatedGoal(actionId: string): Promise<void> {
+  const client = initNotionClient();
+  
+  // Get Action to find related Goal
+  const action = await getActionById(actionId);
+  if (!action || !action.Goal) return;
+
+  // Get Goal
+  const goal = await getGoalById(action.Goal);
+  if (!goal) return;
+
+  // Get all actions related to this goal
+  const allActions = await getActions();
+  const relatedActions = allActions.filter(
+    a => a.Goal === goal.id && a.Done === true
+  );
+  
+  // Calculate new Actual based on completed actions
+  // Sum Contribution or Earned values
+  const newActual = relatedActions.reduce((sum, a) => {
+    return sum + (a.Contribution || a.Earned || 0);
+  }, 0);
+
+  // Update Goal in Notion
+  await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: goal.id,
+      properties: {
+        Actual: { number: newActual }
+      }
+    })
+  );
 }
 
 /**
@@ -535,5 +823,234 @@ export async function createExpansionOpportunity(payload: {
   );
 
   return page.id;
+}
+
+/**
+ * Get finance metrics from FinanceMetrics database (DB11)
+ */
+export async function getFinanceMetrics(): Promise<any[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('FinanceMetrics');
+  if (!dbId) throw new Error('NOTION_DB_FINANCEMETRICS not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId
+    })
+  );
+
+  // Map results based on FinanceMetrics schema
+  // For now, return basic structure - can be extended based on actual schema
+  return response.results.map(page => {
+    const props = page.properties;
+    return {
+      id: page.id,
+      Name: extractText(props.Name),
+      // Add other properties as needed based on actual schema
+      // For now, return basic structure
+    };
+  });
+}
+
+/**
+ * Update database properties (rename columns, change types, etc.)
+ * @param databaseId - The ID of the database to update
+ * @param properties - Object mapping property names to their new configurations
+ */
+export async function updateDatabaseProperties(
+  databaseId: string,
+  properties: Record<string, {
+    name?: string;
+    type?: string;
+    // Additional property-specific options can be added here
+  }>
+): Promise<any> {
+  const client = initNotionClient();
+
+  const updatePayload: any = {};
+  
+  // First, retrieve the database to get current properties
+  const database = await retryWithBackoff(() =>
+    client.databases.retrieve({ database_id: databaseId })
+  );
+
+  // Build the properties update object
+  for (const [oldName, config] of Object.entries(properties)) {
+    const currentProperty = database.properties[oldName];
+    if (!currentProperty) {
+      throw new Error(`Property "${oldName}" not found in database`);
+    }
+
+    // If renaming, we need to update the property name
+    if (config.name && config.name !== oldName) {
+      updatePayload[oldName] = {
+        name: config.name
+      };
+    }
+
+    // If changing type, we need to provide the new type configuration
+    // Note: Notion API has limitations on type changes - some types cannot be changed
+    if (config.type && config.type !== currentProperty.type) {
+      // This is a simplified version - actual implementation depends on target type
+      throw new Error('Changing property types is complex and type-specific. Please use Notion UI for type changes.');
+    }
+  }
+
+  const updated = await retryWithBackoff(() =>
+    client.databases.update({
+      database_id: databaseId,
+      properties: updatePayload
+    })
+  );
+
+  return updated;
+}
+
+/**
+ * Create a new database in Notion
+ * @param parentPageId - The ID of the parent page where the database will be created
+ * @param title - The title of the database
+ * @param properties - Object defining the properties (columns) of the database
+ */
+export async function createDatabase(
+  parentPageId: string,
+  title: string,
+  properties: Record<string, {
+    type: 'title' | 'rich_text' | 'number' | 'select' | 'multi_select' | 
+          'date' | 'people' | 'files' | 'checkbox' | 'url' | 'email' | 
+          'phone_number' | 'formula' | 'relation' | 'rollup' | 'created_time' | 
+          'created_by' | 'last_edited_time' | 'last_edited_by';
+    name: string;
+    // Type-specific options
+    select?: { options: Array<{ name: string; color?: string }> };
+    multi_select?: { options: Array<{ name: string; color?: string }> };
+    relation?: { database_id: string; type?: 'single_property' | 'dual_property' };
+    formula?: { expression: string };
+    rollup?: { 
+      relation_property_name: string;
+      relation_property_id: string;
+      rollup_property_name: string;
+      rollup_property_id: string;
+      function: 'count' | 'sum' | 'average' | 'min' | 'max' | 'range' | 'checkbox' | 'percent_checked' | 'show_original' | 'show_unique' | 'unique' | 'empty' | 'not_empty' | 'date';
+    };
+  }>
+): Promise<any> {
+  const client = initNotionClient();
+
+  // Build properties object for Notion API
+  const notionProperties: any = {};
+  
+  for (const [key, prop] of Object.entries(properties)) {
+    const baseProperty: any = {};
+    
+    switch (prop.type) {
+      case 'title':
+        baseProperty.title = {};
+        break;
+      case 'rich_text':
+        baseProperty.rich_text = {};
+        break;
+      case 'number':
+        baseProperty.number = {};
+        break;
+      case 'select':
+        baseProperty.select = prop.select || { options: [] };
+        break;
+      case 'multi_select':
+        baseProperty.multi_select = prop.multi_select || { options: [] };
+        break;
+      case 'date':
+        baseProperty.date = {};
+        break;
+      case 'people':
+        baseProperty.people = {};
+        break;
+      case 'files':
+        baseProperty.files = {};
+        break;
+      case 'checkbox':
+        baseProperty.checkbox = {};
+        break;
+      case 'url':
+        baseProperty.url = {};
+        break;
+      case 'email':
+        baseProperty.email = {};
+        break;
+      case 'phone_number':
+        baseProperty.phone_number = {};
+        break;
+      case 'formula':
+        if (!prop.formula) throw new Error(`Formula property "${key}" requires formula expression`);
+        baseProperty.formula = { expression: prop.formula.expression };
+        break;
+      case 'relation':
+        if (!prop.relation) throw new Error(`Relation property "${key}" requires relation configuration`);
+        baseProperty.relation = {
+          database_id: prop.relation.database_id,
+          type: prop.relation.type || 'single_property'
+        };
+        break;
+      case 'rollup':
+        if (!prop.rollup) throw new Error(`Rollup property "${key}" requires rollup configuration`);
+        baseProperty.rollup = prop.rollup;
+        break;
+      case 'created_time':
+        baseProperty.created_time = {};
+        break;
+      case 'created_by':
+        baseProperty.created_by = {};
+        break;
+      case 'last_edited_time':
+        baseProperty.last_edited_time = {};
+        break;
+      case 'last_edited_by':
+        baseProperty.last_edited_by = {};
+        break;
+      default:
+        throw new Error(`Unsupported property type: ${prop.type}`);
+    }
+    
+    notionProperties[prop.name] = baseProperty;
+  }
+
+  const database = await retryWithBackoff(() =>
+    client.databases.create({
+      parent: {
+        type: 'page_id',
+        page_id: parentPageId
+      },
+      title: [
+        {
+          type: 'text',
+          text: {
+            content: title
+          }
+        }
+      ],
+      properties: notionProperties
+    })
+  );
+
+  return database;
+}
+
+/**
+ * Get database information
+ */
+export async function getDatabaseInfo(databaseId: string): Promise<any> {
+  const client = initNotionClient();
+
+  const database = await retryWithBackoff(() =>
+    client.databases.retrieve({ database_id: databaseId })
+  );
+
+  return {
+    id: database.id,
+    title: database.title,
+    properties: database.properties,
+    created_time: database.created_time,
+    last_edited_time: database.last_edited_time
+  };
 }
 

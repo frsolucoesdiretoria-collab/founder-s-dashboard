@@ -36,6 +36,19 @@ export default function Dashboard() {
     loadData();
   }, []);
 
+  // Debug: Log KPIs and goals
+  useEffect(() => {
+    if (kpis.length > 0) {
+      console.log('📊 KPIs carregados:', kpis.length);
+      console.log('📈 KPIs por periodicidade:', {
+        semanal: kpis.filter(k => k.Periodicity?.toLowerCase() === 'semanal' || k.Periodicity === 'Semanal').length,
+        mensal: kpis.filter(k => k.Periodicity?.toLowerCase() === 'mensal' || k.Periodicity === 'Mensal').length,
+        anual: kpis.filter(k => k.Periodicity?.toLowerCase() === 'anual' || k.Periodicity === 'Anual').length,
+      });
+      console.log('🎯 Goals carregados:', goals.length);
+    }
+  }, [kpis, goals]);
+
   async function loadData() {
     setLoading(true);
     setError(null);
@@ -187,50 +200,101 @@ export default function Dashboard() {
 
         {/* Charts Section - Mobile First */}
         {kpis.length > 0 && (
-          <Tabs defaultValue="semanal" className="w-full">
+          <Tabs defaultValue="anual" className="w-full">
             <TabsList className="grid w-full grid-cols-3 h-auto">
               <TabsTrigger value="semanal" className="text-xs md:text-sm">Semanal</TabsTrigger>
               <TabsTrigger value="mensal" className="text-xs md:text-sm">Mensal</TabsTrigger>
               <TabsTrigger value="anual" className="text-xs md:text-sm">Anual</TabsTrigger>
             </TabsList>
             
-            <TabsContent value="semanal" className="space-y-4 mt-4">
-              {kpis.filter(k => k.Periodicity === 'Semanal').length === 0 ? (
-                <Alert>
-                  <AlertDescription>Nenhum KPI semanal configurado.</AlertDescription>
-                </Alert>
-              ) : (
-                kpis.filter(k => k.Periodicity === 'Semanal').map((kpi) => {
+            <TabsContent value="semanal" className="space-y-4 mt-4 min-h-[200px]">
+              {(() => {
+                const weeklyKPIs = kpis.filter(k => 
+                  k.Periodicity?.toLowerCase() === 'semanal' || 
+                  k.Periodicity === 'Semanal'
+                );
+                
+                if (weeklyKPIs.length === 0) {
+                  return (
+                    <Alert>
+                      <AlertDescription>
+                        Nenhum KPI semanal configurado.
+                      </AlertDescription>
+                    </Alert>
+                  );
+                }
+                
+                return weeklyKPIs.map((kpi) => {
                   const kpiGoals = goals.filter(g => g.KPI === kpi.id);
-                  return <KPIChart key={kpi.id} kpi={kpi as NotionKPI} goals={kpiGoals as NotionGoal[]} />;
-                })
-              )}
+                  return (
+                    <KPIChart 
+                      key={kpi.id} 
+                      kpi={kpi as NotionKPI} 
+                      goals={kpiGoals as NotionGoal[]} 
+                    />
+                  );
+                });
+              })()}
             </TabsContent>
             
-            <TabsContent value="mensal" className="space-y-4 mt-4">
-              {kpis.filter(k => k.Periodicity === 'Mensal').length === 0 ? (
-                <Alert>
-                  <AlertDescription>Nenhum KPI mensal configurado.</AlertDescription>
-                </Alert>
-              ) : (
-                kpis.filter(k => k.Periodicity === 'Mensal').map((kpi) => {
+            <TabsContent value="mensal" className="space-y-4 mt-4 min-h-[200px]">
+              {(() => {
+                const monthlyKPIs = kpis.filter(k => 
+                  k.Periodicity?.toLowerCase() === 'mensal' || 
+                  k.Periodicity === 'Mensal'
+                );
+                
+                if (monthlyKPIs.length === 0) {
+                  return (
+                    <Alert>
+                      <AlertDescription>
+                        Nenhum KPI mensal configurado.
+                      </AlertDescription>
+                    </Alert>
+                  );
+                }
+                
+                return monthlyKPIs.map((kpi) => {
                   const kpiGoals = goals.filter(g => g.KPI === kpi.id);
-                  return <KPIChart key={kpi.id} kpi={kpi as NotionKPI} goals={kpiGoals as NotionGoal[]} />;
-                })
-              )}
+                  return (
+                    <KPIChart 
+                      key={kpi.id} 
+                      kpi={kpi as NotionKPI} 
+                      goals={kpiGoals as NotionGoal[]} 
+                    />
+                  );
+                });
+              })()}
             </TabsContent>
             
-            <TabsContent value="anual" className="space-y-4 mt-4">
-              {kpis.filter(k => k.Periodicity === 'Anual').length === 0 ? (
-                <Alert>
-                  <AlertDescription>Nenhum KPI anual configurado.</AlertDescription>
-                </Alert>
-              ) : (
-                kpis.filter(k => k.Periodicity === 'Anual').map((kpi) => {
+            <TabsContent value="anual" className="space-y-4 mt-4 min-h-[200px]">
+              {(() => {
+                const annualKPIs = kpis.filter(k => 
+                  k.Periodicity?.toLowerCase() === 'anual' || 
+                  k.Periodicity === 'Anual'
+                );
+                
+                if (annualKPIs.length === 0) {
+                  return (
+                    <Alert>
+                      <AlertDescription>
+                        Nenhum KPI anual configurado.
+                      </AlertDescription>
+                    </Alert>
+                  );
+                }
+                
+                return annualKPIs.map((kpi) => {
                   const kpiGoals = goals.filter(g => g.KPI === kpi.id);
-                  return <KPIChart key={kpi.id} kpi={kpi as NotionKPI} goals={kpiGoals as NotionGoal[]} />;
-                })
-              )}
+                  return (
+                    <KPIChart 
+                      key={kpi.id} 
+                      kpi={kpi as NotionKPI} 
+                      goals={kpiGoals as NotionGoal[]} 
+                    />
+                  );
+                });
+              })()}
             </TabsContent>
           </Tabs>
         )}
