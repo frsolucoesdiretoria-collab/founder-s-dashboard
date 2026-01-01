@@ -5,8 +5,29 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Users, TrendingUp, Calendar, FileText, CheckCircle, XCircle, Clock } from 'lucide-react';
-import { getPipelineKPIs, getContactsPipeline, getContactsByStatus } from '@/services';
+import { getPipelineKPIs, getContactsPipeline, getContactsByStatus, updateContactStatus } from '@/services';
 import type { ContactPipeline, PipelineKPIs } from '@/types/crm';
+import { toast } from 'sonner';
+import {
+  DndContext,
+  DragOverlay,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+  DragStartEvent,
+  DragOverEvent,
+  useDroppable
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 const statusColors: Record<string, string> = {
   'Contato Ativado': 'bg-blue-500/10 text-blue-500 border-blue-500/20',
@@ -28,10 +49,106 @@ const statusIcons: Record<string, React.ReactNode> = {
   'Perdido': <XCircle className="h-4 w-4" />,
 };
 
+// Componente para o card arrastável
+function DraggableContactCard({ contact }: { contact: ContactPipeline }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging
+  } = useSortable({ id: contact.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      <Card className="p-3 hover:border-primary/50 transition-colors cursor-grab active:cursor-grabbing">
+        <div className="space-y-1">
+          <p className="font-medium text-sm text-foreground">{contact.name}</p>
+          <p className="text-xs text-muted-foreground">{contact.company}</p>
+          {contact.coffeeDate && (
+            <p className="text-xs text-muted-foreground">
+              Café: {new Date(contact.coffeeDate).toLocaleDateString('pt-BR')}
+            </p>
+          )}
+          {contact.proposalDate && (
+            <p className="text-xs text-muted-foreground">
+              Proposta: {new Date(contact.proposalDate).toLocaleDateString('pt-BR')}
+            </p>
+          )}
+          <p className="text-xs text-muted-foreground">
+            Atualizado: {new Date(contact.lastUpdate).toLocaleDateString('pt-BR')}
+          </p>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+// Componente para a coluna do Kanban (droppable)
+function KanbanColumn({ 
+  status, 
+  contacts, 
+  statusColors, 
+  statusIcons 
+}: { 
+  status: ContactPipeline['status'];
+  contacts: ContactPipeline[];
+  statusColors: Record<string, string>;
+  statusIcons: Record<string, React.ReactNode>;
+}) {
+  const { setNodeRef, isOver } = useDroppable({
+    id: status,
+  });
+
+  return (
+    <div className="flex-shrink-0 w-64" ref={setNodeRef}>
+      <div className="mb-2">
+        <Badge variant="outline" className={statusColors[status] || ''}>
+          {statusIcons[status]}
+          <span className="ml-1">{status}</span>
+          <span className="ml-2 text-xs">({contacts.length})</span>
+        </Badge>
+      </div>
+      <div className={`space-y-2 min-h-[200px] bg-muted/30 rounded-lg p-2 transition-colors ${isOver ? 'bg-primary/10 border-2 border-primary border-dashed' : ''}`}>
+        <SortableContext items={contacts.map(c => c.id)} strategy={verticalListSortingStrategy}>
+          {contacts.map((contact) => (
+            <DraggableContactCard key={contact.id} contact={contact} />
+          ))}
+        </SortableContext>
+        {contacts.length === 0 && (
+          <div className="text-center text-xs text-muted-foreground py-8">
+            Nenhum contato
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function CRMPage() {
   const [kpis, setKpis] = useState<PipelineKPIs | null>(null);
   const [contacts, setContacts] = useState<ContactPipeline[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const loadData = async () => {
     try {
@@ -51,6 +168,76 @@ export default function CRMPage() {
   useEffect(() => {
     loadData();
   }, []);
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id as string);
+  };
+
+  const handleDragOver = (event: DragOverEvent) => {
+    // Visual feedback durante o drag
+  };
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    setActiveId(null);
+
+    if (!over) {
+      return;
+    }
+
+    const contactId = active.id as string;
+    const overId = over.id as string;
+
+    // Primeiro, verificar se o over é uma coluna (status) válida
+    let newStatus = kanbanColumns.find(col => col === overId) as ContactPipeline['status'] | undefined;
+    
+    // Se não for uma coluna, pode ser outro contato - encontrar a coluna pai
+    if (!newStatus) {
+      // Verificar se overId é um ID de contato
+      const overContact = contacts.find(c => c.id === overId);
+      if (overContact) {
+        // Se for um contato, usar o status desse contato (mesma coluna)
+        newStatus = overContact.status;
+      } else {
+        // Se não for nem coluna nem contato, não fazer nada
+        return;
+      }
+    }
+
+    // Encontrar o contato atual
+    const contact = contacts.find(c => c.id === contactId);
+    if (!contact || contact.status === newStatus) {
+      return;
+    }
+
+    // Atualização otimista
+    const previousContacts = [...contacts];
+    setContacts(prev => 
+      prev.map(c => 
+        c.id === contactId ? { ...c, status: newStatus! } : c
+      )
+    );
+
+    setIsUpdating(true);
+
+    try {
+      // Atualizar no backend
+      await updateContactStatus(contactId, newStatus!);
+      
+      // Recarregar dados para garantir sincronização e atualizar KPIs
+      await loadData();
+      
+      toast.success(`Contato movido para ${newStatus}`);
+    } catch (error: any) {
+      // Rollback em caso de erro
+      setContacts(previousContacts);
+      const errorMessage = error?.message || 'Erro desconhecido';
+      toast.error(`Erro ao atualizar status: ${errorMessage}`);
+      console.error('Error updating contact status:', error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -80,6 +267,8 @@ export default function CRMPage() {
     'Venda Fechada',
     'Perdido'
   ];
+
+  const activeContact = activeId ? contacts.find(c => c.id === activeId) : null;
 
   return (
     <AppLayout>
@@ -155,53 +344,42 @@ export default function CRMPage() {
           <div>
             <h2 className="text-xl font-bold text-foreground mb-4">Pipeline Geral</h2>
             
-            {/* Kanban View */}
-            <div className="overflow-x-auto pb-4">
-              <div className="flex gap-4 min-w-max">
-                {kanbanColumns.map((status) => {
-                  const statusContacts = contactsByStatus[status] || [];
-                  return (
-                    <div key={status} className="flex-shrink-0 w-64">
-                      <div className="mb-2">
-                        <Badge variant="outline" className={statusColors[status] || ''}>
-                          {statusIcons[status]}
-                          <span className="ml-1">{status}</span>
-                          <span className="ml-2 text-xs">({statusContacts.length})</span>
-                        </Badge>
-                      </div>
-                      <div className="space-y-2 min-h-[200px]">
-                        {statusContacts.map((contact) => (
-                          <Card key={contact.id} className="p-3 hover:border-primary/50 transition-colors">
-                            <div className="space-y-1">
-                              <p className="font-medium text-sm text-foreground">{contact.name}</p>
-                              <p className="text-xs text-muted-foreground">{contact.company}</p>
-                              {contact.coffeeDate && (
-                                <p className="text-xs text-muted-foreground">
-                                  Café: {new Date(contact.coffeeDate).toLocaleDateString('pt-BR')}
-                                </p>
-                              )}
-                              {contact.proposalDate && (
-                                <p className="text-xs text-muted-foreground">
-                                  Proposta: {new Date(contact.proposalDate).toLocaleDateString('pt-BR')}
-                                </p>
-                              )}
-                              <p className="text-xs text-muted-foreground">
-                                Atualizado: {new Date(contact.lastUpdate).toLocaleDateString('pt-BR')}
-                              </p>
-                            </div>
-                          </Card>
-                        ))}
-                        {statusContacts.length === 0 && (
-                          <div className="text-center text-xs text-muted-foreground py-8">
-                            Nenhum contato
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
+            {/* Kanban View com Drag and Drop */}
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragStart={handleDragStart}
+              onDragOver={handleDragOver}
+              onDragEnd={handleDragEnd}
+            >
+              <div className="overflow-x-auto pb-4">
+                <div className="flex gap-4 min-w-max">
+                  {kanbanColumns.map((status) => {
+                    const statusContacts = contactsByStatus[status] || [];
+                    return (
+                      <KanbanColumn
+                        key={status}
+                        status={status}
+                        contacts={statusContacts}
+                        statusColors={statusColors}
+                        statusIcons={statusIcons}
+                      />
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+              
+              <DragOverlay>
+                {activeContact ? (
+                  <Card className="p-3 w-64 opacity-90 shadow-lg">
+                    <div className="space-y-1">
+                      <p className="font-medium text-sm text-foreground">{activeContact.name}</p>
+                      <p className="text-xs text-muted-foreground">{activeContact.company}</p>
+                    </div>
+                  </Card>
+                ) : null}
+              </DragOverlay>
+            </DndContext>
           </div>
 
           {/* Filtered Views */}

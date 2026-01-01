@@ -31,16 +31,17 @@ function delay(ms: number) {
 // Vamos distribuir de forma mais uniforme: ~5 tarefas por dia nos primeiros 30 dias
 function generateDates(): string[] {
   const dates: string[] = [];
-  const startDate = new Date('2026-01-01');
-  const endDate = new Date('2026-01-31');
   
-  // Distribuir 150 tarefas ao longo de Janeiro
+  // Distribuir 150 tarefas ao longo de Janeiro 2026
   // 5 tarefas por dia para os primeiros 30 dias
   for (let day = 1; day <= 30; day++) {
     for (let i = 0; i < 5; i++) {
-      const date = new Date(startDate);
-      date.setDate(day);
-      dates.push(date.toISOString().split('T')[0]);
+      // Usar formato YYYY-MM-DD diretamente para evitar problemas de timezone
+      const month = '01'; // Janeiro
+      const year = '2026';
+      const dayStr = String(day).padStart(2, '0');
+      const dateStr = `${year}-${month}-${dayStr}`;
+      dates.push(dateStr);
     }
   }
   

@@ -577,6 +577,7 @@ export async function getGoals(range?: { start?: string; end?: string }): Promis
 
 /**
  * Get actions within a date range
+ * Handles pagination to fetch all results
  */
 export async function getActions(range?: { start?: string; end?: string }): Promise<NotionAction[]> {
   const client = initNotionClient();
@@ -594,14 +595,26 @@ export async function getActions(range?: { start?: string; end?: string }): Prom
     }
   }
 
-  const response = await retryWithBackoff(() =>
-    client.databases.query({
-      database_id: dbId,
-      filter: Object.keys(filter).length > 0 ? filter : undefined
-    })
-  );
+  const allResults: any[] = [];
+  let hasMore = true;
+  let nextCursor: string | undefined = undefined;
 
-  return response.results.map(pageToAction);
+  while (hasMore) {
+    const response = await retryWithBackoff(() =>
+      client.databases.query({
+        database_id: dbId,
+        filter: Object.keys(filter).length > 0 ? filter : undefined,
+        start_cursor: nextCursor,
+        page_size: 100
+      })
+    );
+
+    allResults.push(...response.results);
+    hasMore = response.has_more;
+    nextCursor = response.next_cursor || undefined;
+  }
+
+  return allResults.map(pageToAction);
 }
 
 /**
