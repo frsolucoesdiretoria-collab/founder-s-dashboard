@@ -23,8 +23,8 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Loader2, Plus, AlertCircle, Users, Coffee, FileText, Cog, Zap, Bot, BookOpen } from 'lucide-react';
-import { getAllActions, updateActionDone, createAction, createContact } from '@/services';
+import { Loader2, Plus, AlertCircle, Users, Coffee, FileText, Cog, Zap, Bot, BookOpen, Edit } from 'lucide-react';
+import { getAllActions, updateActionDone, createAction, createContact, updateAction } from '@/services';
 import { getPublicKPIs } from '@/services/kpis.service';
 import { getAllGoals, getGoalsByKPI } from '@/services/goals.service';
 import type { Action } from '@/types/action';
@@ -57,6 +57,15 @@ export default function ActionsCreatePage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [refreshing, setRefreshing] = useState<Record<string, boolean>>({});
 
+  // Quick edit modal state
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingAction, setEditingAction] = useState<Action | null>(null);
+  const [editActionName, setEditActionName] = useState('');
+  const [editContactName, setEditContactName] = useState('');
+  const [editContactWhatsApp, setEditContactWhatsApp] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [goalIdForFiltering, setGoalIdForFiltering] = useState<string | null>(null);
+
   // Form state
   const [selectedKPI, setSelectedKPI] = useState<string>('');
   const [selectedGoal, setSelectedGoal] = useState<string>('');
@@ -86,17 +95,27 @@ export default function ActionsCreatePage() {
     setLoading(true);
     setError(null);
     try {
+      console.log('🔄 Carregando dados...');
       const [actionsData, kpisData] = await Promise.all([
         getAllActions({ start: '2026-01-01', end: '2026-01-31' }),
         getPublicKPIs()
       ]);
       
+      console.log(`📊 Actions recebidas: ${actionsData.length}`);
+      console.log('📋 Primeiras 3 actions:', actionsData.slice(0, 3).map(a => ({ 
+        name: a.Name, 
+        date: a.Date, 
+        visible: a.PublicVisible 
+      })));
+      
       const publicActions = actionsData.filter(action => action.PublicVisible === true);
+      console.log(`👁️ Actions públicas (PublicVisible=true): ${publicActions.length}`);
+      
       publicActions.sort((a, b) => a.Date.localeCompare(b.Date));
       setActions(publicActions);
       setKpis(kpisData.sort((a, b) => (a.SortOrder || 0) - (b.SortOrder || 0)));
     } catch (err: any) {
-      console.error('Error loading data:', err);
+      console.error('❌ Error loading data:', err);
       setError('Erro ao carregar dados. Verifique sua conexão.');
       toast.error('Erro ao carregar dados');
     } finally {
@@ -207,6 +226,148 @@ export default function ActionsCreatePage() {
       setRefreshing(prev => ({ ...prev, [actionId]: false }));
     }
   };
+
+  // Find next action to edit (for quick edit flow)
+  function findNextActionToEdit(currentActionId: string, goalId: string | null): Action | null {
+    if (!goalId) return null;
+
+    // Get all actions for this goal, not done, sorted by date then by creation order
+    const goalActions = actions
+      .filter(a => a.Goal === goalId && !a.Done)
+      .sort((a, b) => {
+        // First sort by date
+        const dateCompare = a.Date.localeCompare(b.Date);
+        if (dateCompare !== 0) return dateCompare;
+        // Then by ID (creation order)
+        return a.id.localeCompare(b.id);
+      });
+
+    // Find current action index
+    const currentIndex = goalActions.findIndex(a => a.id === currentActionId);
+    
+    // Return next action, or null if no more
+    if (currentIndex >= 0 && currentIndex < goalActions.length - 1) {
+      return goalActions[currentIndex + 1];
+    }
+    
+    return null;
+  }
+
+  // Open edit dialog for an action
+  function handleOpenEdit(action: Action) {
+    setEditingAction(action);
+    // Extract contact name from action name if it follows pattern "Enviar áudio para [NOME]"
+    const nameMatch = action.Name.match(/Enviar áudio para (.+)/);
+    if (nameMatch) {
+      setEditActionName(action.Name);
+      setEditContactName(nameMatch[1] === '[VAZIO]' ? '' : nameMatch[1]);
+    } else {
+      setEditActionName(action.Name);
+      setEditContactName('');
+    }
+    
+    // Extract WhatsApp from notes if present
+    const notes = (action as NotionAction).Notes || '';
+    const whatsappMatch = notes.match(/WhatsApp:\s*(.+)/);
+    setEditContactWhatsApp(whatsappMatch ? whatsappMatch[1].trim() : '');
+    
+    setGoalIdForFiltering(action.Goal || null);
+    setEditDialogOpen(true);
+  }
+
+  // Save and move to next action
+  async function handleSaveAndNext() {
+    if (!editingAction || !editContactName.trim()) {
+      toast.error('Nome do contato é obrigatório');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      // Build updated name
+      const updatedName = `Enviar áudio para ${editContactName.trim()}`;
+      
+      // Build updated notes (preserve existing notes, add/update WhatsApp)
+      let updatedNotes = (editingAction as NotionAction).Notes || '';
+      if (editContactWhatsApp.trim()) {
+        // Remove existing WhatsApp line if present
+        updatedNotes = updatedNotes.replace(/WhatsApp:\s*.+(\n|$)/g, '').trim();
+        // Add new WhatsApp line
+        const whatsappLine = `WhatsApp: ${editContactWhatsApp.trim()}`;
+        updatedNotes = updatedNotes ? `${updatedNotes}\n${whatsappLine}` : whatsappLine;
+      }
+
+      // Update action
+      await updateAction(editingAction.id, {
+        Name: updatedName,
+        Notes: updatedNotes,
+        ContactName: editContactName.trim(),
+        ContactWhatsApp: editContactWhatsApp.trim() || undefined,
+      });
+
+      // Reload actions to get updated data
+      await loadData();
+
+      // Find next action
+      const nextAction = findNextActionToEdit(editingAction.id, goalIdForFiltering);
+
+      if (nextAction) {
+        // Open next action
+        toast.success('Tarefa salva! Abrindo próxima...');
+        // Small delay to ensure state updates
+        setTimeout(() => {
+          handleOpenEdit(nextAction);
+        }, 100);
+      } else {
+        // No more actions
+        toast.success('Tarefa salva! Todas as tarefas foram preenchidas.');
+        setEditDialogOpen(false);
+        setEditingAction(null);
+      }
+    } catch (err: any) {
+      console.error('Error updating action:', err);
+      toast.error(err.message || 'Erro ao salvar tarefa');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  // Save without moving to next
+  async function handleSave() {
+    if (!editingAction || !editContactName.trim()) {
+      toast.error('Nome do contato é obrigatório');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const updatedName = `Enviar áudio para ${editContactName.trim()}`;
+      
+      let updatedNotes = (editingAction as NotionAction).Notes || '';
+      if (editContactWhatsApp.trim()) {
+        updatedNotes = updatedNotes.replace(/WhatsApp:\s*.+(\n|$)/g, '').trim();
+        const whatsappLine = `WhatsApp: ${editContactWhatsApp.trim()}`;
+        updatedNotes = updatedNotes ? `${updatedNotes}\n${whatsappLine}` : whatsappLine;
+      }
+
+      await updateAction(editingAction.id, {
+        Name: updatedName,
+        Notes: updatedNotes,
+        ContactName: editContactName.trim(),
+        ContactWhatsApp: editContactWhatsApp.trim() || undefined,
+      });
+
+      await loadData();
+      toast.success('Tarefa salva!');
+      setEditDialogOpen(false);
+      setEditingAction(null);
+    } catch (err: any) {
+      console.error('Error updating action:', err);
+      toast.error(err.message || 'Erro ao salvar tarefa');
+    } finally {
+      setSaving(false);
+    }
+  }
 
   // Agrupar ações por data
   const actionsByDate = actions.reduce((acc, action) => {
@@ -433,6 +594,103 @@ export default function ActionsCreatePage() {
           </Dialog>
         </div>
 
+        {/* Quick Edit Dialog */}
+        <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Editar Tarefa</DialogTitle>
+              <DialogDescription>
+                {editingAction && (() => {
+                  const goalActions = actions.filter(a => a.Goal === editingAction.Goal && !a.Done);
+                  const currentIndex = goalActions.findIndex(a => a.id === editingAction.id);
+                  return `Preencha os dados da tarefa (${currentIndex + 1} de ${goalActions.length})`;
+                })()}
+              </DialogDescription>
+            </DialogHeader>
+            
+            {editingAction && (
+              <div className="space-y-4 mt-4">
+                {/* Tipo (readonly) */}
+                <div className="space-y-2">
+                  <Label>Tipo</Label>
+                  <Input value={editingAction.Type} disabled />
+                </div>
+
+                {/* Nome da Tarefa (readonly, será atualizado automaticamente) */}
+                <div className="space-y-2">
+                  <Label>Nome da Tarefa</Label>
+                  <Input 
+                    value={editActionName.includes('[VAZIO]') ? 'Enviar áudio para [preencha nome abaixo]' : editActionName} 
+                    disabled 
+                  />
+                </div>
+
+                {/* Data (readonly) */}
+                <div className="space-y-2">
+                  <Label>Data</Label>
+                  <Input value={editingAction.Date} disabled />
+                </div>
+
+                {/* Nome do Contato (editável) */}
+                <div className="space-y-2">
+                  <Label htmlFor="editContactName">Nome do Contato *</Label>
+                  <Input
+                    id="editContactName"
+                    value={editContactName}
+                    onChange={(e) => setEditContactName(e.target.value)}
+                    placeholder="Ex: João Silva"
+                  />
+                </div>
+
+                {/* WhatsApp (editável) */}
+                <div className="space-y-2">
+                  <Label htmlFor="editContactWhatsApp">WhatsApp</Label>
+                  <Input
+                    id="editContactWhatsApp"
+                    value={editContactWhatsApp}
+                    onChange={(e) => setEditContactWhatsApp(e.target.value)}
+                    placeholder="Ex: (11) 98765-4321"
+                  />
+                </div>
+
+                {/* Contribuição (readonly) */}
+                <div className="space-y-2">
+                  <Label>Contribuição</Label>
+                  <Input value={editingAction.Contribution || 1} disabled />
+                </div>
+
+                <div className="flex justify-end gap-2 pt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setEditDialogOpen(false);
+                      setEditingAction(null);
+                    }}
+                    disabled={saving}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleSave}
+                    disabled={saving || !editContactName.trim()}
+                  >
+                    {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                    Salvar
+                  </Button>
+                  <Button
+                    onClick={handleSaveAndNext}
+                    disabled={saving || !editContactName.trim()}
+                  >
+                    {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                    Salvar e Próximo
+                  </Button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
         {error && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
@@ -522,12 +780,25 @@ export default function ActionsCreatePage() {
                             className="mt-1"
                           />
                           <div className="flex-1 min-w-0">
-                            <p className={cn(
-                              "font-medium text-sm",
-                              actionTyped.Done && "line-through text-muted-foreground"
-                            )}>
-                              {actionTyped.Name}
-                            </p>
+                            <div className="flex items-start justify-between gap-2">
+                              <p className={cn(
+                                "font-medium text-sm flex-1",
+                                actionTyped.Done && "line-through text-muted-foreground"
+                              )}>
+                                {actionTyped.Name}
+                              </p>
+                              {!actionTyped.Done && actionTyped.Type === 'Ativação de Rede' && actionTyped.Name.includes('[VAZIO]') && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleOpenEdit(action)}
+                                  className="h-7 px-2"
+                                >
+                                  <Edit className="h-3 w-3 mr-1" />
+                                  Editar
+                                </Button>
+                              )}
+                            </div>
                             <div className="flex flex-wrap gap-2 mt-2">
                               <Badge 
                                 variant="outline" 

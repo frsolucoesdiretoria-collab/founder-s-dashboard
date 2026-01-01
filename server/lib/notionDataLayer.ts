@@ -7,7 +7,9 @@ import type {
   NotionKPI, 
   NotionGoal, 
   NotionAction, 
-  NotionJournal 
+  NotionJournal,
+  NotionCRMPipeline,
+  NotionProduto
 } from '../../src/lib/notion/types';
 
 // Notion client instance (lazy initialization)
@@ -93,6 +95,29 @@ function extractBoolean(property: any): boolean {
 function extractDate(property: any): string {
   if (!property || !property.date) return '';
   return property.date.start || '';
+}
+
+/**
+ * Normalize date to YYYY-MM-DD format (without timezone)
+ * Ensures dates are sent to Notion without timezone issues
+ */
+function normalizeDate(dateString: string | undefined | null): string {
+  if (!dateString) {
+    return new Date().toISOString().split('T')[0];
+  }
+  
+  // If it's already in YYYY-MM-DD format, return as is
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+    return dateString;
+  }
+  
+  // If it's a date string with time, extract just the date part
+  // This prevents timezone issues
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 /**
@@ -210,6 +235,47 @@ function pageToJournal(page: any): NotionJournal {
     RelatedContact: extractRelation(props.RelatedContact)[0] || '',
     RelatedClient: extractRelation(props.RelatedClient)[0] || '',
     Attachments: extractRelation(props.Attachments)
+  };
+}
+
+/**
+ * Convert Notion page to CRMPipeline
+ */
+function pageToCRMPipeline(page: any): NotionCRMPipeline {
+  const props = page.properties;
+  // Use LastUpdate if available, otherwise use last_edited_time from page
+  const lastUpdate = extractDate(props.LastUpdate) || 
+    (page.last_edited_time ? new Date(page.last_edited_time).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]);
+  
+  return {
+    id: page.id,
+    Name: extractText(props.Name),
+    Company: extractText(props.Company) || '',
+    Status: (extractSelect(props.Status) as any) || 'Contato Ativado',
+    CoffeeDate: extractDate(props.CoffeeDate) || '',
+    ProposalDate: extractDate(props.ProposalDate) || '',
+    LastUpdate: lastUpdate,
+    Notes: extractText(props.Notes) || ''
+  };
+}
+
+/**
+ * Convert Notion page to Produto
+ */
+function pageToProduto(page: any): NotionProduto {
+  const props = page.properties;
+  return {
+    id: page.id,
+    Name: extractText(props.Name),
+    Status: (extractSelect(props.Status) as any) || 'Ideia',
+    ProblemaQueResolve: extractText(props.ProblemaQueResolve),
+    PrecoMinimo: extractNumber(props.PrecoMinimo),
+    PrecoIdeal: extractNumber(props.PrecoIdeal),
+    Tipo: extractSelect(props.Tipo) || '',
+    TempoMedioEntrega: extractNumber(props.TempoMedioEntrega),
+    DependenciaFundador: (extractSelect(props.DependenciaFundador) as any) || 'Média',
+    Replicabilidade: (extractSelect(props.Replicabilidade) as any) || 'Média',
+    PrioridadeEstrategica: extractNumber(props.PrioridadeEstrategica)
   };
 }
 
@@ -590,10 +656,13 @@ export async function createAction(
   if (!dbId) throw new Error('NOTION_DB_ACTIONS not configured');
 
   // Build Notion properties
+  // Normalize date to prevent timezone issues
+  const normalizedDate = normalizeDate(payload.Date);
+  
   const properties: any = {
     Name: { title: [{ text: { content: payload.Name || '' } }] },
     Type: { select: { name: payload.Type || '' } },
-    Date: { date: { start: payload.Date || new Date().toISOString().split('T')[0] } },
+    Date: { date: { start: normalizedDate } },
     Done: { checkbox: false },
     PublicVisible: { checkbox: payload.PublicVisible ?? true },
   };
@@ -643,12 +712,112 @@ export async function createAction(
 /**
  * Get action by ID
  */
-async function getActionById(id: string): Promise<NotionAction | null> {
+export async function getActionById(id: string): Promise<NotionAction | null> {
   const client = initNotionClient();
   const page = await retryWithBackoff(() =>
     client.pages.retrieve({ page_id: id })
   );
   return pageToAction(page);
+}
+
+/**
+ * Update an existing action
+ */
+export async function updateAction(
+  actionId: string,
+  updates: Partial<NotionAction>
+): Promise<NotionAction> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Actions');
+  if (!dbId) throw new Error('NOTION_DB_ACTIONS not configured');
+
+  const properties: any = {};
+
+  if (updates.Name !== undefined) {
+    properties.Name = { title: [{ text: { content: updates.Name } }] };
+  }
+  if (updates.Type !== undefined) {
+    properties.Type = { select: { name: updates.Type } };
+  }
+  if (updates.Date !== undefined) {
+    // Normalize date to prevent timezone issues
+    const normalizedDate = normalizeDate(updates.Date);
+    properties.Date = { date: { start: normalizedDate } };
+  }
+  if (updates.Done !== undefined) {
+    properties.Done = { checkbox: updates.Done };
+  }
+  if (updates.Contribution !== undefined) {
+    properties.Contribution = { number: updates.Contribution };
+  }
+  if (updates.Earned !== undefined) {
+    properties.Earned = { number: updates.Earned };
+  }
+  if (updates.Goal !== undefined) {
+    if (updates.Goal === '' || updates.Goal === null) {
+      // Remove relation by setting to empty array
+      properties.Goal = { relation: [] };
+    } else {
+      properties.Goal = { relation: [{ id: updates.Goal }] };
+    }
+  }
+  if (updates.Notes !== undefined) {
+    if (updates.Notes === '' || updates.Notes === null) {
+      properties.Notes = { rich_text: [] };
+    } else {
+      properties.Notes = { rich_text: [{ text: { content: updates.Notes } }] };
+    }
+  }
+  if (updates.Contact !== undefined) {
+    if (updates.Contact === '' || updates.Contact === null) {
+      properties.Contact = { relation: [] };
+    } else {
+      properties.Contact = { relation: [{ id: updates.Contact }] };
+    }
+  }
+  if (updates.Client !== undefined) {
+    if (updates.Client === '' || updates.Client === null) {
+      properties.Client = { relation: [] };
+    } else {
+      properties.Client = { relation: [{ id: updates.Client }] };
+    }
+  }
+  if (updates.Proposal !== undefined) {
+    if (updates.Proposal === '' || updates.Proposal === null) {
+      properties.Proposal = { relation: [] };
+    } else {
+      properties.Proposal = { relation: [{ id: updates.Proposal }] };
+    }
+  }
+  if (updates.Diagnostic !== undefined) {
+    if (updates.Diagnostic === '' || updates.Diagnostic === null) {
+      properties.Diagnostic = { relation: [] };
+    } else {
+      properties.Diagnostic = { relation: [{ id: updates.Diagnostic }] };
+    }
+  }
+  if (updates.WeekKey !== undefined) {
+    if (updates.WeekKey === '' || updates.WeekKey === null) {
+      properties.WeekKey = { rich_text: [] };
+    } else {
+      properties.WeekKey = { rich_text: [{ text: { content: updates.WeekKey } }] };
+    }
+  }
+  if (updates.Month !== undefined) {
+    properties.Month = { number: updates.Month };
+  }
+  if (updates.PublicVisible !== undefined) {
+    properties.PublicVisible = { checkbox: updates.PublicVisible };
+  }
+
+  const updated = await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: actionId,
+      properties
+    })
+  );
+
+  return pageToAction(updated);
 }
 
 /**
@@ -994,7 +1163,7 @@ export async function getFinanceMetrics(): Promise<any[]> {
 
   // Map results based on FinanceMetrics schema
   // For now, return basic structure - can be extended based on actual schema
-  return response.results.map(page => {
+  return response.results.map((page: any) => {
     const props = page.properties;
     return {
       id: page.id,
@@ -1196,7 +1365,7 @@ export async function getDatabaseInfo(databaseId: string): Promise<any> {
 
   const database = await retryWithBackoff(() =>
     client.databases.retrieve({ database_id: databaseId })
-  );
+  ) as any;
 
   return {
     id: database.id,
@@ -1205,5 +1374,168 @@ export async function getDatabaseInfo(databaseId: string): Promise<any> {
     created_time: database.created_time,
     last_edited_time: database.last_edited_time
   };
+}
+
+/**
+ * Get all CRM pipeline contacts
+ */
+export async function getCRMPipeline(): Promise<NotionCRMPipeline[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Contacts');
+  if (!dbId) throw new Error('NOTION_DB_CONTACTS not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      // Sort by last_edited_time (always available in Notion)
+      sorts: [{ timestamp: 'last_edited_time', direction: 'descending' }]
+    })
+  );
+
+  return response.results.map(pageToCRMPipeline);
+}
+
+/**
+ * Get CRM pipeline contacts by status
+ */
+export async function getCRMPipelineByStatus(status: string): Promise<NotionCRMPipeline[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Contacts');
+  if (!dbId) throw new Error('NOTION_DB_CONTACTS not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      filter: {
+        property: 'Status',
+        select: { equals: status }
+      },
+      sorts: [{ timestamp: 'last_edited_time', direction: 'descending' }]
+    })
+  );
+
+  return response.results.map(pageToCRMPipeline);
+}
+
+/**
+ * Get CRM pipeline contact by ID
+ */
+export async function getCRMPipelineContactById(id: string): Promise<NotionCRMPipeline> {
+  const client = initNotionClient();
+  const page = await retryWithBackoff(() => client.pages.retrieve({ page_id: id })) as any;
+  return pageToCRMPipeline(page);
+}
+
+/**
+ * Create new CRM pipeline contact
+ */
+export async function createCRMPipelineContact(data: {
+  Name: string;
+  Company?: string;
+  Status?: string;
+  CoffeeDate?: string;
+  ProposalDate?: string;
+  Notes?: string;
+}): Promise<NotionCRMPipeline> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Contacts');
+  if (!dbId) throw new Error('NOTION_DB_CONTACTS not configured');
+
+  const properties: any = {
+    Name: { title: [{ text: { content: data.Name } }] },
+    LastUpdate: { date: { start: normalizeDate(new Date().toISOString()) } }
+  };
+
+  if (data.Company) properties.Company = { rich_text: [{ text: { content: data.Company } }] };
+  if (data.Status) properties.Status = { select: { name: data.Status } };
+  if (data.CoffeeDate) properties.CoffeeDate = { date: { start: normalizeDate(data.CoffeeDate) } };
+  if (data.ProposalDate) properties.ProposalDate = { date: { start: normalizeDate(data.ProposalDate) } };
+  if (data.Notes) properties.Notes = { rich_text: [{ text: { content: data.Notes } }] };
+
+  const response = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToCRMPipeline(response);
+}
+
+/**
+ * Update CRM pipeline contact
+ */
+export async function updateCRMPipelineContact(
+  id: string,
+  updates: Partial<{
+    Name: string;
+    Company: string;
+    Status: string;
+    CoffeeDate: string;
+    ProposalDate: string;
+    Notes: string;
+  }>
+): Promise<NotionCRMPipeline> {
+  const client = initNotionClient();
+  const properties: any = {};
+
+  if (updates.Name) properties.Name = { title: [{ text: { content: updates.Name } }] };
+  if (updates.Company !== undefined) properties.Company = { rich_text: [{ text: { content: updates.Company } }] };
+  if (updates.Status) properties.Status = { select: { name: updates.Status } };
+  if (updates.CoffeeDate) properties.CoffeeDate = { date: { start: normalizeDate(updates.CoffeeDate) } };
+  if (updates.ProposalDate) properties.ProposalDate = { date: { start: normalizeDate(updates.ProposalDate) } };
+  if (updates.Notes !== undefined) properties.Notes = { rich_text: [{ text: { content: updates.Notes } }] };
+  
+  // Always update LastUpdate
+  properties.LastUpdate = { date: { start: normalizeDate(new Date().toISOString()) } };
+
+  await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      properties
+    })
+  );
+
+  return getCRMPipelineContactById(id);
+}
+
+/**
+ * Get all products
+ */
+export async function getProdutos(): Promise<NotionProduto[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Produtos');
+  if (!dbId) throw new Error('NOTION_DB_PRODUTOS not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      sorts: [{ property: 'PrioridadeEstrategica', direction: 'descending' }]
+    })
+  );
+
+  return response.results.map(pageToProduto);
+}
+
+/**
+ * Get products by status
+ */
+export async function getProdutosByStatus(status: string): Promise<NotionProduto[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Produtos');
+  if (!dbId) throw new Error('NOTION_DB_PRODUTOS not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      filter: {
+        property: 'Status',
+        select: { equals: status }
+      },
+      sorts: [{ property: 'PrioridadeEstrategica', direction: 'descending' }]
+    })
+  );
+
+  return response.results.map(pageToProduto);
 }
 

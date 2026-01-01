@@ -112,6 +112,31 @@ export interface NotionCustomerWin {
   Description: string;
 }
 
+export interface NotionCRMPipeline {
+  id: string;
+  Name: string;
+  Company: string;
+  Status: 'Contato Ativado' | 'Café Agendado' | 'Café Executado' | 'Proposta Enviada' | 'Follow-up Ativo' | 'Venda Fechada' | 'Perdido';
+  CoffeeDate: string;
+  ProposalDate: string;
+  LastUpdate: string;
+  Notes: string;
+}
+
+export interface NotionProduto {
+  id: string;
+  Name: string;
+  Status: 'Ativo' | 'Ideia' | 'Pausado' | 'Morto';
+  ProblemaQueResolve: string;
+  PrecoMinimo: number;
+  PrecoIdeal: number;
+  Tipo: string;
+  TempoMedioEntrega: number;
+  DependenciaFundador: 'Alta' | 'Média' | 'Baixa';
+  Replicabilidade: 'Alta' | 'Média' | 'Baixa';
+  PrioridadeEstrategica: number;
+}
+
 // Phase 2 types (feature flag)
 export interface NotionPartner {
   id: string;
@@ -158,6 +183,8 @@ export interface NotionEnvVars {
   NOTION_DB_EXPANSIONOPPORTUNITIES: string;
   NOTION_DB_CUSTOMERWINS: string;
   NOTION_DB_FINANCEMETRICS: string;
+  NOTION_DB_CRMPIPELINE?: string;
+  NOTION_DB_PRODUTOS?: string;
   // Phase 2
   NOTION_DB_PARTNERS?: string;
   NOTION_DB_REFERRALS?: string;

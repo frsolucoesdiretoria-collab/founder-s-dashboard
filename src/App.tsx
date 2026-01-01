@@ -11,6 +11,8 @@ import FinancePage from "./pages/Finance";
 import ActionsCreatePage from "./pages/ActionsCreate";
 import ApresentacaoPage from "./pages/Apresentacao";
 import Apresentacao02Page from "./pages/Apresentacao02";
+import CRMPage from "./pages/CRM";
+import ProdutosPage from "./pages/Produtos";
 import AdminHealth from "./pages/admin/Health";
 import AdminSettings from "./pages/admin/Settings";
 import AdminFinance from "./pages/admin/Finance";
@@ -36,6 +38,8 @@ const App = () => (
           <Route path="/expansion" element={<ExpansionPage />} />
           <Route path="/finance" element={<FinancePage />} />
           <Route path="/tasks" element={<ActionsCreatePage />} />
+          <Route path="/crm" element={<CRMPage />} />
+          <Route path="/produtos" element={<ProdutosPage />} />
           <Route path="/apresentacao" element={<ApresentacaoPage />} />
           <Route path="/apresentacao-02" element={<Apresentacao02Page />} />
           

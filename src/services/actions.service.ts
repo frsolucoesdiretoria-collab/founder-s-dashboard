@@ -47,13 +47,21 @@ export async function getAllActions(range?: { start?: string; end?: string }): P
     if (range?.start) params.append('start', range.start);
     if (range?.end) params.append('end', range.end);
     
-    const response = await fetch(`/api/actions?${params.toString()}`);
+    const url = `/api/actions?${params.toString()}`;
+    console.log('🔍 Buscando actions:', url);
+    
+    const response = await fetch(url);
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ Erro na resposta:', response.status, errorText);
       throw new Error(`Failed to fetch actions: ${response.statusText}`);
     }
-    return response.json();
+    
+    const data = await response.json();
+    console.log(`✅ Recebidas ${data.length} actions do backend`);
+    return data;
   } catch (error) {
-    console.error('Error fetching actions:', error);
+    console.error('❌ Error fetching actions:', error);
     return [];
   }
 }
@@ -108,6 +116,34 @@ export async function createAction(action: Omit<Action, 'id'>): Promise<Action> 
     return response.json();
   } catch (error) {
     console.error('Error creating action:', error);
+    throw error;
+  }
+}
+
+/**
+ * Update an existing action
+ */
+export async function updateAction(
+  actionId: string,
+  updates: Partial<Action & { ContactName?: string; ContactWhatsApp?: string }>
+): Promise<Action> {
+  try {
+    const response = await fetch(`/api/actions/${actionId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updates)
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || error.error || 'Failed to update action');
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('Error updating action:', error);
     throw error;
   }
 }

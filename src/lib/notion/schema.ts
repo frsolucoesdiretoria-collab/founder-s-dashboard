@@ -107,7 +107,18 @@ export const NOTION_SCHEMA: Record<string, DatabaseSchema> = {
     envVar: 'NOTION_DB_CONTACTS',
     required: false,
     properties: [
-      { name: 'Name', type: 'title', required: true, description: 'Nome do contato' }
+      { name: 'Name', type: 'title', required: true, description: 'Nome do contato' },
+      { name: 'Company', type: 'rich_text', required: false, description: 'Empresa' },
+      { name: 'Status', type: 'select', required: false, description: 'Status do pipeline' },
+      { name: 'Segment', type: 'select', required: false, description: 'Segmento' },
+      { name: 'City', type: 'rich_text', required: false, description: 'Cidade' },
+      { name: 'WhatsApp', type: 'rich_text', required: false, description: 'WhatsApp' },
+      { name: 'Source', type: 'select', required: false, description: 'Origem' },
+      { name: 'Priority', type: 'select', required: false, description: 'Prioridade' },
+      { name: 'Notes', type: 'rich_text', required: false, description: 'Notas' },
+      { name: 'CoffeeDate', type: 'date', required: false, description: 'Data do café' },
+      { name: 'ProposalDate', type: 'date', required: false, description: 'Data da proposta' },
+      { name: 'LastUpdate', type: 'date', required: false, description: 'Última atualização' }
     ]
   },
   Clients: {
@@ -167,6 +178,37 @@ export const NOTION_SCHEMA: Record<string, DatabaseSchema> = {
     required: false,
     properties: [
       { name: 'Name', type: 'title', required: true, description: 'Nome da métrica financeira' }
+    ]
+  },
+  CRMPipeline: {
+    name: 'CRMPipeline',
+    envVar: 'NOTION_DB_CRMPIPELINE',
+    required: false,
+    properties: [
+      { name: 'Name', type: 'title', required: true, description: 'Nome do contato' },
+      { name: 'Company', type: 'rich_text', required: false, description: 'Empresa' },
+      { name: 'Status', type: 'select', required: false, description: 'Status do pipeline' },
+      { name: 'CoffeeDate', type: 'date', required: false, description: 'Data do café' },
+      { name: 'ProposalDate', type: 'date', required: false, description: 'Data da proposta' },
+      { name: 'LastUpdate', type: 'date', required: false, description: 'Última atualização' },
+      { name: 'Notes', type: 'rich_text', required: false, description: 'Notas' }
+    ]
+  },
+  Produtos: {
+    name: 'Produtos',
+    envVar: 'NOTION_DB_PRODUTOS',
+    required: false,
+    properties: [
+      { name: 'Name', type: 'title', required: true, description: 'Nome do produto' },
+      { name: 'Status', type: 'select', required: false, description: 'Status' },
+      { name: 'ProblemaQueResolve', type: 'rich_text', required: false, description: 'Problema que resolve' },
+      { name: 'PrecoMinimo', type: 'number', required: false, description: 'Preço mínimo' },
+      { name: 'PrecoIdeal', type: 'number', required: false, description: 'Preço ideal' },
+      { name: 'Tipo', type: 'select', required: false, description: 'Tipo' },
+      { name: 'TempoMedioEntrega', type: 'number', required: false, description: 'Tempo médio de entrega (dias)' },
+      { name: 'DependenciaFundador', type: 'select', required: false, description: 'Dependência do fundador' },
+      { name: 'Replicabilidade', type: 'select', required: false, description: 'Replicabilidade' },
+      { name: 'PrioridadeEstrategica', type: 'number', required: false, description: 'Prioridade estratégica (1-10)' }
     ]
   }
 };

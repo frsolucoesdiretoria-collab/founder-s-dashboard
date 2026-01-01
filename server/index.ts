@@ -14,6 +14,8 @@ import { journalRouter } from './routes/journal';
 import { financeRouter } from './routes/finance';
 import { databasesRouter } from './routes/databases';
 import { contactsRouter } from './routes/contacts';
+import { crmRouter } from './routes/crm';
+import { produtosRouter } from './routes/produtos';
 import { assertEnvVars } from './lib/envValidator';
 
 // Load environment variables (priority: .env.local > .env)
@@ -55,6 +57,8 @@ app.use('/api/actions', actionsRouter);
 app.use('/api/journal', journalRouter);
 app.use('/api/finance', financeRouter);
 app.use('/api/contacts', contactsRouter);
+app.use('/api/crm', crmRouter);
+app.use('/api/produtos', produtosRouter);
 
 // Error handler
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -66,7 +70,7 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`📊 API available at http://localhost:${PORT}/api`);
   console.log(`\n💡 Health check: http://localhost:${PORT}/api/admin/health`);

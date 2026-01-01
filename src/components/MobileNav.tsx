@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Coffee, TrendingUp, DollarSign, CheckSquare, Menu, X, Presentation, FileText } from 'lucide-react';
+import { LayoutDashboard, Coffee, TrendingUp, DollarSign, CheckSquare, Menu, X, Presentation, FileText, Users, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -11,6 +11,8 @@ const navItems = [
   { path: '/expansion', label: 'Expansão', icon: TrendingUp },
   { path: '/finance', label: 'Financeiro', icon: DollarSign },
   { path: '/tasks', label: 'Tarefas', icon: CheckSquare },
+  { path: '/crm', label: 'CRM', icon: Users },
+  { path: '/produtos', label: 'Produtos FR Tech', icon: Package },
   { path: '/apresentacao', label: 'Apresentação', icon: Presentation },
   { path: '/apresentacao-02', label: 'Apresentação 02', icon: FileText },
 ];
@@ -91,11 +93,7 @@ export function MobileNav() {
                 </Link>
               ))}
             </div>
-            <div className="absolute bottom-4 left-4 right-4 pt-4 border-t border-border">
-              <p className="text-xs text-muted-foreground px-2">
-                Usando dados mock
-              </p>
-            </div>
+            {/* Mock data indicator removed - using real Notion data */}
           </nav>
         </>
       )}
@@ -139,11 +137,7 @@ export function MobileNav() {
           ))}
         </nav>
 
-        <div className="pt-4 border-t border-border">
-          <p className="text-xs text-muted-foreground px-2">
-            Usando dados mock
-          </p>
-        </div>
+        {/* Mock data indicator removed - using real Notion data */}
       </aside>
     </>
   );
