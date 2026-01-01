@@ -1455,8 +1455,9 @@ export async function createCRMPipelineContact(data: {
   if (!dbId) throw new Error('NOTION_DB_CONTACTS not configured');
 
   const properties: any = {
-    Name: { title: [{ text: { content: data.Name } }] },
-    LastUpdate: { date: { start: normalizeDate(new Date().toISOString()) } }
+    Name: { title: [{ text: { content: data.Name } }] }
+    // Não incluir LastUpdate - essa propriedade não existe na database Contacts (DB04)
+    // O Notion já mantém last_edited_time automaticamente
   };
 
   if (data.Company) properties.Company = { rich_text: [{ text: { content: data.Company } }] };
@@ -1499,8 +1500,8 @@ export async function updateCRMPipelineContact(
   if (updates.ProposalDate) properties.ProposalDate = { date: { start: normalizeDate(updates.ProposalDate) } };
   if (updates.Notes !== undefined) properties.Notes = { rich_text: [{ text: { content: updates.Notes } }] };
   
-  // Always update LastUpdate
-  properties.LastUpdate = { date: { start: normalizeDate(new Date().toISOString()) } };
+  // Não atualizar LastUpdate - essa propriedade não existe na database Contacts (DB04)
+  // O Notion já mantém last_edited_time automaticamente, que usamos como fallback na leitura
 
   await retryWithBackoff(() =>
     client.pages.update({
