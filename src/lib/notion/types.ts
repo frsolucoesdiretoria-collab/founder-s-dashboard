@@ -74,6 +74,14 @@ export interface NotionJournal {
 export interface NotionContact {
   id: string;
   Name: string;
+  Company?: string;
+  Status?: string;
+  Segment?: string;
+  City?: string;
+  WhatsApp?: string;
+  Source?: string;
+  Priority?: string;
+  Notes?: string;
 }
 
 export interface NotionClient {

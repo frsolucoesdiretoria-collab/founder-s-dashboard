@@ -9,7 +9,8 @@ import type {
   NotionAction, 
   NotionJournal,
   NotionCRMPipeline,
-  NotionProduto
+  NotionProduto,
+  NotionContact
 } from '../../src/lib/notion/types';
 
 // Notion client instance (lazy initialization)
@@ -145,6 +146,14 @@ function extractRelation(property: any): string[] {
 }
 
 /**
+ * Extract phone number from Notion property
+ */
+function extractPhoneNumber(property: any): string {
+  if (!property || !property.phone_number) return '';
+  return property.phone_number || '';
+}
+
+/**
  * Convert Notion page to KPI
  */
 function pageToKPI(page: any): NotionKPI {
@@ -256,6 +265,26 @@ function pageToCRMPipeline(page: any): NotionCRMPipeline {
     ProposalDate: extractDate(props.ProposalDate) || '',
     LastUpdate: lastUpdate,
     Notes: extractText(props.Notes) || ''
+  };
+}
+
+/**
+ * Convert Notion page to Contact
+ */
+function pageToContact(page: any): NotionContact {
+  const props = page.properties;
+  
+  return {
+    id: page.id,
+    Name: extractText(props.Name),
+    Company: extractText(props.Company) || undefined,
+    Status: extractSelect(props.Status) || undefined,
+    Segment: extractSelect(props.Segment) || undefined,
+    City: extractSelect(props.City) || undefined,
+    WhatsApp: extractPhoneNumber(props.WhatsApp) || undefined,
+    Source: extractSelect(props.Source) || undefined,
+    Priority: extractSelect(props.Priority) || undefined,
+    Notes: extractText(props.Notes) || undefined
   };
 }
 
@@ -1511,6 +1540,149 @@ export async function updateCRMPipelineContact(
   );
 
   return getCRMPipelineContactById(id);
+}
+
+/**
+ * Get all contacts
+ */
+export async function getContacts(): Promise<NotionContact[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Contacts');
+  if (!dbId) throw new Error('NOTION_DB_CONTACTS not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      sorts: [{ property: 'Name', direction: 'ascending' }]
+    })
+  );
+
+  return response.results.map(pageToContact);
+}
+
+/**
+ * Get contact by ID
+ */
+export async function getContactById(id: string): Promise<NotionContact> {
+  const client = initNotionClient();
+  const page = await retryWithBackoff(() => client.pages.retrieve({ page_id: id })) as any;
+  return pageToContact(page);
+}
+
+/**
+ * Update contact
+ */
+export async function updateContact(
+  id: string,
+  updates: Partial<NotionContact>
+): Promise<NotionContact> {
+  const client = initNotionClient();
+  const properties: any = {};
+
+  if (updates.Name !== undefined) properties.Name = { title: [{ text: { content: updates.Name } }] };
+  if (updates.Company !== undefined) {
+    properties.Company = updates.Company 
+      ? { rich_text: [{ text: { content: updates.Company } }] }
+      : { rich_text: [] };
+  }
+  if (updates.Status !== undefined) {
+    properties.Status = updates.Status 
+      ? { select: { name: updates.Status } }
+      : { select: null };
+  }
+  if (updates.Segment !== undefined) {
+    properties.Segment = updates.Segment 
+      ? { select: { name: updates.Segment } }
+      : { select: null };
+  }
+  if (updates.City !== undefined) {
+    properties.City = updates.City 
+      ? { select: { name: updates.City } }
+      : { select: null };
+  }
+  if (updates.WhatsApp !== undefined) {
+    properties.WhatsApp = updates.WhatsApp 
+      ? { phone_number: updates.WhatsApp }
+      : { phone_number: null };
+  }
+  if (updates.Source !== undefined) {
+    properties.Source = updates.Source 
+      ? { select: { name: updates.Source } }
+      : { select: null };
+  }
+  if (updates.Priority !== undefined) {
+    properties.Priority = updates.Priority 
+      ? { select: { name: updates.Priority } }
+      : { select: null };
+  }
+  if (updates.Notes !== undefined) {
+    properties.Notes = updates.Notes 
+      ? { rich_text: [{ text: { content: updates.Notes } }] }
+      : { rich_text: [] };
+  }
+
+  await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      properties
+    })
+  );
+
+  return getContactById(id);
+}
+
+/**
+ * Delete contact
+ */
+export async function deleteContact(id: string): Promise<void> {
+  const client = initNotionClient();
+  await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      archived: true
+    })
+  );
+}
+
+/**
+ * Create new contact
+ */
+export async function createContact(data: {
+  Name: string;
+  Company?: string;
+  Status?: string;
+  Segment?: string;
+  City?: string;
+  WhatsApp?: string;
+  Source?: string;
+  Priority?: string;
+  Notes?: string;
+}): Promise<NotionContact> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Contacts');
+  if (!dbId) throw new Error('NOTION_DB_CONTACTS not configured');
+
+  const properties: any = {
+    Name: { title: [{ text: { content: data.Name } }] }
+  };
+
+  if (data.Company) properties.Company = { rich_text: [{ text: { content: data.Company } }] };
+  if (data.Status) properties.Status = { select: { name: data.Status } };
+  if (data.Segment) properties.Segment = { select: { name: data.Segment } };
+  if (data.City) properties.City = { select: { name: data.City } };
+  if (data.WhatsApp) properties.WhatsApp = { phone_number: data.WhatsApp };
+  if (data.Source) properties.Source = { select: { name: data.Source } };
+  if (data.Priority) properties.Priority = { select: { name: data.Priority } };
+  if (data.Notes) properties.Notes = { rich_text: [{ text: { content: data.Notes } }] };
+
+  const response = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToContact(response);
 }
 
 /**

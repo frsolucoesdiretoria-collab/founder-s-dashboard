@@ -10,7 +10,7 @@ export interface DatabaseSchema {
 
 export interface PropertySchema {
   name: string;
-  type: 'title' | 'rich_text' | 'number' | 'select' | 'multi_select' | 'date' | 'checkbox' | 'relation' | 'rollup' | 'formula';
+  type: 'title' | 'rich_text' | 'number' | 'select' | 'multi_select' | 'date' | 'checkbox' | 'relation' | 'rollup' | 'formula' | 'phone_number';
   required: boolean;
   description?: string;
 }
@@ -111,14 +111,11 @@ export const NOTION_SCHEMA: Record<string, DatabaseSchema> = {
       { name: 'Company', type: 'rich_text', required: false, description: 'Empresa' },
       { name: 'Status', type: 'select', required: false, description: 'Status do pipeline' },
       { name: 'Segment', type: 'select', required: false, description: 'Segmento' },
-      { name: 'City', type: 'rich_text', required: false, description: 'Cidade' },
-      { name: 'WhatsApp', type: 'rich_text', required: false, description: 'WhatsApp' },
+      { name: 'City', type: 'select', required: false, description: 'Cidade' },
+      { name: 'WhatsApp', type: 'phone_number', required: false, description: 'WhatsApp' },
       { name: 'Source', type: 'select', required: false, description: 'Origem' },
       { name: 'Priority', type: 'select', required: false, description: 'Prioridade' },
-      { name: 'Notes', type: 'rich_text', required: false, description: 'Notas' },
-      { name: 'CoffeeDate', type: 'date', required: false, description: 'Data do café' },
-      { name: 'ProposalDate', type: 'date', required: false, description: 'Data da proposta' },
-      { name: 'LastUpdate', type: 'date', required: false, description: 'Última atualização' }
+      { name: 'Notes', type: 'rich_text', required: false, description: 'Notas' }
     ]
   },
   Clients: {
