@@ -263,3 +263,6 @@ E você implementará seguindo o mesmo padrão.
 
 Execute todas as tarefas do checklist na ordem. Não pule etapas. Ao finalizar, pergunte ao usuário: "Agora que o sistema de tarefas padrão para Contatos Ativados está funcionando, quais outros tipos de tarefas padrão você quer configurar? Descreva o fluxo para cada KPI que você mencionar."
 
+
+
+

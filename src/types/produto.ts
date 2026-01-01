@@ -14,3 +14,6 @@ export interface Produto {
   prioridadeEstrategica: number; // 1-10
 }
 
+
+
+

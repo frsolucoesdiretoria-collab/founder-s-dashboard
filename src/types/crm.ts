@@ -18,3 +18,6 @@ export interface PipelineKPIs {
   averageSalesCycle: number; // days
 }
 
+
+
+

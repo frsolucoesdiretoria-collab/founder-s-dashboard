@@ -143,3 +143,6 @@ export function getMockProdutosByStatus(status: Produto['status']): Produto[] {
   return mockProdutos.filter(produto => produto.status === status);
 }
 
+
+
+
