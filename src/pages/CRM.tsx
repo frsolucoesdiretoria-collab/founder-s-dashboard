@@ -4,7 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Users, TrendingUp, Calendar, FileText, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Users, TrendingUp, Calendar, FileText, CheckCircle, XCircle, Clock, Search } from 'lucide-react';
 import { getPipelineKPIs, getContactsPipeline, getContactsByStatus, updateContactStatus } from '@/services';
 import type { ContactPipeline, PipelineKPIs } from '@/types/crm';
 import { toast } from 'sonner';
@@ -135,6 +136,8 @@ function KanbanColumn({
 export default function CRMPage() {
   const [kpis, setKpis] = useState<PipelineKPIs | null>(null);
   const [contacts, setContacts] = useState<ContactPipeline[]>([]);
+  const [filteredContacts, setFilteredContacts] = useState<ContactPipeline[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -158,6 +161,7 @@ export default function CRMPage() {
       ]);
       setKpis(kpisData);
       setContacts(contactsData);
+      setFilteredContacts(contactsData);
     } catch (error) {
       console.error('Error loading CRM data:', error);
     } finally {
@@ -168,6 +172,33 @@ export default function CRMPage() {
   useEffect(() => {
     loadData();
   }, []);
+
+  // Filter contacts based on search query
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      setFilteredContacts(contacts);
+    } else {
+      const query = searchQuery.toLowerCase();
+      setFilteredContacts(
+        contacts.filter(
+          contact =>
+            contact.name?.toLowerCase().includes(query) ||
+            contact.company?.toLowerCase().includes(query)
+        )
+      );
+    }
+  }, [searchQuery, contacts]);
+
+  // Define kanban columns
+  const kanbanColumns: ContactPipeline['status'][] = [
+    'Contato Ativado',
+    'Café Agendado',
+    'Café Executado',
+    'Proposta Enviada',
+    'Follow-up Ativo',
+    'Venda Fechada',
+    'Perdido'
+  ];
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
@@ -249,8 +280,8 @@ export default function CRMPage() {
     );
   }
 
-  // Group contacts by status for Kanban
-  const contactsByStatus = contacts.reduce((acc, contact) => {
+  // Group contacts by status for Kanban (using filtered contacts)
+  const contactsByStatus = filteredContacts.reduce((acc, contact) => {
     if (!acc[contact.status]) {
       acc[contact.status] = [];
     }
@@ -258,34 +289,37 @@ export default function CRMPage() {
     return acc;
   }, {} as Record<string, ContactPipeline[]>);
 
-  const kanbanColumns: ContactPipeline['status'][] = [
-    'Contato Ativado',
-    'Café Agendado',
-    'Café Executado',
-    'Proposta Enviada',
-    'Follow-up Ativo',
-    'Venda Fechada',
-    'Perdido'
-  ];
-
   const activeContact = activeId ? contacts.find(c => c.id === activeId) : null;
 
   return (
     <AppLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div>
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <Users className="h-6 w-6 text-primary" />
-            CRM
-          </h1>
-          <p className="text-muted-foreground">
-            Visão estratégica do pipeline comercial e das conversões de vendas.
-          </p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
+              <Users className="h-6 w-6 text-primary" />
+              CRM
+            </h1>
+            <p className="text-muted-foreground">
+              Visão estratégica do pipeline comercial e das conversões de vendas.
+            </p>
+          </div>
+          {/* Search */}
+          <div className="relative w-full max-w-sm">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Buscar contatos por nome..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9"
+            />
+          </div>
         </div>
 
         {/* KPIs Section */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -295,6 +329,19 @@ export default function CRMPage() {
             <CardContent>
               <p className="text-2xl font-bold text-foreground">
                 {kpis?.totalLeads ?? '--'}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Conversão Contatos Ativados → Cafés Agendados
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-2xl font-bold text-foreground">
+                {kpis?.conversionActivatedToCoffee ?? '--'}%
               </p>
             </CardContent>
           </Card>

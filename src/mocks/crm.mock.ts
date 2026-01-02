@@ -4,6 +4,7 @@ import type { ContactPipeline, PipelineKPIs } from '@/types/crm';
 
 export const mockPipelineKPIs: PipelineKPIs = {
   totalLeads: 24,
+  conversionActivatedToCoffee: 45,
   conversionCoffeeToProposal: 35,
   conversionProposalToSale: 42,
   averageSalesCycle: 18
@@ -136,6 +137,7 @@ export function getMockContacts(): ContactPipeline[] {
 export function getMockContactsByStatus(status: ContactPipeline['status']): ContactPipeline[] {
   return mockContacts.filter(contact => contact.status === status);
 }
+
 
 
 

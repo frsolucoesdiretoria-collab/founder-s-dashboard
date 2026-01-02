@@ -147,3 +147,22 @@ export async function updateAction(
     throw error;
   }
 }
+
+/**
+ * Delete an action
+ */
+export async function deleteAction(actionId: string): Promise<void> {
+  try {
+    const response = await fetch(`/api/actions/${actionId}`, {
+      method: 'DELETE'
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || error.error || 'Failed to delete action');
+    }
+  } catch (error) {
+    console.error('Error deleting action:', error);
+    throw error;
+  }
+}

@@ -41,6 +41,8 @@ crmRouter.get('/kpis', async (req, res) => {
     // Calculate KPIs from pipeline data
     const totalLeads = contacts.length;
     
+    const contatosAtivados = contacts.filter(c => c.Status === 'Contato Ativado').length;
+    
     const cafes = contacts.filter(c => 
       c.Status === 'Café Agendado' || 
       c.Status === 'Café Executado' || 
@@ -56,6 +58,11 @@ crmRouter.get('/kpis', async (req, res) => {
     ).length;
     
     const vendas = contacts.filter(c => c.Status === 'Venda Fechada').length;
+    
+    // Calculate conversion rates
+    // Contatos Ativados → Cafés Agendados
+    const totalAtivados = contatosAtivados + cafes; // Total que passou por "Contato Ativado"
+    const conversionActivatedToCoffee = totalAtivados > 0 ? Math.round((cafes / totalAtivados) * 100) : 0;
     
     const conversionCoffeeToProposal = cafes > 0 ? Math.round((propostas / cafes) * 100) : 0;
     const conversionProposalToSale = propostas > 0 ? Math.round((vendas / propostas) * 100) : 0;
@@ -74,6 +81,7 @@ crmRouter.get('/kpis', async (req, res) => {
     
     res.json({
       totalLeads,
+      conversionActivatedToCoffee,
       conversionCoffeeToProposal,
       conversionProposalToSale,
       averageSalesCycle
@@ -145,6 +153,7 @@ crmRouter.put('/pipeline/:id', async (req, res) => {
     });
   }
 });
+
 
 
 

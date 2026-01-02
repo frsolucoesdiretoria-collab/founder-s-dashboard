@@ -5,8 +5,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/dashboard-v02', label: 'Dashboard V02', icon: LayoutDashboard },
+  { path: '/dashboard', label: 'Mapa de metas e métricas', icon: LayoutDashboard },
   { path: '/coffee', label: 'Café', icon: Coffee },
   { path: '/expansion', label: 'Expansão', icon: TrendingUp },
   { path: '/finance', label: 'Financeiro', icon: DollarSign },

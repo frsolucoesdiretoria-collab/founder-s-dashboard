@@ -50,6 +50,7 @@ export interface NotionAction {
   Diagnostic: string;
   WeekKey: string;
   Month: number;
+  Priority?: 'Alta' | 'Média' | 'Baixa';
   PublicVisible: boolean;
   Notes: string;
 }

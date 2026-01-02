@@ -1,7 +1,7 @@
 // FR Tech OS - Actions Route
 
 import { Router } from 'express';
-import { getActions, toggleActionDone, ensureActionHasGoal, createAction, updateRelatedGoal, updateAction, getActionById } from '../lib/notionDataLayer';
+import { getActions, toggleActionDone, ensureActionHasGoal, createAction, updateRelatedGoal, updateAction, getActionById, deleteAction } from '../lib/notionDataLayer';
 import { canMarkActionDone } from '../lib/guards';
 import { initNotionClient } from '../lib/notionDataLayer';
 import { getDatabaseId } from '../../src/lib/notion/schema';
@@ -187,6 +187,32 @@ actionsRouter.patch('/:id/done', async (req, res) => {
     console.error('Error updating action:', error);
     res.status(500).json({ 
       error: 'Failed to update action',
+      message: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+/**
+ * DELETE /api/actions/:id
+ * Delete an action
+ */
+actionsRouter.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Check if action exists
+    const existingAction = await getActionById(id);
+    if (!existingAction) {
+      return res.status(404).json({ error: 'Action not found' });
+    }
+
+    await deleteAction(id);
+    
+    res.json({ success: true });
+  } catch (error: any) {
+    console.error('Error deleting action:', error);
+    res.status(500).json({ 
+      error: 'Failed to delete action',
       message: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }

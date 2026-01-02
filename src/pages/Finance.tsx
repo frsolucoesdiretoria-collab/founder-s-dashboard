@@ -14,9 +14,12 @@ import type { KPI } from '@/types/kpi';
 import type { NotionKPI, NotionGoal } from '@/lib/notion/types';
 import { getAllGoals } from '@/services';
 
+type UserRole = 'admin' | 'flora';
+
 export default function FinancePage() {
   const [passcode, setPasscode] = useState('');
   const [authenticated, setAuthenticated] = useState(false);
+  const [userRole, setUserRole] = useState<UserRole | null>(null);
   const [financialKPIs, setFinancialKPIs] = useState<KPI[]>([]);
   const [financeMetrics, setFinanceMetrics] = useState<any[]>([]);
   const [goals, setGoals] = useState<NotionGoal[]>([]);
@@ -24,9 +27,11 @@ export default function FinancePage() {
   const [error, setError] = useState<string | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
 
+  const FLORA_PASSCODE = 'flora123';
+
   const handleAuth = async () => {
     if (!passcode.trim()) {
-      setAuthError('Digite a senha mestra');
+      setAuthError('Digite a senha');
       return;
     }
 
@@ -34,25 +39,64 @@ export default function FinancePage() {
     setAuthError(null);
 
     try {
-      // Try to fetch financial KPIs to validate passcode
-      const kpis = await getFinancialKPIs(passcode);
-      setAuthenticated(true);
-      setFinancialKPIs(kpis);
-      
-      // Load goals to match with KPIs
-      const goalsData = await getAllGoals();
-      setGoals(goalsData);
-      
-      // Load finance metrics from DB11
-      try {
-        const metrics = await getFinanceMetrics(passcode);
-        setFinanceMetrics(metrics);
-      } catch (err) {
-        console.warn('Could not load finance metrics:', err);
-        // Don't block the page if metrics fail
+      // Check if it's Flora's passcode
+      if (passcode.trim() === FLORA_PASSCODE) {
+        // Flora access - only Nubank/personal finance data
+        setUserRole('flora');
+        setAuthenticated(true);
+        
+        // Load goals
+        const goalsData = await getAllGoals();
+        setGoals(goalsData);
+        
+        // Load only Nubank-related KPIs (filter by name containing "Nubank" or "Pessoa Física")
+        try {
+          const allKPIs = await getFinancialKPIs(passcode); // Use admin passcode to fetch, then filter
+          // Try with admin passcode if available, otherwise filter client-side
+          const filteredKPIs = allKPIs.filter(kpi => 
+            kpi.Name.toLowerCase().includes('nubank') || 
+            kpi.Name.toLowerCase().includes('pessoa física') ||
+            kpi.Name.toLowerCase().includes('pessoal')
+          );
+          setFinancialKPIs(filteredKPIs);
+        } catch (err) {
+          // If can't fetch with admin, try with flora passcode
+          try {
+            const kpis = await getFinancialKPIs(passcode);
+            const filteredKPIs = kpis.filter(kpi => 
+              kpi.Name.toLowerCase().includes('nubank') || 
+              kpi.Name.toLowerCase().includes('pessoa física') ||
+              kpi.Name.toLowerCase().includes('pessoal')
+            );
+            setFinancialKPIs(filteredKPIs);
+          } catch (e) {
+            console.warn('Could not load financial KPIs:', e);
+          }
+        }
+        
+        toast.success('Acesso autorizado - Visualização limitada');
+      } else {
+        // Admin access - try to fetch financial KPIs to validate passcode
+        const kpis = await getFinancialKPIs(passcode);
+        setUserRole('admin');
+        setAuthenticated(true);
+        setFinancialKPIs(kpis);
+        
+        // Load goals to match with KPIs
+        const goalsData = await getAllGoals();
+        setGoals(goalsData);
+        
+        // Load finance metrics from DB11
+        try {
+          const metrics = await getFinanceMetrics(passcode);
+          setFinanceMetrics(metrics);
+        } catch (err) {
+          console.warn('Could not load finance metrics:', err);
+          // Don't block the page if metrics fail
+        }
+        
+        toast.success('Acesso autorizado como administrador');
       }
-      
-      toast.success('Acesso autorizado');
     } catch (err: any) {
       setAuthError(err.message || 'Senha incorreta');
       toast.error('Senha incorreta');
@@ -71,7 +115,7 @@ export default function FinancePage() {
               Dashboard Financeiro
             </CardTitle>
             <CardDescription>
-              Entre com a senha mestra para acessar
+              Entre com a senha para acessar os dados financeiros
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -83,7 +127,7 @@ export default function FinancePage() {
             )}
             <Input
               type="password"
-              placeholder="Senha mestra"
+              placeholder="Senha"
               value={passcode}
               onChange={(e) => setPasscode(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleAuth()}
@@ -138,12 +182,24 @@ export default function FinancePage() {
           </Alert>
         )}
 
+        {/* User Role Info */}
+        {userRole === 'flora' && (
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              Visualização limitada: Apenas dados da conta Nubank (Pessoa Física)
+            </AlertDescription>
+          </Alert>
+        )}
+
         {/* Financial KPIs Grid */}
         {financialKPIs.length === 0 ? (
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              Nenhum KPI financeiro configurado.
+              {userRole === 'flora' 
+                ? 'Nenhum KPI financeiro encontrado para a conta Nubank.'
+                : 'Nenhum KPI financeiro configurado.'}
             </AlertDescription>
           </Alert>
         ) : (
@@ -155,8 +211,8 @@ export default function FinancePage() {
           </div>
         )}
 
-        {/* Finance Metrics from DB11 */}
-        {financeMetrics.length > 0 && (
+        {/* Finance Metrics from DB11 - Only for admin */}
+        {userRole === 'admin' && financeMetrics.length > 0 && (
           <div className="space-y-4">
             <h2 className="text-xl font-bold text-foreground">Métricas Financeiras (DB11)</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">

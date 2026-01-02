@@ -23,8 +23,18 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Loader2, Plus, AlertCircle, Users, Coffee, FileText, Cog, Zap, Bot, BookOpen, Edit } from 'lucide-react';
-import { getAllActions, updateActionDone, createAction, createContact, updateAction } from '@/services';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { Loader2, Plus, AlertCircle, Users, Coffee, FileText, Cog, Zap, Bot, BookOpen, Edit, Edit2, Trash2, Flag } from 'lucide-react';
+import { getAllActions, updateActionDone, createAction, createContact, updateAction, deleteAction } from '@/services';
 import { getPublicKPIs } from '@/services/kpis.service';
 import { getAllGoals, getGoalsByKPI } from '@/services/goals.service';
 import type { Action } from '@/types/action';
@@ -61,10 +71,20 @@ export default function ActionsCreatePage() {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingAction, setEditingAction] = useState<Action | null>(null);
   const [editActionName, setEditActionName] = useState('');
+  const [editActionType, setEditActionType] = useState<ActionType>('Ativação de Rede');
+  const [editActionDate, setEditActionDate] = useState('');
+  const [editSelectedKPI, setEditSelectedKPI] = useState<string>('');
+  const [editSelectedGoal, setEditSelectedGoal] = useState<string>('');
+  const [editContribution, setEditContribution] = useState<string>('1');
+  const [editPriority, setEditPriority] = useState<'Alta' | 'Média' | 'Baixa' | ''>('');
+  const [editPublicVisible, setEditPublicVisible] = useState(true);
   const [editContactName, setEditContactName] = useState('');
   const [editContactWhatsApp, setEditContactWhatsApp] = useState('');
+  const [editNotes, setEditNotes] = useState('');
+  const [editGoals, setEditGoals] = useState<Goal[]>([]);
   const [saving, setSaving] = useState(false);
   const [goalIdForFiltering, setGoalIdForFiltering] = useState<string | null>(null);
+  const [deletingAction, setDeletingAction] = useState<Action | null>(null);
 
   // Form state
   const [selectedKPI, setSelectedKPI] = useState<string>('');
@@ -73,6 +93,7 @@ export default function ActionsCreatePage() {
   const [actionName, setActionName] = useState('');
   const [actionDate, setActionDate] = useState(new Date().toISOString().split('T')[0]);
   const [contribution, setContribution] = useState<string>('1');
+  const [priority, setPriority] = useState<'Alta' | 'Média' | 'Baixa' | ''>('');
   const [notes, setNotes] = useState('');
   const [contactName, setContactName] = useState('');
   const [contactWhatsApp, setContactWhatsApp] = useState('');
@@ -90,6 +111,16 @@ export default function ActionsCreatePage() {
       setSelectedGoal('');
     }
   }, [selectedKPI]);
+
+  useEffect(() => {
+    // Quando KPI muda no modal de edição, buscar Goals correspondentes
+    if (editSelectedKPI) {
+      loadEditGoalsForKPI(editSelectedKPI);
+    } else {
+      setEditGoals([]);
+      setEditSelectedGoal('');
+    }
+  }, [editSelectedKPI]);
 
   async function loadData() {
     setLoading(true);
@@ -146,6 +177,29 @@ export default function ActionsCreatePage() {
     }
   }
 
+  async function loadEditGoalsForKPI(kpiId: string) {
+    try {
+      const kpiGoals = await getGoalsByKPI(kpiId);
+      // Filtrar apenas goals do período atual (janeiro 2026)
+      const currentGoals = kpiGoals.filter(g => 
+        g.Month === 1 && g.Year === 2026
+      );
+      setEditGoals(currentGoals);
+      
+      // Se só tem uma goal, selecionar automaticamente
+      if (currentGoals.length === 1) {
+        setEditSelectedGoal(currentGoals[0].id);
+      } else if (currentGoals.length > 0) {
+        setEditSelectedGoal(''); // Reset para usuário escolher
+      } else {
+        setEditSelectedGoal('');
+      }
+    } catch (err) {
+      console.error('Error loading edit goals:', err);
+      toast.error('Erro ao carregar metas');
+    }
+  }
+
   async function handleCreateAction() {
     if (!selectedGoal || !actionName || !actionDate) {
       toast.error('Preencha todos os campos obrigatórios');
@@ -175,6 +229,7 @@ export default function ActionsCreatePage() {
         Date: actionDate,
         Goal: selectedGoal,
         Contribution: contribution ? parseFloat(contribution) : undefined,
+        Priority: priority || undefined,
         Notes: notes || undefined,
         Contact: contactId,
         Done: false,
@@ -193,6 +248,7 @@ export default function ActionsCreatePage() {
       setActionName('');
       setActionDate(new Date().toISOString().split('T')[0]);
       setContribution('1');
+      setPriority('');
       setNotes('');
       setContactName('');
       setContactWhatsApp('');
@@ -254,15 +310,23 @@ export default function ActionsCreatePage() {
   }
 
   // Open edit dialog for an action
-  function handleOpenEdit(action: Action) {
+  async function handleOpenEdit(action: Action) {
     setEditingAction(action);
+    
+    // Set all fields from action
+    setEditActionName(action.Name);
+    setEditActionType(action.Type);
+    setEditActionDate(action.Date);
+    setEditContribution(String(action.Contribution || 1));
+    setEditPriority((action as NotionAction).Priority || '');
+    setEditPublicVisible(action.PublicVisible ?? true);
+    setEditNotes((action as NotionAction).Notes || '');
+    
     // Extract contact name from action name if it follows pattern "Enviar áudio para [NOME]"
     const nameMatch = action.Name.match(/Enviar áudio para (.+)/);
     if (nameMatch) {
-      setEditActionName(action.Name);
       setEditContactName(nameMatch[1] === '[VAZIO]' ? '' : nameMatch[1]);
     } else {
-      setEditActionName(action.Name);
       setEditContactName('');
     }
     
@@ -271,24 +335,52 @@ export default function ActionsCreatePage() {
     const whatsappMatch = notes.match(/WhatsApp:\s*(.+)/);
     setEditContactWhatsApp(whatsappMatch ? whatsappMatch[1].trim() : '');
     
+    // Find KPI from Goal
+    if (action.Goal) {
+      const allGoalsData = await getAllGoals();
+      const goal = allGoalsData.find(g => g.id === action.Goal);
+      if (goal && goal.KPI) {
+        setEditSelectedKPI(goal.KPI);
+        setEditSelectedGoal(action.Goal);
+      } else {
+        setEditSelectedKPI('');
+        setEditSelectedGoal(action.Goal);
+      }
+    } else {
+      setEditSelectedKPI('');
+      setEditSelectedGoal('');
+    }
+    
     setGoalIdForFiltering(action.Goal || null);
     setEditDialogOpen(true);
   }
 
+  // Handle delete action
+  async function handleDeleteAction() {
+    if (!deletingAction) return;
+
+    try {
+      await deleteAction(deletingAction.id);
+      toast.success('Tarefa excluída!');
+      setDeletingAction(null);
+      await loadData();
+    } catch (err: any) {
+      console.error('Error deleting action:', err);
+      toast.error(err.message || 'Erro ao excluir tarefa');
+    }
+  }
+
   // Save and move to next action
   async function handleSaveAndNext() {
-    if (!editingAction || !editContactName.trim()) {
-      toast.error('Nome do contato é obrigatório');
+    if (!editingAction || !editActionName.trim()) {
+      toast.error('Nome da tarefa é obrigatório');
       return;
     }
 
     setSaving(true);
     try {
-      // Build updated name
-      const updatedName = `Enviar áudio para ${editContactName.trim()}`;
-      
       // Build updated notes (preserve existing notes, add/update WhatsApp)
-      let updatedNotes = (editingAction as NotionAction).Notes || '';
+      let updatedNotes = editNotes;
       if (editContactWhatsApp.trim()) {
         // Remove existing WhatsApp line if present
         updatedNotes = updatedNotes.replace(/WhatsApp:\s*.+(\n|$)/g, '').trim();
@@ -297,11 +389,17 @@ export default function ActionsCreatePage() {
         updatedNotes = updatedNotes ? `${updatedNotes}\n${whatsappLine}` : whatsappLine;
       }
 
-      // Update action
+      // Update action with all fields
       await updateAction(editingAction.id, {
-        Name: updatedName,
+        Name: editActionName.trim(),
+        Type: editActionType,
+        Date: editActionDate,
+        Goal: editSelectedGoal || undefined,
+        Contribution: parseFloat(editContribution) || 1,
+        Priority: editPriority || undefined,
+        PublicVisible: editPublicVisible,
         Notes: updatedNotes,
-        ContactName: editContactName.trim(),
+        ContactName: editContactName.trim() || undefined,
         ContactWhatsApp: editContactWhatsApp.trim() || undefined,
       });
 
@@ -334,16 +432,15 @@ export default function ActionsCreatePage() {
 
   // Save without moving to next
   async function handleSave() {
-    if (!editingAction || !editContactName.trim()) {
-      toast.error('Nome do contato é obrigatório');
+    if (!editingAction || !editActionName.trim()) {
+      toast.error('Nome da tarefa é obrigatório');
       return;
     }
 
     setSaving(true);
     try {
-      const updatedName = `Enviar áudio para ${editContactName.trim()}`;
-      
-      let updatedNotes = (editingAction as NotionAction).Notes || '';
+      // Build updated notes
+      let updatedNotes = editNotes;
       if (editContactWhatsApp.trim()) {
         updatedNotes = updatedNotes.replace(/WhatsApp:\s*.+(\n|$)/g, '').trim();
         const whatsappLine = `WhatsApp: ${editContactWhatsApp.trim()}`;
@@ -351,9 +448,15 @@ export default function ActionsCreatePage() {
       }
 
       await updateAction(editingAction.id, {
-        Name: updatedName,
+        Name: editActionName.trim(),
+        Type: editActionType,
+        Date: editActionDate,
+        Goal: editSelectedGoal || undefined,
+        Contribution: parseFloat(editContribution) || 1,
+        Priority: editPriority || undefined,
+        PublicVisible: editPublicVisible,
         Notes: updatedNotes,
-        ContactName: editContactName.trim(),
+        ContactName: editContactName.trim() || undefined,
         ContactWhatsApp: editContactWhatsApp.trim() || undefined,
       });
 
@@ -369,8 +472,26 @@ export default function ActionsCreatePage() {
     }
   }
 
-  // Agrupar ações por data
-  const actionsByDate = actions.reduce((acc, action) => {
+  // Separar tarefas pendentes e concluídas
+  const pendingActions = actions.filter(a => !a.Done);
+  const completedActions = actions.filter(a => a.Done);
+
+  // Função para ordenar por prioridade: Alta > Média > Baixa > sem prioridade
+  const priorityOrder = { 'Alta': 1, 'Média': 2, 'Baixa': 3 };
+  const sortByPriority = (a: Action, b: Action) => {
+    const aPriority = (a as NotionAction).Priority || '';
+    const bPriority = (b as NotionAction).Priority || '';
+    const aOrder = priorityOrder[aPriority as keyof typeof priorityOrder] || 99;
+    const bOrder = priorityOrder[bPriority as keyof typeof priorityOrder] || 99;
+    return aOrder - bOrder;
+  };
+
+  // Ordenar por prioridade
+  pendingActions.sort(sortByPriority);
+  completedActions.sort(sortByPriority);
+
+  // Agrupar ações pendentes por data
+  const pendingActionsByDate = pendingActions.reduce((acc, action) => {
     const date = action.Date;
     if (!acc[date]) {
       acc[date] = [];
@@ -379,9 +500,21 @@ export default function ActionsCreatePage() {
     return acc;
   }, {} as Record<string, Action[]>);
 
-  const sortedDates = Object.keys(actionsByDate).sort();
+  const sortedPendingDates = Object.keys(pendingActionsByDate).sort();
 
-  const completedCount = actions.filter(a => a.Done).length;
+  // Agrupar ações concluídas por data
+  const completedActionsByDate = completedActions.reduce((acc, action) => {
+    const date = action.Date;
+    if (!acc[date]) {
+      acc[date] = [];
+    }
+    acc[date].push(action);
+    return acc;
+  }, {} as Record<string, Action[]>);
+
+  const sortedCompletedDates = Object.keys(completedActionsByDate).sort();
+
+  const completedCount = completedActions.length;
   const totalCount = actions.length;
 
   const selectedKPIObject = kpis.find(k => k.id === selectedKPI);
@@ -533,6 +666,21 @@ export default function ActionsCreatePage() {
                   </p>
                 </div>
 
+                {/* Priority */}
+                <div className="space-y-2">
+                  <Label htmlFor="priority">Prioridade</Label>
+                  <Select value={priority} onValueChange={(v) => setPriority(v as 'Alta' | 'Média' | 'Baixa' | '')}>
+                    <SelectTrigger id="priority">
+                      <SelectValue placeholder="Selecione a prioridade" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Alta">Alta</SelectItem>
+                      <SelectItem value="Média">Média</SelectItem>
+                      <SelectItem value="Baixa">Baixa</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 {/* Notes */}
                 <div className="space-y-2">
                   <Label htmlFor="notes">Notas</Label>
@@ -594,46 +742,127 @@ export default function ActionsCreatePage() {
           </Dialog>
         </div>
 
-        {/* Quick Edit Dialog */}
+        {/* Edit Dialog */}
         <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Editar Tarefa</DialogTitle>
               <DialogDescription>
-                {editingAction && (() => {
-                  const goalActions = actions.filter(a => a.Goal === editingAction.Goal && !a.Done);
-                  const currentIndex = goalActions.findIndex(a => a.id === editingAction.id);
-                  return `Preencha os dados da tarefa (${currentIndex + 1} de ${goalActions.length})`;
-                })()}
+                Edite todos os campos da tarefa
               </DialogDescription>
             </DialogHeader>
             
             {editingAction && (
               <div className="space-y-4 mt-4">
-                {/* Tipo (readonly) */}
+                {/* KPI Selection */}
                 <div className="space-y-2">
-                  <Label>Tipo</Label>
-                  <Input value={editingAction.Type} disabled />
+                  <Label htmlFor="editKPI">KPI</Label>
+                  <Select value={editSelectedKPI} onValueChange={setEditSelectedKPI}>
+                    <SelectTrigger id="editKPI">
+                      <SelectValue placeholder="Selecione um KPI" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {kpis.map(kpi => (
+                        <SelectItem key={kpi.id} value={kpi.id}>
+                          {kpi.Name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
-                {/* Nome da Tarefa (readonly, será atualizado automaticamente) */}
+                {/* Goal Selection */}
+                {editSelectedKPI && editGoals.length > 0 && (
+                  <div className="space-y-2">
+                    <Label htmlFor="editGoal">Meta</Label>
+                    <Select value={editSelectedGoal} onValueChange={setEditSelectedGoal}>
+                      <SelectTrigger id="editGoal">
+                        <SelectValue placeholder="Selecione uma meta" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {editGoals.map(goal => (
+                          <SelectItem key={goal.id} value={goal.id}>
+                            {goal.Name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {/* Action Type */}
                 <div className="space-y-2">
-                  <Label>Nome da Tarefa</Label>
-                  <Input 
-                    value={editActionName.includes('[VAZIO]') ? 'Enviar áudio para [preencha nome abaixo]' : editActionName} 
-                    disabled 
+                  <Label htmlFor="editType">Tipo</Label>
+                  <Select value={editActionType} onValueChange={(v) => setEditActionType(v as ActionType)}>
+                    <SelectTrigger id="editType">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Café">Café</SelectItem>
+                      <SelectItem value="Ativação de Rede">Ativação de Rede</SelectItem>
+                      <SelectItem value="Proposta">Proposta</SelectItem>
+                      <SelectItem value="Processo">Processo</SelectItem>
+                      <SelectItem value="Rotina">Rotina</SelectItem>
+                      <SelectItem value="Automação">Automação</SelectItem>
+                      <SelectItem value="Agente">Agente</SelectItem>
+                      <SelectItem value="Diário">Diário</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Action Name */}
+                <div className="space-y-2">
+                  <Label htmlFor="editName">Nome da Tarefa *</Label>
+                  <Input
+                    id="editName"
+                    value={editActionName}
+                    onChange={(e) => setEditActionName(e.target.value)}
+                    placeholder="Ex: Enviar áudio para João Silva"
                   />
                 </div>
 
-                {/* Data (readonly) */}
+                {/* Date */}
                 <div className="space-y-2">
-                  <Label>Data</Label>
-                  <Input value={editingAction.Date} disabled />
+                  <Label htmlFor="editDate">Data *</Label>
+                  <Input
+                    id="editDate"
+                    type="date"
+                    value={editActionDate}
+                    onChange={(e) => setEditActionDate(e.target.value)}
+                  />
                 </div>
 
-                {/* Nome do Contato (editável) */}
+                {/* Priority */}
                 <div className="space-y-2">
-                  <Label htmlFor="editContactName">Nome do Contato *</Label>
+                  <Label htmlFor="editPriority">Prioridade</Label>
+                  <Select value={editPriority} onValueChange={(v) => setEditPriority(v as 'Alta' | 'Média' | 'Baixa' | '')}>
+                    <SelectTrigger id="editPriority">
+                      <SelectValue placeholder="Selecione a prioridade" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Alta">Alta</SelectItem>
+                      <SelectItem value="Média">Média</SelectItem>
+                      <SelectItem value="Baixa">Baixa</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Contribution */}
+                <div className="space-y-2">
+                  <Label htmlFor="editContribution">Contribuição</Label>
+                  <Input
+                    id="editContribution"
+                    type="number"
+                    step="0.1"
+                    value={editContribution}
+                    onChange={(e) => setEditContribution(e.target.value)}
+                    placeholder="Ex: 1, 5, 0.5"
+                  />
+                </div>
+
+                {/* Contact Name */}
+                <div className="space-y-2">
+                  <Label htmlFor="editContactName">Nome do Contato</Label>
                   <Input
                     id="editContactName"
                     value={editContactName}
@@ -642,7 +871,7 @@ export default function ActionsCreatePage() {
                   />
                 </div>
 
-                {/* WhatsApp (editável) */}
+                {/* WhatsApp */}
                 <div className="space-y-2">
                   <Label htmlFor="editContactWhatsApp">WhatsApp</Label>
                   <Input
@@ -653,10 +882,28 @@ export default function ActionsCreatePage() {
                   />
                 </div>
 
-                {/* Contribuição (readonly) */}
+                {/* Notes */}
                 <div className="space-y-2">
-                  <Label>Contribuição</Label>
-                  <Input value={editingAction.Contribution || 1} disabled />
+                  <Label htmlFor="editNotes">Notas</Label>
+                  <Textarea
+                    id="editNotes"
+                    value={editNotes}
+                    onChange={(e) => setEditNotes(e.target.value)}
+                    placeholder="Observações sobre esta tarefa..."
+                    rows={3}
+                  />
+                </div>
+
+                {/* Public Visible */}
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="editPublicVisible"
+                    checked={editPublicVisible}
+                    onCheckedChange={(checked) => setEditPublicVisible(checked as boolean)}
+                  />
+                  <Label htmlFor="editPublicVisible" className="cursor-pointer">
+                    Visível no dashboard público
+                  </Label>
                 </div>
 
                 <div className="flex justify-end gap-2 pt-4">
@@ -671,25 +918,35 @@ export default function ActionsCreatePage() {
                     Cancelar
                   </Button>
                   <Button
-                    variant="outline"
                     onClick={handleSave}
-                    disabled={saving || !editContactName.trim()}
+                    disabled={saving || !editActionName.trim()}
                   >
                     {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                     Salvar
-                  </Button>
-                  <Button
-                    onClick={handleSaveAndNext}
-                    disabled={saving || !editContactName.trim()}
-                  >
-                    {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                    Salvar e Próximo
                   </Button>
                 </div>
               </div>
             )}
           </DialogContent>
         </Dialog>
+
+        {/* Delete Confirmation Dialog */}
+        <AlertDialog open={!!deletingAction} onOpenChange={() => setDeletingAction(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Excluir Tarefa</AlertDialogTitle>
+              <AlertDialogDescription>
+                Tem certeza que deseja excluir a tarefa "{deletingAction?.Name}"? Esta ação não pode ser desfeita.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setDeletingAction(null)}>Cancelar</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeleteAction} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                Excluir
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         {error && (
           <Alert variant="destructive">
@@ -722,8 +979,8 @@ export default function ActionsCreatePage() {
           </CardContent>
         </Card>
 
-        {/* Tarefas agrupadas por data */}
-        {sortedDates.length === 0 ? (
+        {/* Tarefas Pendentes */}
+        {sortedPendingDates.length === 0 && sortedCompletedDates.length === 0 ? (
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
@@ -731,107 +988,214 @@ export default function ActionsCreatePage() {
             </AlertDescription>
           </Alert>
         ) : (
-          <div className="space-y-6">
-            {sortedDates.map(date => {
-              const dateActions = actionsByDate[date];
-              const dateObj = new Date(date);
-              const formattedDate = dateObj.toLocaleDateString('pt-BR', {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long'
-              });
-              const dateCompleted = dateActions.filter(a => a.Done).length;
-              const dateTotal = dateActions.length;
+          <>
+            {sortedPendingDates.length > 0 && (
+              <div className="space-y-6">
+                {sortedPendingDates.map(date => {
+                  const dateActions = pendingActionsByDate[date];
+                  const dateObj = new Date(date);
+                  const formattedDate = dateObj.toLocaleDateString('pt-BR', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long'
+                  });
 
-              return (
-                <Card key={date}>
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-base capitalize">
-                        {formattedDate}
-                      </CardTitle>
-                      <Badge variant="outline" className="font-medium">
-                        {dateCompleted}/{dateTotal}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    {dateActions.map(action => {
-                      const actionTyped = action as NotionAction;
-                      const hasNoGoal = !actionTyped.Goal || actionTyped.Goal.trim() === '';
-                      const isRefreshing = refreshing[action.id];
-                      const ActionIcon = typeIcons[actionTyped.Type] || Users;
+                  return (
+                    <Card key={date}>
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-base capitalize">
+                          {formattedDate}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-2">
+                        {dateActions.map(action => {
+                          const actionTyped = action as NotionAction;
+                          const hasNoGoal = !actionTyped.Goal || actionTyped.Goal.trim() === '';
+                          const isRefreshing = refreshing[action.id];
+                          const ActionIcon = typeIcons[actionTyped.Type] || Users;
+                          const priority = actionTyped.Priority;
 
-                      return (
-                        <div
-                          key={action.id}
-                          className={cn(
-                            "flex items-start gap-3 p-3 rounded-lg border transition-all",
-                            actionTyped.Done 
-                              ? "bg-muted/50 border-muted" 
-                              : "bg-card border-border hover:border-primary/30",
-                            hasNoGoal && !actionTyped.Done && "border-destructive/30 bg-destructive/5"
-                          )}
-                        >
-                          <Checkbox
-                            checked={actionTyped.Done}
-                            onCheckedChange={() => handleToggleAction(action.id, !actionTyped.Done)}
-                            disabled={isRefreshing || hasNoGoal}
-                            className="mt-1"
-                          />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between gap-2">
-                              <p className={cn(
-                                "font-medium text-sm flex-1",
-                                actionTyped.Done && "line-through text-muted-foreground"
-                              )}>
-                                {actionTyped.Name}
-                              </p>
-                              {!actionTyped.Done && actionTyped.Type === 'Ativação de Rede' && actionTyped.Name.includes('[VAZIO]') && (
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleOpenEdit(action)}
-                                  className="h-7 px-2"
-                                >
-                                  <Edit className="h-3 w-3 mr-1" />
-                                  Editar
-                                </Button>
+                          return (
+                            <div
+                              key={action.id}
+                              className={cn(
+                                "flex items-start gap-3 p-3 rounded-lg border transition-all",
+                                "bg-card border-border hover:border-primary/30",
+                                hasNoGoal && "border-destructive/30 bg-destructive/5"
                               )}
+                            >
+                              <Checkbox
+                                checked={actionTyped.Done}
+                                onCheckedChange={() => handleToggleAction(action.id, !actionTyped.Done)}
+                                disabled={isRefreshing || hasNoGoal}
+                                className="mt-1"
+                              />
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-start justify-between gap-2">
+                                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                                    {priority && (
+                                      <Flag 
+                                        className={cn(
+                                          "h-4 w-4 flex-shrink-0",
+                                          priority === 'Alta' && "text-red-500",
+                                          priority === 'Média' && "text-yellow-500",
+                                          priority === 'Baixa' && "text-blue-500"
+                                        )} 
+                                      />
+                                    )}
+                                    <p className="font-medium text-sm flex-1 min-w-0">
+                                      {actionTyped.Name}
+                                    </p>
+                                  </div>
+                                  <div className="flex items-center gap-1 flex-shrink-0">
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => handleOpenEdit(action)}
+                                      className="h-7 px-2"
+                                    >
+                                      <Edit2 className="h-3 w-3" />
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => setDeletingAction(action)}
+                                      className="h-7 px-2 text-destructive hover:text-destructive"
+                                    >
+                                      <Trash2 className="h-3 w-3" />
+                                    </Button>
+                                  </div>
+                                </div>
+                                <div className="flex flex-wrap gap-2 mt-2">
+                                  <Badge 
+                                    variant="outline" 
+                                    className="bg-chart-2/10 text-chart-2 border-chart-2/20 text-xs"
+                                  >
+                                    <ActionIcon className="h-3 w-3 mr-1" />
+                                    {actionTyped.Type}
+                                  </Badge>
+                                  {actionTyped.Contribution !== undefined && actionTyped.Contribution > 0 && (
+                                    <Badge variant="outline" className="text-xs">
+                                      Contribuição: {actionTyped.Contribution}
+                                    </Badge>
+                                  )}
+                                  {hasNoGoal && (
+                                    <Badge variant="destructive" className="text-xs">
+                                      Sem meta
+                                    </Badge>
+                                  )}
+                                  {priority && (
+                                    <Badge 
+                                      variant="outline" 
+                                      className={cn(
+                                        "text-xs",
+                                        priority === 'Alta' && "border-red-500/50 text-red-600 bg-red-50",
+                                        priority === 'Média' && "border-yellow-500/50 text-yellow-600 bg-yellow-50",
+                                        priority === 'Baixa' && "border-blue-500/50 text-blue-600 bg-blue-50"
+                                      )}
+                                    >
+                                      {priority}
+                                    </Badge>
+                                  )}
+                                </div>
+                                {actionTyped.Notes && (
+                                  <p className="text-xs text-muted-foreground mt-2">
+                                    {actionTyped.Notes}
+                                  </p>
+                                )}
+                              </div>
                             </div>
-                            <div className="flex flex-wrap gap-2 mt-2">
-                              <Badge 
-                                variant="outline" 
-                                className="bg-chart-2/10 text-chart-2 border-chart-2/20 text-xs"
+                          );
+                        })}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Tarefas Concluídas - Arquivo Morto */}
+            {sortedCompletedDates.length > 0 && (
+              <div className="space-y-6 mt-8">
+                <div className="border-t pt-6">
+                  <h2 className="text-lg font-semibold mb-4 text-muted-foreground">Arquivo Morto</h2>
+                  {sortedCompletedDates.map(date => {
+                    const dateActions = completedActionsByDate[date];
+                    const dateObj = new Date(date);
+                    const formattedDate = dateObj.toLocaleDateString('pt-BR', {
+                      weekday: 'long',
+                      day: 'numeric',
+                      month: 'long'
+                    });
+
+                    return (
+                      <Card key={date} className="mb-4 opacity-75">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-base capitalize text-muted-foreground">
+                            {formattedDate}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                          {dateActions.map(action => {
+                            const actionTyped = action as NotionAction;
+                            const ActionIcon = typeIcons[actionTyped.Type] || Users;
+
+                            return (
+                              <div
+                                key={action.id}
+                                className="flex items-start gap-3 p-3 rounded-lg border bg-muted/50 border-muted"
                               >
-                                <ActionIcon className="h-3 w-3 mr-1" />
-                                {actionTyped.Type}
-                              </Badge>
-                              {actionTyped.Contribution !== undefined && actionTyped.Contribution > 0 && (
-                                <Badge variant="outline" className="text-xs">
-                                  Contribuição: {actionTyped.Contribution}
-                                </Badge>
-                              )}
-                              {hasNoGoal && !actionTyped.Done && (
-                                <Badge variant="destructive" className="text-xs">
-                                  Sem meta
-                                </Badge>
-                              )}
-                            </div>
-                            {actionTyped.Notes && (
-                              <p className="text-xs text-muted-foreground mt-2">
-                                {actionTyped.Notes}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
+                                <Checkbox
+                                  checked={actionTyped.Done}
+                                  onCheckedChange={() => handleToggleAction(action.id, !actionTyped.Done)}
+                                  disabled={refreshing[action.id]}
+                                  className="mt-1"
+                                />
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-start justify-between gap-2">
+                                    <p className="font-medium text-sm flex-1 line-through text-muted-foreground">
+                                      {actionTyped.Name}
+                                    </p>
+                                    <div className="flex items-center gap-1 flex-shrink-0">
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => handleOpenEdit(action)}
+                                        className="h-7 px-2"
+                                      >
+                                        <Edit2 className="h-3 w-3" />
+                                      </Button>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => setDeletingAction(action)}
+                                        className="h-7 px-2 text-destructive hover:text-destructive"
+                                      >
+                                        <Trash2 className="h-3 w-3" />
+                                      </Button>
+                                    </div>
+                                  </div>
+                                  <div className="flex flex-wrap gap-2 mt-2">
+                                    <Badge 
+                                      variant="outline" 
+                                      className="bg-muted text-muted-foreground border-muted text-xs"
+                                    >
+                                      <ActionIcon className="h-3 w-3 mr-1" />
+                                      {actionTyped.Type}
+                                    </Badge>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </AppLayout>

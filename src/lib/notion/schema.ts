@@ -78,6 +78,7 @@ export const NOTION_SCHEMA: Record<string, DatabaseSchema> = {
       { name: 'Diagnostic', type: 'relation', required: false, description: 'Diagnóstico relacionado' },
       { name: 'WeekKey', type: 'rich_text', required: false, description: 'Chave da semana' },
       { name: 'Month', type: 'number', required: false, description: 'Mês (1-12)' },
+      { name: 'Priority', type: 'select', required: false, description: 'Prioridade: Alta, Média, Baixa' },
       { name: 'PublicVisible', type: 'checkbox', required: true, description: 'Visível no dashboard público' },
       { name: 'Notes', type: 'rich_text', required: false, description: 'Notas adicionais' }
     ]

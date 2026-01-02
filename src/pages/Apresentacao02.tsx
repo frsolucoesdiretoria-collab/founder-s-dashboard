@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { ArrowRight, Menu, X, Brain, Zap, Shield, TrendingUp, Code, BarChart3 } from 'lucide-react'
 import { useState } from 'react'
+import { AppLayout } from '@/components/AppLayout'
 
 function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -307,21 +308,24 @@ function CTA() {
 
 export default function Apresentacao02Page() {
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white" style={{
-      backgroundImage: `
-        radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.1) 0px, transparent 50%)
-      `,
-      backgroundAttachment: 'fixed'
-    }}>
-      <Navbar />
-      <Hero />
-      <LogoCloud />
-      <Services />
-      <CTA />
-    </div>
+    <AppLayout>
+      <div className="min-h-screen bg-[#0a0a0a] text-white -m-4 md:-m-6" style={{
+        backgroundImage: `
+          radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
+          radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.1) 0px, transparent 50%)
+        `,
+        backgroundAttachment: 'fixed'
+      }}>
+        <Navbar />
+        <Hero />
+        <LogoCloud />
+        <Services />
+        <CTA />
+      </div>
+    </AppLayout>
   )
 }
+
 
 
 

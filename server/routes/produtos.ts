@@ -1,7 +1,7 @@
 // FR Tech OS - Produtos Route
 
 import { Router } from 'express';
-import { getProdutos, getProdutosByStatus } from '../lib/notionDataLayer';
+import { getProdutos, getProdutosByStatus, createProduto } from '../lib/notionDataLayer';
 
 export const produtosRouter = Router();
 
@@ -30,6 +30,21 @@ produtosRouter.get('/', async (req, res) => {
   }
 });
 
-
+/**
+ * POST /api/produtos
+ * Create a new produto
+ */
+produtosRouter.post('/', async (req, res) => {
+  try {
+    const produto = await createProduto(req.body);
+    res.json(produto);
+  } catch (error: any) {
+    console.error('Error creating produto:', error);
+    res.status(500).json({ 
+      error: 'Failed to create produto',
+      message: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
 
 

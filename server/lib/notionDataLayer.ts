@@ -219,6 +219,7 @@ function pageToAction(page: any): NotionAction {
     Diagnostic: extractRelation(props.Diagnostic)[0] || '',
     WeekKey: extractText(props.WeekKey),
     Month: extractNumber(props.Month),
+    Priority: (extractSelect(props.Priority) as 'Alta' | 'Média' | 'Baixa') || undefined,
     PublicVisible: extractBoolean(props.PublicVisible),
     Notes: extractText(props.Notes)
   };
@@ -740,6 +741,9 @@ export async function createAction(
   if (payload.Month !== undefined) {
     properties.Month = { number: payload.Month };
   }
+  if (payload.Priority) {
+    properties.Priority = { select: { name: payload.Priority } };
+  }
 
   const response = await retryWithBackoff(() =>
     client.pages.create({
@@ -847,6 +851,13 @@ export async function updateAction(
   }
   if (updates.Month !== undefined) {
     properties.Month = { number: updates.Month };
+  }
+  if (updates.Priority !== undefined) {
+    if (updates.Priority === '' || updates.Priority === null) {
+      properties.Priority = { select: null };
+    } else {
+      properties.Priority = { select: { name: updates.Priority } };
+    }
   }
   if (updates.PublicVisible !== undefined) {
     properties.PublicVisible = { checkbox: updates.PublicVisible };
@@ -1645,6 +1656,19 @@ export async function deleteContact(id: string): Promise<void> {
 }
 
 /**
+ * Delete action
+ */
+export async function deleteAction(id: string): Promise<void> {
+  const client = initNotionClient();
+  await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      archived: true
+    })
+  );
+}
+
+/**
  * Create new contact
  */
 export async function createContact(data: {
@@ -1723,5 +1747,53 @@ export async function getProdutosByStatus(status: string): Promise<NotionProduto
   );
 
   return response.results.map(pageToProduto);
+}
+
+/**
+ * Create a new produto
+ */
+export async function createProduto(payload: Partial<NotionProduto>): Promise<NotionProduto> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Produtos');
+  if (!dbId) throw new Error('NOTION_DB_PRODUTOS not configured');
+
+  const properties: any = {
+    Name: { title: [{ text: { content: payload.Name || '' } }] },
+    Status: { select: { name: payload.Status || 'Ideia' } },
+  };
+
+  if (payload.ProblemaQueResolve) {
+    properties.ProblemaQueResolve = { rich_text: [{ text: { content: payload.ProblemaQueResolve } }] };
+  }
+  if (payload.PrecoMinimo !== undefined) {
+    properties.PrecoMinimo = { number: payload.PrecoMinimo };
+  }
+  if (payload.PrecoIdeal !== undefined) {
+    properties.PrecoIdeal = { number: payload.PrecoIdeal };
+  }
+  if (payload.Tipo) {
+    properties.Tipo = { select: { name: payload.Tipo } };
+  }
+  if (payload.TempoMedioEntrega !== undefined) {
+    properties.TempoMedioEntrega = { number: payload.TempoMedioEntrega };
+  }
+  if (payload.DependenciaFundador) {
+    properties.DependenciaFundador = { select: { name: payload.DependenciaFundador } };
+  }
+  if (payload.Replicabilidade) {
+    properties.Replicabilidade = { select: { name: payload.Replicabilidade } };
+  }
+  if (payload.PrioridadeEstrategica !== undefined) {
+    properties.PrioridadeEstrategica = { number: payload.PrioridadeEstrategica };
+  }
+
+  const response = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToProduto(response);
 }
 

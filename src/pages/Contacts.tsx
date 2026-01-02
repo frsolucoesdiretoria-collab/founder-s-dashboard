@@ -235,10 +235,10 @@ export default function ContactsPage() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <CardTitle className="text-lg">{contact.Name}</CardTitle>
-                      {contact.Company && (
+                      {contact.WhatsApp && (
                         <CardDescription className="flex items-center gap-1 mt-1">
-                          <Building className="h-3 w-3" />
-                          {contact.Company}
+                          <Phone className="h-3 w-3" />
+                          {contact.WhatsApp}
                         </CardDescription>
                       )}
                     </div>
@@ -263,35 +263,13 @@ export default function ContactsPage() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  {contact.WhatsApp && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Phone className="h-4 w-4" />
-                      {contact.WhatsApp}
-                    </div>
-                  )}
-                  {contact.City && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <MapPin className="h-4 w-4" />
-                      {contact.City}
-                    </div>
-                  )}
-                  {contact.Status && (
-                    <div className="flex gap-2 flex-wrap mt-2">
-                      <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-primary/10 text-primary">
-                        {contact.Status}
-                      </span>
-                      {contact.Segment && (
-                        <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-secondary/10 text-secondary-foreground">
-                          {contact.Segment}
-                        </span>
-                      )}
-                    </div>
-                  )}
-                  {contact.Notes && (
-                    <p className="text-sm text-muted-foreground line-clamp-2 mt-2">
-                      {contact.Notes}
-                    </p>
-                  )}
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-sm text-muted-foreground"
+                    onClick={() => handleOpenDialog(contact)}
+                  >
+                    Ver detalhes
+                  </Button>
                 </CardContent>
               </Card>
             ))}

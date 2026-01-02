@@ -40,14 +40,16 @@ export async function createCoffeeDiagnostic(
   });
   
   // Create associated action
+  // Note: Goal will be empty - user needs to assign it manually or it should be set via API
+  // If Goal is required, it should be fetched dynamically based on KPI "Cafés Realizados"
   const action = await createAction({
     Name: `Café com ${formData.contactName}`,
     Type: 'Café',
     Date: today,
-    Done: true,
+    Done: false, // Don't mark as done if no Goal - system validation requires Goal to mark as Done
     Contribution: 1,
     Earned: 0,
-    Goal: '1', // Coffee goal
+    Goal: '', // Empty - will need to be set manually or fetched from KPI-related Goal
     Contact: formData.contactName,
     Client: formData.company,
     Proposal: '',

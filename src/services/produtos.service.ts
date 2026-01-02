@@ -61,3 +61,52 @@ export async function getProdutosByStatus(status: Produto['status']): Promise<Pr
   }
 }
 
+/**
+ * Create a new produto
+ */
+export async function createProduto(produto: Omit<Produto, 'id'>): Promise<Produto> {
+  try {
+    const response = await fetch('/api/produtos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        Name: produto.nome,
+        Status: produto.status,
+        ProblemaQueResolve: produto.problemaQueResolve,
+        PrecoMinimo: produto.precoMinimo,
+        PrecoIdeal: produto.precoIdeal,
+        Tipo: produto.tipo,
+        TempoMedioEntrega: produto.tempoMedioEntrega,
+        DependenciaFundador: produto.dependenciaFundador,
+        Replicabilidade: produto.replicabilidade,
+        PrioridadeEstrategica: produto.prioridadeEstrategica
+      })
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || error.error || 'Failed to create produto');
+    }
+
+    const data = await response.json();
+    return {
+      id: data.id,
+      nome: data.Name,
+      status: data.Status || 'Ideia',
+      problemaQueResolve: data.ProblemaQueResolve || '',
+      precoMinimo: data.PrecoMinimo || 0,
+      precoIdeal: data.PrecoIdeal || 0,
+      tipo: data.Tipo || '',
+      tempoMedioEntrega: data.TempoMedioEntrega || 0,
+      dependenciaFundador: data.DependenciaFundador || 'Média',
+      replicabilidade: data.Replicabilidade || 'Média',
+      prioridadeEstrategica: data.PrioridadeEstrategica || 0
+    };
+  } catch (error) {
+    console.error('Error creating produto:', error);
+    throw error;
+  }
+}
+

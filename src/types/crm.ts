@@ -13,10 +13,12 @@ export interface ContactPipeline {
 
 export interface PipelineKPIs {
   totalLeads: number;
+  conversionActivatedToCoffee: number; // % Contatos Ativados → Cafés Agendados
   conversionCoffeeToProposal: number; // %
   conversionProposalToSale: number; // %
   averageSalesCycle: number; // days
 }
+
 
 
 
