@@ -109,7 +109,7 @@ function KanbanColumn({
   });
 
   return (
-    <div className="flex-shrink-0 w-64" ref={setNodeRef}>
+    <div className="flex-shrink-0 w-64">
       <div className="mb-2">
         <Badge variant="outline" className={statusColors[status] || ''}>
           {statusIcons[status]}
@@ -117,7 +117,13 @@ function KanbanColumn({
           <span className="ml-2 text-xs">({contacts.length})</span>
         </Badge>
       </div>
-      <div className={`space-y-2 min-h-[200px] bg-muted/30 rounded-lg p-2 transition-colors ${isOver ? 'bg-primary/10 border-2 border-primary border-dashed' : ''}`}>
+      {/* Área droppable - aplicar ref aqui na área onde os cards são renderizados */}
+      <div 
+        ref={setNodeRef}
+        className={`space-y-2 min-h-[200px] bg-muted/30 rounded-lg p-2 transition-colors ${
+          isOver ? 'bg-primary/10 border-2 border-primary border-dashed' : ''
+        }`}
+      >
         <SortableContext items={contacts.map(c => c.id)} strategy={verticalListSortingStrategy}>
           {contacts.map((contact) => (
             <DraggableContactCard key={contact.id} contact={contact} />
@@ -225,25 +231,48 @@ export default function CRMPage() {
     setActiveId(null);
 
     if (!over) {
+      console.log('⚠️ Drag cancelado: nenhum target');
       return;
     }
 
     const contactId = active.id as string;
     const overId = over.id as string;
 
+    console.log('🔍 Drag End Debug:', {
+      contactId,
+      overId,
+      overType: typeof overId,
+      availableColumns: kanbanColumns,
+      availableContacts: contacts.map(c => ({ id: c.id, name: c.name, status: c.status }))
+    });
+
     // Estratégia 1: Verificar se overId é um status de coluna válido (drop direto na coluna)
     let newStatus = kanbanColumns.find(col => col === overId) as ContactPipeline['status'] | undefined;
     
-    // Estratégia 2: Se não for coluna, pode ser um card - encontrar a coluna pai usando o status do contato
-    if (!newStatus) {
+    if (newStatus) {
+      console.log('✅ Drop detectado diretamente na coluna:', newStatus);
+    } else {
+      // Estratégia 2: Se não for coluna, pode ser um card - encontrar a coluna pai usando o status do contato
       const overContact = contacts.find(c => c.id === overId);
       if (overContact) {
         // Se for um contato, usar o status desse contato (mesma coluna)
         newStatus = overContact.status;
+        console.log('✅ Drop detectado sobre card, usando status da coluna:', newStatus);
       } else {
-        // Se não for nem coluna nem contato, não fazer nada
-        console.log('⚠️ Drop target não reconhecido:', overId);
-        return;
+        // Tentar encontrar por string match (caso haja diferença de tipo)
+        const stringMatch = kanbanColumns.find(col => String(col) === String(overId));
+        if (stringMatch) {
+          newStatus = stringMatch;
+          console.log('✅ Drop detectado por string match:', newStatus);
+        } else {
+          console.log('⚠️ Drop target não reconhecido:', {
+            overId,
+            overIdType: typeof overId,
+            columns: kanbanColumns,
+            firstColumnType: typeof kanbanColumns[0]
+          });
+          return;
+        }
       }
     }
 
@@ -256,6 +285,7 @@ export default function CRMPage() {
 
     // Se o status não mudou, não fazer nada
     if (contact.status === newStatus) {
+      console.log('ℹ️ Status não mudou, ignorando');
       return;
     }
 
