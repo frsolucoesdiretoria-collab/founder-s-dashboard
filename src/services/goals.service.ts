@@ -24,13 +24,23 @@ export async function getPublicGoals(range?: { start?: string; end?: string }): 
       throw new Error('Rate limit: Muitas requisições. Aguarde alguns segundos.');
     }
     
-    if (!response.ok) {
-      throw new Error(`Failed to fetch goals: ${response.statusText}`);
+    if (response.status === 0 || !response.ok) {
+      // Verificar se é erro de conexão
+      if (!response.ok && response.status !== 500) {
+        throw new Error(`Servidor não está respondendo. Verifique se o servidor está rodando na porta 3001.`);
+      }
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || errorData.error || `Failed to fetch goals: ${response.statusText}`);
     }
+    
     const goals: Goal[] = await response.json();
     return filterPublicGoals(goals);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching goals:', error);
+    // Se for erro de rede, dar mensagem mais clara
+    if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError') || error.name === 'TypeError') {
+      throw new Error('Não foi possível conectar ao servidor. Verifique se o servidor está rodando.');
+    }
     throw error; // Re-throw to let Dashboard handle it
   }
 }

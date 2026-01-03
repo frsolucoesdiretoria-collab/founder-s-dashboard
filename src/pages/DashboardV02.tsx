@@ -9,6 +9,7 @@ import type { Goal } from '@/types/goal';
 import type { NotionKPI, NotionGoal } from '@/lib/notion/types';
 import { toast } from 'sonner';
 import { Separator } from '@/components/ui/separator';
+import { useSyncCRMGoals } from '@/hooks/useSyncCRMGoals';
 
 type PeriodGroup = 'Mensal' | 'Trimestral' | 'Semestral' | 'Anual';
 
@@ -24,6 +25,12 @@ export default function DashboardV02() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Sincronizar Goals do CRM automaticamente e recarregar dados após sincronização
+  useSyncCRMGoals(true, () => {
+    // Recarregar dados após sincronização bem-sucedida
+    loadData();
+  });
 
   useEffect(() => {
     loadData();

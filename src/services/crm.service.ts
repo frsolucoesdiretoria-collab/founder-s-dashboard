@@ -8,12 +8,23 @@ import type { ContactPipeline, PipelineKPIs } from '@/types/crm';
 export async function getPipelineKPIs(): Promise<PipelineKPIs> {
   try {
     const response = await fetch('/api/crm/kpis');
-    if (!response.ok) {
-      throw new Error('Failed to fetch pipeline KPIs');
+    
+    if (response.status === 0 || !response.ok) {
+      // Verificar se é erro de conexão
+      if (!response.ok && response.status !== 500) {
+        throw new Error(`Servidor não está respondendo. Verifique se o servidor está rodando na porta 3001.`);
+      }
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || errorData.error || `HTTP ${response.status}`);
     }
+    
     return response.json();
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching pipeline KPIs:', error);
+    // Se for erro de rede, dar mensagem mais clara
+    if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError') || error.name === 'TypeError') {
+      throw new Error('Não foi possível conectar ao servidor. Verifique se o servidor está rodando.');
+    }
     throw error;
   }
 }
@@ -24,9 +35,16 @@ export async function getPipelineKPIs(): Promise<PipelineKPIs> {
 export async function getContactsPipeline(): Promise<ContactPipeline[]> {
   try {
     const response = await fetch('/api/crm/pipeline');
-    if (!response.ok) {
-      throw new Error('Failed to fetch contacts pipeline');
+    
+    if (response.status === 0 || !response.ok) {
+      // Verificar se é erro de conexão
+      if (!response.ok && response.status !== 500) {
+        throw new Error(`Servidor não está respondendo. Verifique se o servidor está rodando na porta 3001.`);
+      }
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || errorData.error || `HTTP ${response.status}`);
     }
+    
     const data = await response.json();
     // Map Notion types to frontend types
     return data.map((contact: any) => ({
@@ -39,8 +57,12 @@ export async function getContactsPipeline(): Promise<ContactPipeline[]> {
       proposalDate: contact.ProposalDate || undefined,
       notes: contact.Notes || undefined
     }));
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching contacts pipeline:', error);
+    // Se for erro de rede, dar mensagem mais clara
+    if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError') || error.name === 'TypeError') {
+      throw new Error('Não foi possível conectar ao servidor. Verifique se o servidor está rodando.');
+    }
     throw error;
   }
 }

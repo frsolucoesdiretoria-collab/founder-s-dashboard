@@ -33,6 +33,14 @@ export function validateAdminPasscode(passcode: string): boolean {
 }
 
 /**
+ * Validate finance passcode
+ */
+export function validateFinancePasscode(passcode: string): boolean {
+  const financePasscode = '06092021';
+  return passcode === financePasscode;
+}
+
+/**
  * Check if action can be marked as done (must have Goal)
  */
 export function canMarkActionDone(action: NotionAction): { allowed: boolean; reason?: string } {

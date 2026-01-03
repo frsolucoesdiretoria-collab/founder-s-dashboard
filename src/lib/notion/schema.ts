@@ -178,6 +178,110 @@ export const NOTION_SCHEMA: Record<string, DatabaseSchema> = {
       { name: 'Name', type: 'title', required: true, description: 'Nome da métrica financeira' }
     ]
   },
+  BudgetGoals: {
+    name: 'BudgetGoals',
+    envVar: 'NOTION_DB_BUDGETGOALS',
+    required: false,
+    properties: [
+      { name: 'Name', type: 'title', required: true, description: 'Nome da meta de orçamento' },
+      { name: 'Category', type: 'select', required: true, description: 'Categoria do plano de contas' },
+      { name: 'Month', type: 'number', required: true, description: 'Mês (1-12)' },
+      { name: 'Year', type: 'number', required: true, description: 'Ano' },
+      { name: 'BudgetAmount', type: 'number', required: true, description: 'Valor previsto do orçamento' },
+      { name: 'SpentAmount', type: 'number', required: false, description: 'Valor gasto até o momento' },
+      { name: 'PeriodStart', type: 'date', required: true, description: 'Início do período' },
+      { name: 'PeriodEnd', type: 'date', required: true, description: 'Fim do período' },
+      { name: 'Status', type: 'select', required: false, description: 'Status: Em andamento, Atingido, Excedido, Não iniciado' },
+      { name: 'Notes', type: 'rich_text', required: false, description: 'Observações' }
+    ]
+  },
+  Transactions: {
+    name: 'Transactions',
+    envVar: 'NOTION_DB_TRANSACTIONS',
+    required: false,
+    properties: [
+      { name: 'Name', type: 'title', required: true, description: 'Descrição da transação' },
+      { name: 'Date', type: 'date', required: true, description: 'Data da transação' },
+      { name: 'Amount', type: 'number', required: true, description: 'Valor (negativo para saídas, positivo para entradas)' },
+      { name: 'Type', type: 'select', required: true, description: 'Tipo: Entrada, Saída' },
+      { name: 'Category', type: 'select', required: false, description: 'Categoria do plano de contas' },
+      { name: 'Account', type: 'select', required: true, description: 'Conta bancária' },
+      { name: 'Description', type: 'rich_text', required: false, description: 'Descrição detalhada' },
+      { name: 'BudgetGoal', type: 'relation', required: false, description: 'Relacionamento com BudgetGoals' },
+      { name: 'Imported', type: 'checkbox', required: true, description: 'Indica se foi importado de extrato' },
+      { name: 'ImportedAt', type: 'date', required: false, description: 'Data de importação' },
+      { name: 'FileSource', type: 'rich_text', required: false, description: 'Nome do arquivo de origem (CSV/OFX)' },
+      { name: 'Reconciled', type: 'checkbox', required: false, description: 'Transação conciliada' },
+      { name: 'ReconciledAt', type: 'date', required: false, description: 'Data de conciliação' },
+      { name: 'Recurring', type: 'checkbox', required: false, description: 'Transação recorrente' },
+      { name: 'RecurringRule', type: 'rich_text', required: false, description: 'Regra de recorrência' }
+    ]
+  },
+  Accounts: {
+    name: 'Accounts',
+    envVar: 'NOTION_DB_ACCOUNTS',
+    required: false,
+    properties: [
+      { name: 'Name', type: 'title', required: true, description: 'Nome da conta' },
+      { name: 'Type', type: 'select', required: true, description: 'Tipo: Corrente, Poupança, Cartão de Crédito, Investimento' },
+      { name: 'Bank', type: 'select', required: true, description: 'Banco' },
+      { name: 'AccountType', type: 'select', required: true, description: 'Tipo: Empresarial ou Pessoal' },
+      { name: 'InitialBalance', type: 'number', required: true, description: 'Saldo inicial' },
+      { name: 'CurrentBalance', type: 'number', required: true, description: 'Saldo atual' },
+      { name: 'Limit', type: 'number', required: false, description: 'Limite de crédito (para cartões)' },
+      { name: 'Active', type: 'checkbox', required: true, description: 'Conta ativa' },
+      { name: 'Notes', type: 'rich_text', required: false, description: 'Observações' }
+    ]
+  },
+  AccountsPayable: {
+    name: 'AccountsPayable',
+    envVar: 'NOTION_DB_ACCOUNTSPAYABLE',
+    required: false,
+    properties: [
+      { name: 'Name', type: 'title', required: true, description: 'Descrição da conta' },
+      { name: 'Description', type: 'rich_text', required: false, description: 'Detalhes' },
+      { name: 'Amount', type: 'number', required: true, description: 'Valor' },
+      { name: 'DueDate', type: 'date', required: true, description: 'Data de vencimento' },
+      { name: 'PaidDate', type: 'date', required: false, description: 'Data de pagamento' },
+      { name: 'Status', type: 'select', required: true, description: 'Status: Pendente, Pago, Vencido' },
+      { name: 'Category', type: 'select', required: false, description: 'Categoria' },
+      { name: 'Account', type: 'relation', required: false, description: 'Relacionamento com Accounts' },
+      { name: 'Paid', type: 'checkbox', required: true, description: 'Pago' },
+      { name: 'Recurring', type: 'checkbox', required: false, description: 'Recorrente' },
+      { name: 'RecurringRule', type: 'rich_text', required: false, description: 'Regra de recorrência' }
+    ]
+  },
+  AccountsReceivable: {
+    name: 'AccountsReceivable',
+    envVar: 'NOTION_DB_ACCOUNTSRECEIVABLE',
+    required: false,
+    properties: [
+      { name: 'Name', type: 'title', required: true, description: 'Descrição da conta' },
+      { name: 'Description', type: 'rich_text', required: false, description: 'Detalhes' },
+      { name: 'Amount', type: 'number', required: true, description: 'Valor' },
+      { name: 'DueDate', type: 'date', required: true, description: 'Data de vencimento' },
+      { name: 'ReceivedDate', type: 'date', required: false, description: 'Data de recebimento' },
+      { name: 'Status', type: 'select', required: true, description: 'Status: Pendente, Recebido, Atrasado' },
+      { name: 'Category', type: 'select', required: false, description: 'Categoria' },
+      { name: 'Account', type: 'relation', required: false, description: 'Relacionamento com Accounts' },
+      { name: 'Received', type: 'checkbox', required: true, description: 'Recebido' },
+      { name: 'Recurring', type: 'checkbox', required: false, description: 'Recorrente' },
+      { name: 'RecurringRule', type: 'rich_text', required: false, description: 'Regra de recorrência' }
+    ]
+  },
+  CategorizationRules: {
+    name: 'CategorizationRules',
+    envVar: 'NOTION_DB_CATEGORIZATIONRULES',
+    required: false,
+    properties: [
+      { name: 'Name', type: 'title', required: true, description: 'Nome da regra' },
+      { name: 'Pattern', type: 'rich_text', required: true, description: 'Padrão de busca (texto ou regex)' },
+      { name: 'Category', type: 'select', required: true, description: 'Categoria a aplicar' },
+      { name: 'Priority', type: 'number', required: true, description: 'Prioridade (1-10, maior = mais importante)' },
+      { name: 'Active', type: 'checkbox', required: true, description: 'Regra ativa' },
+      { name: 'AccountType', type: 'select', required: true, description: 'Tipo: Empresarial, Pessoal, Ambos' }
+    ]
+  },
   CRMPipeline: {
     name: 'CRMPipeline',
     envVar: 'NOTION_DB_CRMPIPELINE',

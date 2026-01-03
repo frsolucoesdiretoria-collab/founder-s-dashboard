@@ -9,6 +9,7 @@ import { Users, TrendingUp, Calendar, FileText, CheckCircle, XCircle, Clock, Sea
 import { getPipelineKPIs, getContactsPipeline, getContactsByStatus, updateContactStatus } from '@/services';
 import type { ContactPipeline, PipelineKPIs } from '@/types/crm';
 import { toast } from 'sonner';
+import { useSyncCRMGoals } from '@/hooks/useSyncCRMGoals';
 import {
   DndContext,
   DragOverlay,
@@ -142,6 +143,9 @@ export default function CRMPage() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
 
+  // Sincronizar Goals do CRM automaticamente
+  useSyncCRMGoals(true);
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -155,6 +159,7 @@ export default function CRMPage() {
 
   const loadData = async () => {
     try {
+      setLoading(true);
       const [kpisData, contactsData] = await Promise.all([
         getPipelineKPIs(),
         getContactsPipeline()
@@ -162,8 +167,19 @@ export default function CRMPage() {
       setKpis(kpisData);
       setContacts(contactsData);
       setFilteredContacts(contactsData);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading CRM data:', error);
+      toast.error(`Erro ao carregar dados do CRM: ${error.message || 'Erro desconhecido'}`);
+      // Definir valores padrão para evitar quebra da UI
+      setKpis({
+        totalLeads: 0,
+        conversionActivatedToCoffee: 0,
+        conversionCoffeeToProposal: 0,
+        conversionProposalToSale: 0,
+        averageSalesCycle: 0
+      });
+      setContacts([]);
+      setFilteredContacts([]);
     } finally {
       setLoading(false);
     }

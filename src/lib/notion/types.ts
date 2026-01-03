@@ -179,6 +179,92 @@ export interface NotionPartnerNudge {
 }
 
 // Environment variables schema
+export interface NotionBudgetGoal {
+  id: string;
+  Name: string;
+  Category: string;
+  Month: number;
+  Year: number;
+  BudgetAmount: number;
+  SpentAmount: number;
+  PeriodStart: string;
+  PeriodEnd: string;
+  Status: 'Em andamento' | 'Atingido' | 'Excedido' | 'Não iniciado';
+  Notes?: string;
+}
+
+export interface NotionTransaction {
+  id: string;
+  Name: string;
+  Date: string;
+  Amount: number;
+  Type: 'Entrada' | 'Saída';
+  Category?: string;
+  Account: string;
+  Description?: string;
+  BudgetGoal?: string;
+  Imported: boolean;
+  ImportedAt?: string;
+  FileSource?: string;
+  Reconciled?: boolean;
+  ReconciledAt?: string;
+  Recurring?: boolean;
+  RecurringRule?: string;
+}
+
+export interface NotionAccount {
+  id: string;
+  Name: string;
+  Type: 'Corrente' | 'Poupança' | 'Cartão de Crédito' | 'Investimento';
+  Bank: string;
+  AccountType: 'Empresarial' | 'Pessoal';
+  InitialBalance: number;
+  CurrentBalance: number;
+  Limit?: number;
+  Active: boolean;
+  Notes?: string;
+}
+
+export interface NotionAccountPayable {
+  id: string;
+  Name: string;
+  Description?: string;
+  Amount: number;
+  DueDate: string;
+  PaidDate?: string;
+  Status: 'Pendente' | 'Pago' | 'Vencido';
+  Category?: string;
+  Account?: string;
+  Paid: boolean;
+  Recurring?: boolean;
+  RecurringRule?: string;
+}
+
+export interface NotionAccountReceivable {
+  id: string;
+  Name: string;
+  Description?: string;
+  Amount: number;
+  DueDate: string;
+  ReceivedDate?: string;
+  Status: 'Pendente' | 'Recebido' | 'Atrasado';
+  Category?: string;
+  Account?: string;
+  Received: boolean;
+  Recurring?: boolean;
+  RecurringRule?: string;
+}
+
+export interface NotionCategorizationRule {
+  id: string;
+  Name: string;
+  Pattern: string;
+  Category: string;
+  Priority: number;
+  Active: boolean;
+  AccountType: 'Empresarial' | 'Pessoal' | 'Ambos';
+}
+
 export interface NotionEnvVars {
   NOTION_TOKEN: string;
   NOTION_DB_KPIS: string;
@@ -192,6 +278,8 @@ export interface NotionEnvVars {
   NOTION_DB_EXPANSIONOPPORTUNITIES: string;
   NOTION_DB_CUSTOMERWINS: string;
   NOTION_DB_FINANCEMETRICS: string;
+  NOTION_DB_BUDGETGOALS?: string;
+  NOTION_DB_TRANSACTIONS?: string;
   NOTION_DB_CRMPIPELINE?: string;
   NOTION_DB_PRODUTOS?: string;
   // Phase 2
