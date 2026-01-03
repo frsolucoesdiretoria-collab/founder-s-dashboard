@@ -125,57 +125,115 @@ crmRouter.get('/kpis', async (req, res) => {
 });
 
 /**
- * Helper function to sync Cafés Agendados goals with CRM data
+ * Helper function to sync all CRM Goals with CRM data for all relevant statuses
+ * Mapeamento:
+ * - Contato Ativado → KPI "Contatos Ativados"
+ * - Café Agendado → KPI "Cafés Agendados"
+ * - Café Executado → KPI "Café Executado"
+ * - Proposta Enviada → KPI "Propostas de Crescimento"
+ * - Venda Fechada → KPI "Vendas Feitas"
  */
-async function syncCafesGoals() {
+async function syncAllCRMGoals() {
   try {
-    // Buscar todas as Goals mensais de "Cafés Agendados"
     const allGoals = await getGoals();
-    const cafesAgendadosGoals = allGoals.filter(g => 
-      g.Name.includes('Cafés Agendados') && g.Month > 0
-    );
-
-    if (cafesAgendadosGoals.length === 0) {
-      console.log('ℹ️ No "Cafés Agendados" goals found to sync');
-      return;
-    }
-
-    // Buscar todos os contatos do CRM
     const contacts = await getCRMPipeline();
 
-    // Para cada goal, contar contatos no CRM com status "Café Agendado" no período
-    for (const goal of cafesAgendadosGoals) {
-      try {
-        const periodStart = new Date(goal.PeriodStart);
-        periodStart.setHours(0, 0, 0, 0);
-        const periodEnd = new Date(goal.PeriodEnd);
-        periodEnd.setHours(23, 59, 59, 999);
-        
-        // Contar contatos com status "Café Agendado" no período
-        const cafesNoPeriodo = contacts.filter(c => {
-          if (c.Status !== 'Café Agendado' && c.Status !== 'Café Executado') {
-            return false;
-          }
-          if (!c.CoffeeDate) {
-            return false;
-          }
-          const coffeeDate = new Date(c.CoffeeDate);
-          return coffeeDate >= periodStart && coffeeDate <= periodEnd;
-        }).length;
+    // Mapeamento de status para padrões de busca em Goal.Name
+    const statusToGoalPatterns: Record<string, string[]> = {
+      'Contato Ativado': ['Contatos Ativados'],
+      'Café Agendado': ['Cafés Agendados'],
+      'Café Executado': ['Café Executado'],
+      'Proposta Enviada': ['Propostas de Crescimento', 'Propostas'],
+      'Venda Fechada': ['Vendas Feitas', 'Vendas']
+    };
 
-        // Atualizar goal com o valor atual
-        await updateGoal(goal.id, {
-          Actual: cafesNoPeriodo
-        });
-        
-        console.log(`✅ Goal ${goal.id} atualizada: ${cafesNoPeriodo} cafés`);
-      } catch (goalError: any) {
-        // Continuar com próxima goal mesmo se uma falhar
-        console.error(`⚠️ Error syncing goal ${goal.id}:`, goalError.message);
+    // Para cada status, buscar Goals relacionadas e atualizar
+    for (const [status, patterns] of Object.entries(statusToGoalPatterns)) {
+      // Buscar Goals que correspondem aos padrões
+      const relevantGoals = allGoals.filter(goal => 
+        patterns.some(pattern => 
+          goal.Name.toLowerCase().includes(pattern.toLowerCase())
+        ) && goal.Month > 0 // Apenas Goals mensais
+      );
+
+      if (relevantGoals.length === 0) {
+        console.log(`ℹ️ No goals found for status "${status}"`);
+        continue;
+      }
+
+      // Para cada Goal, contar contatos no período
+      for (const goal of relevantGoals) {
+        try {
+          const periodStart = new Date(goal.PeriodStart);
+          periodStart.setHours(0, 0, 0, 0);
+          const periodEnd = new Date(goal.PeriodEnd);
+          periodEnd.setHours(23, 59, 59, 999);
+          
+          // Contar contatos com status específico no período
+          let count = 0;
+          
+          if (status === 'Contato Ativado') {
+            // Contatos Ativados: contar todos os contatos criados/ativados no período
+            count = contacts.filter(c => {
+              const lastUpdate = new Date(c.LastUpdate);
+              return lastUpdate >= periodStart && lastUpdate <= periodEnd;
+            }).length;
+          } else if (status === 'Café Agendado') {
+            // Cafés Agendados: contar contatos com status "Café Agendado" ou superior que têm CoffeeDate no período
+            count = contacts.filter(c => {
+              if (!c.CoffeeDate) return false;
+              const coffeeDate = new Date(c.CoffeeDate);
+              return coffeeDate >= periodStart && coffeeDate <= periodEnd &&
+                     (c.Status === 'Café Agendado' || 
+                      c.Status === 'Café Executado' || 
+                      c.Status === 'Proposta Enviada' || 
+                      c.Status === 'Follow-up Ativo' || 
+                      c.Status === 'Venda Fechada');
+            }).length;
+          } else if (status === 'Café Executado') {
+            // Café Executado: contar contatos com status "Café Executado" ou superior
+            count = contacts.filter(c => {
+              if (!c.CoffeeDate) return false;
+              const coffeeDate = new Date(c.CoffeeDate);
+              return coffeeDate >= periodStart && coffeeDate <= periodEnd &&
+                     (c.Status === 'Café Executado' || 
+                      c.Status === 'Proposta Enviada' || 
+                      c.Status === 'Follow-up Ativo' || 
+                      c.Status === 'Venda Fechada');
+            }).length;
+          } else if (status === 'Proposta Enviada') {
+            // Propostas Enviadas: contar contatos com status "Proposta Enviada" ou superior
+            count = contacts.filter(c => {
+              if (!c.ProposalDate) return false;
+              const proposalDate = new Date(c.ProposalDate);
+              return proposalDate >= periodStart && proposalDate <= periodEnd &&
+                     (c.Status === 'Proposta Enviada' || 
+                      c.Status === 'Follow-up Ativo' || 
+                      c.Status === 'Venda Fechada');
+            }).length;
+          } else if (status === 'Venda Fechada') {
+            // Vendas Fechadas: contar apenas contatos com status "Venda Fechada"
+            count = contacts.filter(c => {
+              if (c.Status !== 'Venda Fechada') return false;
+              const lastUpdate = new Date(c.LastUpdate);
+              return lastUpdate >= periodStart && lastUpdate <= periodEnd;
+            }).length;
+          }
+
+          // Atualizar Goal com o valor atual
+          await updateGoal(goal.id, {
+            Actual: count
+          });
+          
+          console.log(`✅ Goal "${goal.Name}" (${goal.id}) atualizada: ${count} ${status}`);
+        } catch (goalError: any) {
+          // Continuar com próxima goal mesmo se uma falhar
+          console.error(`⚠️ Error syncing goal ${goal.id}:`, goalError.message);
+        }
       }
     }
   } catch (error: any) {
-    console.error('Error syncing cafes goals:', error);
+    console.error('Error syncing all CRM goals:', error);
     throw error; // Re-throw para que a rota possa tratar
   }
 }
@@ -230,10 +288,10 @@ crmRouter.put('/pipeline/:id', async (req, res) => {
     // Debug: Log successful update
     console.log(`✅ Contact ${id} updated successfully. New Status: ${updated.Status}`);
 
-    // Sincronizar Goals se o status mudou para "Café Agendado" ou outros status relevantes
-    if (Status === 'Café Agendado' || Status === 'Café Executado') {
+    // Sincronizar Goals quando status mudar (exceto "Perdido" e "Follow-up Ativo" que não têm KPI)
+    if (Status && Status !== 'Perdido' && Status !== 'Follow-up Ativo') {
       try {
-        await syncCafesGoals();
+        await syncAllCRMGoals();
       } catch (syncError) {
         console.error('⚠️ Error syncing goals (non-blocking):', syncError);
         // Não bloquear a resposta se a sincronização falhar
@@ -266,7 +324,7 @@ crmRouter.post('/sync-goals', async (req, res) => {
   }, 30000);
 
   try {
-    await syncCafesGoals();
+    await syncAllCRMGoals();
     clearTimeout(timeout);
     if (!res.headersSent) {
       res.json({ success: true, message: 'Goals sincronizadas com sucesso' });

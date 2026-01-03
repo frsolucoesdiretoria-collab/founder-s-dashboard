@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react';
 import { AppLayout } from '@/components/AppLayout';
 import { KPICard } from '@/components/KPICard';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, Loader2 } from 'lucide-react';
+import { AlertCircle, Loader2, RefreshCw } from 'lucide-react';
 import { getPublicKPIs, getPublicGoals } from '@/services';
 import type { KPI } from '@/types/kpi';
 import type { Goal } from '@/types/goal';
 import type { NotionKPI, NotionGoal } from '@/lib/notion/types';
 import { toast } from 'sonner';
 import { Separator } from '@/components/ui/separator';
-import { useSyncCRMGoals } from '@/hooks/useSyncCRMGoals';
+import { Button } from '@/components/ui/button';
 
 type PeriodGroup = 'Mensal' | 'Trimestral' | 'Semestral' | 'Anual';
 
@@ -25,19 +25,17 @@ export default function DashboardV02() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Sincronizar Goals do CRM automaticamente e recarregar dados após sincronização
-  useSyncCRMGoals(true, () => {
-    // Recarregar dados após sincronização bem-sucedida
-    loadData();
-  });
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     loadData();
   }, []);
 
   async function loadData() {
-    setLoading(true);
+    // Se já está carregando inicialmente, não mostrar loading no refresh
+    if (!refreshing) {
+      setLoading(true);
+    }
     setError(null);
     try {
       const [kpisData, goalsData] = await Promise.all([
@@ -63,6 +61,10 @@ export default function DashboardV02() {
       const sortedKpis = Array.from(uniqueKPIs.values()).sort((a, b) => (a.SortOrder || 0) - (b.SortOrder || 0));
       setKpis(sortedKpis);
       setGoals(goalsData);
+      
+      if (refreshing) {
+        toast.success('Dados atualizados');
+      }
     } catch (err: any) {
       console.error('Error loading dashboard data:', err);
       
@@ -75,8 +77,14 @@ export default function DashboardV02() {
       }
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   }
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    loadData();
+  };
 
   // Group KPIs by period (duplicates already removed in loadData)
   const groupedKPIs: GroupedKPIs = {
@@ -180,11 +188,22 @@ export default function DashboardV02() {
   return (
     <AppLayout>
       <div className="space-y-4 md:space-y-6 pb-6">
-        <div className="px-1">
-          <h1 className="text-xl md:text-2xl font-bold text-foreground">Dashboard V02</h1>
-          <p className="text-sm md:text-base text-muted-foreground">
-            Execução por período • {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
-          </p>
+        <div className="px-1 flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-xl md:text-2xl font-bold text-foreground">Dashboard V02</h1>
+            <p className="text-sm md:text-base text-muted-foreground">
+              Execução por período • {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
+            </p>
+          </div>
+          <Button 
+            onClick={handleRefresh} 
+            variant="outline" 
+            size="sm"
+            disabled={loading || refreshing}
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+            Atualizar
+          </Button>
         </div>
 
         {error && (

@@ -9,7 +9,6 @@ import { Users, TrendingUp, Calendar, FileText, CheckCircle, XCircle, Clock, Sea
 import { getPipelineKPIs, getContactsPipeline, getContactsByStatus, updateContactStatus } from '@/services';
 import type { ContactPipeline, PipelineKPIs } from '@/types/crm';
 import { toast } from 'sonner';
-import { useSyncCRMGoals } from '@/hooks/useSyncCRMGoals';
 import {
   DndContext,
   DragOverlay,
@@ -143,9 +142,6 @@ export default function CRMPage() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // Sincronizar Goals do CRM automaticamente
-  useSyncCRMGoals(true);
-
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -235,27 +231,35 @@ export default function CRMPage() {
     const contactId = active.id as string;
     const overId = over.id as string;
 
-    // Primeiro, verificar se o over é uma coluna (status) válida
+    // Estratégia 1: Verificar se overId é um status de coluna válido (drop direto na coluna)
     let newStatus = kanbanColumns.find(col => col === overId) as ContactPipeline['status'] | undefined;
     
-    // Se não for uma coluna, pode ser outro contato - encontrar a coluna pai
+    // Estratégia 2: Se não for coluna, pode ser um card - encontrar a coluna pai usando o status do contato
     if (!newStatus) {
-      // Verificar se overId é um ID de contato
       const overContact = contacts.find(c => c.id === overId);
       if (overContact) {
         // Se for um contato, usar o status desse contato (mesma coluna)
         newStatus = overContact.status;
       } else {
         // Se não for nem coluna nem contato, não fazer nada
+        console.log('⚠️ Drop target não reconhecido:', overId);
         return;
       }
     }
 
     // Encontrar o contato atual
     const contact = contacts.find(c => c.id === contactId);
-    if (!contact || contact.status === newStatus) {
+    if (!contact) {
+      console.error('❌ Contato não encontrado:', contactId);
       return;
     }
+
+    // Se o status não mudou, não fazer nada
+    if (contact.status === newStatus) {
+      return;
+    }
+
+    console.log(`🔄 Movendo contato ${contact.name} de "${contact.status}" para "${newStatus}"`);
 
     // Atualização otimista
     const previousContacts = [...contacts];
@@ -268,7 +272,7 @@ export default function CRMPage() {
     setIsUpdating(true);
 
     try {
-      // Atualizar no backend
+      // Atualizar no backend (isso também atualiza o Notion e sincroniza Goals)
       await updateContactStatus(contactId, newStatus!);
       
       // Recarregar dados para garantir sincronização e atualizar KPIs
