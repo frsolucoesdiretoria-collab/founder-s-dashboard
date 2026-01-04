@@ -125,7 +125,7 @@ export interface NotionCRMPipeline {
   id: string;
   Name: string;
   Company: string;
-  Status: 'Contato Ativado' | 'Café Agendado' | 'Café Executado' | 'Proposta Enviada' | 'Follow-up Ativo' | 'Venda Fechada' | 'Perdido';
+  Status: 'Contato Ativado' | 'Café Agendado' | 'Café Executado' | 'Proposta Enviada' | 'Follow-up Ativo' | 'Venda Fechada' | 'Venda Finalizada' | 'Perdido';
   CoffeeDate: string;
   ProposalDate: string;
   LastUpdate: string;
@@ -206,63 +206,6 @@ export interface NotionTransaction {
   Imported: boolean;
   ImportedAt?: string;
   FileSource?: string;
-  Reconciled?: boolean;
-  ReconciledAt?: string;
-  Recurring?: boolean;
-  RecurringRule?: string;
-}
-
-export interface NotionAccount {
-  id: string;
-  Name: string;
-  Type: 'Corrente' | 'Poupança' | 'Cartão de Crédito' | 'Investimento';
-  Bank: string;
-  AccountType: 'Empresarial' | 'Pessoal';
-  InitialBalance: number;
-  CurrentBalance: number;
-  Limit?: number;
-  Active: boolean;
-  Notes?: string;
-}
-
-export interface NotionAccountPayable {
-  id: string;
-  Name: string;
-  Description?: string;
-  Amount: number;
-  DueDate: string;
-  PaidDate?: string;
-  Status: 'Pendente' | 'Pago' | 'Vencido';
-  Category?: string;
-  Account?: string;
-  Paid: boolean;
-  Recurring?: boolean;
-  RecurringRule?: string;
-}
-
-export interface NotionAccountReceivable {
-  id: string;
-  Name: string;
-  Description?: string;
-  Amount: number;
-  DueDate: string;
-  ReceivedDate?: string;
-  Status: 'Pendente' | 'Recebido' | 'Atrasado';
-  Category?: string;
-  Account?: string;
-  Received: boolean;
-  Recurring?: boolean;
-  RecurringRule?: string;
-}
-
-export interface NotionCategorizationRule {
-  id: string;
-  Name: string;
-  Pattern: string;
-  Category: string;
-  Priority: number;
-  Active: boolean;
-  AccountType: 'Empresarial' | 'Pessoal' | 'Ambos';
 }
 
 export interface NotionEnvVars {
