@@ -26,10 +26,11 @@ export function MobileNav() {
       {/* Mobile Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-card border-b border-border px-4 py-3 flex items-center justify-between md:hidden">
         <Link to="/dashboard" className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-sm">FR</span>
-          </div>
-          <span className="font-semibold text-foreground">Tech OS</span>
+          <img 
+            src="/AXIS_logo_horizontal.png" 
+            alt="AXIS Logo" 
+            className="h-8 object-contain"
+          />
         </Link>
         
         <Button
@@ -57,13 +58,11 @@ export function MobileNav() {
           >
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold text-sm">FR</span>
-                </div>
-                <div>
-                  <h1 className="font-bold text-foreground text-sm">FR Tech OS</h1>
-                  <p className="text-xs text-muted-foreground">Founder Execution</p>
-                </div>
+                <img 
+                  src="/AXIS_logo_horizontal.png" 
+                  alt="AXIS Logo" 
+                  className="h-8 object-contain"
+                />
               </div>
               <Button
                 variant="ghost"
@@ -110,13 +109,11 @@ export function MobileNav() {
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-64 bg-card border-r border-border flex-col p-4">
         <Link to="/dashboard" className="flex items-center gap-3 mb-8 px-2">
-          <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-bold">FR</span>
-          </div>
-          <div>
-            <h1 className="font-bold text-foreground">FR Tech OS</h1>
-            <p className="text-xs text-muted-foreground">Founder Execution</p>
-          </div>
+          <img 
+            src="/AXIS_logo_horizontal.png" 
+            alt="AXIS Logo" 
+            className="h-10 object-contain"
+          />
         </Link>
 
         <nav className="flex-1 space-y-1">
