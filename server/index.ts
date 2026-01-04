@@ -37,7 +37,7 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors({
-  origin: process.env.VITE_DEV_SERVER_URL || 'http://localhost:8080',
+  origin: process.env.CORS_ORIGIN || process.env.VITE_DEV_SERVER_URL || 'http://localhost:8080',
   credentials: true
 }));
 app.use(express.json());
