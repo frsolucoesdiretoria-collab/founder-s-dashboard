@@ -6,17 +6,17 @@ import { cn } from '@/lib/utils';
 
 const navItems = [
   { path: '/dashboard', label: 'Mapa de metas e métricas', icon: LayoutDashboard },
-  { path: '/coffee', label: 'Café', icon: Coffee },
-  { path: '/expansion', label: 'Expansão', icon: TrendingUp },
+  // TEMPORÁRIO: Removido para reunião - { path: '/coffee', label: 'Café', icon: Coffee },
+  // TEMPORÁRIO: Removido para reunião - { path: '/expansion', label: 'Expansão', icon: TrendingUp },
   { path: '/finance', label: 'Financeiro', icon: DollarSign },
   { path: '/tasks', label: 'Tarefas', icon: CheckSquare },
   { path: '/crm', label: 'CRM', icon: Users },
   { path: '/contacts', label: 'Contatos', icon: Contact },
-  { path: '/produtos', label: 'Produtos FR Tech', icon: Package },
-  { path: '/apresentacao', label: 'Apresentação', icon: Presentation },
-  { path: '/apresentacao-02', label: 'Apresentação 02', icon: FileText },
+  // TEMPORÁRIO: Removido para reunião - { path: '/produtos', label: 'Produtos FR Tech', icon: Package },
+  // TEMPORÁRIO: Removido para reunião - { path: '/apresentacao', label: 'Apresentação', icon: Presentation },
+  // TEMPORÁRIO: Removido para reunião - { path: '/apresentacao-02', label: 'Apresentação 02', icon: FileText },
   { path: '/relatos', label: 'Relatos', icon: BookOpen },
-  { path: '/teste', label: 'Teste', icon: FlaskConical },
+  // TEMPORÁRIO: Removido para reunião - { path: '/teste', label: 'Teste', icon: FlaskConical },
 ];
 
 export function MobileNav() {
