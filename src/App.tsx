@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "sonner";
+import { PasswordProtection } from "./components/PasswordProtection";
 import DashboardV02 from "./pages/DashboardV02";
 // TEMPORÁRIO: Removido para reunião - import CoffeePage from "./pages/Coffee";
 // TEMPORÁRIO: Removido para reunião - import ExpansionPage from "./pages/Expansion";
@@ -32,26 +33,28 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <Toaster richColors position="top-right" />
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/dashboard" element={<DashboardV02 />} />
-        {/* TEMPORÁRIO: Removido para reunião - <Route path="/coffee" element={<CoffeePage />} /> */}
-        {/* TEMPORÁRIO: Removido para reunião - <Route path="/expansion" element={<ExpansionPage />} /> */}
-        <Route path="/finance" element={<FinancePage />} />
-        <Route path="/tasks" element={<ActionsCreatePage />} />
-        <Route path="/crm" element={<CRMPage />} />
-        {/* TEMPORÁRIO: Removido para reunião - <Route path="/produtos" element={<ProdutosPage />} /> */}
-        <Route path="/contacts" element={<ContactsPage />} />
-        {/* TEMPORÁRIO: Removido para reunião - <Route path="/apresentacao" element={<ApresentacaoPage />} /> */}
-        {/* TEMPORÁRIO: Removido para reunião - <Route path="/apresentacao-02" element={<Apresentacao02Page />} /> */}
-        {/* TEMPORÁRIO: Removido para reunião - <Route path="/admin/health" element={<AdminHealth />} /> */}
-        {/* TEMPORÁRIO: Removido para reunião - <Route path="/admin/settings" element={<AdminSettings />} /> */}
-        {/* TEMPORÁRIO: Removido para reunião - <Route path="/admin/finance" element={<AdminFinance />} /> */}
-        <Route path="/__selftest" element={<SelfTest />} />
-        <Route path="/relatos" element={<RelatosPage />} />
-        {/* TEMPORÁRIO: Removido para reunião - <Route path="/teste" element={<TestePage />} /> */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <PasswordProtection>
+        <Routes>
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<DashboardV02 />} />
+          {/* TEMPORÁRIO: Removido para reunião - <Route path="/coffee" element={<CoffeePage />} /> */}
+          {/* TEMPORÁRIO: Removido para reunião - <Route path="/expansion" element={<ExpansionPage />} /> */}
+          <Route path="/finance" element={<FinancePage />} />
+          <Route path="/tasks" element={<ActionsCreatePage />} />
+          <Route path="/crm" element={<CRMPage />} />
+          {/* TEMPORÁRIO: Removido para reunião - <Route path="/produtos" element={<ProdutosPage />} /> */}
+          <Route path="/contacts" element={<ContactsPage />} />
+          {/* TEMPORÁRIO: Removido para reunião - <Route path="/apresentacao" element={<ApresentacaoPage />} /> */}
+          {/* TEMPORÁRIO: Removido para reunião - <Route path="/apresentacao-02" element={<Apresentacao02Page />} /> */}
+          {/* TEMPORÁRIO: Removido para reunião - <Route path="/admin/health" element={<AdminHealth />} /> */}
+          {/* TEMPORÁRIO: Removido para reunião - <Route path="/admin/settings" element={<AdminSettings />} /> */}
+          {/* TEMPORÁRIO: Removido para reunião - <Route path="/admin/finance" element={<AdminFinance />} /> */}
+          <Route path="/__selftest" element={<SelfTest />} />
+          <Route path="/relatos" element={<RelatosPage />} />
+          {/* TEMPORÁRIO: Removido para reunião - <Route path="/teste" element={<TestePage />} /> */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </PasswordProtection>
     </BrowserRouter>
   </QueryClientProvider>
 );
