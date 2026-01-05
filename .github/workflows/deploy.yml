@@ -53,11 +53,11 @@ jobs:
             
             cd $PROJECT_PATH
             
-            # Pull latest changes (reset hard to avoid conflicts)
+            # Pull latest changes (discard local changes and sync with remote)
             echo "📥 Pulling latest changes from ${{ github.ref_name }}..."
             git fetch origin
-            git checkout ${{ github.ref_name }}
             git reset --hard origin/${{ github.ref_name }}
+            git clean -fd
             
             # Install dependencies
             echo "📦 Installing dependencies..."
