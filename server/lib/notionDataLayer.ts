@@ -14,6 +14,18 @@ import type {
   NotionBudgetGoal,
   NotionTransaction
 } from '../../src/lib/notion/types';
+import { DAILY_PROPHECY_ACTION_NAME } from '../../src/constants/dailyRoutine';
+
+const RICH_TEXT_LIMIT = 1800; // margin to Notion 2000-char limit
+
+function toRichTextArray(input?: string): { text: { content: string } }[] {
+  if (!input) return [];
+  const chunks: { text: { content: string } }[] = [];
+  for (let i = 0; i < input.length; i += RICH_TEXT_LIMIT) {
+    chunks.push({ text: { content: input.slice(i, i + RICH_TEXT_LIMIT) } });
+  }
+  return chunks;
+}
 
 // Notion client instance (lazy initialization)
 let notionClient: Client | null = null;
@@ -250,7 +262,15 @@ function pageToJournal(page: any): NotionJournal {
     Tags: extractMultiSelect(props.Tags),
     RelatedContact: extractRelation(props.RelatedContact)[0] || '',
     RelatedClient: extractRelation(props.RelatedClient)[0] || '',
-    Attachments: extractRelation(props.Attachments)
+    Attachments: extractRelation(props.Attachments),
+    MorningCompletedAt: extractDate(props.MorningCompletedAt),
+    NightSubmittedAt: extractDate(props.NightSubmittedAt),
+    Comments: extractText(props.Comments),
+    Reviewed: extractBoolean(props.Reviewed),
+    ReviewedBy: extractText(props.ReviewedBy),
+    ReviewedAt: extractDate(props.ReviewedAt),
+    CreatedBy: extractText(props.CreatedBy),
+    LastEditedBy: extractText(props.LastEditedBy)
   };
 }
 
@@ -684,6 +704,10 @@ export async function ensureActionHasGoal(actionId: string): Promise<{ allowed: 
   );
 
   const action = pageToAction(page);
+  if (action.Name?.trim().toLowerCase() === DAILY_PROPHECY_ACTION_NAME.toLowerCase()) {
+    return { allowed: true };
+  }
+
   if (!action.Goal || action.Goal.trim() === '') {
     return {
       allowed: false,
@@ -1049,6 +1073,59 @@ export async function getJournalByDate(date: string): Promise<NotionJournal | nu
 }
 
 /**
+ * List journals with date range and pagination
+ */
+export async function getJournals(params: {
+  start?: string;
+  end?: string;
+  page?: number;
+  pageSize?: number;
+}): Promise<{ items: NotionJournal[]; hasMore: boolean; nextCursor?: string }> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Journal');
+  if (!dbId) throw new Error('NOTION_DB_JOURNAL not configured');
+
+  const page = params.page && params.page > 0 ? params.page : 1;
+  const pageSize = params.pageSize && params.pageSize > 0 ? params.pageSize : 30;
+
+  const filter: any = {};
+  if (params.start || params.end) {
+    filter.and = [];
+    if (params.start) filter.and.push({ property: 'Date', date: { on_or_after: params.start } });
+    if (params.end) filter.and.push({ property: 'Date', date: { on_or_before: params.end } });
+  }
+
+  let hasMore = true;
+  let nextCursor: string | undefined;
+  let collected: any[] = [];
+
+  while (hasMore && collected.length < page * pageSize) {
+    const response = await retryWithBackoff(() =>
+      client.databases.query({
+        database_id: dbId,
+        filter: Object.keys(filter).length > 0 ? filter : undefined,
+        sorts: [{ property: 'Date', direction: 'descending' }],
+        page_size: Math.min(100, pageSize),
+        start_cursor: nextCursor
+      })
+    );
+
+    collected = collected.concat(response.results);
+    hasMore = response.has_more;
+    nextCursor = response.next_cursor || undefined;
+  }
+
+  const startIndex = (page - 1) * pageSize;
+  const paged = collected.slice(startIndex, startIndex + pageSize).map(pageToJournal);
+
+  return {
+    items: paged,
+    hasMore: hasMore || (collected.length > startIndex + pageSize),
+    nextCursor
+  };
+}
+
+/**
  * Upsert journal by date (create or update)
  */
 export async function upsertJournalByDate(
@@ -1066,12 +1143,20 @@ export async function upsertJournalByDate(
     // Update existing
     const updateProps: any = {};
     if (payload.Filled !== undefined) updateProps.Filled = { checkbox: payload.Filled };
-    if (payload.Summary !== undefined) updateProps.Summary = { rich_text: [{ text: { content: payload.Summary } }] };
-    if (payload.WhatWorked !== undefined) updateProps.WhatWorked = { rich_text: [{ text: { content: payload.WhatWorked } }] };
-    if (payload.WhatFailed !== undefined) updateProps.WhatFailed = { rich_text: [{ text: { content: payload.WhatFailed } }] };
-    if (payload.Insights !== undefined) updateProps.Insights = { rich_text: [{ text: { content: payload.Insights } }] };
-    if (payload.Objections !== undefined) updateProps.Objections = { rich_text: [{ text: { content: payload.Objections } }] };
-    if (payload.ProcessIdeas !== undefined) updateProps.ProcessIdeas = { rich_text: [{ text: { content: payload.ProcessIdeas } }] };
+    if (payload.Summary !== undefined) updateProps.Summary = { rich_text: toRichTextArray(payload.Summary) };
+    if (payload.WhatWorked !== undefined) updateProps.WhatWorked = { rich_text: toRichTextArray(payload.WhatWorked) };
+    if (payload.WhatFailed !== undefined) updateProps.WhatFailed = { rich_text: toRichTextArray(payload.WhatFailed) };
+    if (payload.Insights !== undefined) updateProps.Insights = { rich_text: toRichTextArray(payload.Insights) };
+    if (payload.Objections !== undefined) updateProps.Objections = { rich_text: toRichTextArray(payload.Objections) };
+    if (payload.ProcessIdeas !== undefined) updateProps.ProcessIdeas = { rich_text: toRichTextArray(payload.ProcessIdeas) };
+    if (payload.Comments !== undefined) updateProps.Comments = { rich_text: toRichTextArray(payload.Comments) };
+    if (payload.Reviewed !== undefined) updateProps.Reviewed = { checkbox: payload.Reviewed };
+    if (payload.ReviewedBy !== undefined) updateProps.ReviewedBy = { rich_text: toRichTextArray(payload.ReviewedBy) };
+    if (payload.ReviewedAt !== undefined) updateProps.ReviewedAt = { date: payload.ReviewedAt ? { start: payload.ReviewedAt } : null };
+    if (payload.MorningCompletedAt !== undefined) updateProps.MorningCompletedAt = { date: payload.MorningCompletedAt ? { start: payload.MorningCompletedAt } : null };
+    if (payload.NightSubmittedAt !== undefined) updateProps.NightSubmittedAt = { date: payload.NightSubmittedAt ? { start: payload.NightSubmittedAt } : null };
+    if (payload.CreatedBy !== undefined) updateProps.CreatedBy = { rich_text: toRichTextArray(payload.CreatedBy) };
+    if (payload.LastEditedBy !== undefined) updateProps.LastEditedBy = { rich_text: toRichTextArray(payload.LastEditedBy) };
     if (payload.Tags) updateProps.Tags = { multi_select: payload.Tags.map(tag => ({ name: tag })) };
 
     await retryWithBackoff(() =>
@@ -1090,12 +1175,20 @@ export async function upsertJournalByDate(
       Filled: { checkbox: payload.Filled || false }
     };
 
-    if (payload.Summary) createProps.Summary = { rich_text: [{ text: { content: payload.Summary } }] };
-    if (payload.WhatWorked) createProps.WhatWorked = { rich_text: [{ text: { content: payload.WhatWorked } }] };
-    if (payload.WhatFailed) createProps.WhatFailed = { rich_text: [{ text: { content: payload.WhatFailed } }] };
-    if (payload.Insights) createProps.Insights = { rich_text: [{ text: { content: payload.Insights } }] };
-    if (payload.Objections) createProps.Objections = { rich_text: [{ text: { content: payload.Objections } }] };
-    if (payload.ProcessIdeas) createProps.ProcessIdeas = { rich_text: [{ text: { content: payload.ProcessIdeas } }] };
+    if (payload.Summary) createProps.Summary = { rich_text: toRichTextArray(payload.Summary) };
+    if (payload.WhatWorked) createProps.WhatWorked = { rich_text: toRichTextArray(payload.WhatWorked) };
+    if (payload.WhatFailed) createProps.WhatFailed = { rich_text: toRichTextArray(payload.WhatFailed) };
+    if (payload.Insights) createProps.Insights = { rich_text: toRichTextArray(payload.Insights) };
+    if (payload.Objections) createProps.Objections = { rich_text: toRichTextArray(payload.Objections) };
+    if (payload.ProcessIdeas) createProps.ProcessIdeas = { rich_text: toRichTextArray(payload.ProcessIdeas) };
+    if (payload.Comments) createProps.Comments = { rich_text: toRichTextArray(payload.Comments) };
+    if (payload.Reviewed !== undefined) createProps.Reviewed = { checkbox: payload.Reviewed };
+    if (payload.ReviewedBy) createProps.ReviewedBy = { rich_text: toRichTextArray(payload.ReviewedBy) };
+    if (payload.ReviewedAt) createProps.ReviewedAt = { date: { start: payload.ReviewedAt } };
+    if (payload.MorningCompletedAt) createProps.MorningCompletedAt = { date: { start: payload.MorningCompletedAt } };
+    if (payload.NightSubmittedAt) createProps.NightSubmittedAt = { date: { start: payload.NightSubmittedAt } };
+    if (payload.CreatedBy) createProps.CreatedBy = { rich_text: toRichTextArray(payload.CreatedBy) };
+    if (payload.LastEditedBy) createProps.LastEditedBy = { rich_text: toRichTextArray(payload.LastEditedBy) };
     if (payload.Tags) createProps.Tags = { multi_select: payload.Tags.map(tag => ({ name: tag })) };
 
     const page = await retryWithBackoff(() =>
