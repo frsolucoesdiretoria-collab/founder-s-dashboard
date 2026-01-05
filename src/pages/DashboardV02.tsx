@@ -189,7 +189,7 @@ export default function DashboardV02() {
   return (
     <AppLayout>
       <div className="space-y-4 md:space-y-6 pb-6">
-        <div className="px-1 md:px-0 pt-4 md:pt-0 flex flex-col md:flex-row items-center md:items-start justify-between gap-4">
+        <div className="px-1 md:px-0 flex flex-col md:flex-row items-center md:items-start justify-between gap-4">
           <div className="text-center md:text-left w-full md:w-auto">
             <h1 className="text-xl md:text-2xl font-bold text-foreground">
               Os números apontam o caminho. Quem mede, evolui. Quem não mensura, não melhora e fica estagnado
