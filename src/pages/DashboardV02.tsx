@@ -195,7 +195,7 @@ export default function DashboardV02() {
               Os números apontam o caminho. Quem mede, evolui. Quem não mensura, não melhora e fica estagnado
             </h1>
             <p className="text-sm md:text-base text-muted-foreground mt-2">
-              Revise os números mais importantes da empresa diariamente para que os objetivos de crescimento de 2026 sejam alcançados com exito.
+              Revise os números mais importantes da empresa diariamente para que os objetivos de crescimento de 2026 sejam alcançados com êxito.
             </p>
           </div>
           <Button 
@@ -210,7 +210,8 @@ export default function DashboardV02() {
           </Button>
         </div>
 
-        <DailyRoutine />
+        {/* TEMPORÁRIO: Campo de rotinas diárias oculto - Bruno não deve ver profetização e agradecimentos */}
+        {/* <DailyRoutine /> */}
 
         {error && (
           <Alert variant="destructive">
