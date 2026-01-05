@@ -76,3 +76,45 @@ export async function getJournalByDate(date: string): Promise<Journal | undefine
     return undefined;
   }
 }
+
+export interface JournalListResponse {
+  items: Journal[];
+  hasMore: boolean;
+  nextCursor?: string;
+}
+
+export async function getJournals(params: {
+  start?: string;
+  end?: string;
+  page?: number;
+  pageSize?: number;
+  query?: string;
+}): Promise<JournalListResponse> {
+  const search = new URLSearchParams();
+  if (params.start) search.append('start', params.start);
+  if (params.end) search.append('end', params.end);
+  if (params.page) search.append('page', String(params.page));
+  if (params.pageSize) search.append('pageSize', String(params.pageSize));
+  if (params.query) search.append('query', params.query);
+
+  const response = await fetch(`/api/journal?${search.toString()}`);
+  if (!response.ok) {
+    throw new Error('Failed to list journals');
+  }
+  return response.json();
+}
+
+export interface JournalTodayStatus {
+  date: string;
+  morningDone: boolean;
+  nightDone: boolean;
+  filled: boolean;
+}
+
+export async function getJournalTodayStatus(): Promise<JournalTodayStatus> {
+  const response = await fetch('/api/journal/today/status');
+  if (!response.ok) {
+    throw new Error('Failed to get today journal status');
+  }
+  return response.json();
+}
