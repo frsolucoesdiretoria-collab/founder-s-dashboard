@@ -2,6 +2,7 @@
 // Server-side guards to prevent financial data exposure
 
 import type { NotionKPI, NotionAction } from '../../src/lib/notion/types';
+import { DAILY_PROPHECY_ACTION_NAME } from '../../src/constants/dailyRoutine';
 
 /**
  * Assert that a KPI is not financial (blocks financial KPIs in public routes)
@@ -36,6 +37,9 @@ export function validateAdminPasscode(passcode: string): boolean {
  * Check if action can be marked as done (must have Goal)
  */
 export function canMarkActionDone(action: NotionAction): { allowed: boolean; reason?: string } {
+  if (action.Name?.trim().toLowerCase() === DAILY_PROPHECY_ACTION_NAME.toLowerCase()) {
+    return { allowed: true };
+  }
   if (!action.Goal || action.Goal.trim() === '') {
     return {
       allowed: false,

@@ -70,6 +70,14 @@ export interface NotionJournal {
   RelatedContact: string;
   RelatedClient: string;
   Attachments: string[];
+  MorningCompletedAt?: string;
+  NightSubmittedAt?: string;
+  Comments?: string;
+  Reviewed?: boolean;
+  ReviewedBy?: string;
+  ReviewedAt?: string;
+  CreatedBy?: string;
+  LastEditedBy?: string;
 }
 
 export interface NotionContact {

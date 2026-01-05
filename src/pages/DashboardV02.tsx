@@ -10,6 +10,7 @@ import type { NotionKPI, NotionGoal } from '@/lib/notion/types';
 import { toast } from 'sonner';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
+import { DailyRoutine } from '@/components/DailyRoutine';
 
 type PeriodGroup = 'Mensal' | 'Trimestral' | 'Semestral' | 'Anual';
 
@@ -205,6 +206,8 @@ export default function DashboardV02() {
             Atualizar
           </Button>
         </div>
+
+        <DailyRoutine />
 
         {error && (
           <Alert variant="destructive">

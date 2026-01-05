@@ -2,6 +2,7 @@
 // Prevents financial data exposure and validates access
 
 import type { NotionKPI, NotionGoal, NotionAction } from './types';
+import { DAILY_PROPHECY_ACTION_NAME } from '@/constants/dailyRoutine';
 
 /**
  * Filters KPIs to only show public, non-financial, active items
@@ -33,6 +34,9 @@ export function filterPublicActions(actions: NotionAction[]): NotionAction[] {
  * Rule: Cannot complete action if Goal is empty
  */
 export function canMarkActionDone(action: NotionAction): { allowed: boolean; reason?: string } {
+  if (action.Name?.trim().toLowerCase() === DAILY_PROPHECY_ACTION_NAME.toLowerCase()) {
+    return { allowed: true };
+  }
   if (!action.Goal || action.Goal.trim() === '') {
     return {
       allowed: false,

@@ -1,11 +1,15 @@
 // FR Tech OS - Actions Service
 
+import { DAILY_PROPHECY_ACTION_NAME } from '@/constants/dailyRoutine';
 import type { Action } from '@/types/action';
 
 /**
  * Check if action can be marked as done
  */
 export function canMarkActionDone(action: Action): { allowed: boolean; reason?: string } {
+  if (action.Name?.trim().toLowerCase() === DAILY_PROPHECY_ACTION_NAME.toLowerCase()) {
+    return { allowed: true };
+  }
   if (!action.Goal || action.Goal.trim() === '') {
     return {
       allowed: false,
