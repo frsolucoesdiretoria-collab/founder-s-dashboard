@@ -1,0 +1,90 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - staging
+      - main
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  deploy:
+    name: Deploy to ${{ github.ref == 'refs/heads/main' && 'Production' || 'Staging' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -e
+            
+            # Determine project path based on branch
+            if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+              PROJECT_PATH="${{ secrets.VPS_PROJECT_PATH }}"
+              ENV="production"
+            else
+              PROJECT_PATH="${{ secrets.VPS_STAGING_PATH || secrets.VPS_PROJECT_PATH }}"
+              ENV="staging"
+            fi
+            
+            echo "🚀 Deploying to $ENV environment at $PROJECT_PATH"
+            
+            cd $PROJECT_PATH
+            
+            # Pull latest changes
+            echo "📥 Pulling latest changes from ${{ github.ref_name }}..."
+            git fetch origin
+            git checkout ${{ github.ref_name }}
+            git pull origin ${{ github.ref_name }}
+            
+            # Install dependencies
+            echo "📦 Installing dependencies..."
+            npm ci
+            
+            # Build application
+            echo "🔨 Building application..."
+            npm run build
+            
+            # Restart application (PM2)
+            if command -v pm2 &> /dev/null; then
+              echo "🔄 Restarting application with PM2..."
+              pm2 restart founder-dashboard || pm2 start npm --name "founder-dashboard" -- start
+              pm2 save
+            else
+              echo "⚠️  PM2 not found. Please restart the application manually."
+            fi
+            
+            echo "✅ Deployment completed successfully!"
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ Deployment to ${{ github.ref == 'refs/heads/main' && 'Production' || 'Staging' }} completed successfully!"
+          else
+            echo "❌ Deployment failed!"
+            exit 1
+          fi
+
