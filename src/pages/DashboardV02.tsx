@@ -191,9 +191,11 @@ export default function DashboardV02() {
       <div className="space-y-4 md:space-y-6 pb-6">
         <div className="px-1 flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-xl md:text-2xl font-bold text-foreground">Dashboard V02</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-foreground">
+              Os números apontam o caminho. Quem mede, evolui. Quem não mensura, não melhora e fica estagnado
+            </h1>
             <p className="text-sm md:text-base text-muted-foreground">
-              Execução por período • {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
+              Revise os números mais importantes da empresa diariamente para que os objetivos de crescimento de 2026 sejam alcançados com exito.
             </p>
           </div>
           <Button 
