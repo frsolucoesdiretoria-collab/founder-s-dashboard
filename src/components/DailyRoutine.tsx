@@ -58,6 +58,9 @@ const clearSnooze = (key: string) => {
   localStorage.removeItem(key);
 };
 
+// TEMPORÁRIO: Desativado para reunião
+const ENABLE_ROUTINE_POPUPS = false;
+
 export function DailyRoutine() {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -195,18 +198,21 @@ export function DailyRoutine() {
   }, [ensureAction, loadNightStatus, loadTodayStatus]);
 
   useEffect(() => {
+    if (!ENABLE_ROUTINE_POPUPS) return; // TEMPORÁRIO: Desativado para reunião
     if (shouldOpenMorning()) {
       setShowMorningModal(true);
     }
   }, [morningDone]);
 
   useEffect(() => {
+    if (!ENABLE_ROUTINE_POPUPS) return; // TEMPORÁRIO: Desativado para reunião
     if (shouldOpenNight()) {
       setShowNightModal(true);
     }
   }, [nightDone]);
 
   useEffect(() => {
+    if (!ENABLE_ROUTINE_POPUPS) return; // TEMPORÁRIO: Desativado para reunião
     if (nightDone) return;
     const checkNight = () => {
       if (shouldOpenNight()) {
