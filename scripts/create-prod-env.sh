@@ -50,3 +50,4 @@ echo "   2. Na VPS, renomeie para .env: mv .env.production.template .env"
 echo "   3. Edite o .env e preencha NOTION_TOKEN e ADMIN_PASSCODE"
 echo "   4. Execute: npm start para testar"
 
+

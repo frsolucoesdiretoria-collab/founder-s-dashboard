@@ -26,7 +26,7 @@ export function MobileNav() {
   return (
     <>
       {/* Mobile Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-card border-b border-border px-4 py-3 flex items-center justify-between md:hidden">
+      <header className="fixed top-0 left-0 right-0 z-[60] bg-card border-b border-border px-4 py-3 flex items-center justify-between md:hidden safe-area-inset-top" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top) + 0.75rem)' }}>
         <Link to="/dashboard" className="flex items-center gap-2">
           <img 
             src="/AXIS_logo_horizontal.png" 
@@ -54,7 +54,7 @@ export function MobileNav() {
           />
           <nav
             className={cn(
-              "fixed top-0 left-0 bottom-0 w-64 z-50 bg-card border-r border-border p-4 space-y-2 md:hidden transition-transform duration-300 shadow-xl",
+              "fixed top-0 left-0 bottom-0 w-64 z-[70] bg-card border-r border-border p-4 space-y-2 md:hidden transition-transform duration-300 shadow-xl",
               isOpen ? "translate-x-0" : "-translate-x-full"
             )}
           >
@@ -102,7 +102,8 @@ export function MobileNav() {
       {/* Floating Menu Button for Mobile */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-4 right-4 z-50 md:hidden h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center touch-manipulation active:scale-95 transition-transform"
+        className="fixed bottom-4 right-4 z-[60] md:hidden h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center touch-manipulation active:scale-95 transition-transform safe-area-inset-bottom"
+        style={{ bottom: 'max(1rem, env(safe-area-inset-bottom) + 1rem)' }}
         aria-label="Toggle menu"
       >
         {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}

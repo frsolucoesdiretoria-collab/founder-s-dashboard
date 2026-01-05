@@ -86,3 +86,4 @@ echo "   2. Executar script para copiar chave SSH pública"
 echo "   3. Testar o servidor: npm start"
 echo "   4. Iniciar com PM2: pm2 start npm --name 'founder-dashboard' -- start"
 
+

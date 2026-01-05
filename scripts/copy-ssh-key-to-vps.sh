@@ -44,3 +44,4 @@ ssh -i ~/.ssh/vps_deploy_key -o StrictHostKeyChecking=no "$VPS_USER@$VPS_HOST" "
 echo ""
 echo "✅ Processo concluído!"
 
+
