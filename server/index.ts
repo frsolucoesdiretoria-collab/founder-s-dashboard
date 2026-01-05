@@ -4,7 +4,8 @@
 import express from 'express';
 import cors from 'cors';
 import { config } from 'dotenv';
-import { resolve } from 'path';
+import { resolve, join } from 'path';
+import { existsSync } from 'fs';
 import { healthRouter } from './routes/health';
 import { selftestRouter } from './routes/selftest';
 import { kpisRouter } from './routes/kpis';
@@ -59,6 +60,27 @@ app.use('/api/finance', financeRouter);
 app.use('/api/contacts', contactsRouter);
 app.use('/api/crm', crmRouter);
 app.use('/api/produtos', produtosRouter);
+
+// Serve static files in production/staging (after API routes)
+if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
+  const distPath = resolve(process.cwd(), 'dist');
+  if (existsSync(distPath)) {
+    app.use(express.static(distPath));
+    
+    // Serve index.html for all non-API routes (SPA routing)
+    app.get('*', (req, res, next) => {
+      // Skip API routes
+      if (req.path.startsWith('/api')) {
+        return next();
+      }
+      res.sendFile(join(distPath, 'index.html'));
+    });
+    
+    console.log(`📁 Serving static files from: ${distPath}`);
+  } else {
+    console.warn(`⚠️  Warning: dist directory not found at ${distPath}`);
+  }
+}
 
 // Error handler
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
