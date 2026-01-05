@@ -16,6 +16,8 @@ import AdminSettings from "./pages/admin/Settings";
 import AdminFinance from "./pages/admin/Finance";
 import SelfTest from "./pages/SelfTest";
 import NotFound from "./pages/NotFound";
+import RelatosPage from "./pages/Relatos";
+import TestePage from "./pages/Teste";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -46,6 +48,8 @@ const App = () => (
         <Route path="/admin/settings" element={<AdminSettings />} />
         <Route path="/admin/finance" element={<AdminFinance />} />
         <Route path="/__selftest" element={<SelfTest />} />
+        <Route path="/relatos" element={<RelatosPage />} />
+        <Route path="/teste" element={<TestePage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

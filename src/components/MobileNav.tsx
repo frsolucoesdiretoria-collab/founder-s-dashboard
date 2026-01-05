@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Coffee, TrendingUp, DollarSign, CheckSquare, Menu, X, Presentation, FileText, Users, Package, Contact } from 'lucide-react';
+import { LayoutDashboard, Coffee, TrendingUp, DollarSign, CheckSquare, Menu, X, Presentation, FileText, Users, Package, Contact, BookOpen, FlaskConical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -15,6 +15,8 @@ const navItems = [
   { path: '/produtos', label: 'Produtos FR Tech', icon: Package },
   { path: '/apresentacao', label: 'Apresentação', icon: Presentation },
   { path: '/apresentacao-02', label: 'Apresentação 02', icon: FileText },
+  { path: '/relatos', label: 'Relatos', icon: BookOpen },
+  { path: '/teste', label: 'Teste', icon: FlaskConical },
 ];
 
 export function MobileNav() {
