@@ -11,6 +11,7 @@ const navItems = [
   { path: '/finance', label: 'Financeiro', icon: DollarSign },
   { path: '/tasks', label: 'Tarefas', icon: CheckSquare },
   { path: '/crm', label: 'CRM', icon: Users },
+  { path: '/doterra', label: 'CRM Doterra', icon: Users },
   { path: '/contacts', label: 'Contatos', icon: Contact },
   { path: '/proposals', label: 'Propostas', icon: FileText },
   // TEMPORÁRIO: Removido para reunião - { path: '/produtos', label: 'Produtos FR Tech', icon: Package },
