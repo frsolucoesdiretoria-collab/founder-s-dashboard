@@ -24,6 +24,16 @@ export function PasswordLogin({
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const normalizedPasswords =
+    (correctPassword || '')
+      .split(',')
+      .map(p => p.trim())
+      .filter(Boolean);
+
+  // Se não houver senha configurada via env/props, habilita os dois acessos informados
+  const allowedPasswords = normalizedPasswords.length > 0
+    ? normalizedPasswords
+    : ['crescercomtec', 'expandir com tec'];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +42,10 @@ export function PasswordLogin({
 
     // Simula uma pequena verificação (pode remover o setTimeout se preferir)
     setTimeout(() => {
-      if (password === correctPassword) {
+      const sanitized = password.trim();
+      const isValid = allowedPasswords.some(p => sanitized === p);
+
+      if (isValid) {
         // Salva a autenticação no sessionStorage (expira ao fechar o navegador)
         sessionStorage.setItem(storageKey, 'true');
         toast.success('Acesso autorizado!');
@@ -87,7 +100,7 @@ export function PasswordLogin({
             <Button 
               type="submit" 
               className="w-full" 
-              disabled={isLoading || !password.trim() || !correctPassword}
+              disabled={isLoading || !password.trim()}
             >
               {isLoading ? 'Verificando...' : 'Acessar Sistema'}
             </Button>
