@@ -112,3 +112,4 @@ Após as alterações, validar:
 
 Diga ao agente: "Execute o prompt do arquivo PROMPT_OTIMIZACAO_MOBILE.md para otimizar todo o site para mobile iPhone"
 
+

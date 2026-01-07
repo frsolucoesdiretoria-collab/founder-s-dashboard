@@ -74,7 +74,7 @@ export function assertEnvVars(): void {
       ...result.missing.map(v => `   - ${v}`),
       '',
       '📝 To fix:',
-      '   1. Copy .env.local.example to .env.local',
+      '   1. Copy env.local.example to .env.local (template file without dot)',
       '   2. Fill in NOTION_TOKEN and database IDs',
       '   3. Restart the server',
       '',

@@ -17,6 +17,8 @@ import { databasesRouter } from './routes/databases';
 import { contactsRouter } from './routes/contacts';
 import { crmRouter } from './routes/crm';
 import { produtosRouter } from './routes/produtos';
+import { doterraRouter } from './routes/doterra';
+import proposalsRouter from './routes/proposals';
 import { assertEnvVars } from './lib/envValidator';
 
 // Load environment variables (priority: .env.local > .env)
@@ -41,7 +43,8 @@ app.use(cors({
   origin: process.env.CORS_ORIGIN || process.env.VITE_DEV_SERVER_URL || 'http://localhost:8080',
   credentials: true
 }));
-app.use(express.json());
+// Increase JSON limit to support CSV uploads as text payloads (import)
+app.use(express.json({ limit: '10mb' }));
 
 // Health check endpoint (public)
 app.get('/api/health', (req, res) => {
@@ -60,6 +63,8 @@ app.use('/api/finance', financeRouter);
 app.use('/api/contacts', contactsRouter);
 app.use('/api/crm', crmRouter);
 app.use('/api/produtos', produtosRouter);
+app.use('/api/doterra', doterraRouter);
+app.use('/api/proposals', proposalsRouter);
 
 // Serve static files in production/staging (after API routes)
 if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {

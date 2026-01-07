@@ -6,13 +6,21 @@ import { Label } from '@/components/ui/label';
 import { Lock, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
-const CORRECT_PASSWORD = 'crescercomtec';
-
 interface PasswordLoginProps {
   onSuccess: () => void;
+  correctPassword: string;
+  storageKey: string;
+  title?: string;
+  description?: string;
 }
 
-export function PasswordLogin({ onSuccess }: PasswordLoginProps) {
+export function PasswordLogin({
+  onSuccess,
+  correctPassword,
+  storageKey,
+  title = 'Acesso Restrito',
+  description = 'Digite a senha para acessar o sistema',
+}: PasswordLoginProps) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -24,9 +32,9 @@ export function PasswordLogin({ onSuccess }: PasswordLoginProps) {
 
     // Simula uma pequena verificação (pode remover o setTimeout se preferir)
     setTimeout(() => {
-      if (password === CORRECT_PASSWORD) {
+      if (password === correctPassword) {
         // Salva a autenticação no sessionStorage (expira ao fechar o navegador)
-        sessionStorage.setItem('frtech_authenticated', 'true');
+        sessionStorage.setItem(storageKey, 'true');
         toast.success('Acesso autorizado!');
         onSuccess();
       } else {
@@ -47,9 +55,9 @@ export function PasswordLogin({ onSuccess }: PasswordLoginProps) {
               <Lock className="h-6 w-6 text-primary" />
             </div>
           </div>
-          <CardTitle className="text-2xl">Acesso Restrito</CardTitle>
+          <CardTitle className="text-2xl">{title}</CardTitle>
           <CardDescription>
-            Digite a senha para acessar o sistema
+            {description}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -79,7 +87,7 @@ export function PasswordLogin({ onSuccess }: PasswordLoginProps) {
             <Button 
               type="submit" 
               className="w-full" 
-              disabled={isLoading || !password.trim()}
+              disabled={isLoading || !password.trim() || !correctPassword}
             >
               {isLoading ? 'Verificando...' : 'Acessar Sistema'}
             </Button>
@@ -89,4 +97,5 @@ export function PasswordLogin({ onSuccess }: PasswordLoginProps) {
     </div>
   );
 }
+
 

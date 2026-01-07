@@ -16,3 +16,4 @@ export const NIGHT_GRATITUDE_TEXT =
 export const NIGHT_JOURNAL_TAG = 'Agradecimento';
 
 
+

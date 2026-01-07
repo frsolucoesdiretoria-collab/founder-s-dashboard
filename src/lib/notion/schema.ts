@@ -132,7 +132,54 @@ export const NOTION_SCHEMA: Record<string, DatabaseSchema> = {
     envVar: 'NOTION_DB_GROWTHPROPOSALS',
     required: false,
     properties: [
-      { name: 'Name', type: 'title', required: true, description: 'Nome da proposta' }
+      { name: 'Name', type: 'title', required: true, description: 'Nome da proposta (ex: ORÇAMENTO N° 1939)' },
+      { name: 'ProposalNumber', type: 'rich_text', required: false, description: 'Número do orçamento' },
+      { name: 'Date', type: 'date', required: true, description: 'Data de emissão' },
+      { name: 'ValidUntil', type: 'date', required: false, description: 'Validade da proposta' },
+      { name: 'Status', type: 'select', required: true, description: 'Status: Em criação, Enviada, Aprovada, Recusada' },
+      
+      // Dados do Cliente
+      { name: 'ClientName', type: 'rich_text', required: true, description: 'Nome do cliente' },
+      { name: 'ClientCompany', type: 'rich_text', required: false, description: 'Empresa do cliente' },
+      { name: 'ClientCNPJ', type: 'rich_text', required: false, description: 'CNPJ/CPF do cliente' },
+      { name: 'ClientAddress', type: 'rich_text', required: false, description: 'Endereço do cliente' },
+      { name: 'ClientCity', type: 'rich_text', required: false, description: 'Cidade do cliente' },
+      { name: 'ClientState', type: 'rich_text', required: false, description: 'Estado do cliente' },
+      { name: 'ClientCEP', type: 'rich_text', required: false, description: 'CEP do cliente' },
+      { name: 'ClientPhone', type: 'phone_number', required: false, description: 'Telefone do cliente' },
+      { name: 'ClientEmail', type: 'email', required: false, description: 'E-mail do cliente' },
+      
+      // Valores
+      { name: 'Subtotal', type: 'number', required: false, description: 'Subtotal dos serviços' },
+      { name: 'DiscountPercent', type: 'number', required: false, description: 'Percentual de desconto' },
+      { name: 'DiscountAmount', type: 'number', required: false, description: 'Valor do desconto' },
+      { name: 'TaxPercent', type: 'number', required: false, description: 'Percentual de impostos' },
+      { name: 'TaxAmount', type: 'number', required: false, description: 'Valor dos impostos' },
+      { name: 'Total', type: 'number', required: true, description: 'Total da proposta' },
+      
+      // Itens/Serviços (JSON)
+      { name: 'Services', type: 'rich_text', required: false, description: 'JSON com array de serviços/itens' },
+      
+      // Pagamento (JSON)
+      { name: 'PaymentTerms', type: 'rich_text', required: false, description: 'JSON com condições de pagamento' },
+      
+      // Observações
+      { name: 'Observations', type: 'rich_text', required: false, description: 'Observações gerais' },
+      { name: 'MaterialsNotIncluded', type: 'rich_text', required: false, description: 'Materiais não inclusos' },
+      
+      // Relações
+      { name: 'RelatedContact', type: 'relation', required: false, description: 'Contato relacionado (Contacts)' },
+      { name: 'RelatedClient', type: 'relation', required: false, description: 'Cliente relacionado (Clients)' },
+      { name: 'RelatedCoffeeDiagnostic', type: 'relation', required: false, description: 'Diagnóstico de café relacionado' },
+      
+      // Follow-up
+      { name: 'SentAt', type: 'date', required: false, description: 'Data de envio' },
+      { name: 'ApprovedAt', type: 'date', required: false, description: 'Data de aprovação' },
+      { name: 'RejectedAt', type: 'date', required: false, description: 'Data de recusa' },
+      { name: 'RejectionReason', type: 'rich_text', required: false, description: 'Motivos da recusa (objeções)' },
+      
+      // Anexos
+      { name: 'PDFUrl', type: 'url', required: false, description: 'URL do PDF gerado' }
     ]
   },
   CoffeeDiagnostics: {
@@ -225,6 +272,36 @@ export const NOTION_SCHEMA: Record<string, DatabaseSchema> = {
       { name: 'ProposalDate', type: 'date', required: false, description: 'Data da proposta' },
       { name: 'LastUpdate', type: 'date', required: false, description: 'Última atualização' },
       { name: 'Notes', type: 'rich_text', required: false, description: 'Notas' }
+    ]
+  },
+  DoterraLeads: {
+    name: 'DoterraLeads',
+    envVar: 'NOTION_DB_DOTERRA_LEADS',
+    required: false,
+    properties: [
+      { name: 'Name', type: 'title', required: true, description: 'Nome do lead' },
+      { name: 'WhatsApp', type: 'phone_number', required: false, description: 'WhatsApp (E.164)' },
+      { name: 'Cohort', type: 'select', required: false, description: 'Cohort de ativação' },
+      { name: 'MessageVariant', type: 'select', required: false, description: 'Variante de mensagem (A/B/...)' },
+      { name: 'MessageText', type: 'rich_text', required: false, description: 'Texto da mensagem aplicada ao cohort' },
+      { name: 'Stage', type: 'select', required: false, description: 'Etapa do funil de reativação' },
+      { name: 'ApprovalStatus', type: 'select', required: false, description: 'Status de aprovação humana' },
+      { name: 'SentAt', type: 'date', required: false, description: 'Data/hora de envio' },
+      { name: 'DeliveredAt', type: 'date', required: false, description: 'Data/hora entregue (2 palitos)' },
+      { name: 'ReadAt', type: 'date', required: false, description: 'Data/hora lido' },
+      { name: 'RepliedAt', type: 'date', required: false, description: 'Data/hora resposta' },
+      { name: 'InterestedAt', type: 'date', required: false, description: 'Data/hora interesse' },
+      { name: 'ApprovedAt', type: 'date', required: false, description: 'Data/hora aprovado' },
+      { name: 'SoldAt', type: 'date', required: false, description: 'Data/hora venda feita' },
+      { name: 'LastEventAt', type: 'date', required: false, description: 'Data/hora último evento' },
+      { name: 'Source', type: 'select', required: false, description: 'Origem (CSV, n8n webhook, etc.)' },
+      { name: 'ExternalMessageId', type: 'rich_text', required: false, description: 'ID externo da mensagem (idempotência)' },
+      { name: 'ExternalLeadId', type: 'rich_text', required: false, description: 'ID externo do lead (idempotência)' },
+      { name: 'Notes', type: 'rich_text', required: false, description: 'Notas' },
+      { name: 'Tags', type: 'multi_select', required: false, description: 'Tags' },
+      { name: 'DoNotContact', type: 'checkbox', required: false, description: 'Não contatar' },
+      { name: 'DuplicateOf', type: 'rich_text', required: false, description: 'Duplicado de (id)' },
+      { name: 'AssignedTo', type: 'select', required: false, description: 'Responsável (Ana/Alexandre)' }
     ]
   },
   Produtos: {

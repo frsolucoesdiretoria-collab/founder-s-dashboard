@@ -11,3 +11,4 @@ export * from './finance.service';
 export * from './contacts.service';
 export * from './crm.service';
 export * from './produtos.service';
+export * from './doterra.service';

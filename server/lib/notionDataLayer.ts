@@ -11,8 +11,10 @@ import type {
   NotionCRMPipeline,
   NotionProduto,
   NotionContact,
+  NotionDoterraLead,
   NotionBudgetGoal,
-  NotionTransaction
+  NotionTransaction,
+  NotionGrowthProposal
 } from '../../src/lib/notion/types';
 import { DAILY_PROPHECY_ACTION_NAME } from '../../src/constants/dailyRoutine';
 
@@ -27,8 +29,9 @@ function toRichTextArray(input?: string): { text: { content: string } }[] {
   return chunks;
 }
 
-// Notion client instance (lazy initialization)
-let notionClient: Client | null = null;
+// Notion client instances (lazy initialization)
+// We support multiple tokens (e.g. AXIS vs client workspaces like Doterra).
+const notionClientsByToken = new Map<string, Client>();
 
 /**
  * Assert that an environment variable exists
@@ -45,13 +48,25 @@ export function assertEnv(name: string): string {
  * Initialize Notion client
  */
 export function initNotionClient(): Client {
-  if (notionClient) {
-    return notionClient;
-  }
-
   const token = assertEnv('NOTION_TOKEN');
-  notionClient = new Client({ auth: token });
-  return notionClient;
+  return initNotionClientWithToken(token);
+}
+
+export function initNotionClientWithToken(token: string): Client {
+  const t = token?.trim();
+  if (!t) {
+    throw new Error('Missing Notion token');
+  }
+  const existing = notionClientsByToken.get(t);
+  if (existing) return existing;
+  const client = new Client({ auth: t });
+  notionClientsByToken.set(t, client);
+  return client;
+}
+
+function initDoterraNotionClient(): Client {
+  const token = assertEnv('NOTION_TOKEN_DOTERRA');
+  return initNotionClientWithToken(token);
 }
 
 /**
@@ -312,6 +327,39 @@ function pageToContact(page: any): NotionContact {
     Source: extractSelect(props.Source) || undefined,
     Priority: extractSelect(props.Priority) || undefined,
     Notes: extractText(props.Notes) || undefined
+  };
+}
+
+/**
+ * Convert Notion page to Doterra Lead (single DB, cohort + events + approval)
+ */
+function pageToDoterraLead(page: any): NotionDoterraLead {
+  const props = page.properties;
+  return {
+    id: page.id,
+    Name: extractText(props.Name),
+    WhatsApp: extractPhoneNumber(props.WhatsApp) || undefined,
+    Cohort: extractSelect(props.Cohort) || undefined,
+    MessageVariant: extractSelect(props.MessageVariant) || undefined,
+    MessageText: extractText(props.MessageText) || undefined,
+    Stage: extractSelect(props.Stage) || undefined,
+    ApprovalStatus: extractSelect(props.ApprovalStatus) || undefined,
+    SentAt: extractDate(props.SentAt) || undefined,
+    DeliveredAt: extractDate(props.DeliveredAt) || undefined,
+    ReadAt: extractDate(props.ReadAt) || undefined,
+    RepliedAt: extractDate(props.RepliedAt) || undefined,
+    InterestedAt: extractDate(props.InterestedAt) || undefined,
+    ApprovedAt: extractDate(props.ApprovedAt) || undefined,
+    SoldAt: extractDate(props.SoldAt) || undefined,
+    LastEventAt: extractDate(props.LastEventAt) || undefined,
+    Source: extractSelect(props.Source) || undefined,
+    ExternalMessageId: extractText(props.ExternalMessageId) || undefined,
+    ExternalLeadId: extractText(props.ExternalLeadId) || undefined,
+    Notes: extractText(props.Notes) || undefined,
+    Tags: extractMultiSelect(props.Tags),
+    DoNotContact: extractBoolean(props.DoNotContact),
+    DuplicateOf: extractText(props.DuplicateOf) || undefined,
+    AssignedTo: extractSelect(props.AssignedTo) || undefined
   };
 }
 
@@ -1408,8 +1456,14 @@ export async function createDatabase(
       function: 'count' | 'sum' | 'average' | 'min' | 'max' | 'range' | 'checkbox' | 'percent_checked' | 'show_original' | 'show_unique' | 'unique' | 'empty' | 'not_empty' | 'date';
     };
   }>
+,
+  options?: { notionToken?: string; client?: Client }
 ): Promise<any> {
-  const client = initNotionClient();
+  const client = options?.client
+    ? options.client
+    : options?.notionToken
+      ? initNotionClientWithToken(options.notionToken)
+      : initNotionClient();
 
   // Build properties object for Notion API
   const notionProperties: any = {};
@@ -1907,6 +1961,162 @@ export async function createContact(data: {
   return pageToContact(response);
 }
 
+function getDoterraDbId(): string {
+  const dbId = getDatabaseId('DoterraLeads');
+  if (!dbId) throw new Error('NOTION_DB_DOTERRA_LEADS not configured');
+  return dbId;
+}
+
+type DoterraLeadQuery = {
+  cohort?: string;
+  stage?: string;
+  approvalStatus?: string;
+  search?: string;
+};
+
+async function queryDoterraLeadsRaw(params: DoterraLeadQuery = {}): Promise<any[]> {
+  const client = initDoterraNotionClient();
+  const dbId = getDoterraDbId();
+
+  const andFilters: any[] = [];
+  if (params.cohort) andFilters.push({ property: 'Cohort', select: { equals: params.cohort } });
+  if (params.stage) andFilters.push({ property: 'Stage', select: { equals: params.stage } });
+  if (params.approvalStatus) andFilters.push({ property: 'ApprovalStatus', select: { equals: params.approvalStatus } });
+  if (params.search && params.search.trim().length > 0) {
+    andFilters.push({ property: 'Name', title: { contains: params.search.trim() } });
+  }
+
+  const filter = andFilters.length > 0 ? { and: andFilters } : undefined;
+
+  const results: any[] = [];
+  let nextCursor: string | undefined = undefined;
+  do {
+    const response = await retryWithBackoff(() =>
+      client.databases.query({
+        database_id: dbId,
+        filter,
+        sorts: [{ timestamp: 'last_edited_time', direction: 'descending' }],
+        start_cursor: nextCursor
+      } as any)
+    );
+    results.push(...response.results);
+    nextCursor = response.has_more ? (response.next_cursor as string | undefined) : undefined;
+  } while (nextCursor);
+
+  return results;
+}
+
+export async function getDoterraLeads(params: DoterraLeadQuery = {}): Promise<NotionDoterraLead[]> {
+  const pages = await queryDoterraLeadsRaw(params);
+  return pages.map(pageToDoterraLead);
+}
+
+export async function getDoterraLeadById(id: string): Promise<NotionDoterraLead> {
+  const client = initDoterraNotionClient();
+  const page = await retryWithBackoff(() => client.pages.retrieve({ page_id: id })) as any;
+  return pageToDoterraLead(page);
+}
+
+export async function findDoterraLeadByWhatsApp(whatsapp: string): Promise<NotionDoterraLead | null> {
+  const client = initDoterraNotionClient();
+  const dbId = getDoterraDbId();
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      filter: { property: 'WhatsApp', phone_number: { equals: whatsapp } }
+    } as any)
+  );
+  const first = response.results?.[0];
+  return first ? pageToDoterraLead(first) : null;
+}
+
+export async function createDoterraLead(data: Partial<NotionDoterraLead> & { Name: string }): Promise<NotionDoterraLead> {
+  const client = initDoterraNotionClient();
+  const dbId = getDoterraDbId();
+
+  const properties: any = {
+    Name: { title: [{ text: { content: data.Name } }] }
+  };
+
+  if (data.WhatsApp) properties.WhatsApp = { phone_number: data.WhatsApp };
+  if (data.Cohort) properties.Cohort = { select: { name: data.Cohort } };
+  if (data.MessageVariant) properties.MessageVariant = { select: { name: data.MessageVariant } };
+  if (data.MessageText !== undefined) properties.MessageText = { rich_text: data.MessageText ? toRichTextArray(data.MessageText) : [] };
+  if (data.Stage) properties.Stage = { select: { name: data.Stage } };
+  if (data.ApprovalStatus) properties.ApprovalStatus = { select: { name: data.ApprovalStatus } };
+
+  if (data.SentAt) properties.SentAt = { date: { start: data.SentAt } };
+  if (data.DeliveredAt) properties.DeliveredAt = { date: { start: data.DeliveredAt } };
+  if (data.ReadAt) properties.ReadAt = { date: { start: data.ReadAt } };
+  if (data.RepliedAt) properties.RepliedAt = { date: { start: data.RepliedAt } };
+  if (data.InterestedAt) properties.InterestedAt = { date: { start: data.InterestedAt } };
+  if (data.ApprovedAt) properties.ApprovedAt = { date: { start: data.ApprovedAt } };
+  if (data.SoldAt) properties.SoldAt = { date: { start: data.SoldAt } };
+  if (data.LastEventAt) properties.LastEventAt = { date: { start: data.LastEventAt } };
+
+  if (data.Source) properties.Source = { select: { name: data.Source } };
+  if (data.ExternalMessageId !== undefined) properties.ExternalMessageId = { rich_text: data.ExternalMessageId ? toRichTextArray(data.ExternalMessageId) : [] };
+  if (data.ExternalLeadId !== undefined) properties.ExternalLeadId = { rich_text: data.ExternalLeadId ? toRichTextArray(data.ExternalLeadId) : [] };
+  if (data.Notes !== undefined) properties.Notes = { rich_text: data.Notes ? toRichTextArray(data.Notes) : [] };
+  if (data.Tags) properties.Tags = { multi_select: data.Tags.map(name => ({ name })) };
+  if (data.DoNotContact !== undefined) properties.DoNotContact = { checkbox: !!data.DoNotContact };
+  if (data.DuplicateOf !== undefined) properties.DuplicateOf = { rich_text: data.DuplicateOf ? toRichTextArray(data.DuplicateOf) : [] };
+  if (data.AssignedTo) properties.AssignedTo = { select: { name: data.AssignedTo } };
+
+  const response = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToDoterraLead(response);
+}
+
+export async function updateDoterraLead(
+  id: string,
+  updates: Partial<NotionDoterraLead>
+): Promise<NotionDoterraLead> {
+  const client = initDoterraNotionClient();
+  const properties: any = {};
+
+  if (updates.Name !== undefined) properties.Name = { title: [{ text: { content: updates.Name || '' } }] };
+  if (updates.WhatsApp !== undefined) properties.WhatsApp = updates.WhatsApp ? { phone_number: updates.WhatsApp } : { phone_number: null };
+
+  if (updates.Cohort !== undefined) properties.Cohort = updates.Cohort ? { select: { name: updates.Cohort } } : { select: null };
+  if (updates.MessageVariant !== undefined) properties.MessageVariant = updates.MessageVariant ? { select: { name: updates.MessageVariant } } : { select: null };
+  if (updates.MessageText !== undefined) properties.MessageText = { rich_text: updates.MessageText ? toRichTextArray(updates.MessageText) : [] };
+  if (updates.Stage !== undefined) properties.Stage = updates.Stage ? { select: { name: updates.Stage } } : { select: null };
+  if (updates.ApprovalStatus !== undefined) properties.ApprovalStatus = updates.ApprovalStatus ? { select: { name: updates.ApprovalStatus } } : { select: null };
+
+  const dateProps: Array<keyof NotionDoterraLead> = [
+    'SentAt','DeliveredAt','ReadAt','RepliedAt','InterestedAt','ApprovedAt','SoldAt','LastEventAt'
+  ];
+  for (const key of dateProps) {
+    if (updates[key] !== undefined) {
+      properties[key] = updates[key] ? { date: { start: updates[key] as string } } : { date: null };
+    }
+  }
+
+  if (updates.Source !== undefined) properties.Source = updates.Source ? { select: { name: updates.Source } } : { select: null };
+  if (updates.ExternalMessageId !== undefined) properties.ExternalMessageId = { rich_text: updates.ExternalMessageId ? toRichTextArray(updates.ExternalMessageId) : [] };
+  if (updates.ExternalLeadId !== undefined) properties.ExternalLeadId = { rich_text: updates.ExternalLeadId ? toRichTextArray(updates.ExternalLeadId) : [] };
+  if (updates.Notes !== undefined) properties.Notes = { rich_text: updates.Notes ? toRichTextArray(updates.Notes) : [] };
+  if (updates.Tags !== undefined) properties.Tags = { multi_select: (updates.Tags || []).map(name => ({ name })) };
+  if (updates.DoNotContact !== undefined) properties.DoNotContact = { checkbox: !!updates.DoNotContact };
+  if (updates.DuplicateOf !== undefined) properties.DuplicateOf = { rich_text: updates.DuplicateOf ? toRichTextArray(updates.DuplicateOf) : [] };
+  if (updates.AssignedTo !== undefined) properties.AssignedTo = updates.AssignedTo ? { select: { name: updates.AssignedTo } } : { select: null };
+
+  await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      properties
+    })
+  );
+
+  return getDoterraLeadById(id);
+}
+
 /**
  * Get all products
  */
@@ -1993,5 +2203,483 @@ export async function createProduto(payload: Partial<NotionProduto>): Promise<No
   );
 
   return pageToProduto(response);
+}
+
+/**
+ * Extract email from Notion property
+ */
+function extractEmail(property: any): string {
+  if (!property || !property.email) return '';
+  return property.email || '';
+}
+
+/**
+ * Extract URL from Notion property
+ */
+function extractUrl(property: any): string {
+  if (!property || !property.url) return '';
+  return property.url || '';
+}
+
+/**
+ * Convert Notion page to GrowthProposal
+ */
+function pageToGrowthProposal(page: any): NotionGrowthProposal {
+  const props = page.properties;
+  return {
+    id: page.id,
+    Name: extractText(props.Name),
+    ProposalNumber: extractText(props.ProposalNumber),
+    Date: extractDate(props.Date) || new Date().toISOString().split('T')[0],
+    ValidUntil: extractDate(props.ValidUntil),
+    Status: (extractSelect(props.Status) as any) || 'Em criação',
+    
+    // Cliente
+    ClientName: extractText(props.ClientName) || '',
+    ClientCompany: extractText(props.ClientCompany),
+    ClientCNPJ: extractText(props.ClientCNPJ),
+    ClientAddress: extractText(props.ClientAddress),
+    ClientCity: extractText(props.ClientCity),
+    ClientState: extractText(props.ClientState),
+    ClientCEP: extractText(props.ClientCEP),
+    ClientPhone: extractPhoneNumber(props.ClientPhone),
+    ClientEmail: extractEmail(props.ClientEmail),
+    
+    // Valores
+    Subtotal: extractNumber(props.Subtotal),
+    DiscountPercent: extractNumber(props.DiscountPercent),
+    DiscountAmount: extractNumber(props.DiscountAmount),
+    TaxPercent: extractNumber(props.TaxPercent),
+    TaxAmount: extractNumber(props.TaxAmount),
+    Total: extractNumber(props.Total) || 0,
+    
+    // Dados estruturados (JSON)
+    Services: extractText(props.Services),
+    PaymentTerms: extractText(props.PaymentTerms),
+    
+    // Observações
+    Observations: extractText(props.Observations),
+    MaterialsNotIncluded: extractText(props.MaterialsNotIncluded),
+    
+    // Relações
+    RelatedContact: extractRelation(props.RelatedContact)?.[0],
+    RelatedClient: extractRelation(props.RelatedClient)?.[0],
+    RelatedCoffeeDiagnostic: extractRelation(props.RelatedCoffeeDiagnostic)?.[0],
+    
+    // Follow-up
+    SentAt: extractDate(props.SentAt),
+    ApprovedAt: extractDate(props.ApprovedAt),
+    RejectedAt: extractDate(props.RejectedAt),
+    RejectionReason: extractText(props.RejectionReason),
+    
+    // Anexos
+    PDFUrl: extractUrl(props.PDFUrl)
+  };
+}
+
+/**
+ * Get all growth proposals
+ */
+export async function getGrowthProposals(): Promise<NotionGrowthProposal[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('GrowthProposals');
+  if (!dbId) throw new Error('NOTION_DB_GROWTHPROPOSALS not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      sorts: [{ property: 'Date', direction: 'descending' }]
+    })
+  );
+
+  return response.results.map(pageToGrowthProposal);
+}
+
+/**
+ * Get growth proposal by ID
+ */
+export async function getGrowthProposalById(id: string): Promise<NotionGrowthProposal> {
+  const client = initNotionClient();
+  const page = await retryWithBackoff(() => client.pages.retrieve({ page_id: id })) as any;
+  return pageToGrowthProposal(page);
+}
+
+/**
+ * Create growth proposal
+ */
+export async function createGrowthProposal(data: Partial<NotionGrowthProposal>): Promise<NotionGrowthProposal> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('GrowthProposals');
+  if (!dbId) throw new Error('NOTION_DB_GROWTHPROPOSALS not configured');
+
+  const properties: any = {
+    Name: { title: [{ text: { content: data.Name || 'Nova Proposta' } }] },
+    Status: { select: { name: data.Status || 'Em criação' } },
+    Total: { number: data.Total || 0 },
+    // Obrigatórios
+    Date: { date: { start: normalizeDate(data.Date || new Date().toISOString().split('T')[0]) } },
+    ClientName: { rich_text: [{ text: { content: data.ClientName || '' } }] }
+  };
+  if (data.ValidUntil) properties.ValidUntil = { date: { start: normalizeDate(data.ValidUntil) } };
+
+  // Número
+  if (data.ProposalNumber) properties.ProposalNumber = { rich_text: [{ text: { content: data.ProposalNumber } }] };
+
+  // Cliente - ClientName já está acima como obrigatório
+  if (data.ClientCompany) properties.ClientCompany = { rich_text: [{ text: { content: data.ClientCompany } }] };
+  if (data.ClientCNPJ) properties.ClientCNPJ = { rich_text: [{ text: { content: data.ClientCNPJ } }] };
+  if (data.ClientAddress) properties.ClientAddress = { rich_text: [{ text: { content: data.ClientAddress } }] };
+  if (data.ClientCity) properties.ClientCity = { rich_text: [{ text: { content: data.ClientCity } }] };
+  if (data.ClientState) properties.ClientState = { rich_text: [{ text: { content: data.ClientState } }] };
+  if (data.ClientCEP) properties.ClientCEP = { rich_text: [{ text: { content: data.ClientCEP } }] };
+  if (data.ClientPhone) properties.ClientPhone = { phone_number: data.ClientPhone };
+  if (data.ClientEmail) properties.ClientEmail = { email: data.ClientEmail };
+
+  // Valores
+  if (data.Subtotal !== undefined) properties.Subtotal = { number: data.Subtotal };
+  if (data.DiscountPercent !== undefined) properties.DiscountPercent = { number: data.DiscountPercent };
+  if (data.DiscountAmount !== undefined) properties.DiscountAmount = { number: data.DiscountAmount };
+  if (data.TaxPercent !== undefined) properties.TaxPercent = { number: data.TaxPercent };
+  if (data.TaxAmount !== undefined) properties.TaxAmount = { number: data.TaxAmount };
+
+  // JSON fields
+  if (data.Services) properties.Services = { rich_text: [{ text: { content: data.Services } }] };
+  if (data.PaymentTerms) properties.PaymentTerms = { rich_text: [{ text: { content: data.PaymentTerms } }] };
+
+  // Observações
+  if (data.Observations) properties.Observations = { rich_text: toRichTextArray(data.Observations) };
+  if (data.MaterialsNotIncluded) properties.MaterialsNotIncluded = { rich_text: toRichTextArray(data.MaterialsNotIncluded) };
+
+    // Relações - só adiciona se a propriedade existir (evita erro)
+    // Se RelatedContact não existir na database, simplesmente não envia
+    if (data.RelatedContact) {
+      try {
+        properties.RelatedContact = { relation: [{ id: data.RelatedContact }] };
+      } catch {
+        // Ignore if relation property doesn't exist
+      }
+    }
+    if (data.RelatedClient) {
+      try {
+        properties.RelatedClient = { relation: [{ id: data.RelatedClient }] };
+      } catch {
+        // Ignore if relation property doesn't exist
+      }
+    }
+    if (data.RelatedCoffeeDiagnostic) {
+      try {
+        properties.RelatedCoffeeDiagnostic = { relation: [{ id: data.RelatedCoffeeDiagnostic }] };
+      } catch {
+        // Ignore if relation property doesn't exist
+      }
+    }
+
+  // Follow-up dates
+  if (data.SentAt) properties.SentAt = { date: { start: normalizeDate(data.SentAt) } };
+  if (data.ApprovedAt) properties.ApprovedAt = { date: { start: normalizeDate(data.ApprovedAt) } };
+  if (data.RejectedAt) properties.RejectedAt = { date: { start: normalizeDate(data.RejectedAt) } };
+  if (data.RejectionReason) properties.RejectionReason = { rich_text: toRichTextArray(data.RejectionReason) };
+
+  // PDF
+  if (data.PDFUrl) properties.PDFUrl = { url: data.PDFUrl };
+
+  // All properties should now exist in the database (created via setup script)
+  // Just create the page with all properties
+  const response = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToGrowthProposal(response);
+}
+
+/**
+ * Update growth proposal
+ */
+export async function updateGrowthProposal(
+  id: string,
+  updates: Partial<NotionGrowthProposal>
+): Promise<NotionGrowthProposal> {
+  const client = initNotionClient();
+  const properties: any = {};
+
+  if (updates.Name) properties.Name = { title: [{ text: { content: updates.Name } }] };
+  if (updates.Status) properties.Status = { select: { name: updates.Status } };
+  if (updates.ProposalNumber) properties.ProposalNumber = { rich_text: [{ text: { content: updates.ProposalNumber } }] };
+  
+  if (updates.Date) properties.Date = { date: { start: normalizeDate(updates.Date) } };
+  if (updates.ValidUntil) properties.ValidUntil = { date: { start: normalizeDate(updates.ValidUntil) } };
+  
+  if (updates.ClientName) properties.ClientName = { rich_text: [{ text: { content: updates.ClientName } }] };
+  if (updates.ClientCompany !== undefined) properties.ClientCompany = { rich_text: [{ text: { content: updates.ClientCompany || '' } }] };
+  if (updates.ClientCNPJ !== undefined) properties.ClientCNPJ = { rich_text: [{ text: { content: updates.ClientCNPJ || '' } }] };
+  if (updates.ClientAddress !== undefined) properties.ClientAddress = { rich_text: [{ text: { content: updates.ClientAddress || '' } }] };
+  if (updates.ClientCity !== undefined) properties.ClientCity = { rich_text: [{ text: { content: updates.ClientCity || '' } }] };
+  if (updates.ClientState !== undefined) properties.ClientState = { rich_text: [{ text: { content: updates.ClientState || '' } }] };
+  if (updates.ClientCEP !== undefined) properties.ClientCEP = { rich_text: [{ text: { content: updates.ClientCEP || '' } }] };
+  if (updates.ClientPhone !== undefined) properties.ClientPhone = { phone_number: updates.ClientPhone || null };
+  if (updates.ClientEmail !== undefined) properties.ClientEmail = { email: updates.ClientEmail || null };
+  
+  if (updates.Subtotal !== undefined) properties.Subtotal = { number: updates.Subtotal };
+  if (updates.DiscountPercent !== undefined) properties.DiscountPercent = { number: updates.DiscountPercent };
+  if (updates.DiscountAmount !== undefined) properties.DiscountAmount = { number: updates.DiscountAmount };
+  if (updates.TaxPercent !== undefined) properties.TaxPercent = { number: updates.TaxPercent };
+  if (updates.TaxAmount !== undefined) properties.TaxAmount = { number: updates.TaxAmount };
+  if (updates.Total !== undefined) properties.Total = { number: updates.Total };
+  
+  if (updates.Services) properties.Services = { rich_text: [{ text: { content: updates.Services } }] };
+  if (updates.PaymentTerms) properties.PaymentTerms = { rich_text: [{ text: { content: updates.PaymentTerms } }] };
+  
+  if (updates.Observations !== undefined) properties.Observations = { rich_text: updates.Observations ? toRichTextArray(updates.Observations) : [] };
+  if (updates.MaterialsNotIncluded !== undefined) properties.MaterialsNotIncluded = { rich_text: updates.MaterialsNotIncluded ? toRichTextArray(updates.MaterialsNotIncluded) : [] };
+  
+  if (updates.RelatedContact !== undefined) {
+    if (updates.RelatedContact) {
+      properties.RelatedContact = { relation: [{ id: updates.RelatedContact }] };
+    } else {
+      properties.RelatedContact = { relation: [] };
+    }
+  }
+  if (updates.RelatedClient !== undefined) {
+    if (updates.RelatedClient) {
+      properties.RelatedClient = { relation: [{ id: updates.RelatedClient }] };
+    } else {
+      properties.RelatedClient = { relation: [] };
+    }
+  }
+  if (updates.RelatedCoffeeDiagnostic !== undefined) {
+    if (updates.RelatedCoffeeDiagnostic) {
+      properties.RelatedCoffeeDiagnostic = { relation: [{ id: updates.RelatedCoffeeDiagnostic }] };
+    } else {
+      properties.RelatedCoffeeDiagnostic = { relation: [] };
+    }
+  }
+  
+  if (updates.SentAt) properties.SentAt = { date: { start: normalizeDate(updates.SentAt) } };
+  if (updates.ApprovedAt) properties.ApprovedAt = { date: { start: normalizeDate(updates.ApprovedAt) } };
+  if (updates.RejectedAt) properties.RejectedAt = { date: { start: normalizeDate(updates.RejectedAt) } };
+  if (updates.RejectionReason !== undefined) properties.RejectionReason = { rich_text: updates.RejectionReason ? toRichTextArray(updates.RejectionReason) : [] };
+  
+  if (updates.PDFUrl !== undefined) properties.PDFUrl = { url: updates.PDFUrl || null };
+
+  await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      properties
+    })
+  );
+
+  return getGrowthProposalById(id);
+}
+
+/**
+ * Delete growth proposal
+ */
+export async function deleteGrowthProposal(id: string): Promise<void> {
+  const client = initNotionClient();
+  await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      archived: true
+    })
+  );
+}
+
+/**
+ * Ensure GrowthProposals database has all required properties
+ * Creates missing properties automatically
+ */
+export async function ensureGrowthProposalsSchema(): Promise<{
+  created: string[];
+  skipped: string[];
+  errors: { property: string; error: string }[];
+}> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('GrowthProposals');
+  if (!dbId) {
+    throw new Error('NOTION_DB_GROWTHPROPOSALS not configured');
+  }
+
+  // Get current database structure
+  let db: any;
+  try {
+    db = await retryWithBackoff(() =>
+      client.databases.retrieve({ database_id: dbId })
+    );
+  } catch (error: any) {
+    throw new Error(`Failed to retrieve database: ${error.message}`);
+  }
+
+  const existingProps = Object.keys(db.properties || {});
+  const schema = NOTION_SCHEMA.GrowthProposals;
+  
+  const toCreate: Record<string, any> = {};
+  const created: string[] = [];
+  const skipped: string[] = [];
+  const errors: { property: string; error: string }[] = [];
+
+  // Map of property type to Notion API format
+  const typeMap: Record<string, any> = {
+    'title': { title: {} },
+    'rich_text': { rich_text: {} },
+    'date': { date: {} },
+    'number': { number: {} },
+    'email': { email: {} },
+    'phone_number': { phone_number: {} },
+    'url': { url: {} }
+  };
+
+  // Special handling for Status select
+  if (!existingProps.includes('Status')) {
+    toCreate['Status'] = {
+      select: {
+        options: [
+          { name: 'Em criação', color: 'gray' },
+          { name: 'Enviada', color: 'blue' },
+          { name: 'Aprovada', color: 'green' },
+          { name: 'Recusada', color: 'red' }
+        ]
+      }
+    };
+  }
+
+  // Process all properties from schema
+  for (const propSchema of schema.properties) {
+    const propName = propSchema.name;
+    
+    // Skip if already exists
+    if (existingProps.includes(propName)) {
+      skipped.push(propName);
+      continue;
+    }
+
+    // Skip title (always exists by default)
+    if (propSchema.type === 'title') {
+      skipped.push(propName);
+      continue;
+    }
+
+    // Handle relations (need manual setup - can't create programmatically easily)
+    if (propSchema.type === 'relation') {
+      skipped.push(propName); // Skip for now, user needs to create manually
+      continue;
+    }
+
+    // Map property type
+    const notionType = typeMap[propSchema.type];
+    if (!notionType) {
+      errors.push({
+        property: propName,
+        error: `Unknown type: ${propSchema.type}`
+      });
+      continue;
+    }
+
+    toCreate[propName] = notionType;
+  }
+
+  // Create all missing properties
+  if (Object.keys(toCreate).length > 0) {
+    try {
+      // Try to create all at once first
+      await retryWithBackoff(() =>
+        client.databases.update({
+          database_id: dbId,
+          properties: toCreate
+        })
+      );
+      
+      created.push(...Object.keys(toCreate));
+      console.log(`✅ Created ${created.length} properties in GrowthProposals database: ${created.join(', ')}`);
+    } catch (error: any) {
+      // If batch fails, try creating one by one
+      console.warn('⚠️ Batch creation failed, trying individual creation...', error.message);
+      
+      for (const [propName, propDef] of Object.entries(toCreate)) {
+        try {
+          await retryWithBackoff(() =>
+            client.databases.update({
+              database_id: dbId,
+              properties: {
+                [propName]: propDef
+              }
+            })
+          );
+          created.push(propName);
+          console.log(`✅ Created property: ${propName}`);
+        } catch (err: any) {
+          errors.push({
+            property: propName,
+            error: err.message || 'Failed to create'
+          });
+          console.error(`❌ Failed to create property ${propName}:`, err.message);
+        }
+      }
+    }
+  }
+
+  return { created, skipped, errors };
+}
+
+/**
+ * Validate GrowthProposals database schema (read-only check)
+ */
+export async function validateGrowthProposalsSchema(): Promise<{
+  valid: boolean;
+  existing: string[];
+  missing: string[];
+  totalExpected: number;
+  totalExisting: number;
+  errors?: string[];
+}> {
+  try {
+    const client = initNotionClient();
+    const dbId = getDatabaseId('GrowthProposals');
+    if (!dbId) {
+      return {
+        valid: false,
+        existing: [],
+        missing: [],
+        totalExpected: 0,
+        totalExisting: 0,
+        errors: ['NOTION_DB_GROWTHPROPOSALS not configured']
+      };
+    }
+
+    const db = await retryWithBackoff(() =>
+      client.databases.retrieve({ database_id: dbId })
+    );
+
+    const existingProps = Object.keys(db.properties || {});
+    const schema = NOTION_SCHEMA.GrowthProposals;
+    const requiredProps = schema.properties.map(p => p.name);
+    
+    // Filter out title (always exists) and relations (need manual setup)
+    const checkableProps = requiredProps.filter(name => {
+      const prop = schema.properties.find(p => p.name === name);
+      return prop && prop.type !== 'title' && prop.type !== 'relation';
+    });
+    
+    const missing = checkableProps.filter(name => !existingProps.includes(name));
+
+    return {
+      valid: missing.length === 0,
+      existing: existingProps,
+      missing: missing,
+      totalExpected: requiredProps.length,
+      totalExisting: existingProps.length
+    };
+  } catch (error: any) {
+    return {
+      valid: false,
+      existing: [],
+      missing: [],
+      totalExpected: 0,
+      totalExisting: 0,
+      errors: [error.message || 'Unknown error']
+    };
+  }
 }
 

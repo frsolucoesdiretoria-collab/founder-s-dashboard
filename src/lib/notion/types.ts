@@ -101,6 +101,51 @@ export interface NotionClient {
 export interface NotionGrowthProposal {
   id: string;
   Name: string;
+  ProposalNumber?: string;
+  Date: string;
+  ValidUntil?: string;
+  Status: 'Em criação' | 'Enviada' | 'Aprovada' | 'Recusada';
+  
+  // Cliente
+  ClientName: string;
+  ClientCompany?: string;
+  ClientCNPJ?: string;
+  ClientAddress?: string;
+  ClientCity?: string;
+  ClientState?: string;
+  ClientCEP?: string;
+  ClientPhone?: string;
+  ClientEmail?: string;
+  
+  // Valores
+  Subtotal?: number;
+  DiscountPercent?: number;
+  DiscountAmount?: number;
+  TaxPercent?: number;
+  TaxAmount?: number;
+  Total: number;
+  
+  // Dados estruturados (JSON)
+  Services?: string; // JSON string
+  PaymentTerms?: string; // JSON string
+  
+  // Observações
+  Observations?: string;
+  MaterialsNotIncluded?: string;
+  
+  // Relações
+  RelatedContact?: string;
+  RelatedClient?: string;
+  RelatedCoffeeDiagnostic?: string;
+  
+  // Follow-up
+  SentAt?: string;
+  ApprovedAt?: string;
+  RejectedAt?: string;
+  RejectionReason?: string;
+  
+  // Anexos
+  PDFUrl?: string;
 }
 
 export interface NotionCoffeeDiagnostic {
@@ -216,6 +261,47 @@ export interface NotionTransaction {
   FileSource?: string;
 }
 
+export type DoterraStage =
+  | 'Aguardando ativação'
+  | 'Contato ativado'
+  | 'Entregue'
+  | 'Lido'
+  | 'Respondeu'
+  | 'Interessado (pendente aprovação)'
+  | 'Interessado (aprovado)'
+  | 'Venda feita'
+  | 'Perdido'
+  | 'Não contatar';
+
+export type DoterraApprovalStatus = 'Pendente' | 'Aprovado' | 'Reprovado';
+
+export interface NotionDoterraLead {
+  id: string;
+  Name: string;
+  WhatsApp?: string;
+  Cohort?: string;
+  MessageVariant?: string;
+  MessageText?: string;
+  Stage?: DoterraStage | string;
+  ApprovalStatus?: DoterraApprovalStatus | string;
+  SentAt?: string;
+  DeliveredAt?: string;
+  ReadAt?: string;
+  RepliedAt?: string;
+  InterestedAt?: string;
+  ApprovedAt?: string;
+  SoldAt?: string;
+  LastEventAt?: string;
+  Source?: string;
+  ExternalMessageId?: string;
+  ExternalLeadId?: string;
+  Notes?: string;
+  Tags?: string[];
+  DoNotContact?: boolean;
+  DuplicateOf?: string;
+  AssignedTo?: string;
+}
+
 export interface NotionEnvVars {
   NOTION_TOKEN: string;
   NOTION_DB_KPIS: string;
@@ -233,6 +319,7 @@ export interface NotionEnvVars {
   NOTION_DB_TRANSACTIONS?: string;
   NOTION_DB_CRMPIPELINE?: string;
   NOTION_DB_PRODUTOS?: string;
+  NOTION_DB_DOTERRA_LEADS?: string;
   // Phase 2
   NOTION_DB_PARTNERS?: string;
   NOTION_DB_REFERRALS?: string;

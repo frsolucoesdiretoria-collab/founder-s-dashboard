@@ -3,16 +3,26 @@ import { PasswordLogin } from './PasswordLogin';
 
 interface PasswordProtectionProps {
   children: React.ReactNode;
+  storageKey: string;
+  correctPassword: string;
+  title?: string;
+  description?: string;
 }
 
-export function PasswordProtection({ children }: PasswordProtectionProps) {
+export function PasswordProtection({
+  children,
+  storageKey,
+  correctPassword,
+  title,
+  description,
+}: PasswordProtectionProps) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
     // Verifica se o usuário já está autenticado
-    const authenticated = sessionStorage.getItem('frtech_authenticated') === 'true';
+    const authenticated = sessionStorage.getItem(storageKey) === 'true';
     setIsAuthenticated(authenticated);
-  }, []);
+  }, [storageKey]);
 
   const handleAuthSuccess = () => {
     setIsAuthenticated(true);
@@ -29,10 +39,19 @@ export function PasswordProtection({ children }: PasswordProtectionProps) {
 
   // Se não estiver autenticado, mostra a tela de login
   if (!isAuthenticated) {
-    return <PasswordLogin onSuccess={handleAuthSuccess} />;
+    return (
+      <PasswordLogin
+        onSuccess={handleAuthSuccess}
+        correctPassword={correctPassword}
+        storageKey={storageKey}
+        title={title}
+        description={description}
+      />
+    );
   }
 
   // Se estiver autenticado, mostra o conteúdo protegido
   return <>{children}</>;
 }
+
 
