@@ -8,7 +8,8 @@ import DashboardV02 from "./pages/DashboardV02";
 import FinancePage from "./pages/Finance";
 import ActionsCreatePage from "./pages/ActionsCreate";
 // TEMPORÁRIO: Removido para reunião - import ApresentacaoPage from "./pages/Apresentacao";
-// TEMPORÁRIO: Removido para reunião - import Apresentacao02Page from "./pages/Apresentacao02";
+import Apresentacao03Page from "./pages/Apresentacao03";
+import Apresentacao05Page from "./pages/Apresentacao05";
 import CRMPage from "./pages/CRM";
 // TEMPORÁRIO: Removido para reunião - import ProdutosPage from "./pages/Produtos";
 import ContactsPage from "./pages/Contacts";
@@ -108,7 +109,22 @@ const App = () => (
           }
         />
         {/* TEMPORÁRIO: Removido para reunião - <Route path="/apresentacao" element={<ApresentacaoPage />} /> */}
-        {/* TEMPORÁRIO: Removido para reunião - <Route path="/apresentacao-02" element={<Apresentacao02Page />} /> */}
+        <Route
+          path="/apresentacao-03"
+          element={
+            <PasswordProtection storageKey="app_authenticated" correctPassword={appPassword || ''}>
+              <Apresentacao03Page />
+            </PasswordProtection>
+          }
+        />
+        <Route
+          path="/apresentacao-05"
+          element={
+            <PasswordProtection storageKey="app_authenticated" correctPassword={appPassword || ''}>
+              <Apresentacao05Page />
+            </PasswordProtection>
+          }
+        />
         {/* TEMPORÁRIO: Removido para reunião - <Route path="/admin/health" element={<AdminHealth />} /> */}
         {/* TEMPORÁRIO: Removido para reunião - <Route path="/admin/settings" element={<AdminSettings />} /> */}
         {/* TEMPORÁRIO: Removido para reunião - <Route path="/admin/finance" element={<AdminFinance />} /> */}

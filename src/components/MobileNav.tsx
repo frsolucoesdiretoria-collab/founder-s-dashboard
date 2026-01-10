@@ -16,7 +16,8 @@ const navItems = [
   { path: '/proposals', label: 'Propostas', icon: FileText },
   // TEMPORÁRIO: Removido para reunião - { path: '/produtos', label: 'Produtos FR Tech', icon: Package },
   // TEMPORÁRIO: Removido para reunião - { path: '/apresentacao', label: 'Apresentação', icon: Presentation },
-  // TEMPORÁRIO: Removido para reunião - { path: '/apresentacao-02', label: 'Apresentação 02', icon: FileText },
+  { path: '/apresentacao-03', label: 'A1', icon: FileText },
+  { path: '/apresentacao-05', label: 'A2', icon: FileText },
   { path: '/relatos', label: 'Relatos', icon: BookOpen },
   // TEMPORÁRIO: Removido para reunião - { path: '/teste', label: 'Teste', icon: FlaskConical },
 ];
