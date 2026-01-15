@@ -26,10 +26,23 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { FileUpload } from '@/components/FileUpload';
 
 export default function DomaCondoDashboard() {
   const [showDailyReport, setShowDailyReport] = useState(false);
   const [employeeName, setEmployeeName] = useState('Lide');
+  
+  // Estados para anexos dos períodos
+  const [attachments0800, setAttachments0800] = useState<File[]>([]);
+  const [attachments1000, setAttachments1000] = useState<File[]>([]);
+  const [attachments1400, setAttachments1400] = useState<File[]>([]);
+  const [attachments1600, setAttachments1600] = useState<File[]>([]);
+  
+  // Estados para campos finais
+  const [victoriesText, setVictoriesText] = useState('');
+  const [victoriesAttachments, setVictoriesAttachments] = useState<File[]>([]);
+  const [errorsText, setErrorsText] = useState('');
+  const [errorsAttachments, setErrorsAttachments] = useState<File[]>([]);
   
   // Carregar dados - se houver erro, será capturado pelo Error Boundary
   const dailyFocus = getDailyFocus();
@@ -37,6 +50,15 @@ export default function DomaCondoDashboard() {
   const forecast = getDemandForecast();
 
   const formatDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+    } catch {
+      return dateString;
+    }
+  };
+
+  const formatDateCompact = (dateString: string) => {
     try {
       const date = new Date(dateString);
       return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
@@ -133,43 +155,6 @@ export default function DomaCondoDashboard() {
               </div>
             </div>
 
-            {/* Performance da Equipe */}
-            <div className="space-y-4">
-              <div>
-                <h2 className="text-xl md:text-2xl font-semibold text-foreground mb-2">Performance da Equipe</h2>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {employeePerformanceMock.map((performance) => (
-                  <Card key={performance.employeeId}>
-                    <CardHeader className="p-4 md:p-6">
-                      <CardTitle className="text-base md:text-lg">{performance.employeeName}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-4 md:p-6 space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <div className="text-xs md:text-sm text-muted-foreground">Lançamentos no mês</div>
-                          <div className="text-xl md:text-2xl font-bold">{performance.lancamentosRealizados}</div>
-                        </div>
-                        <div>
-                          <div className="text-xs md:text-sm text-muted-foreground">Média diária</div>
-                          <div className="text-xl md:text-2xl font-bold">{performance.mediaDiaria.toFixed(1)}</div>
-                        </div>
-                        <div>
-                          <div className="text-xs md:text-sm text-muted-foreground">Percentual conclusão</div>
-                          <div className="text-xl md:text-2xl font-bold text-primary">{performance.percentualConclusao.toFixed(1)}%</div>
-                        </div>
-                        <div>
-                          <div className="text-xs md:text-sm text-muted-foreground">Tempo médio</div>
-                          <div className="text-xl md:text-2xl font-bold">{performance.tempoMedio.toFixed(1)} min</div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-
             {/* Formulário Diário de Funcionárias */}
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
@@ -207,21 +192,135 @@ export default function DomaCondoDashboard() {
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm md:text-base">08:00 às 10:00</Label>
-                      <Textarea placeholder="Descreva as atividades..." rows={3} className="min-h-[80px] md:min-h-[100px]" />
+                      <Textarea 
+                        placeholder="Descreva as atividades..." 
+                        rows={3} 
+                        className="min-h-[80px] md:min-h-[100px]" 
+                      />
+                      <div className="mt-2">
+                        <Label className="text-xs text-muted-foreground">Anexos (máx. 5)</Label>
+                        <FileUpload
+                          files={attachments0800}
+                          onFilesChange={setAttachments0800}
+                          maxFiles={5}
+                          accept="image/*,application/pdf"
+                        />
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm md:text-base">10:00 às 12:00</Label>
-                      <Textarea placeholder="Descreva as atividades..." rows={3} className="min-h-[80px] md:min-h-[100px]" />
+                      <Textarea 
+                        placeholder="Descreva as atividades..." 
+                        rows={3} 
+                        className="min-h-[80px] md:min-h-[100px]" 
+                      />
+                      <div className="mt-2">
+                        <Label className="text-xs text-muted-foreground">Anexos (máx. 5)</Label>
+                        <FileUpload
+                          files={attachments1000}
+                          onFilesChange={setAttachments1000}
+                          maxFiles={5}
+                          accept="image/*,application/pdf"
+                        />
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm md:text-base">14:00 às 16:00</Label>
-                      <Textarea placeholder="Descreva as atividades..." rows={3} className="min-h-[80px] md:min-h-[100px]" />
+                      <Textarea 
+                        placeholder="Descreva as atividades..." 
+                        rows={3} 
+                        className="min-h-[80px] md:min-h-[100px]" 
+                      />
+                      <div className="mt-2">
+                        <Label className="text-xs text-muted-foreground">Anexos (máx. 5)</Label>
+                        <FileUpload
+                          files={attachments1400}
+                          onFilesChange={setAttachments1400}
+                          maxFiles={5}
+                          accept="image/*,application/pdf"
+                        />
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <Label className="text-sm md:text-base">16:00 às 18:00</Label>
-                      <Textarea placeholder="Descreva as atividades..." rows={3} className="min-h-[80px] md:min-h-[100px]" />
+                      <Textarea 
+                        placeholder="Descreva as atividades..." 
+                        rows={3} 
+                        className="min-h-[80px] md:min-h-[100px]" 
+                      />
+                      <div className="mt-2">
+                        <Label className="text-xs text-muted-foreground">Anexos (máx. 5)</Label>
+                        <FileUpload
+                          files={attachments1600}
+                          onFilesChange={setAttachments1600}
+                          maxFiles={5}
+                          accept="image/*,application/pdf"
+                        />
+                      </div>
                     </div>
-                    <Button onClick={() => { toast.success('Relatório salvo!'); setShowDailyReport(false); }} className="min-h-[44px] w-full sm:w-auto">
+
+                    <Separator />
+
+                    {/* Quadro de Vitórias do Dia */}
+                    <div className="space-y-2">
+                      <Label className="text-sm md:text-base">Quadro de Vitórias do Dia</Label>
+                      <Textarea 
+                        placeholder="Descreva as vitórias e conquistas do dia..." 
+                        rows={3} 
+                        className="min-h-[80px] md:min-h-[100px]"
+                        value={victoriesText}
+                        onChange={(e) => setVictoriesText(e.target.value)}
+                      />
+                      <div className="mt-2">
+                        <Label className="text-xs text-muted-foreground">Anexos (imagens, PDFs, etc.)</Label>
+                        <FileUpload
+                          files={victoriesAttachments}
+                          onFilesChange={setVictoriesAttachments}
+                          maxFiles={10}
+                          accept="image/*,application/pdf"
+                        />
+                      </div>
+                    </div>
+
+                    <Separator />
+
+                    {/* Erros do Dia */}
+                    <div className="space-y-2">
+                      <Label className="text-sm md:text-base">Erros do Dia</Label>
+                      <Textarea 
+                        placeholder="Documente os erros e falhas que travaram o trabalho ao longo do dia..." 
+                        rows={3} 
+                        className="min-h-[80px] md:min-h-[100px]"
+                        value={errorsText}
+                        onChange={(e) => setErrorsText(e.target.value)}
+                      />
+                      <div className="mt-2">
+                        <Label className="text-xs text-muted-foreground">Anexos (prints, documentos, etc.)</Label>
+                        <FileUpload
+                          files={errorsAttachments}
+                          onFilesChange={setErrorsAttachments}
+                          maxFiles={10}
+                          accept="image/*,application/pdf"
+                        />
+                      </div>
+                    </div>
+
+                    <Button 
+                      onClick={() => { 
+                        toast.success('Relatório salvo!'); 
+                        setShowDailyReport(false);
+                        // Resetar formulário
+                        setAttachments0800([]);
+                        setAttachments1000([]);
+                        setAttachments1400([]);
+                        setAttachments1600([]);
+                        setVictoriesText('');
+                        setVictoriesAttachments([]);
+                        setErrorsText('');
+                        setErrorsAttachments([]);
+                      }} 
+                      className="min-h-[44px] w-full sm:w-auto"
+                    >
                       Salvar Relatório
                     </Button>
                   </CardContent>
@@ -242,7 +341,14 @@ export default function DomaCondoDashboard() {
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={chartData}>
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" interval={4} />
+                      <XAxis 
+                        dataKey="date" 
+                        interval={7}
+                        tick={{ fontSize: 10 }}
+                        angle={-45}
+                        textAnchor="end"
+                        height={60}
+                      />
                       <YAxis />
                       <Tooltip />
                       <Line type="monotone" dataKey="volume" stroke="hsl(var(--primary))" strokeWidth={2} />
@@ -271,6 +377,54 @@ export default function DomaCondoDashboard() {
                 ))}
               </div>
             </div>
+
+            <Separator />
+
+            {/* Performance da Equipe (Upsell) */}
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-center gap-2">
+                <Lock className="h-4 w-4 md:h-5 md:w-5" />
+                <h2 className="text-xl md:text-2xl font-semibold">Performance da Equipe — Módulo Avançado</h2>
+                <Badge variant="secondary" className="text-xs md:text-sm">Não incluso</Badge>
+              </div>
+              <Alert className="p-3 md:p-4">
+                <AlertCircle className="h-4 w-4 md:h-5 md:w-5" />
+                <AlertDescription className="text-sm md:text-base">
+                  Este módulo pode ser contratado separadamente.
+                </AlertDescription>
+              </Alert>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 opacity-75">
+                {employeePerformanceMock.map((performance) => (
+                  <Card key={performance.employeeId}>
+                    <CardHeader className="p-4 md:p-6">
+                      <CardTitle className="text-base md:text-lg">{performance.employeeName}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-4 md:p-6 space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <div className="text-xs md:text-sm text-muted-foreground">Lançamentos no mês</div>
+                          <div className="text-xl md:text-2xl font-bold">{performance.lancamentosRealizados}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs md:text-sm text-muted-foreground">Média diária</div>
+                          <div className="text-xl md:text-2xl font-bold">{performance.mediaDiaria.toFixed(1)}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs md:text-sm text-muted-foreground">Percentual conclusão</div>
+                          <div className="text-xl md:text-2xl font-bold text-primary">{performance.percentualConclusao.toFixed(1)}%</div>
+                        </div>
+                        <div>
+                          <div className="text-xs md:text-sm text-muted-foreground">Tempo médio</div>
+                          <div className="text-xl md:text-2xl font-bold">{performance.tempoMedio.toFixed(1)} min</div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            <Separator />
 
             {/* KPIs Operacionais (Upsell) */}
             <div className="space-y-4">
