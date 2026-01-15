@@ -1516,8 +1516,13 @@ export async function createDatabase(
         if (!prop.relation) throw new Error(`Relation property "${key}" requires relation configuration`);
         baseProperty.relation = {
           database_id: prop.relation.database_id,
-          type: prop.relation.type || 'single_property'
+          ...(prop.relation.single_property ? { single_property: {} } : {}),
+          ...(prop.relation.dual_property ? { dual_property: {} } : {})
         };
+        // Se não especificado, usa single_property por padrão
+        if (!prop.relation.single_property && !prop.relation.dual_property) {
+          baseProperty.relation.single_property = {};
+        }
         break;
       case 'rollup':
         if (!prop.rollup) throw new Error(`Rollup property "${key}" requires rollup configuration`);
@@ -2681,5 +2686,850 @@ export async function validateGrowthProposalsSchema(): Promise<{
       errors: [error.message || 'Unknown error']
     };
   }
+}
+
+// ==========================================
+// VENDE MAIS OBRAS - FUNCTIONS
+// ==========================================
+
+/**
+ * Convert Notion page to Servico
+ */
+function pageToServico(page: any): any {
+  const props = page.properties;
+  return {
+    id: page.id,
+    Codigo: extractText(props.Codigo),
+    Nome: extractText(props.Nome),
+    Descricao: extractText(props.Descricao),
+    Categoria: extractSelect(props.Categoria),
+    Preco: extractNumber(props.Preco),
+    Unidade: extractSelect(props.Unidade),
+    Ativo: extractBoolean(props.Ativo),
+    CreatedAt: page.created_time,
+    UpdatedAt: page.last_edited_time
+  };
+}
+
+/**
+ * Convert Notion page to Usuario
+ */
+function pageToUsuario(page: any): any {
+  const props = page.properties;
+  return {
+    id: page.id,
+    Nome: extractText(props.Nome),
+    Email: extractEmail(props.Email),
+    Telefone: extractPhoneNumber(props.Telefone),
+    PasswordHash: extractText(props.PasswordHash), // nunca retornar ao frontend
+    Status: extractSelect(props.Status),
+    TrialInicio: extractDate(props.TrialInicio),
+    TrialFim: extractDate(props.TrialFim),
+    PlanoAtivo: extractBoolean(props.PlanoAtivo),
+    MercadoPagoSubscriptionId: extractText(props.MercadoPagoSubscriptionId),
+    CreatedAt: page.created_time,
+    ActivatedAt: extractDate(props.ActivatedAt),
+    LastAccessAt: extractDate(props.LastAccessAt),
+    ChurnedAt: extractDate(props.ChurnedAt)
+  };
+}
+
+/**
+ * Convert Notion page to Cliente
+ */
+function pageToCliente(page: any): any {
+  const props = page.properties;
+  const usuarioRelation = extractRelation(props.Usuario);
+  return {
+    id: page.id,
+    Nome: extractText(props.Nome),
+    Email: extractEmail(props.Email),
+    Telefone: extractPhoneNumber(props.Telefone),
+    Documento: extractText(props.Documento),
+    Endereco: extractText(props.Endereco),
+    Cidade: extractText(props.Cidade),
+    Estado: extractSelect(props.Estado),
+    UsuarioId: usuarioRelation[0] || '',
+    CreatedAt: page.created_time,
+    UpdatedAt: page.last_edited_time
+  };
+}
+
+/**
+ * Convert Notion page to Orcamento
+ */
+function pageToOrcamento(page: any): any {
+  const props = page.properties;
+  const usuarioRelation = extractRelation(props.Usuario);
+  const clienteRelation = extractRelation(props.Cliente);
+  const itensJson = extractText(props.Itens);
+  
+  let itens: any[] = [];
+  try {
+    itens = itensJson ? JSON.parse(itensJson) : [];
+  } catch {
+    itens = [];
+  }
+  
+  return {
+    id: page.id,
+    Numero: extractText(props.Numero),
+    UsuarioId: usuarioRelation[0] || '',
+    ClienteId: clienteRelation[0] || '',
+    Status: extractSelect(props.Status),
+    Total: extractNumber(props.Total),
+    Itens: itens,
+    Observacoes: extractText(props.Observacoes),
+    Validade: extractDate(props.Validade),
+    CreatedAt: page.created_time,
+    UpdatedAt: page.last_edited_time,
+    EnviadoAt: extractDate(props.EnviadoAt),
+    AprovadoAt: extractDate(props.AprovadoAt)
+  };
+}
+
+/**
+ * Convert Notion page to Lead
+ */
+function pageToLead(page: any): any {
+  const props = page.properties;
+  return {
+    id: page.id,
+    Name: extractText(props.Nome),
+    Email: extractEmail(props.Email),
+    Telefone: extractPhoneNumber(props.Telefone),
+    Profissao: extractText(props.Profissao),
+    Cidade: extractText(props.Cidade),
+    Status: extractSelect(props.Status),
+    Source: extractSelect(props.Source),
+    Notes: extractText(props.Notes),
+    CreatedAt: page.created_time,
+    ContactedAt: extractDate(props.ContactedAt),
+    QualifiedAt: extractDate(props.QualifiedAt),
+    ActivatedAt: extractDate(props.ActivatedAt),
+    ConvertedAt: extractDate(props.ConvertedAt),
+    ChurnedAt: extractDate(props.ChurnedAt)
+  };
+}
+
+/**
+ * ==========================================
+ * SERVIÇOS
+ * ==========================================
+ */
+
+export async function getServicos(categoria?: string, ativo?: boolean): Promise<any[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Servicos');
+  if (!dbId) throw new Error('NOTION_DB_SERVICOS not configured');
+
+  const filters: any[] = [];
+  if (categoria) {
+    filters.push({ property: 'Categoria', select: { equals: categoria } });
+  }
+  if (ativo !== undefined) {
+    filters.push({ property: 'Ativo', checkbox: { equals: ativo } });
+  }
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      filter: filters.length > 0 ? { and: filters } : undefined,
+      sorts: [{ property: 'Nome', direction: 'ascending' }]
+    })
+  );
+
+  return response.results.map(pageToServico);
+}
+
+export async function getServicoById(id: string): Promise<any | null> {
+  const client = initNotionClient();
+  try {
+    const page = await retryWithBackoff(() =>
+      client.pages.retrieve({ page_id: id })
+    );
+    return pageToServico(page);
+  } catch {
+    return null;
+  }
+}
+
+export async function createServico(servico: any): Promise<any> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Servicos');
+  if (!dbId) throw new Error('NOTION_DB_SERVICOS not configured');
+
+  const properties: any = {
+    Codigo: { title: [{ text: { content: servico.Codigo } }] },
+    Nome: { rich_text: [{ text: { content: servico.Nome } }] },
+    Categoria: { select: { name: servico.Categoria } },
+    Preco: { number: servico.Preco },
+    Unidade: { select: { name: servico.Unidade } },
+    Ativo: { checkbox: servico.Ativo ?? true }
+  };
+
+  if (servico.Descricao) {
+    properties.Descricao = { rich_text: [{ text: { content: servico.Descricao } }] };
+  }
+
+  const created = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToServico(created);
+}
+
+export async function updateServico(id: string, servico: any): Promise<any> {
+  const client = initNotionClient();
+  const properties: any = {};
+
+  if (servico.Codigo !== undefined) {
+    properties.Codigo = { title: [{ text: { content: servico.Codigo } }] };
+  }
+  if (servico.Nome !== undefined) {
+    properties.Nome = { rich_text: [{ text: { content: servico.Nome } }] };
+  }
+  if (servico.Descricao !== undefined) {
+    properties.Descricao = servico.Descricao
+      ? { rich_text: [{ text: { content: servico.Descricao } }] }
+      : { rich_text: [] };
+  }
+  if (servico.Categoria !== undefined) {
+    properties.Categoria = { select: { name: servico.Categoria } };
+  }
+  if (servico.Preco !== undefined) {
+    properties.Preco = { number: servico.Preco };
+  }
+  if (servico.Unidade !== undefined) {
+    properties.Unidade = { select: { name: servico.Unidade } };
+  }
+  if (servico.Ativo !== undefined) {
+    properties.Ativo = { checkbox: servico.Ativo };
+  }
+
+  const updated = await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      properties
+    })
+  );
+
+  return pageToServico(updated);
+}
+
+export async function deleteServico(id: string): Promise<void> {
+  const client = initNotionClient();
+  await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      archived: true
+    })
+  );
+}
+
+/**
+ * ==========================================
+ * USUÁRIOS
+ * ==========================================
+ */
+
+export async function getUsuarioByEmail(email: string): Promise<any | null> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Usuarios');
+  if (!dbId) throw new Error('NOTION_DB_USUARIOS not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      filter: { property: 'Email', email: { equals: email } },
+      page_size: 1
+    })
+  );
+
+  if (response.results.length === 0) return null;
+  return pageToUsuario(response.results[0]);
+}
+
+export async function getUsuarioById(id: string): Promise<any | null> {
+  const client = initNotionClient();
+  try {
+    const page = await retryWithBackoff(() =>
+      client.pages.retrieve({ page_id: id })
+    );
+    return pageToUsuario(page);
+  } catch {
+    return null;
+  }
+}
+
+export async function getAllUsuarios(): Promise<any[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Usuarios');
+  if (!dbId) throw new Error('NOTION_DB_USUARIOS not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      sorts: [{ timestamp: 'created_time', direction: 'descending' }]
+    })
+  );
+
+  return response.results.map(pageToUsuario);
+}
+
+export async function createUsuario(usuario: any, passwordHash: string): Promise<any> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Usuarios');
+  if (!dbId) throw new Error('NOTION_DB_USUARIOS not configured');
+
+  // Verificar se email já existe
+  const existing = await getUsuarioByEmail(usuario.Email);
+  if (existing) {
+    throw new Error('Email já cadastrado');
+  }
+
+  const trialInicio = new Date();
+  const trialFim = new Date();
+  trialFim.setDate(trialFim.getDate() + 7); // 7 dias de trial
+
+  const properties: any = {
+    Nome: { title: [{ text: { content: usuario.Nome } }] },
+    Email: { email: usuario.Email },
+    PasswordHash: { rich_text: [{ text: { content: passwordHash } }] },
+    Status: { select: { name: usuario.Status || 'Trial' } },
+    TrialInicio: { date: { start: normalizeDate(trialInicio.toISOString()) } },
+    TrialFim: { date: { start: normalizeDate(trialFim.toISOString()) } },
+    PlanoAtivo: { checkbox: false }
+  };
+
+  if (usuario.Telefone) {
+    properties.Telefone = { phone_number: usuario.Telefone };
+  }
+
+  const created = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToUsuario(created);
+}
+
+export async function updateUsuario(id: string, usuario: any, passwordHash?: string): Promise<any> {
+  const client = initNotionClient();
+  const properties: any = {};
+
+  if (usuario.Nome !== undefined) {
+    properties.Nome = { title: [{ text: { content: usuario.Nome } }] };
+  }
+  if (usuario.Email !== undefined) {
+    // Verificar se email já existe em outro usuário
+    const existing = await getUsuarioByEmail(usuario.Email);
+    if (existing && existing.id !== id) {
+      throw new Error('Email já cadastrado');
+    }
+    properties.Email = { email: usuario.Email };
+  }
+  if (usuario.Telefone !== undefined) {
+    properties.Telefone = usuario.Telefone
+      ? { phone_number: usuario.Telefone }
+      : { phone_number: null };
+  }
+  if (passwordHash) {
+    properties.PasswordHash = { rich_text: [{ text: { content: passwordHash } }] };
+  }
+  if (usuario.Status !== undefined) {
+    properties.Status = { select: { name: usuario.Status } };
+  }
+  if (usuario.TrialInicio !== undefined) {
+    properties.TrialInicio = usuario.TrialInicio
+      ? { date: { start: normalizeDate(usuario.TrialInicio) } }
+      : { date: null };
+  }
+  if (usuario.TrialFim !== undefined) {
+    properties.TrialFim = usuario.TrialFim
+      ? { date: { start: normalizeDate(usuario.TrialFim) } }
+      : { date: null };
+  }
+  if (usuario.PlanoAtivo !== undefined) {
+    properties.PlanoAtivo = { checkbox: usuario.PlanoAtivo };
+  }
+  if (usuario.MercadoPagoSubscriptionId !== undefined) {
+    properties.MercadoPagoSubscriptionId = usuario.MercadoPagoSubscriptionId
+      ? { rich_text: [{ text: { content: usuario.MercadoPagoSubscriptionId } }] }
+      : { rich_text: [] };
+  }
+  if (usuario.LastAccessAt !== undefined) {
+    properties.LastAccessAt = usuario.LastAccessAt
+      ? { date: { start: normalizeDate(usuario.LastAccessAt) } }
+      : { date: null };
+  }
+  if (usuario.ActivatedAt !== undefined) {
+    properties.ActivatedAt = usuario.ActivatedAt
+      ? { date: { start: normalizeDate(usuario.ActivatedAt) } }
+      : { date: null };
+  }
+  if (usuario.ChurnedAt !== undefined) {
+    properties.ChurnedAt = usuario.ChurnedAt
+      ? { date: { start: normalizeDate(usuario.ChurnedAt) } }
+      : { date: null };
+  }
+
+  const updated = await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      properties
+    })
+  );
+
+  return pageToUsuario(updated);
+}
+
+/**
+ * ==========================================
+ * ORÇAMENTOS
+ * ==========================================
+ */
+
+export async function getOrcamentosByUsuario(usuarioId: string): Promise<any[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Orcamentos');
+  if (!dbId) throw new Error('NOTION_DB_ORCAMENTOS not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      filter: { property: 'Usuario', relation: { contains: usuarioId } },
+      sorts: [{ timestamp: 'created_time', direction: 'descending' }]
+    })
+  );
+
+  return response.results.map(pageToOrcamento);
+}
+
+export async function getOrcamentoById(id: string, usuarioId?: string): Promise<any | null> {
+  const client = initNotionClient();
+  try {
+    const page = await retryWithBackoff(() =>
+      client.pages.retrieve({ page_id: id })
+    );
+    const orcamento = pageToOrcamento(page);
+    
+    // Verificar ownership se usuarioId fornecido
+    if (usuarioId && orcamento.UsuarioId !== usuarioId) {
+      return null;
+    }
+    
+    return orcamento;
+  } catch {
+    return null;
+  }
+}
+
+export async function getAllOrcamentos(): Promise<any[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Orcamentos');
+  if (!dbId) throw new Error('NOTION_DB_ORCAMENTOS not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      sorts: [{ timestamp: 'created_time', direction: 'descending' }]
+    })
+  );
+
+  return response.results.map(pageToOrcamento);
+}
+
+export async function createOrcamento(orcamento: any): Promise<any> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Orcamentos');
+  if (!dbId) throw new Error('NOTION_DB_ORCAMENTOS not configured');
+
+  // Gerar número se não fornecido
+  if (!orcamento.Numero) {
+    const all = await getAllOrcamentos();
+    const numero = `ORC-${String(all.length + 1).padStart(4, '0')}`;
+    orcamento.Numero = numero;
+  }
+
+  const properties: any = {
+    Numero: { title: [{ text: { content: orcamento.Numero } }] },
+    Usuario: { relation: [{ id: orcamento.UsuarioId }] },
+    Cliente: { relation: [{ id: orcamento.ClienteId }] },
+    Status: { select: { name: orcamento.Status || 'Rascunho' } },
+    Total: { number: orcamento.Total },
+    Itens: { rich_text: [{ text: { content: JSON.stringify(orcamento.Itens || []) } }] }
+  };
+
+  if (orcamento.Observacoes) {
+    properties.Observacoes = { rich_text: [{ text: { content: orcamento.Observacoes } }] };
+  }
+  if (orcamento.Validade) {
+    properties.Validade = { date: { start: normalizeDate(orcamento.Validade) } };
+  }
+
+  const created = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToOrcamento(created);
+}
+
+export async function updateOrcamento(id: string, orcamento: any, usuarioId: string): Promise<any> {
+  const client = initNotionClient();
+  
+  // Verificar ownership
+  const existing = await getOrcamentoById(id, usuarioId);
+  if (!existing) {
+    throw new Error('Orçamento não encontrado ou não pertence ao usuário');
+  }
+
+  const properties: any = {};
+
+  if (orcamento.ClienteId !== undefined) {
+    properties.Cliente = { relation: [{ id: orcamento.ClienteId }] };
+  }
+  if (orcamento.Status !== undefined) {
+    properties.Status = { select: { name: orcamento.Status } };
+  }
+  if (orcamento.Total !== undefined) {
+    properties.Total = { number: orcamento.Total };
+  }
+  if (orcamento.Itens !== undefined) {
+    properties.Itens = { rich_text: [{ text: { content: JSON.stringify(orcamento.Itens) } }] };
+  }
+  if (orcamento.Observacoes !== undefined) {
+    properties.Observacoes = orcamento.Observacoes
+      ? { rich_text: [{ text: { content: orcamento.Observacoes } }] }
+      : { rich_text: [] };
+  }
+  if (orcamento.Validade !== undefined) {
+    properties.Validade = orcamento.Validade
+      ? { date: { start: normalizeDate(orcamento.Validade) } }
+      : { date: null };
+  }
+  if (orcamento.EnviadoAt !== undefined) {
+    properties.EnviadoAt = orcamento.EnviadoAt
+      ? { date: { start: normalizeDate(orcamento.EnviadoAt) } }
+      : { date: null };
+  }
+  if (orcamento.AprovadoAt !== undefined) {
+    properties.AprovadoAt = orcamento.AprovadoAt
+      ? { date: { start: normalizeDate(orcamento.AprovadoAt) } }
+      : { date: null };
+  }
+
+  const updated = await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      properties
+    })
+  );
+
+  return pageToOrcamento(updated);
+}
+
+export async function deleteOrcamento(id: string, usuarioId: string): Promise<void> {
+  const client = initNotionClient();
+  
+  // Verificar ownership
+  const existing = await getOrcamentoById(id, usuarioId);
+  if (!existing) {
+    throw new Error('Orçamento não encontrado ou não pertence ao usuário');
+  }
+
+  await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      archived: true
+    })
+  );
+}
+
+/**
+ * ==========================================
+ * CLIENTES
+ * ==========================================
+ */
+
+export async function getClientesByUsuario(usuarioId: string): Promise<any[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Clientes');
+  if (!dbId) throw new Error('NOTION_DB_CLIENTES not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      filter: { property: 'Usuario', relation: { contains: usuarioId } },
+      sorts: [{ property: 'Nome', direction: 'ascending' }]
+    })
+  );
+
+  return response.results.map(pageToCliente);
+}
+
+export async function getClienteById(id: string, usuarioId?: string): Promise<any | null> {
+  const client = initNotionClient();
+  try {
+    const page = await retryWithBackoff(() =>
+      client.pages.retrieve({ page_id: id })
+    );
+    const cliente = pageToCliente(page);
+    
+    // Verificar ownership se usuarioId fornecido
+    if (usuarioId && cliente.UsuarioId !== usuarioId) {
+      return null;
+    }
+    
+    return cliente;
+  } catch {
+    return null;
+  }
+}
+
+export async function createCliente(cliente: any): Promise<any> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Clientes');
+  if (!dbId) throw new Error('NOTION_DB_CLIENTES not configured');
+
+  const properties: any = {
+    Nome: { title: [{ text: { content: cliente.Nome } }] },
+    Usuario: { relation: [{ id: cliente.UsuarioId }] }
+  };
+
+  if (cliente.Email) properties.Email = { email: cliente.Email };
+  if (cliente.Telefone) properties.Telefone = { phone_number: cliente.Telefone };
+  if (cliente.Documento) properties.Documento = { rich_text: [{ text: { content: cliente.Documento } }] };
+  if (cliente.Endereco) properties.Endereco = { rich_text: [{ text: { content: cliente.Endereco } }] };
+  if (cliente.Cidade) properties.Cidade = { rich_text: [{ text: { content: cliente.Cidade } }] };
+  if (cliente.Estado) properties.Estado = { select: { name: cliente.Estado } };
+
+  const created = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToCliente(created);
+}
+
+export async function updateCliente(id: string, cliente: any, usuarioId: string): Promise<any> {
+  const client = initNotionClient();
+  
+  // Verificar ownership
+  const existing = await getClienteById(id, usuarioId);
+  if (!existing) {
+    throw new Error('Cliente não encontrado ou não pertence ao usuário');
+  }
+
+  const properties: any = {};
+
+  if (cliente.Nome !== undefined) {
+    properties.Nome = { title: [{ text: { content: cliente.Nome } }] };
+  }
+  if (cliente.Email !== undefined) {
+    properties.Email = cliente.Email ? { email: cliente.Email } : { email: null };
+  }
+  if (cliente.Telefone !== undefined) {
+    properties.Telefone = cliente.Telefone ? { phone_number: cliente.Telefone } : { phone_number: null };
+  }
+  if (cliente.Documento !== undefined) {
+    properties.Documento = cliente.Documento
+      ? { rich_text: [{ text: { content: cliente.Documento } }] }
+      : { rich_text: [] };
+  }
+  if (cliente.Endereco !== undefined) {
+    properties.Endereco = cliente.Endereco
+      ? { rich_text: [{ text: { content: cliente.Endereco } }] }
+      : { rich_text: [] };
+  }
+  if (cliente.Cidade !== undefined) {
+    properties.Cidade = cliente.Cidade
+      ? { rich_text: [{ text: { content: cliente.Cidade } }] }
+      : { rich_text: [] };
+  }
+  if (cliente.Estado !== undefined) {
+    properties.Estado = cliente.Estado ? { select: { name: cliente.Estado } } : { select: null };
+  }
+
+  const updated = await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      properties
+    })
+  );
+
+  return pageToCliente(updated);
+}
+
+export async function deleteCliente(id: string, usuarioId: string): Promise<void> {
+  const client = initNotionClient();
+  
+  // Verificar ownership
+  const existing = await getClienteById(id, usuarioId);
+  if (!existing) {
+    throw new Error('Cliente não encontrado ou não pertence ao usuário');
+  }
+
+  await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      archived: true
+    })
+  );
+}
+
+/**
+ * ==========================================
+ * LEADS
+ * ==========================================
+ */
+
+export async function getLeads(status?: string): Promise<any[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Leads');
+  if (!dbId) throw new Error('NOTION_DB_LEADS not configured');
+
+  const filter = status
+    ? { property: 'Status', select: { equals: status } }
+    : undefined;
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      filter,
+      sorts: [{ timestamp: 'created_time', direction: 'descending' }]
+    })
+  );
+
+  return response.results.map(pageToLead);
+}
+
+export async function createLead(lead: any): Promise<any> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Leads');
+  if (!dbId) throw new Error('NOTION_DB_LEADS not configured');
+
+  const properties: any = {
+    Nome: { title: [{ text: { content: lead.Nome } }] },
+    Status: { select: { name: lead.Status || 'Novo' } }
+  };
+
+  if (lead.Email) properties.Email = { email: lead.Email };
+  if (lead.Telefone) properties.Telefone = { phone_number: lead.Telefone };
+  if (lead.Profissao) properties.Profissao = { rich_text: [{ text: { content: lead.Profissao } }] };
+  if (lead.Cidade) properties.Cidade = { rich_text: [{ text: { content: lead.Cidade } }] };
+  if (lead.Source) properties.Source = { select: { name: lead.Source } };
+  if (lead.Notes) properties.Notes = { rich_text: [{ text: { content: lead.Notes } }] };
+
+  const created = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToLead(created);
+}
+
+export async function updateLeadStatus(id: string, status: string, dataAtualizacao?: Date): Promise<any> {
+  const client = initNotionClient();
+  const properties: any = {
+    Status: { select: { name: status } }
+  };
+
+  const dataStr = dataAtualizacao ? normalizeDate(dataAtualizacao.toISOString()) : normalizeDate(new Date().toISOString());
+
+  // Atualizar campo de data apropriado baseado no status
+  if (status === 'Contactado') {
+    properties.ContactedAt = { date: { start: dataStr } };
+  } else if (status === 'Qualificado' || status === 'Cadastrado') {
+    properties.QualifiedAt = { date: { start: dataStr } };
+  } else if (status === 'Ativado' || status === 'Usuário Ativo') {
+    properties.ActivatedAt = { date: { start: dataStr } };
+  } else if (status === 'Pago' || status === 'Usuário Pagante') {
+    properties.ConvertedAt = { date: { start: dataStr } };
+  } else if (status === 'Perdido' || status === 'Churn') {
+    properties.ChurnedAt = { date: { start: dataStr } };
+  }
+
+  const updated = await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      properties
+    })
+  );
+
+  return pageToLead(updated);
+}
+
+export async function getAllLeads(): Promise<any[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Leads');
+  if (!dbId) throw new Error('NOTION_DB_LEADS not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      sorts: [{ timestamp: 'created_time', direction: 'descending' }]
+    })
+  );
+
+  return response.results.map(pageToLead);
+}
+
+/**
+ * ==========================================
+ * MÉTRICAS
+ * ==========================================
+ */
+
+export async function getVendeMaisObrasMetricas(): Promise<any> {
+  const leads = await getAllLeads();
+  const usuarios = await getAllUsuarios();
+  const orcamentos = await getAllOrcamentos();
+
+  const leadsTotal = leads.length;
+  const leadsContactados = leads.filter(l => l.Status === 'Contactado').length;
+  const leadsInteressados = leads.filter(l => l.Status === 'Interessado' || l.Status === 'Respondeu').length;
+  
+  const usuariosTrial = usuarios.filter(u => u.Status === 'Trial').length;
+  const usuariosAtivos = usuarios.filter(u => u.Status === 'Ativo').length;
+  const usuariosPagantes = usuarios.filter(u => u.PlanoAtivo === true).length;
+  
+  const orcamentosCriados = orcamentos.length;
+  const orcamentosAprovados = orcamentos.filter(o => o.Status === 'Aprovado').length;
+
+  const usuariosQuePagaram = usuarios.filter(u => u.PlanoAtivo === true).length;
+  const usuariosTrialTotal = usuarios.filter(u => u.Status === 'Trial' || (u.TrialFim && new Date(u.TrialFim) < new Date())).length;
+  const conversaoTrialParaPago = usuariosTrialTotal > 0
+    ? (usuariosQuePagaram / usuariosTrialTotal) * 100
+    : 0;
+
+  const usuariosChurned = usuarios.filter(u => u.ChurnedAt && u.Status === 'Cancelado').length;
+  const usuariosTotais = usuarios.length;
+  const churn = usuariosTotais > 0 ? (usuariosChurned / usuariosTotais) * 100 : 0;
+
+  return {
+    leadsTotal,
+    leadsContactados,
+    leadsInteressados,
+    usuariosTrial,
+    usuariosAtivos,
+    usuariosPagantes,
+    orcamentosCriados,
+    orcamentosAprovados,
+    conversaoTrialParaPago: Math.round(conversaoTrialParaPago * 100) / 100,
+    churn: Math.round(churn * 100) / 100
+  };
 }
 

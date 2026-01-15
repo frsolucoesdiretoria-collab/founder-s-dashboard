@@ -2,6 +2,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "sonner";
 import { PasswordProtection } from "./components/PasswordProtection";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 import DashboardV02 from "./pages/DashboardV02";
 // TEMPORÁRIO: Removido para reunião - import CoffeePage from "./pages/Coffee";
 // TEMPORÁRIO: Removido para reunião - import ExpansionPage from "./pages/Expansion";
@@ -21,6 +23,14 @@ import SelfTest from "./pages/SelfTest";
 import NotFound from "./pages/NotFound";
 import RelatosPage from "./pages/Relatos";
 import DoterraPage from "./pages/Doterra";
+import VendeMaisObrasPage from "./pages/VendeMaisObras";
+import VendeMaisObrasCatalogo from "./pages/VendeMaisObrasCatalogo";
+import VendeMaisObrasLogin from "./pages/VendeMaisObrasLogin";
+import VendeMaisObrasRegister from "./pages/VendeMaisObrasRegister";
+import VendeMaisObrasDashboard from "./pages/VendeMaisObrasDashboard";
+import VendeMaisObrasProfile from "./pages/VendeMaisObrasProfile";
+import VendeMaisObrasOrcamentos from "./pages/VendeMaisObrasOrcamentos";
+import VendeMaisObrasClientes from "./pages/VendeMaisObrasClientes";
 // TEMPORÁRIO: Removido para reunião - import TestePage from "./pages/Teste";
 
 const queryClient = new QueryClient({
@@ -34,12 +44,14 @@ const queryClient = new QueryClient({
 
 const appPassword = import.meta.env.VITE_APP_PASSWORD as string | undefined;
 const doterraPassword = import.meta.env.VITE_DOTERRA_PASSWORD as string | undefined;
+const vendeMaisObrasPassword = import.meta.env.VITE_VENDE_MAIS_OBRAS_PASSWORD as string | undefined;
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <Toaster richColors position="top-right" />
     <BrowserRouter>
-      <Routes>
+      <AuthProvider>
+        <Routes>
         {/* Doterra: senha separada do app geral */}
         <Route
           path="/doterra"
@@ -51,6 +63,66 @@ const App = () => (
               description="Digite a senha para acessar o painel Doterra"
             >
               <DoterraPage />
+            </PasswordProtection>
+          }
+        />
+        {/* Vende Mais Obras: Rotas públicas */}
+        <Route path="/vende-mais-obras/login" element={<VendeMaisObrasLogin />} />
+        <Route path="/vende-mais-obras/register" element={<VendeMaisObrasRegister />} />
+
+        {/* Vende Mais Obras: Rotas protegidas */}
+        <Route
+          path="/vende-mais-obras"
+          element={
+            <ProtectedRoute>
+              <VendeMaisObrasDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/vende-mais-obras/catalogo"
+          element={
+            <ProtectedRoute>
+              <VendeMaisObrasCatalogo />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/vende-mais-obras/orcamentos"
+          element={
+            <ProtectedRoute>
+              <VendeMaisObrasOrcamentos />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/vende-mais-obras/perfil"
+          element={
+            <ProtectedRoute>
+              <VendeMaisObrasProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/vende-mais-obras/clientes"
+          element={
+            <ProtectedRoute>
+              <VendeMaisObrasClientes />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Vende Mais Obras: Admin (mantido com passcode para compatibilidade) */}
+        <Route
+          path="/vende-mais-obras/admin"
+          element={
+            <PasswordProtection
+              storageKey="vende_mais_obras_authenticated"
+              correctPassword={vendeMaisObrasPassword || ''}
+              title="Acesso Restrito — Vende Mais Obras Admin"
+              description="Digite a senha para acessar o painel admin"
+            >
+              <VendeMaisObrasPage />
             </PasswordProtection>
           }
         />
@@ -153,7 +225,8 @@ const App = () => (
             </PasswordProtection>
           }
         />
-      </Routes>
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   </QueryClientProvider>
 );
