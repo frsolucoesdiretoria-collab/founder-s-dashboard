@@ -33,10 +33,10 @@ export function ReportResumoExecutivo({
   };
 
   return (
-    <Card className="mb-6">
-      <CardHeader>
+    <Card className="mb-4 sm:mb-6">
+      <CardHeader className="p-4 sm:p-6 pb-3 sm:pb-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-xl">1. Resumo Executivo</CardTitle>
+          <CardTitle className="text-lg sm:text-xl">1. Resumo Executivo</CardTitle>
           {editable && !isEditing && (
             <Button
               variant="ghost"
@@ -50,7 +50,7 @@ export function ReportResumoExecutivo({
           )}
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-4 sm:p-6 pt-0">
         {isEditing && editable ? (
           <div className="space-y-4">
             <div>
@@ -76,7 +76,7 @@ export function ReportResumoExecutivo({
           </div>
         ) : (
           <div className="prose prose-sm max-w-none">
-            <p className="text-muted-foreground whitespace-pre-line">{texto || 'Não informado'}</p>
+            <p className="text-sm sm:text-base text-muted-foreground whitespace-pre-line leading-relaxed">{texto || 'Não informado'}</p>
           </div>
         )}
       </CardContent>

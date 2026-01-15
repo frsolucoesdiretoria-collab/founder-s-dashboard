@@ -33,10 +33,10 @@ export function ReportMelhorias({
   };
 
   return (
-    <Card className="mb-6">
-      <CardHeader>
+    <Card className="mb-4 sm:mb-6">
+      <CardHeader className="p-4 sm:p-6 pb-3 sm:pb-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-xl">5. Melhorias Implementadas no Período</CardTitle>
+          <CardTitle className="text-lg sm:text-xl">5. Melhorias Implementadas no Período</CardTitle>
           {editable && !isEditing && (
             <Button
               variant="ghost"
@@ -50,7 +50,7 @@ export function ReportMelhorias({
           )}
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-4 sm:p-6 pt-0">
         {isEditing && editable ? (
           <div className="space-y-4">
             <div>
@@ -77,7 +77,7 @@ export function ReportMelhorias({
           </div>
         ) : (
           <div className="prose prose-sm max-w-none">
-            <p className="text-muted-foreground whitespace-pre-line">
+            <p className="text-sm sm:text-base text-muted-foreground whitespace-pre-line leading-relaxed">
               {texto || 'Nenhuma melhoria registrada para este período.'}
             </p>
           </div>

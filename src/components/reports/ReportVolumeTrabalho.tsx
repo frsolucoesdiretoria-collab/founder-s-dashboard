@@ -14,41 +14,41 @@ export function ReportVolumeTrabalho({ volumeTrabalho }: ReportVolumeTrabalhoPro
   }));
 
   return (
-    <Card className="mb-6">
-      <CardHeader>
-        <CardTitle className="text-xl">3. Volume de Trabalho Executado</CardTitle>
+    <Card className="mb-4 sm:mb-6">
+      <CardHeader className="p-4 sm:p-6 pb-3 sm:pb-4">
+        <CardTitle className="text-lg sm:text-xl">3. Volume de Trabalho Executado</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div>
-            <div className="text-sm text-muted-foreground mb-1">
-              Quantidade de lançamentos realizados:
+      <CardContent className="p-4 sm:p-6 pt-0 space-y-4 sm:space-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+          <div className="p-3 sm:p-4 border rounded-lg">
+            <div className="text-xs sm:text-sm text-muted-foreground mb-1 sm:mb-2">
+              Lançamentos realizados:
             </div>
-            <div className="text-2xl font-bold text-foreground">
+            <div className="text-xl sm:text-2xl font-bold text-foreground">
               {volumeTrabalho.lancamentosRealizados.toLocaleString('pt-BR')}
             </div>
           </div>
-          <div>
-            <div className="text-sm text-muted-foreground mb-1">
-              Quantidade de documentos processados:
+          <div className="p-3 sm:p-4 border rounded-lg">
+            <div className="text-xs sm:text-sm text-muted-foreground mb-1 sm:mb-2">
+              Documentos processados:
             </div>
-            <div className="text-2xl font-bold text-foreground">
+            <div className="text-xl sm:text-2xl font-bold text-foreground">
               {volumeTrabalho.documentosProcessados.toLocaleString('pt-BR')}
             </div>
           </div>
-          <div>
-            <div className="text-sm text-muted-foreground mb-1">
-              Contas / centros de custo movimentados:
+          <div className="p-3 sm:p-4 border rounded-lg">
+            <div className="text-xs sm:text-sm text-muted-foreground mb-1 sm:mb-2">
+              Contas movimentadas:
             </div>
-            <div className="text-2xl font-bold text-foreground">
+            <div className="text-xl sm:text-2xl font-bold text-foreground">
               {volumeTrabalho.contasMovimentadas.toLocaleString('pt-BR')}
             </div>
           </div>
-          <div>
-            <div className="text-sm text-muted-foreground mb-1">
-              Fornecedores ativos no período:
+          <div className="p-3 sm:p-4 border rounded-lg">
+            <div className="text-xs sm:text-sm text-muted-foreground mb-1 sm:mb-2">
+              Fornecedores ativos:
             </div>
-            <div className="text-2xl font-bold text-foreground">
+            <div className="text-xl sm:text-2xl font-bold text-foreground">
               {volumeTrabalho.fornecedoresAtivos.toLocaleString('pt-BR')}
             </div>
           </div>
@@ -56,17 +56,23 @@ export function ReportVolumeTrabalho({ volumeTrabalho }: ReportVolumeTrabalhoPro
 
         {volumeTrabalho.forecastLancamentos.length > 0 && (
           <div>
-            <div className="text-sm font-semibold mb-4">
-              Forecast de lançamentos financeiros (contas a pagar) por administradora de condomínio:
+            <div className="text-xs sm:text-sm font-semibold mb-3 sm:mb-4">
+              Forecast de lançamentos financeiros por administradora:
             </div>
-            <div className="h-[300px] w-full">
+            <div className="h-[250px] sm:h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={forecastData}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
+                  <XAxis 
+                    dataKey="name" 
+                    tick={{ fontSize: 12 }}
+                    angle={-45}
+                    textAnchor="end"
+                    height={60}
+                  />
+                  <YAxis tick={{ fontSize: 12 }} />
                   <Tooltip />
-                  <Legend />
+                  <Legend wrapperStyle={{ fontSize: '12px' }} />
                   <Bar dataKey="quantidade" fill="hsl(var(--primary))" name="Lançamentos" />
                 </BarChart>
               </ResponsiveContainer>

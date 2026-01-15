@@ -181,13 +181,13 @@ export default function DomaCondoClientReport() {
       <div className="space-y-6">
         {/* Controles */}
         <Card>
-          <CardContent className="pt-6">
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="mes">Período</Label>
+          <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
+            <div className="flex flex-col gap-3 sm:gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center">
+                <div className="space-y-2 flex-1 sm:flex-initial">
+                  <Label htmlFor="mes" className="text-sm">Período</Label>
                   <Select value={mesReferencia} onValueChange={setMesReferencia}>
-                    <SelectTrigger id="mes" className="w-[200px]">
+                    <SelectTrigger id="mes" className="w-full sm:w-[200px] h-11 sm:h-10">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -199,18 +199,21 @@ export default function DomaCondoClientReport() {
                     </SelectContent>
                   </Select>
                 </div>
-                <Button
-                  variant="outline"
-                  onClick={loadRelatorio}
-                  disabled={loadingRelatorio}
-                  className="gap-2"
-                >
-                  <RefreshCw className={`h-4 w-4 ${loadingRelatorio ? 'animate-spin' : ''}`} />
-                  Atualizar
-                </Button>
-              </div>
-              <div className="flex items-center gap-2">
-                <ReportPDFGenerator relatorio={relatorio} />
+                <div className="flex gap-2 sm:gap-4">
+                  <Button
+                    variant="outline"
+                    onClick={loadRelatorio}
+                    disabled={loadingRelatorio}
+                    className="gap-2 flex-1 sm:flex-initial h-11 sm:h-10"
+                  >
+                    <RefreshCw className={`h-4 w-4 ${loadingRelatorio ? 'animate-spin' : ''}`} />
+                    <span className="hidden sm:inline">Atualizar</span>
+                    <span className="sm:hidden">Atualizar</span>
+                  </Button>
+                  <div className="flex-1 sm:flex-initial">
+                    <ReportPDFGenerator relatorio={relatorio} />
+                  </div>
+                </div>
               </div>
             </div>
           </CardContent>

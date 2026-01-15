@@ -52,31 +52,57 @@ export function ReportEntregasPrazos({ entregas }: ReportEntregasPrazosProps) {
 
   if (entregas.length === 0) {
     return (
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="text-xl">2. Entregas e Prazos</CardTitle>
+      <Card className="mb-4 sm:mb-6">
+        <CardHeader className="p-4 sm:p-6 pb-3 sm:pb-4">
+          <CardTitle className="text-lg sm:text-xl">2. Entregas e Prazos</CardTitle>
         </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">Nenhuma entrega registrada para este período.</p>
+        <CardContent className="p-4 sm:p-6 pt-0">
+          <p className="text-sm text-muted-foreground">Nenhuma entrega registrada para este período.</p>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card className="mb-6">
-      <CardHeader>
-        <CardTitle className="text-xl">2. Entregas e Prazos</CardTitle>
+    <Card className="mb-4 sm:mb-6">
+      <CardHeader className="p-4 sm:p-6 pb-3 sm:pb-4">
+        <CardTitle className="text-lg sm:text-xl">2. Entregas e Prazos</CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="overflow-x-auto">
+      <CardContent className="p-4 sm:p-6 pt-0">
+        {/* Mobile: Cards */}
+        <div className="block sm:hidden space-y-3">
+          {entregas.map((entrega) => {
+            const config = statusConfig[entrega.status];
+            return (
+              <div key={entrega.id} className="border rounded-lg p-3 space-y-2">
+                <div className="flex items-start justify-between">
+                  <p className="font-medium text-sm">{entrega.atividade}</p>
+                  <Badge variant={config.variant} className="gap-1 text-xs">
+                    {config.icon}
+                    {config.label}
+                  </Badge>
+                </div>
+                <div className="space-y-1 text-xs text-muted-foreground">
+                  <div>
+                    <span className="font-medium">Prevista:</span> {formatDate(entrega.dataPrevista)}
+                  </div>
+                  <div>
+                    <span className="font-medium">Finalização:</span> {formatDate(entrega.dataFinalizacao)}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        {/* Desktop: Table */}
+        <div className="hidden sm:block overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Atividade</TableHead>
-                <TableHead>Data Prevista</TableHead>
-                <TableHead>Data de Finalização</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead className="text-sm">Atividade</TableHead>
+                <TableHead className="text-sm">Data Prevista</TableHead>
+                <TableHead className="text-sm">Data de Finalização</TableHead>
+                <TableHead className="text-sm">Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -84,11 +110,11 @@ export function ReportEntregasPrazos({ entregas }: ReportEntregasPrazosProps) {
                 const config = statusConfig[entrega.status];
                 return (
                   <TableRow key={entrega.id}>
-                    <TableCell className="font-medium">{entrega.atividade}</TableCell>
-                    <TableCell>{formatDate(entrega.dataPrevista)}</TableCell>
-                    <TableCell>{formatDate(entrega.dataFinalizacao)}</TableCell>
+                    <TableCell className="font-medium text-sm">{entrega.atividade}</TableCell>
+                    <TableCell className="text-sm">{formatDate(entrega.dataPrevista)}</TableCell>
+                    <TableCell className="text-sm">{formatDate(entrega.dataFinalizacao)}</TableCell>
                     <TableCell>
-                      <Badge variant={config.variant} className="gap-1">
+                      <Badge variant={config.variant} className="gap-1 text-xs">
                         {config.icon}
                         {config.label}
                       </Badge>

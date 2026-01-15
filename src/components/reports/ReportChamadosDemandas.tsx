@@ -56,10 +56,10 @@ export function ReportChamadosDemandas({
   };
 
   return (
-    <Card className="mb-6">
-      <CardHeader>
+    <Card className="mb-4 sm:mb-6">
+      <CardHeader className="p-4 sm:p-6 pb-3 sm:pb-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-xl">6. Chamados, Demandas e Pontos de Atenção</CardTitle>
+          <CardTitle className="text-lg sm:text-xl">6. Chamados, Demandas e Pontos de Atenção</CardTitle>
           {editable && !isEditing && (
             <Button
               variant="ghost"
@@ -73,7 +73,7 @@ export function ReportChamadosDemandas({
           )}
         </div>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="p-4 sm:p-6 pt-0 space-y-4 sm:space-y-6">
         {isEditing && editable ? (
           <>
             <div>
@@ -130,37 +130,37 @@ export function ReportChamadosDemandas({
         ) : (
           <>
             <div>
-              <div className="text-sm text-muted-foreground mb-1">
+              <div className="text-xs sm:text-sm text-muted-foreground mb-1 sm:mb-2">
                 Quantidade de chamados relevantes no período:
               </div>
-              <div className="text-xl font-bold text-foreground">{chamadosRelevantes}</div>
+              <div className="text-xl sm:text-2xl font-bold text-foreground">{chamadosRelevantes}</div>
             </div>
             <div>
-              <div className="text-sm font-semibold mb-2">
+              <div className="text-xs sm:text-sm font-semibold mb-2">
                 Demandas que exigiram atenção especial:
               </div>
               <div className="prose prose-sm max-w-none">
-                <p className="text-muted-foreground whitespace-pre-line">
+                <p className="text-sm sm:text-base text-muted-foreground whitespace-pre-line leading-relaxed">
                   {demandasAtencaoEspecial || 'Nenhuma demanda especial registrada.'}
                 </p>
               </div>
             </div>
             <div>
-              <div className="text-sm font-semibold mb-2">
+              <div className="text-xs sm:text-sm font-semibold mb-2">
                 Pontos recorrentes identificados:
               </div>
               <div className="prose prose-sm max-w-none">
-                <p className="text-muted-foreground whitespace-pre-line">
+                <p className="text-sm sm:text-base text-muted-foreground whitespace-pre-line leading-relaxed">
                   {pontosRecorrentes || 'Nenhum ponto recorrente identificado.'}
                 </p>
               </div>
             </div>
             <div>
-              <div className="text-sm font-semibold mb-2">
+              <div className="text-xs sm:text-sm font-semibold mb-2">
                 Pendências para o próximo período (se houver):
               </div>
               <div className="prose prose-sm max-w-none">
-                <p className="text-muted-foreground whitespace-pre-line">
+                <p className="text-sm sm:text-base text-muted-foreground whitespace-pre-line leading-relaxed">
                   {pendenciasProximoPeriodo || 'Nenhuma pendência registrada.'}
                 </p>
               </div>

@@ -252,9 +252,10 @@ export function ReportPDFGenerator({ relatorio }: ReportPDFGeneratorProps) {
   };
 
   return (
-    <Button onClick={generatePDF} className="gap-2">
+    <Button onClick={generatePDF} className="gap-2 w-full sm:w-auto h-11 sm:h-10 text-sm">
       <Download className="h-4 w-4" />
-      Exportar PDF
+      <span className="hidden sm:inline">Exportar PDF</span>
+      <span className="sm:hidden">PDF</span>
     </Button>
   );
 }
