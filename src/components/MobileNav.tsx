@@ -20,6 +20,7 @@ const navItems = [
   { path: '/apresentacao-03', label: 'A1', icon: FileText },
   { path: '/apresentacao-05', label: 'A2', icon: FileText },
   { path: '/relatos', label: 'Relatos', icon: BookOpen },
+  { path: '/dashboard-doma-condo', label: 'Mapa de métricas DOMA CONDO', icon: LayoutDashboard },
   // TEMPORÁRIO: Removido para reunião - { path: '/teste', label: 'Teste', icon: FlaskConical },
 ];
 

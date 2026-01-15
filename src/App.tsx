@@ -23,6 +23,7 @@ import SelfTest from "./pages/SelfTest";
 import NotFound from "./pages/NotFound";
 import RelatosPage from "./pages/Relatos";
 import DoterraPage from "./pages/Doterra";
+import DomaCondoDashboard from "./pages/DomaCondoDashboard";
 import VendeMaisObrasPage from "./pages/VendeMaisObras";
 import VendeMaisObrasCatalogo from "./pages/VendeMaisObrasCatalogo";
 import VendeMaisObrasLogin from "./pages/VendeMaisObrasLogin";
@@ -44,6 +45,7 @@ const queryClient = new QueryClient({
 
 const appPassword = import.meta.env.VITE_APP_PASSWORD as string | undefined;
 const doterraPassword = import.meta.env.VITE_DOTERRA_PASSWORD as string | undefined;
+const domaCondoPassword = "deixeatecnologiafazer";
 const vendeMaisObrasPassword = import.meta.env.VITE_VENDE_MAIS_OBRAS_PASSWORD as string | undefined;
 
 const App = () => (
@@ -63,6 +65,20 @@ const App = () => (
               description="Digite a senha para acessar o painel Doterra"
             >
               <DoterraPage />
+            </PasswordProtection>
+          }
+        />
+        {/* DOMA CONDO: Dashboard protegido por senha */}
+        <Route
+          path="/dashboard-doma-condo"
+          element={
+            <PasswordProtection
+              storageKey="doma_condo_authenticated"
+              correctPassword={domaCondoPassword}
+              title="Acesso Restrito — DOMA CONDO"
+              description="Digite a senha para acessar o painel DOMA CONDO"
+            >
+              <DomaCondoDashboard />
             </PasswordProtection>
           }
         />
