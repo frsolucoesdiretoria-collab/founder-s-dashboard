@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Coffee, TrendingUp, DollarSign, CheckSquare, Menu, X, Presentation, FileText, Users, Package, Contact, BookOpen, FlaskConical } from 'lucide-react';
+import { LayoutDashboard, Coffee, TrendingUp, DollarSign, CheckSquare, Menu, X, Presentation, FileText, Users, Package, Contact, BookOpen, FlaskConical, Hammer } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -12,6 +12,7 @@ const navItems = [
   { path: '/tasks', label: 'Tarefas', icon: CheckSquare },
   { path: '/crm', label: 'CRM', icon: Users },
   { path: '/doterra', label: 'CRM Doterra', icon: Users },
+  { path: '/vende-mais-obras', label: 'Vende Mais Obras', icon: Hammer },
   { path: '/contacts', label: 'Contatos', icon: Contact },
   { path: '/proposals', label: 'Propostas', icon: FileText },
   // TEMPORÁRIO: Removido para reunião - { path: '/produtos', label: 'Produtos FR Tech', icon: Package },
