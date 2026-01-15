@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DomaCondoClientLayout } from '@/components/DomaCondoClientLayout';
+import { DomaCondoClientKPICardV2 } from '@/components/DomaCondoClientKPICardV2';
 import { ReportHeader } from '@/components/reports/ReportHeader';
 import { ReportResumoExecutivo } from '@/components/reports/ReportResumoExecutivo';
 import { ReportEntregasPrazos } from '@/components/reports/ReportEntregasPrazos';
@@ -19,6 +20,7 @@ import {
   updateRelatorioTexto,
   isClientAuthenticated,
 } from '@/services/domaCondoClient.service';
+import { getFenixKPIMensal } from '@/mocks/domaCondoClientReport';
 import type { DomaCondoClient, RelatorioMensal } from '@/types/domaCondoClient';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -218,6 +220,19 @@ export default function DomaCondoClientReport() {
             </div>
           </CardContent>
         </Card>
+
+        {/* KPI Card do Topo */}
+        {!loadingRelatorio && relatorio && (() => {
+          const kpiMensal = getFenixKPIMensal(mesReferencia);
+          if (kpiMensal && cliente.id === '1') {
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-1 gap-4 sm:gap-6">
+                <DomaCondoClientKPICardV2 clientKPI={kpiMensal} />
+              </div>
+            );
+          }
+          return null;
+        })()}
 
         {/* Relatório */}
         {loadingRelatorio ? (

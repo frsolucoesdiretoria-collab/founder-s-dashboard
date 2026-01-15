@@ -59,20 +59,20 @@ export function ReportVolumeTrabalho({ volumeTrabalho }: ReportVolumeTrabalhoPro
             <div className="text-xs sm:text-sm font-semibold mb-3 sm:mb-4">
               Forecast de lançamentos financeiros por administradora:
             </div>
-            <div className="h-[250px] sm:h-[300px] w-full">
+            <div className="h-[250px] sm:h-[300px] md:h-[350px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={forecastData}>
+                <BarChart data={forecastData} margin={{ top: 5, right: 5, left: -20, bottom: 60 }}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis 
                     dataKey="name" 
-                    tick={{ fontSize: 12 }}
+                    tick={{ fontSize: 10 }}
                     angle={-45}
                     textAnchor="end"
                     height={60}
                   />
-                  <YAxis tick={{ fontSize: 12 }} />
-                  <Tooltip />
-                  <Legend wrapperStyle={{ fontSize: '12px' }} />
+                  <YAxis tick={{ fontSize: 10 }} />
+                  <Tooltip contentStyle={{ fontSize: '12px' }} />
+                  <Legend wrapperStyle={{ fontSize: '11px' }} />
                   <Bar dataKey="quantidade" fill="hsl(var(--primary))" name="Lançamentos" />
                 </BarChart>
               </ResponsiveContainer>
