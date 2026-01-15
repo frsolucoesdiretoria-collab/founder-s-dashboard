@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Coffee, TrendingUp, DollarSign, CheckSquare, Menu, X, Presentation, FileText, Users, Package, Contact, BookOpen, FlaskConical, Hammer } from 'lucide-react';
+import { LayoutDashboard, Coffee, TrendingUp, DollarSign, CheckSquare, Menu, X, Presentation, FileText, Users, Package, Contact, BookOpen, FlaskConical, Hammer, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -21,6 +21,7 @@ const navItems = [
   { path: '/apresentacao-05', label: 'A2', icon: FileText },
   { path: '/relatos', label: 'Relatos', icon: BookOpen },
   { path: '/dashboard-doma-condo', label: 'Mapa de métricas DOMA CONDO', icon: LayoutDashboard },
+  { path: '/doma-condo-clientes/login', label: 'Portal Clientes DOMA CONDO', icon: Building2 },
   // TEMPORÁRIO: Removido para reunião - { path: '/teste', label: 'Teste', icon: FlaskConical },
 ];
 

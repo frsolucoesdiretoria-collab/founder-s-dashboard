@@ -24,6 +24,8 @@ import NotFound from "./pages/NotFound";
 import RelatosPage from "./pages/Relatos";
 import DoterraPage from "./pages/Doterra";
 import DomaCondoDashboard from "./pages/DomaCondoDashboard";
+import DomaCondoClientLogin from "./pages/DomaCondoClientLogin";
+import DomaCondoClientReport from "./pages/DomaCondoClientReport";
 import VendeMaisObrasPage from "./pages/VendeMaisObras";
 import VendeMaisObrasCatalogo from "./pages/VendeMaisObrasCatalogo";
 import VendeMaisObrasLogin from "./pages/VendeMaisObrasLogin";
@@ -82,6 +84,9 @@ const App = () => (
             </PasswordProtection>
           }
         />
+        {/* DOMA CONDO: Portal de Clientes */}
+        <Route path="/doma-condo-clientes/login" element={<DomaCondoClientLogin />} />
+        <Route path="/doma-condo-clientes/relatorio" element={<DomaCondoClientReport />} />
         {/* Vende Mais Obras: Rotas públicas */}
         <Route path="/vende-mais-obras/login" element={<VendeMaisObrasLogin />} />
         <Route path="/vende-mais-obras/register" element={<VendeMaisObrasRegister />} />

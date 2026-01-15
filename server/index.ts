@@ -18,7 +18,9 @@ import { contactsRouter } from './routes/contacts';
 import { crmRouter } from './routes/crm';
 import { produtosRouter } from './routes/produtos';
 import { doterraRouter } from './routes/doterra';
+import { vendeMaisObrasRouter } from './routes/vendeMaisObras';
 import proposalsRouter from './routes/proposals';
+import { domaCondoClientRouter } from './routes/domaCondoClient';
 import { assertEnvVars } from './lib/envValidator';
 
 // Load environment variables (priority: .env.local > .env)
@@ -64,7 +66,9 @@ app.use('/api/contacts', contactsRouter);
 app.use('/api/crm', crmRouter);
 app.use('/api/produtos', produtosRouter);
 app.use('/api/doterra', doterraRouter);
+app.use('/api/vende-mais-obras', vendeMaisObrasRouter);
 app.use('/api/proposals', proposalsRouter);
+app.use('/api/doma-condo-clientes', domaCondoClientRouter);
 
 // Serve static files in production/staging (after API routes)
 if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
