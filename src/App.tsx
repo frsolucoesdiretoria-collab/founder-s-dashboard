@@ -24,6 +24,7 @@ import NotFound from "./pages/NotFound";
 import RelatosPage from "./pages/Relatos";
 import DoterraPage from "./pages/Doterra";
 import DomaCondoDashboard from "./pages/DomaCondoDashboard";
+import DomaCondoDashboardV2 from "./pages/DomaCondoDashboardV2";
 import DomaCondoClientLogin from "./pages/DomaCondoClientLogin";
 import DomaCondoClientReport from "./pages/DomaCondoClientReport";
 import VendeMaisObrasPage from "./pages/VendeMaisObras";
@@ -81,6 +82,20 @@ const App = () => (
               description="Digite a senha para acessar o painel DOMA CONDO"
             >
               <DomaCondoDashboard />
+            </PasswordProtection>
+          }
+        />
+        {/* DOMA CONDO: Dashboard V2 (otimizada) */}
+        <Route
+          path="/dashboard-doma-condo-v2"
+          element={
+            <PasswordProtection
+              storageKey="doma_condo_authenticated"
+              correctPassword={domaCondoPassword}
+              title="Acesso Restrito — DOMA CONDO V2"
+              description="Digite a senha para acessar o painel DOMA CONDO (versão otimizada)"
+            >
+              <DomaCondoDashboardV2 />
             </PasswordProtection>
           }
         />
