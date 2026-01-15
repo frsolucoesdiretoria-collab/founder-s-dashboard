@@ -60,11 +60,12 @@ export function MobileNav() {
           />
           <nav
             className={cn(
-              "fixed top-0 left-0 bottom-0 w-64 z-[70] bg-card border-r border-border p-4 space-y-2 md:hidden transition-transform duration-300 shadow-xl",
+              "fixed top-0 left-0 bottom-0 w-64 z-[70] bg-card border-r border-border flex flex-col md:hidden transition-transform duration-300 shadow-xl",
               isOpen ? "translate-x-0" : "-translate-x-full"
             )}
           >
-            <div className="flex items-center justify-between mb-6">
+            {/* Header fixo */}
+            <div className="flex items-center justify-between mb-6 p-4 pb-4 flex-shrink-0 border-b border-border">
               <div className="flex items-center gap-2">
                 <img 
                   src="/AXIS_logo_horizontal.png" 
@@ -82,25 +83,28 @@ export function MobileNav() {
                 <X className="h-5 w-5" />
               </Button>
             </div>
-            <div className="space-y-1">
-              {navItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  onClick={() => setIsOpen(false)}
-                  className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
-                    location.pathname === item.path
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                  )}
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span className="font-medium">{item.label}</span>
-                </Link>
-              ))}
+            
+            {/* Área scrollável */}
+            <div className="flex-1 overflow-y-auto px-4 pb-4">
+              <div className="space-y-1">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setIsOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
+                      location.pathname === item.path
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                    )}
+                  >
+                    <item.icon className="h-5 w-5 flex-shrink-0" />
+                    <span className="font-medium">{item.label}</span>
+                  </Link>
+                ))}
+              </div>
             </div>
-            {/* Mock data indicator removed - using real Notion data */}
           </nav>
         </>
       )}
@@ -116,16 +120,20 @@ export function MobileNav() {
       </button>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-64 bg-card border-r border-border flex-col p-4">
-        <Link to="/dashboard" className="flex items-center gap-3 mb-8 px-2">
-          <img 
-            src="/AXIS_logo_horizontal.png" 
-            alt="AXIS Logo" 
-            className="h-10 object-contain"
-          />
-        </Link>
+      <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-64 bg-card border-r border-border flex-col">
+        {/* Logo fixo */}
+        <div className="p-4 pb-4 flex-shrink-0 border-b border-border">
+          <Link to="/dashboard" className="flex items-center gap-3">
+            <img 
+              src="/AXIS_logo_horizontal.png" 
+              alt="AXIS Logo" 
+              className="h-10 object-contain"
+            />
+          </Link>
+        </div>
 
-        <nav className="flex-1 space-y-1">
+        {/* Área scrollável */}
+        <nav className="flex-1 overflow-y-auto px-4 pb-4 space-y-1">
           {navItems.map((item) => (
             <Link
               key={item.path}
@@ -137,13 +145,11 @@ export function MobileNav() {
                   : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               )}
             >
-              <item.icon className="h-5 w-5" />
+              <item.icon className="h-5 w-5 flex-shrink-0" />
               <span className="font-medium">{item.label}</span>
             </Link>
           ))}
         </nav>
-
-        {/* Mock data indicator removed - using real Notion data */}
       </aside>
     </>
   );
