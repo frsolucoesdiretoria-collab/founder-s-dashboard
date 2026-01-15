@@ -13,9 +13,10 @@ import type {
   UpdateClienteInput
 } from '@/types/vendeMaisObras';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+// Usar URL relativa em produção, absoluta apenas em desenvolvimento
+const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
 const API_PATH = '/api/vende-mais-obras';
-const FULL_API_BASE = `${API_BASE}${API_PATH}`;
+const FULL_API_BASE = API_BASE ? `${API_BASE}${API_PATH}` : API_PATH;
 
 const TOKEN_KEY = 'vende_mais_obras_token';
 
@@ -122,12 +123,12 @@ export async function vendeMaisObrasHealth(): Promise<{ status: string; service:
 // ==========================================
 
 export interface LoginResponse {
-  user: VendeMaisObrasUsuario;
+  usuario: VendeMaisObrasUsuario;
   token: string;
 }
 
 export interface RegisterResponse {
-  user: VendeMaisObrasUsuario;
+  usuario: VendeMaisObrasUsuario;
   token: string;
 }
 

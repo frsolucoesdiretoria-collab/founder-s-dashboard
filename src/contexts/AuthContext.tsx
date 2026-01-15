@@ -85,9 +85,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       const response = await loginService({ Email: email, Password: password });
-      // Backend pode retornar 'user' ou 'usuario', normalizar para 'user'
+      // Backend retorna 'usuario', não 'user'
       const newToken = response.token;
-      const userData = response.user || (response as any).usuario;
+      const userData = (response as any).usuario || response.user;
       
       if (!newToken || !userData) {
         throw new Error('Resposta inválida do servidor');
@@ -110,9 +110,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (data: CreateUsuarioInput) => {
     try {
       const response = await registerService(data);
-      // Backend pode retornar 'user' ou 'usuario', normalizar para 'user'
+      // Backend retorna 'usuario', não 'user'
       const newToken = response.token;
-      const userData = response.user || (response as any).usuario;
+      const userData = (response as any).usuario || response.user;
       
       if (!newToken || !userData) {
         throw new Error('Resposta inválida do servidor');
