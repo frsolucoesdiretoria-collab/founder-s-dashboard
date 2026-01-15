@@ -17,3 +17,7 @@ export const NIGHT_JOURNAL_TAG = 'Agradecimento';
 
 
 
+
+
+
+

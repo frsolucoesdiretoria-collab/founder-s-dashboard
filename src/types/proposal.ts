@@ -76,3 +76,7 @@ export interface Proposal extends ProposalFormData {
   pdfUrl?: string;
 }
 
+
+
+
+

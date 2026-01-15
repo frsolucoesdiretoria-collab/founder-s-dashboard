@@ -10,7 +10,7 @@ export interface DatabaseSchema {
 
 export interface PropertySchema {
   name: string;
-  type: 'title' | 'rich_text' | 'number' | 'select' | 'multi_select' | 'date' | 'checkbox' | 'relation' | 'rollup' | 'formula' | 'phone_number';
+  type: 'title' | 'rich_text' | 'number' | 'select' | 'multi_select' | 'date' | 'checkbox' | 'relation' | 'rollup' | 'formula' | 'phone_number' | 'email' | 'url';
   required: boolean;
   description?: string;
 }
@@ -319,6 +319,92 @@ export const NOTION_SCHEMA: Record<string, DatabaseSchema> = {
       { name: 'DependenciaFundador', type: 'select', required: false, description: 'Dependência do fundador' },
       { name: 'Replicabilidade', type: 'select', required: false, description: 'Replicabilidade' },
       { name: 'PrioridadeEstrategica', type: 'number', required: false, description: 'Prioridade estratégica (1-10)' }
+    ]
+  },
+  // Vende Mais Obras - Databases
+  Servicos: {
+    name: 'Servicos',
+    envVar: 'NOTION_DB_SERVICOS',
+    required: false,
+    properties: [
+      { name: 'Codigo', type: 'title', required: true, description: 'Código SINAPI' },
+      { name: 'Nome', type: 'rich_text', required: true, description: 'Nome do serviço' },
+      { name: 'Descricao', type: 'rich_text', required: false, description: 'Descrição detalhada' },
+      { name: 'Categoria', type: 'select', required: true, description: 'Categoria do serviço' },
+      { name: 'Preco', type: 'number', required: true, description: 'Preço padrão em R$' },
+      { name: 'Unidade', type: 'select', required: true, description: 'Unidade de medida' },
+      { name: 'Ativo', type: 'checkbox', required: true, description: 'Serviço ativo no catálogo' }
+    ]
+  },
+  Usuarios: {
+    name: 'Usuarios',
+    envVar: 'NOTION_DB_USUARIOS',
+    required: false,
+    properties: [
+      { name: 'Nome', type: 'title', required: true, description: 'Nome completo do usuário' },
+      { name: 'Email', type: 'email', required: true, description: 'Email único para login' },
+      { name: 'Telefone', type: 'phone_number', required: false, description: 'Telefone de contato' },
+      { name: 'PasswordHash', type: 'rich_text', required: true, description: 'Hash bcrypt da senha' },
+      { name: 'Status', type: 'select', required: true, description: 'Status: Trial, Ativo, Bloqueado, Cancelado' },
+      { name: 'TrialInicio', type: 'date', required: false, description: 'Data de início do trial' },
+      { name: 'TrialFim', type: 'date', required: false, description: 'Data de fim do trial' },
+      { name: 'PlanoAtivo', type: 'checkbox', required: true, description: 'Plano pago ativo' },
+      { name: 'MercadoPagoSubscriptionId', type: 'rich_text', required: false, description: 'ID da assinatura Mercado Pago' },
+      { name: 'ActivatedAt', type: 'date', required: false, description: 'Data de ativação' },
+      { name: 'LastAccessAt', type: 'date', required: false, description: 'Último acesso' },
+      { name: 'ChurnedAt', type: 'date', required: false, description: 'Data do churn' }
+    ]
+  },
+  Orcamentos: {
+    name: 'Orcamentos',
+    envVar: 'NOTION_DB_ORCAMENTOS',
+    required: false,
+    properties: [
+      { name: 'Numero', type: 'title', required: true, description: 'Número do orçamento' },
+      { name: 'Usuario', type: 'relation', required: true, description: 'Relação com Usuarios' },
+      { name: 'Cliente', type: 'relation', required: true, description: 'Relação com Clientes' },
+      { name: 'Status', type: 'select', required: true, description: 'Status: Rascunho, Enviado, Aprovado, Rejeitado' },
+      { name: 'Total', type: 'number', required: true, description: 'Valor total em R$' },
+      { name: 'Itens', type: 'rich_text', required: true, description: 'JSON com itens do orçamento' },
+      { name: 'Observacoes', type: 'rich_text', required: false, description: 'Observações' },
+      { name: 'Validade', type: 'date', required: false, description: 'Validade do orçamento' },
+      { name: 'EnviadoAt', type: 'date', required: false, description: 'Data de envio' },
+      { name: 'AprovadoAt', type: 'date', required: false, description: 'Data de aprovação' }
+    ]
+  },
+  Clientes: {
+    name: 'Clientes',
+    envVar: 'NOTION_DB_CLIENTES',
+    required: false,
+    properties: [
+      { name: 'Nome', type: 'title', required: true, description: 'Nome do cliente/empresa' },
+      { name: 'Email', type: 'email', required: false, description: 'Email de contato' },
+      { name: 'Telefone', type: 'phone_number', required: false, description: 'Telefone de contato' },
+      { name: 'Documento', type: 'rich_text', required: false, description: 'CPF ou CNPJ' },
+      { name: 'Endereco', type: 'rich_text', required: false, description: 'Endereço completo' },
+      { name: 'Cidade', type: 'rich_text', required: false, description: 'Cidade' },
+      { name: 'Estado', type: 'select', required: false, description: 'UF' },
+      { name: 'Usuario', type: 'relation', required: true, description: 'Relação com Usuarios' }
+    ]
+  },
+  Leads: {
+    name: 'Leads',
+    envVar: 'NOTION_DB_LEADS',
+    required: false,
+    properties: [
+      { name: 'Nome', type: 'title', required: true, description: 'Nome do lead' },
+      { name: 'Email', type: 'email', required: false, description: 'Email do lead' },
+      { name: 'Telefone', type: 'phone_number', required: false, description: 'Telefone do lead' },
+      { name: 'Profissao', type: 'rich_text', required: false, description: 'Profissão' },
+      { name: 'Cidade', type: 'rich_text', required: false, description: 'Cidade' },
+      { name: 'Status', type: 'select', required: true, description: 'Status do funil' },
+      { name: 'Source', type: 'select', required: false, description: 'Origem do lead' },
+      { name: 'Notes', type: 'rich_text', required: false, description: 'Notas' },
+      { name: 'ContactedAt', type: 'date', required: false, description: 'Data do primeiro contato' },
+      { name: 'QualifiedAt', type: 'date', required: false, description: 'Data de qualificação' },
+      { name: 'ActivatedAt', type: 'date', required: false, description: 'Data de ativação' },
+      { name: 'ConvertedAt', type: 'date', required: false, description: 'Data de conversão em pago' },
+      { name: 'ChurnedAt', type: 'date', required: false, description: 'Data do churn' }
     ]
   }
 };

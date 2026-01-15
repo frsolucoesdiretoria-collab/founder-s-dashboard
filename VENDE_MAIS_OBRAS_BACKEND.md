@@ -241,3 +241,4 @@ O backend está completo e funcional. Próximas implementações sugeridas:
 - Todas as rotas autenticadas requerem o header `Authorization: Bearer <token>`
 - Rotas admin requerem o header `x-admin-passcode`
 
+

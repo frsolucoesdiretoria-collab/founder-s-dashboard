@@ -68,6 +68,19 @@ VITE_APP_PASSWORD=<<<SET_APP_PASSWORD_HERE>>>
 # Senha específica da página Doterra (/doterra)
 VITE_DOTERRA_PASSWORD=expandircomtec
 
+# Vende Mais Obras - Notion Databases
+# Após executar server/scripts/setupVendeMaisObras.ts, defina estes IDs:
+NOTION_DB_SERVICOS=<<<SET_DATABASE_ID_HERE>>>
+NOTION_DB_USUARIOS=<<<SET_DATABASE_ID_HERE>>>
+NOTION_DB_CLIENTES=<<<SET_DATABASE_ID_HERE>>>
+NOTION_DB_ORCAMENTOS=<<<SET_DATABASE_ID_HERE>>>
+NOTION_DB_LEADS=<<<SET_DATABASE_ID_HERE>>>
+
+# JWT Secret para autenticação (gerar com: openssl rand -base64 32)
+JWT_SECRET=<<<SET_JWT_SECRET_HERE>>>
+# Expiração do token JWT (padrão: 7d)
+JWT_EXPIRES_IN=7d
+
 # Server Configuration
 PORT=3001
 VITE_DEV_SERVER_URL=http://localhost:8080
@@ -117,6 +130,38 @@ Depois disso, acesse `GET /doterra` e use o painel para:
 - exportar CSV filtrado
 - aprovar interessados pendentes
 - gerar variações de mensagem por cohort via IA
+
+## 🏗️ Vende Mais Obras (Sistema de Orçamentos)
+
+### Setup das Databases
+
+1. Execute o script de setup:
+```bash
+tsx server/scripts/setupVendeMaisObras.ts
+```
+
+2. O script criará todas as databases necessárias e retornará os IDs
+3. Copie os IDs retornados e adicione ao `.env.local`:
+   - `NOTION_DB_SERVICOS=...`
+   - `NOTION_DB_USUARIOS=...`
+   - `NOTION_DB_CLIENTES=...`
+   - `NOTION_DB_ORCAMENTOS=...`
+   - `NOTION_DB_LEADS=...`
+
+4. Gere um JWT_SECRET:
+```bash
+openssl rand -base64 32
+```
+
+5. Adicione ao `.env.local`:
+   - `JWT_SECRET=...` (o resultado do comando acima)
+
+6. Compartilhe todas as databases com a integração do Notion (ver passo 4 da configuração geral)
+
+Depois disso, o sistema de orçamentos estará funcional:
+- Usuários podem se cadastrar e fazer login
+- Podem criar orçamentos e clientes (isolados por usuário)
+- Admin pode visualizar métricas e gerenciar leads
 
 ## 🔒 Segurança
 

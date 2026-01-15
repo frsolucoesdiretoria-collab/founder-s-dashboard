@@ -110,3 +110,4 @@ Senha padrão: Configurar via `VITE_VENDE_MAIS_OBRAS_PASSWORD` no `.env.local`
 - Tudo compila sem erros
 - Pronto para demonstrar estrutura/UI
 
+
