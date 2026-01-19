@@ -217,11 +217,30 @@ ENVEOF
             fi
             
             # Verificar se NOTION_TOKEN está configurado
-            if ! grep -q "^NOTION_TOKEN=" .env.local || grep -q "^NOTION_TOKEN=<<<" .env.local || grep -q "^NOTION_TOKEN=$" .env.local; then
+            if ! grep -q "^NOTION_TOKEN=" .env.local || grep -q "^NOTION_TOKEN=<<<" .env.local || grep -q "^NOTION_TOKEN=$" .env.local || grep -q "^NOTION_TOKEN=\${NOTION_TOKEN_FROM_SECRET}" .env.local; then
               echo "❌ ERRO CRÍTICO: NOTION_TOKEN não está configurado no .env.local!"
-              echo "   Configure o NOTION_TOKEN antes de continuar."
+              echo ""
+              echo "   Para corrigir:"
+              echo "   1. Configure o secret NOTION_TOKEN no GitHub:"
+              echo "      Settings > Secrets and variables > Actions > New repository secret"
+              echo "      Nome: NOTION_TOKEN"
+              echo "      Valor: seu_token_do_notion"
+              echo ""
+              echo "   OU"
+              echo ""
+              echo "   2. Edite manualmente na VPS:"
+              echo "      nano $PROJECT_PATH/.env.local"
+              echo "      Adicione: NOTION_TOKEN=seu_token_aqui"
+              echo ""
               exit 1
             fi
+            
+            # Mostrar resumo da configuração (sem mostrar token completo)
+            echo "📋 Resumo da configuração:"
+            NOTION_TOKEN_PREVIEW=$(grep "^NOTION_TOKEN=" .env.local | cut -d'=' -f2 | head -c 20)
+            echo "   NOTION_TOKEN: ${NOTION_TOKEN_PREVIEW}..."
+            echo "   Databases configuradas:"
+            grep "^NOTION_DB_" .env.local | wc -l | xargs echo "   - Total:"
             
             # Verificar se dist existe e tem conteúdo
             if [ ! -d "dist" ] || [ -z "$(ls -A dist 2>/dev/null)" ]; then
