@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { AppLayout } from '@/components/AppLayout';
+import { EnzoLayout } from '@/components/EnzoLayout';
 import { KPICard } from '@/components/KPICard';
 import { ActionChecklist } from '@/components/ActionChecklist';
 import { ContactsToActivate } from '@/components/ContactsToActivate';
@@ -331,24 +331,21 @@ export default function DashboardEnzo() {
 
   if (loading) {
     return (
-      <AppLayout>
+      <EnzoLayout>
         <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
           <div className="text-muted-foreground">Carregando dashboard...</div>
         </div>
-      </AppLayout>
+      </EnzoLayout>
     );
   }
 
   return (
-    <AppLayout>
+    <EnzoLayout>
       <div className="space-y-3 md:space-y-6 pb-4 md:pb-6 px-2 md:px-0">
         {/* Header - Mobile Optimized */}
         <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between md:gap-4">
           <div className="flex-1 min-w-0">
-            <h1 className="text-lg md:text-2xl font-bold text-foreground leading-tight">
-              Dashboard Enzo Canei
-            </h1>
             <p className="text-xs md:text-base text-muted-foreground mt-1">
               PDA Semana 3 | Meta: R$ 20K até 23/01
             </p>
@@ -481,7 +478,7 @@ export default function DashboardEnzo() {
           />
         </div>
       </div>
-    </AppLayout>
+    </EnzoLayout>
   );
 }
 

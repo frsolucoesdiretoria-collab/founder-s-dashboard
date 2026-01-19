@@ -51,7 +51,7 @@ const appPassword = "1234567890";
 const doterraPassword = "1234567890";
 const domaCondoPassword = "1234567890";
 const vendeMaisObrasPassword = "1234567890";
-const enzoPassword = "1234567890";
+const enzoPassword = "impériodeclientescomtec";
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
