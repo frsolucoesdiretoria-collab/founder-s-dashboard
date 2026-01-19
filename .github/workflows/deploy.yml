@@ -67,42 +67,31 @@ jobs:
               echo "   ✅ .env.local existe"
             fi
             
-            # 3. Limpar TUDO e instalar dependências
+            # 3. Instalar dependências (determinístico)
             echo ""
-            echo "3️⃣  Instalando dependências (limpando tudo primeiro)..."
-            rm -rf node_modules package-lock.json .npm 2>/dev/null || true
+            echo "3️⃣  Instalando dependências..."
+            echo "Node: $(node -v)"
+            echo "NPM: $(npm -v)"
+            
+            rm -rf node_modules .npm 2>/dev/null || true
             npm cache clean --force 2>/dev/null || true
             
-            # Instalar com múltiplas tentativas
-            npm install --include=dev --legacy-peer-deps --no-audit --no-fund 2>&1 | head -100 || {
-              echo "   ⚠️  Primeira tentativa falhou, limpando e tentando novamente..."
-              rm -rf node_modules 2>/dev/null || true
-              sleep 5
-              npm install --include=dev --legacy-peer-deps --no-audit --no-fund 2>&1 | head -100 || {
-                echo "   ⚠️  Segunda tentativa falhou, última tentativa..."
-                rm -rf node_modules 2>/dev/null || true
-                sleep 5
-                npm install --include=dev --legacy-peer-deps --no-audit --no-fund
-              }
-            }
-            
-            # Verificar se instalou
-            if [ ! -d "node_modules" ] || [ -z "$(ls -A node_modules 2>/dev/null)" ]; then
-              echo "   ❌ Falha crítica: node_modules não foi instalado!"
-              exit 1
+            if [ -f package-lock.json ]; then
+              npm ci --include=dev --no-audit --no-fund
+            else
+              npm install --include=dev --no-audit --no-fund
             fi
+            
+            # Validar instalação
+            npm ls react react-dom --depth=0 || true
+            ls -la node_modules/.bin | grep vite || true
+            
             echo "   ✅ Dependências instaladas"
             
             # 4. Build
             echo ""
             echo "4️⃣  Fazendo build..."
-            NODE_ENV=production npm run build || {
-              echo "   ⚠️  Build falhou, tentando novamente..."
-              npm run build || {
-                echo "   ❌ Build falhou após 2 tentativas"
-                exit 1
-              }
-            }
+            npm run build
             
             if [ ! -d "dist" ] || [ -z "$(ls -A dist 2>/dev/null)" ]; then
               echo "   ❌ Build não gerou pasta dist!"
