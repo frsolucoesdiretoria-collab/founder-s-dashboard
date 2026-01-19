@@ -53,12 +53,17 @@ export default function DashboardEnzo() {
     const actionsData = results[2].status === 'fulfilled' ? results[2].value : [];
     const contactsData = results[3].status === 'fulfilled' ? results[3].value : [];
 
+    console.log('📊 Loaded data:', {
+      kpis: kpisData.length,
+      goals: goalsData.length,
+      actions: actionsData.length,
+      contacts: contactsData.length
+    });
+
     // Verificar erros específicos nos KPIs (mais crítico)
-    // Agora os serviços retornam arrays vazios em vez de quebrar, então não precisamos tratar erros aqui
-    // Apenas mostrar mensagem se não houver KPIs e houver erro de conexão
     if (results[0].status === 'rejected') {
       const kpiError = results[0].reason;
-      console.error('Error loading KPIs:', kpiError);
+      console.error('❌ Error loading KPIs:', kpiError);
       
       const errorMsg = kpiError?.message || '';
       
@@ -74,6 +79,9 @@ export default function DashboardEnzo() {
     } else {
       // KPIs carregaram (mesmo que vazios), limpar erro
       setError(null);
+      if (kpisData.length === 0) {
+        console.warn('⚠️  No KPIs loaded. Check server logs and Notion database configuration.');
+      }
     }
     
     // Log erros de Goals e Actions (mas não bloqueiam o dashboard)

@@ -72,7 +72,16 @@ export async function getEnzoKPIs(): Promise<KPI[]> {
     const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
     const apiUrl = API_BASE ? `${API_BASE}/api/enzo/kpis` : '/api/enzo/kpis';
     
-    const response = await fetch(apiUrl);
+    console.log('🔍 Fetching Enzo KPIs from:', apiUrl);
+    
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    console.log('📡 Response status:', response.status, response.statusText);
     
     if (response.status === 429) {
       throw new Error('Rate limit: Muitas requisições. Aguarde alguns segundos.');
@@ -85,12 +94,20 @@ export async function getEnzoKPIs(): Promise<KPI[]> {
         return [];
       }
       const errorData = await response.json().catch(() => ({}));
+      console.error('❌ Error response:', errorData);
       throw new Error(errorData.message || errorData.error || `Failed to fetch Enzo KPIs: ${response.statusText}`);
     }
     
-    return response.json();
+    const data = await response.json();
+    console.log('✅ Enzo KPIs loaded:', data.length, 'KPIs');
+    return data;
   } catch (error: any) {
-    console.error('Error fetching Enzo KPIs:', error);
+    console.error('❌ Error fetching Enzo KPIs:', error);
+    console.error('❌ Error details:', {
+      message: error.message,
+      name: error.name,
+      stack: error.stack
+    });
     // Em caso de erro de conexão, retornar array vazio em vez de quebrar
     if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError') || error.name === 'TypeError' || error.message?.includes('conectar ao servidor')) {
       console.warn('⚠️  Connection error, returning empty array for Enzo KPIs');
