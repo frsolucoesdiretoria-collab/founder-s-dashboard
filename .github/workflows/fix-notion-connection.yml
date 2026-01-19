@@ -48,6 +48,31 @@ jobs:
             
             chmod +x scripts/fix-notion-connection-vps.sh
             
+            # Configurar NOTION_TOKEN se o secret existir
+            NOTION_TOKEN_VALUE="${{ secrets.NOTION_TOKEN_VPS }}"
+            if [ -n "$NOTION_TOKEN_VALUE" ] && [ "$NOTION_TOKEN_VALUE" != "" ]; then
+              echo "🔑 Configurando NOTION_TOKEN do secret do GitHub..."
+              
+              # Backup
+              if [ -f .env.local ]; then
+                cp .env.local .env.local.backup.$(date +%Y%m%d_%H%M%S) 2>/dev/null || true
+              fi
+              
+              # Garantir que .env.local existe
+              [ -f .env.local ] || touch .env.local
+              
+              # Substituir ou adicionar NOTION_TOKEN
+              if grep -q "^NOTION_TOKEN=" .env.local; then
+                sed -i "s|^NOTION_TOKEN=.*|NOTION_TOKEN=$NOTION_TOKEN_VALUE|" .env.local
+                echo "✅ NOTION_TOKEN atualizado"
+              else
+                sed -i "1i NOTION_TOKEN=$NOTION_TOKEN_VALUE" .env.local
+                echo "✅ NOTION_TOKEN adicionado"
+              fi
+            else
+              echo "⚠️  NOTION_TOKEN_VPS secret não configurado, pulando configuração de token"
+            fi
+            
             # Executar script de correção
             echo "🚀 Executando script de correção..."
             bash scripts/fix-notion-connection-vps.sh
