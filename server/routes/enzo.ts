@@ -12,15 +12,23 @@ export const enzoRouter = Router();
  */
 enzoRouter.get('/kpis', async (req, res) => {
   try {
+    console.log('📥 GET /api/enzo/kpis - Request received');
     const kpis = await getKPIsEnzo();
+    console.log(`✅ GET /api/enzo/kpis - Returning ${kpis.length} KPIs`);
     res.json(kpis);
   } catch (error: any) {
+    console.error('❌ GET /api/enzo/kpis - Error:', error.message);
     // Se database não está configurada, retornar array vazio em vez de erro
     if (error.message?.includes('not configured')) {
       console.warn('⚠️  Enzo KPIs database not configured, returning empty array');
       return res.json([]);
     }
-    console.error('Error fetching Enzo KPIs:', error);
+    console.error('❌ Error fetching Enzo KPIs:', error);
+    // Em produção, retornar array vazio em vez de erro 500
+    if (process.env.NODE_ENV === 'production') {
+      console.warn('⚠️  Production mode: returning empty array instead of error');
+      return res.json([]);
+    }
     res.status(500).json({ 
       error: 'Failed to fetch KPIs',
       message: process.env.NODE_ENV === 'development' ? error.message : undefined
