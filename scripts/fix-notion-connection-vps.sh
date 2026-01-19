@@ -169,22 +169,54 @@ fi
 echo ""
 
 # 9. Reiniciar servidor PM2 com variáveis corretas
-if [ "$PM2_RUNNING" = true ]; then
-    echo -e "${BLUE}🔄 8. Reiniciando servidor PM2...${NC}"
-    pm2 restart founder-dashboard >/dev/null 2>&1 || pm2 restart founder-dashboard
-    echo -e "${GREEN}✅ Servidor reiniciado${NC}"
-    sleep 5
-else
-    echo -e "${BLUE}🚀 8. Iniciando servidor PM2...${NC}"
-    if command_exists pm2; then
-        NODE_ENV=production pm2 start npm --name "founder-dashboard" -- start >/dev/null 2>&1 || \
-        NODE_ENV=production pm2 start npm --name "founder-dashboard" -- start
-        pm2 save >/dev/null 2>&1 || pm2 save
-        echo -e "${GREEN}✅ Servidor iniciado${NC}"
-        sleep 5
-    else
-        echo -e "${RED}❌ Não foi possível iniciar PM2 (não instalado)${NC}"
+echo -e "${BLUE}🔄 8. Gerenciando servidor PM2...${NC}"
+if command_exists pm2; then
+    # Parar processo existente se houver
+    pm2 stop founder-dashboard >/dev/null 2>&1 || true
+    pm2 delete founder-dashboard >/dev/null 2>&1 || true
+    
+    # Aguardar um pouco
+    sleep 2
+    
+    # Verificar se precisa fazer build
+    if [ ! -d "dist" ] || [ "dist/index.html" -ot "package.json" ]; then
+        echo -e "${YELLOW}   ⚠️  Build pode estar desatualizado, fazendo rebuild...${NC}"
+        npm run build >/dev/null 2>&1 || npm run build
     fi
+    
+    # Iniciar PM2 com variáveis de ambiente do .env.local
+    echo -e "${BLUE}   🚀 Iniciando servidor PM2...${NC}"
+    
+    # Carregar variáveis do .env.local e iniciar PM2
+    set -a
+    source .env.local 2>/dev/null || true
+    set +a
+    
+    cd $PROJECT_DIR
+    NODE_ENV=production pm2 start npm --name "founder-dashboard" -- start || {
+        echo -e "${RED}   ❌ Erro ao iniciar PM2, tentando método alternativo...${NC}"
+        # Método alternativo: usar ecosystem file ou start direto
+        pm2 start "npm start" --name "founder-dashboard" --update-env || {
+            echo -e "${RED}   ❌ Falha ao iniciar PM2${NC}"
+            pm2 logs founder-dashboard --lines 20 --nostream 2>/dev/null || true
+        }
+    }
+    
+    pm2 save >/dev/null 2>&1 || pm2 save || true
+    
+    # Aguardar e verificar se iniciou
+    sleep 5
+    if pm2 list | grep -q "founder-dashboard.*online"; then
+        echo -e "${GREEN}✅ Servidor PM2 iniciado com sucesso${NC}"
+        PM2_RUNNING=true
+    else
+        echo -e "${YELLOW}⚠️  PM2 pode não ter iniciado corretamente${NC}"
+        pm2 list | grep -i "founder" || true
+        PM2_RUNNING=false
+    fi
+else
+    echo -e "${RED}❌ PM2 não está instalado${NC}"
+    PM2_RUNNING=false
 fi
 echo ""
 
