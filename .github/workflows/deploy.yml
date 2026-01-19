@@ -62,54 +62,54 @@ jobs:
             # Configure .env.local COMPLETO com todas as databases necessárias
             echo "⚙️  Configuring .env.local..."
             
-            # Se .env.local não existe, criar completo
+            # Se .env.local não existe, criar completo usando printf para evitar problemas YAML
             if [ ! -f .env.local ]; then
               echo "   ⚠️  .env.local não existe! Criando arquivo completo..."
-              cat > .env.local << 'ENVEOF'
-# FR Tech OS - Environment Variables
-# Configurado automaticamente pelo deploy
-
-# Notion API Token (REQUIRED - configure via GitHub Secrets ou manualmente)
-NOTION_TOKEN=PLACEHOLDER_TOKEN_WILL_BE_REPLACED
-
-# Notion Database IDs (REQUIRED - Core databases)
-NOTION_DB_KPIS=2d984566a5fa800bb45dd3d53bdadfa3
-NOTION_DB_GOALS=2d984566a5fa81bb96a1cf1c347f6e55
-NOTION_DB_ACTIONS=2d984566a5fa813cbce2d090e08cd836
-NOTION_DB_JOURNAL=2d984566a5fa81a9ad50e9d594d24b88
-
-# Notion Database IDs (Supporting databases)
-NOTION_DB_CONTACTS=2d984566a5fa81b3b1a1c8abef43421f
-NOTION_DB_CLIENTS=2d984566a5fa81a89be6f9bdb271f838
-NOTION_DB_GROWTHPROPOSALS=2d984566a5fa81c9bf2fd004c75a7e3c
-NOTION_DB_COFFEEDIAGNOSTICS=2d984566a5fa81528aafcd990533eaf5
-NOTION_DB_EXPANSIONOPPORTUNITIES=2d984566a5fa81f887ddfe1cac401239
-NOTION_DB_CUSTOMERWINS=2d984566a5fa81b0a2bcc690ec281df9
-NOTION_DB_FINANCEMETRICS=2d984566a5fa81988982e06722459759
-
-# Notion Database IDs (Partner features)
-NOTION_DB_PARTNERS=2d984566a5fa814380e8dd8d93f3a582
-NOTION_DB_REFERRALS=2d984566a5fa810cbefcd6ff2f139620
-NOTION_DB_COMMISSIONLEDGER=2d984566a5fa81578b5bcd07a19bf6c3
-NOTION_DB_PARTNERNUDGES=2d984566a5fa8159a321c95e14c52bd6
-
-# Enzo Canei Dashboard Databases
-NOTION_DB_KPIS_ENZO=2ed84566a5fa81299c07c412630f9aa4
-NOTION_DB_GOALS_ENZO=2ed84566a5fa81ada870cf698ec50bf0
-NOTION_DB_ACTIONS_ENZO=2ed84566a5fa81c4a8cbc23841abdc1e
-NOTION_DB_CONTACTS_ENZO=2ed84566a5fa81a7bf7afeaa38ea6eff
-
-# Admin Passcode
-ADMIN_PASSCODE=06092021
-
-# Server Configuration
-PORT=3001
-NODE_ENV=production
-
-# Frontend passwords
-VITE_APP_PASSWORD=2026anodaaceleração
-VITE_DOTERRA_PASSWORD=expandircomtec
-ENVEOF
+              {
+                echo "# FR Tech OS - Environment Variables"
+                echo "# Configurado automaticamente pelo deploy"
+                echo ""
+                echo "# Notion API Token (REQUIRED - configure via GitHub Secrets ou manualmente)"
+                echo "NOTION_TOKEN=PLACEHOLDER_TOKEN_WILL_BE_REPLACED"
+                echo ""
+                echo "# Notion Database IDs (REQUIRED - Core databases)"
+                echo "NOTION_DB_KPIS=2d984566a5fa800bb45dd3d53bdadfa3"
+                echo "NOTION_DB_GOALS=2d984566a5fa81bb96a1cf1c347f6e55"
+                echo "NOTION_DB_ACTIONS=2d984566a5fa813cbce2d090e08cd836"
+                echo "NOTION_DB_JOURNAL=2d984566a5fa81a9ad50e9d594d24b88"
+                echo ""
+                echo "# Notion Database IDs (Supporting databases)"
+                echo "NOTION_DB_CONTACTS=2d984566a5fa81b3b1a1c8abef43421f"
+                echo "NOTION_DB_CLIENTS=2d984566a5fa81a89be6f9bdb271f838"
+                echo "NOTION_DB_GROWTHPROPOSALS=2d984566a5fa81c9bf2fd004c75a7e3c"
+                echo "NOTION_DB_COFFEEDIAGNOSTICS=2d984566a5fa81528aafcd990533eaf5"
+                echo "NOTION_DB_EXPANSIONOPPORTUNITIES=2d984566a5fa81f887ddfe1cac401239"
+                echo "NOTION_DB_CUSTOMERWINS=2d984566a5fa81b0a2bcc690ec281df9"
+                echo "NOTION_DB_FINANCEMETRICS=2d984566a5fa81988982e06722459759"
+                echo ""
+                echo "# Notion Database IDs (Partner features)"
+                echo "NOTION_DB_PARTNERS=2d984566a5fa814380e8dd8d93f3a582"
+                echo "NOTION_DB_REFERRALS=2d984566a5fa810cbefcd6ff2f139620"
+                echo "NOTION_DB_COMMISSIONLEDGER=2d984566a5fa81578b5bcd07a19bf6c3"
+                echo "NOTION_DB_PARTNERNUDGES=2d984566a5fa8159a321c95e14c52bd6"
+                echo ""
+                echo "# Enzo Canei Dashboard Databases"
+                echo "NOTION_DB_KPIS_ENZO=2ed84566a5fa81299c07c412630f9aa4"
+                echo "NOTION_DB_GOALS_ENZO=2ed84566a5fa81ada870cf698ec50bf0"
+                echo "NOTION_DB_ACTIONS_ENZO=2ed84566a5fa81c4a8cbc23841abdc1e"
+                echo "NOTION_DB_CONTACTS_ENZO=2ed84566a5fa81a7bf7afeaa38ea6eff"
+                echo ""
+                echo "# Admin Passcode"
+                echo "ADMIN_PASSCODE=06092021"
+                echo ""
+                echo "# Server Configuration"
+                echo "PORT=3001"
+                echo "NODE_ENV=production"
+                echo ""
+                echo "# Frontend passwords"
+                echo "VITE_APP_PASSWORD=2026anodaaceleração"
+                echo "VITE_DOTERRA_PASSWORD=expandircomtec"
+              } > .env.local
               echo "   ✅ .env.local criado com todas as databases configuradas"
             else
               echo "   ✅ .env.local existe, preservando configuração existente"
