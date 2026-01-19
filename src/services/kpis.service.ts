@@ -62,3 +62,59 @@ export async function getKPIById(id: string): Promise<KPI | undefined> {
   const kpis = await getPublicKPIs();
   return kpis.find(kpi => kpi.id === id);
 }
+
+/**
+ * Get Enzo's KPIs (including financial for sales dashboard)
+ */
+export async function getEnzoKPIs(): Promise<KPI[]> {
+  try {
+    // Usar URL relativa em produção, absoluta apenas em desenvolvimento
+    const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
+    const apiUrl = API_BASE ? `${API_BASE}/api/enzo/kpis` : '/api/enzo/kpis';
+    
+    console.log('🔍 Fetching Enzo KPIs from:', apiUrl);
+    
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    console.log('📡 Response status:', response.status, response.statusText);
+    
+    if (response.status === 429) {
+      throw new Error('Rate limit: Muitas requisições. Aguarde alguns segundos.');
+    }
+    
+    if (!response.ok) {
+      // Se for erro 500 ou outro erro do servidor, tentar retornar array vazio em vez de quebrar
+      if (response.status >= 500) {
+        console.warn('⚠️  Server error fetching Enzo KPIs, returning empty array');
+        return [];
+      }
+      const errorData = await response.json().catch(() => ({}));
+      console.error('❌ Error response:', errorData);
+      throw new Error(errorData.message || errorData.error || `Failed to fetch Enzo KPIs: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    console.log('✅ Enzo KPIs loaded:', data.length, 'KPIs');
+    return data;
+  } catch (error: any) {
+    console.error('❌ Error fetching Enzo KPIs:', error);
+    console.error('❌ Error details:', {
+      message: error.message,
+      name: error.name,
+      stack: error.stack
+    });
+    // Em caso de erro de conexão, retornar array vazio em vez de quebrar
+    if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError') || error.name === 'TypeError' || error.message?.includes('conectar ao servidor')) {
+      console.warn('⚠️  Connection error, returning empty array for Enzo KPIs');
+      return [];
+    }
+    // Para outros erros, também retornar array vazio para não quebrar o dashboard
+    console.warn('⚠️  Error fetching Enzo KPIs, returning empty array');
+    return [];
+  }
+}

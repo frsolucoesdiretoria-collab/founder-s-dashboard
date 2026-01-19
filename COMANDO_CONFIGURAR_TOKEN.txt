@@ -1,0 +1,12 @@
+# 🔑 CONFIGURAR NOTION_TOKEN
+# 
+# IMPORTANTE: Substitua SEU_TOKEN_AQUI pelo token real do Notion
+# Obtenha o token em: https://www.notion.so/my-integrations
+#
+# Execute este comando na VPS (substitua SEU_TOKEN_AQUI):
+
+cd /var/www/founder-dashboard && cp .env.local .env.local.backup3 && sed -i 's/NOTION_TOKEN=SET_NOTION_TOKEN_AXIS_HERE/NOTION_TOKEN=SEU_TOKEN_AQUI/' .env.local && echo "✅ Token atualizado" && grep "^NOTION_TOKEN=" .env.local | head -c 50 && echo "..." && pm2 restart founder-dashboard && sleep 5 && echo "" && echo "=== TESTE ===" && curl -s http://localhost:3001/api/kpis/public | head -c 300 && echo "" && echo "" && echo "Quantidade de KPIs:" && curl -s http://localhost:3001/api/kpis/public | grep -o '"id"' | wc -l
+
+
+
+

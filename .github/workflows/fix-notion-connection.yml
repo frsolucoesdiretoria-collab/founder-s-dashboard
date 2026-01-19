@@ -1,0 +1,172 @@
+name: Fix Notion Connection on VPS
+
+on:
+  workflow_dispatch:
+    description: 'Corrigir conexão com Notion na VPS'
+  push:
+    branches:
+      - staging
+    paths:
+      - 'scripts/fix-notion-connection-vps.sh'
+
+jobs:
+  fix-notion-connection:
+    name: Corrigir Conexão Notion na VPS
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Fix Notion Connection on VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -e
+            
+            # Determine project path based on branch
+            if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+              PROJECT_PATH="${{ secrets.VPS_PROJECT_PATH }}"
+            else
+              PROJECT_PATH="${{ secrets.VPS_STAGING_PATH || secrets.VPS_PROJECT_PATH }}"
+            fi
+            
+            echo "🔧 Executando correção de conexão Notion em: $PROJECT_PATH"
+            
+            cd $PROJECT_PATH
+            
+            # Garantir que o script existe e é executável
+            if [ ! -f "scripts/fix-notion-connection-vps.sh" ]; then
+              echo "❌ Script não encontrado. Fazendo pull do código..."
+              git fetch origin
+              git reset --hard origin/${{ github.ref_name }}
+              git clean -fd
+            fi
+            
+            chmod +x scripts/fix-notion-connection-vps.sh
+            
+            # Configurar NOTION_TOKEN se o secret existir
+            NOTION_TOKEN_VALUE="${{ secrets.NOTION_TOKEN_VPS }}"
+            if [ -n "$NOTION_TOKEN_VALUE" ] && [ "$NOTION_TOKEN_VALUE" != "" ]; then
+              echo "🔑 Configurando NOTION_TOKEN do secret do GitHub..."
+              
+              # Backup
+              if [ -f .env.local ]; then
+                cp .env.local .env.local.backup.$(date +%Y%m%d_%H%M%S) 2>/dev/null || true
+              fi
+              
+              # Garantir que .env.local existe
+              [ -f .env.local ] || touch .env.local
+              
+              # Substituir ou adicionar NOTION_TOKEN
+              if grep -q "^NOTION_TOKEN=" .env.local; then
+                sed -i "s|^NOTION_TOKEN=.*|NOTION_TOKEN=$NOTION_TOKEN_VALUE|" .env.local
+                echo "✅ NOTION_TOKEN atualizado"
+              else
+                sed -i "1i NOTION_TOKEN=$NOTION_TOKEN_VALUE" .env.local
+                echo "✅ NOTION_TOKEN adicionado"
+              fi
+            else
+              echo "⚠️  NOTION_TOKEN_VPS secret não configurado, pulando configuração de token"
+            fi
+            
+            # Executar script de correção
+            echo "🚀 Executando script de correção..."
+            bash scripts/fix-notion-connection-vps.sh
+            
+            echo "✅ Correção concluída!"
+
+      - name: Verify Fix
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set +e  # Não parar em erros para permitir diagnóstico completo
+            
+            # Determine project path
+            if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+              PROJECT_PATH="${{ secrets.VPS_PROJECT_PATH }}"
+            else
+              PROJECT_PATH="${{ secrets.VPS_STAGING_PATH || secrets.VPS_PROJECT_PATH }}"
+            fi
+            
+            cd $PROJECT_PATH
+            
+            echo "🔍 Verificando correção..."
+            
+            # Verificar se PM2 está rodando, se não, tentar iniciar
+            if pm2 list | grep -q "founder-dashboard.*online"; then
+              echo "✅ PM2 está rodando"
+            else
+              echo "⚠️  PM2 não está rodando, tentando iniciar..."
+              
+              # Tentar iniciar PM2
+              if command -v pm2 >/dev/null 2>&1; then
+                # Parar processo existente se houver
+                pm2 stop founder-dashboard 2>/dev/null || true
+                pm2 delete founder-dashboard 2>/dev/null || true
+                sleep 2
+                
+                # Carregar variáveis de ambiente
+                set -a
+                [ -f .env.local ] && source .env.local 2>/dev/null || true
+                set +a
+                
+                # Iniciar PM2
+                cd $PROJECT_PATH
+                NODE_ENV=production pm2 start npm --name "founder-dashboard" -- start 2>&1 || {
+                  echo "⚠️  Tentando método alternativo..."
+                  pm2 start "npm start" --name "founder-dashboard" --update-env 2>&1 || true
+                }
+                
+                pm2 save 2>/dev/null || true
+                sleep 5
+                
+                # Verificar novamente
+                if pm2 list | grep -q "founder-dashboard.*online"; then
+                  echo "✅ PM2 iniciado com sucesso"
+                else
+                  echo "⚠️  PM2 ainda não está rodando após tentativa de iniciar"
+                  echo "📋 Status do PM2:"
+                  pm2 list || true
+                  echo "📋 Logs recentes:"
+                  pm2 logs founder-dashboard --lines 10 --nostream 2>/dev/null || echo "Não foi possível ler logs"
+                fi
+              else
+                echo "❌ PM2 não está instalado"
+              fi
+            fi
+            
+            # Testar endpoint de health (aguardar um pouco)
+            sleep 3
+            HEALTH=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3001/api/health 2>/dev/null || echo "000")
+            if [ "$HEALTH" = "200" ]; then
+              echo "✅ Health check OK"
+            else
+              echo "⚠️  Health check retornou status $HEALTH"
+              echo "   Isso pode indicar que o servidor ainda está iniciando ou há um problema"
+            fi
+            
+            # Testar endpoint de KPIs
+            KPIS_RESPONSE=$(curl -s http://localhost:3001/api/enzo/kpis 2>/dev/null || echo "[]")
+            if echo "$KPIS_RESPONSE" | grep -q '"id"'; then
+              KPIS_COUNT=$(echo "$KPIS_RESPONSE" | grep -o '"id"' | wc -l)
+              echo "✅ Endpoint /api/enzo/kpis retornou $KPIS_COUNT KPI(s)"
+            else
+              echo "⚠️  Endpoint /api/enzo/kpis retornou array vazio ou erro"
+              echo "   Resposta: $(echo "$KPIS_RESPONSE" | head -c 200)"
+            fi
+            
+            echo ""
+            echo "📊 Resumo da verificação:"
+            echo "   - PM2: $(pm2 list | grep -q 'founder-dashboard.*online' && echo '✅ Rodando' || echo '⚠️  Não rodando')"
+            echo "   - Health: $([ "$HEALTH" = "200" ] && echo '✅ OK' || echo '⚠️  Status $HEALTH')"
+            echo "   - KPIs: $([ -n "$KPIS_COUNT" ] && echo "✅ $KPIS_COUNT encontrado(s)" || echo '⚠️  Nenhum encontrado')"
+            echo ""
+            echo "✅ Verificação concluída!"
+

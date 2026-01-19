@@ -1,11 +1,15 @@
 // FR Tech OS - Actions Service
 
+import { DAILY_PROPHECY_ACTION_NAME } from '@/constants/dailyRoutine';
 import type { Action } from '@/types/action';
 
 /**
  * Check if action can be marked as done
  */
 export function canMarkActionDone(action: Action): { allowed: boolean; reason?: string } {
+  if (action.Name?.trim().toLowerCase() === DAILY_PROPHECY_ACTION_NAME.toLowerCase()) {
+    return { allowed: true };
+  }
   if (!action.Goal || action.Goal.trim() === '') {
     return {
       allowed: false,
@@ -163,6 +167,103 @@ export async function deleteAction(actionId: string): Promise<void> {
     }
   } catch (error) {
     console.error('Error deleting action:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get Enzo's daily actions
+ */
+export async function getEnzoDailyActions(): Promise<Action[]> {
+  try {
+    // Usar URL relativa em produção, absoluta apenas em desenvolvimento
+    const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
+    
+    const today = new Date().toISOString().split('T')[0];
+    const apiUrl = API_BASE ? `${API_BASE}/api/enzo/actions?start=${today}&end=${today}` : `/api/enzo/actions?start=${today}&end=${today}`;
+    const response = await fetch(apiUrl);
+    
+    if (response.status === 429) {
+      throw new Error('Rate limit: Muitas requisições. Aguarde alguns segundos.');
+    }
+    
+    if (!response.ok) {
+      // Se for erro 500 ou outro erro do servidor, retornar array vazio
+      if (response.status >= 500) {
+        console.warn('⚠️  Server error fetching Enzo actions, returning empty array');
+        return [];
+      }
+      throw new Error(`Failed to fetch Enzo actions: ${response.statusText}`);
+    }
+    const actions: Action[] = await response.json();
+    return actions.filter(action => action.PublicVisible === true);
+  } catch (error: any) {
+    console.error('Error fetching Enzo daily actions:', error);
+    // Em caso de erro de conexão, retornar array vazio
+    if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError') || error.name === 'TypeError' || error.message?.includes('conectar ao servidor')) {
+      console.warn('⚠️  Connection error, returning empty array for Enzo actions');
+      return [];
+    }
+    // Para outros erros, também retornar array vazio
+    console.warn('⚠️  Error fetching Enzo actions, returning empty array');
+    return [];
+  }
+}
+
+/**
+ * Get all Enzo's actions
+ */
+export async function getEnzoActions(range?: { start?: string; end?: string }): Promise<Action[]> {
+  try {
+    // Usar URL relativa em produção, absoluta apenas em desenvolvimento
+    const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
+    
+    const params = new URLSearchParams();
+    if (range?.start) params.append('start', range.start);
+    if (range?.end) params.append('end', range.end);
+    
+    const apiUrl = API_BASE ? `${API_BASE}/api/enzo/actions?${params.toString()}` : `/api/enzo/actions?${params.toString()}`;
+    const response = await fetch(apiUrl);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch Enzo actions: ${response.statusText}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching Enzo actions:', error);
+    return [];
+  }
+}
+
+/**
+ * Update Enzo's action done status
+ */
+export async function updateEnzoActionDone(actionId: string, done: boolean): Promise<boolean> {
+  try {
+    // Usar URL relativa em produção, absoluta apenas em desenvolvimento
+    const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
+    
+    const apiUrl = API_BASE ? `${API_BASE}/api/enzo/actions/${actionId}/done` : `/api/enzo/actions/${actionId}/done`;
+    const response = await fetch(apiUrl, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ done })
+    });
+    
+    if (response.status === 429) {
+      throw new Error('Rate limit: Muitas requisições. Aguarde alguns segundos.');
+    }
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.reason || error.error || 'Failed to update Enzo action');
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Error updating Enzo action:', error);
     throw error;
   }
 }

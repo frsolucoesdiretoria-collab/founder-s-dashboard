@@ -90,3 +90,47 @@ export async function getCurrentWeekGoals(): Promise<Goal[]> {
   
   return goals.filter(goal => goal.WeekKey);
 }
+
+/**
+ * Get Enzo's goals
+ */
+export async function getEnzoGoals(range?: { start?: string; end?: string }): Promise<Goal[]> {
+  try {
+    // Usar URL relativa em produção, absoluta apenas em desenvolvimento
+    const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
+    
+    const params = new URLSearchParams();
+    if (range?.start) params.append('start', range.start);
+    if (range?.end) params.append('end', range.end);
+    
+    const apiUrl = API_BASE ? `${API_BASE}/api/enzo/goals?${params.toString()}` : `/api/enzo/goals?${params.toString()}`;
+    const response = await fetch(apiUrl);
+    
+    if (response.status === 429) {
+      throw new Error('Rate limit: Muitas requisições. Aguarde alguns segundos.');
+    }
+    
+    if (!response.ok) {
+      // Se for erro 500 ou outro erro do servidor, retornar array vazio
+      if (response.status >= 500) {
+        console.warn('⚠️  Server error fetching Enzo goals, returning empty array');
+        return [];
+      }
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || errorData.error || `Failed to fetch Enzo goals: ${response.statusText}`);
+    }
+    
+    const goals: Goal[] = await response.json();
+    return filterPublicGoals(goals);
+  } catch (error: any) {
+    console.error('Error fetching Enzo goals:', error);
+    // Em caso de erro de conexão, retornar array vazio
+    if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError') || error.name === 'TypeError' || error.message?.includes('conectar ao servidor')) {
+      console.warn('⚠️  Connection error, returning empty array for Enzo goals');
+      return [];
+    }
+    // Para outros erros, também retornar array vazio
+    console.warn('⚠️  Error fetching Enzo goals, returning empty array');
+    return [];
+  }
+}

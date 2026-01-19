@@ -5,6 +5,10 @@ import { getActions, toggleActionDone, ensureActionHasGoal, createAction, update
 import { canMarkActionDone } from '../lib/guards';
 import { initNotionClient } from '../lib/notionDataLayer';
 import { getDatabaseId } from '../../src/lib/notion/schema';
+import { DAILY_PROPHECY_ACTION_NAME } from '../../src/constants/dailyRoutine';
+
+const isDailyProphecy = (name?: string) =>
+  !!name && name.trim().toLowerCase() === DAILY_PROPHECY_ACTION_NAME.toLowerCase();
 
 export const actionsRouter = Router();
 
@@ -40,19 +44,25 @@ actionsRouter.get('/', async (req, res) => {
 actionsRouter.post('/', async (req, res) => {
   try {
     const { Name, Type, Date, Goal, Contribution, Notes, Contact, PublicVisible } = req.body;
+    const dailyProphecy = isDailyProphecy(Name);
+    const normalizedType = Type || 'Rotina';
     
-    if (!Name || !Type || !Date || !Goal) {
-      return res.status(400).json({ 
+    if (!Name || !Date || (!normalizedType && !dailyProphecy) || (!Goal && !dailyProphecy)) {
+      const requiredFields = ['Name', 'Date'];
+      if (!dailyProphecy) {
+        requiredFields.push('Type', 'Goal');
+      }
+      return res.status(400).json({
         error: 'Missing required fields',
-        required: ['Name', 'Type', 'Date', 'Goal']
+        required: requiredFields
       });
     }
 
     const action = await createAction({
       Name,
-      Type,
+      Type: normalizedType,
       Date,
-      Goal,
+      Goal: dailyProphecy ? undefined : Goal,
       Contribution,
       Notes,
       Contact,

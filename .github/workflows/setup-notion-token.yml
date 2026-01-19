@@ -1,0 +1,156 @@
+name: Setup Notion Token on VPS
+
+on:
+  workflow_dispatch:
+    description: 'Configurar NOTION_TOKEN na VPS automaticamente'
+
+jobs:
+  setup-token:
+    name: Configurar NOTION_TOKEN na VPS
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Configure NOTION_TOKEN on VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -e
+            
+            PROJECT_PATH="${{ secrets.VPS_STAGING_PATH || secrets.VPS_PROJECT_PATH }}"
+            cd $PROJECT_PATH
+            
+            echo "🔧 Configurando NOTION_TOKEN em: $PROJECT_PATH"
+            
+            # Backup do .env.local
+            if [ -f .env.local ]; then
+              BACKUP_FILE=".env.local.backup.$(date +%Y%m%d_%H%M%S)"
+              cp .env.local "$BACKUP_FILE"
+              echo "✅ Backup criado: $BACKUP_FILE"
+            fi
+            
+            # Garantir que .env.local existe
+            if [ ! -f .env.local ]; then
+              echo "⚠️  .env.local não existe, criando..."
+              if [ -f env.local.example ]; then
+                cp env.local.example .env.local
+              else
+                touch .env.local
+              fi
+            fi
+            
+            # Configurar NOTION_TOKEN usando secret do GitHub
+            NOTION_TOKEN_VALUE="${{ secrets.NOTION_TOKEN_VPS }}"
+            
+            if [ -z "$NOTION_TOKEN_VALUE" ] || [ "$NOTION_TOKEN_VALUE" == "" ]; then
+              echo "❌ NOTION_TOKEN_VPS secret não está configurado no GitHub"
+              echo ""
+              echo "📋 Para configurar:"
+              echo "   1. Acesse: https://github.com/frsolucoesdiretoria-collab/founder-s-dashboard/settings/secrets/actions"
+              echo "   2. Clique em 'New repository secret'"
+              echo "   3. Nome: NOTION_TOKEN_VPS"
+              echo "   4. Valor: seu token do Notion"
+              echo "   5. Clique em 'Add secret'"
+              exit 1
+            fi
+            
+            # Substituir ou adicionar NOTION_TOKEN
+            if grep -q "^NOTION_TOKEN=" .env.local; then
+              # Substituir linha existente
+              sed -i "s|^NOTION_TOKEN=.*|NOTION_TOKEN=$NOTION_TOKEN_VALUE|" .env.local
+              echo "✅ NOTION_TOKEN atualizado no .env.local"
+            else
+              # Adicionar no início do arquivo
+              sed -i "1i NOTION_TOKEN=$NOTION_TOKEN_VALUE" .env.local
+              echo "✅ NOTION_TOKEN adicionado ao .env.local"
+            fi
+            
+            # Verificar se foi configurado corretamente
+            if grep -q "^NOTION_TOKEN=$NOTION_TOKEN_VALUE" .env.local; then
+              echo "✅ NOTION_TOKEN configurado com sucesso!"
+            else
+              echo "❌ Erro ao configurar NOTION_TOKEN"
+              exit 1
+            fi
+            
+            # Reiniciar PM2 para aplicar mudanças
+            echo ""
+            echo "🔄 Reiniciando PM2..."
+            if command -v pm2 >/dev/null 2>&1; then
+              # Parar processo existente
+              pm2 stop founder-dashboard 2>/dev/null || true
+              pm2 delete founder-dashboard 2>/dev/null || true
+              sleep 2
+              
+              # Carregar variáveis de ambiente
+              set -a
+              source .env.local 2>/dev/null || true
+              set +a
+              
+              # Iniciar PM2
+              cd $PROJECT_PATH
+              NODE_ENV=production pm2 start npm --name "founder-dashboard" -- start 2>&1 || {
+                echo "⚠️  Tentando método alternativo..."
+                pm2 start "npm start" --name "founder-dashboard" --update-env 2>&1 || true
+              }
+              
+              pm2 save 2>/dev/null || true
+              sleep 5
+              
+              # Verificar se iniciou
+              if pm2 list | grep -q "founder-dashboard.*online"; then
+                echo "✅ PM2 reiniciado com sucesso"
+              else
+                echo "⚠️  PM2 pode não ter iniciado corretamente"
+                pm2 list | grep -i "founder" || true
+              fi
+            else
+              echo "⚠️  PM2 não está instalado"
+            fi
+            
+            echo ""
+            echo "✅ Configuração concluída!"
+
+      - name: Verify Configuration
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set +e
+            
+            PROJECT_PATH="${{ secrets.VPS_STAGING_PATH || secrets.VPS_PROJECT_PATH }}"
+            cd $PROJECT_PATH
+            
+            echo "🔍 Verificando configuração..."
+            
+            # Verificar se NOTION_TOKEN está configurado (sem mostrar o valor)
+            if grep -q "^NOTION_TOKEN=" .env.local && ! grep -q "^NOTION_TOKEN=<<<" .env.local && ! grep -q "^NOTION_TOKEN=$" .env.local; then
+              TOKEN_LINE=$(grep "^NOTION_TOKEN=" .env.local | head -1)
+              TOKEN_PREFIX=$(echo "$TOKEN_LINE" | cut -d'=' -f2 | cut -c1-10)
+              echo "✅ NOTION_TOKEN está configurado (prefixo: $TOKEN_PREFIX...)"
+            else
+              echo "❌ NOTION_TOKEN não está configurado corretamente"
+            fi
+            
+            # Verificar PM2
+            sleep 3
+            if pm2 list | grep -q "founder-dashboard.*online"; then
+              echo "✅ PM2 está rodando"
+            else
+              echo "⚠️  PM2 não está rodando"
+            fi
+            
+            # Testar health
+            HEALTH=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3001/api/health 2>/dev/null || echo "000")
+            if [ "$HEALTH" = "200" ]; then
+              echo "✅ Health check OK"
+            else
+              echo "⚠️  Health check retornou status $HEALTH"
+            fi
+            
+            echo "✅ Verificação concluída!"
+

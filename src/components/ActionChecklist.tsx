@@ -69,10 +69,10 @@ export function ActionChecklist({ actions, onToggle, journalBlocked, refreshing 
 
   return (
     <Card>
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-2 md:pb-3 px-3 md:px-6 pt-3 md:pt-6">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">Ações de Hoje</CardTitle>
-          <Badge variant="secondary" className="font-medium">
+          <CardTitle className="text-sm md:text-lg">Ações de Hoje</CardTitle>
+          <Badge variant="secondary" className="font-medium text-xs md:text-sm">
             {completedCount}/{totalCount}
           </Badge>
         </div>
@@ -83,7 +83,7 @@ export function ActionChecklist({ actions, onToggle, journalBlocked, refreshing 
           </div>
         )}
       </CardHeader>
-      <CardContent className="space-y-2">
+      <CardContent className="space-y-2 px-3 md:px-6 pb-3 md:pb-6">
         {localActions.length === 0 ? (
           <p className="text-muted-foreground text-sm text-center py-4">
             Nenhuma ação para hoje
@@ -98,10 +98,10 @@ export function ActionChecklist({ actions, onToggle, journalBlocked, refreshing 
               <div
                 key={action.id}
                 className={cn(
-                  "flex items-start gap-3 p-3 rounded-lg border transition-all",
+                  "flex items-start gap-2 md:gap-3 p-2.5 md:p-3 rounded-lg border transition-all touch-manipulation",
                   actionTyped.Done 
                     ? "bg-muted/50 border-muted" 
-                    : "bg-card border-border hover:border-primary/30",
+                    : "bg-card border-border hover:border-primary/30 active:bg-muted/30",
                   hasNoGoal && !actionTyped.Done && "border-destructive/30 bg-destructive/5"
                 )}
               >
@@ -109,41 +109,41 @@ export function ActionChecklist({ actions, onToggle, journalBlocked, refreshing 
                   checked={actionTyped.Done}
                   onCheckedChange={() => handleToggle(actionTyped)}
                   disabled={(journalBlocked && !actionTyped.Done) || refreshing || hasNoGoal}
-                  className="mt-1"
+                  className="mt-0.5 md:mt-1 h-5 w-5 md:h-4 md:w-4 flex-shrink-0"
                 />
                 <div className="flex-1 min-w-0">
                   <p className={cn(
-                    "font-medium text-sm",
+                    "font-medium text-xs md:text-sm leading-tight",
                     actionTyped.Done && "line-through text-muted-foreground"
                   )}>
                     {actionTyped.Name}
                   </p>
-                  <div className="flex flex-wrap gap-2 mt-2">
+                  <div className="flex flex-wrap gap-1.5 md:gap-2 mt-1.5 md:mt-2">
                     <Badge 
                       variant="outline" 
-                      className={cn("text-xs", typeColors[actionTyped.Type])}
+                      className={cn("text-[10px] md:text-xs px-1.5 md:px-2 py-0.5", typeColors[actionTyped.Type])}
                     >
-                      <Icon className="h-3 w-3 mr-1" />
+                      <Icon className="h-2.5 w-2.5 md:h-3 md:w-3 mr-0.5 md:mr-1" />
                       {actionTyped.Type}
                     </Badge>
                     {actionTyped.Contact && (
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant="outline" className="text-[10px] md:text-xs px-1.5 md:px-2 py-0.5">
                         {actionTyped.Contact}
                       </Badge>
                     )}
                     {actionTyped.Client && (
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant="outline" className="text-[10px] md:text-xs px-1.5 md:px-2 py-0.5">
                         {actionTyped.Client}
                       </Badge>
                     )}
                     {hasNoGoal && !actionTyped.Done && (
-                      <Badge variant="destructive" className="text-xs">
+                      <Badge variant="destructive" className="text-[10px] md:text-xs px-1.5 md:px-2 py-0.5">
                         Sem meta
                       </Badge>
                     )}
                   </div>
                   {actionTyped.Notes && (
-                    <p className="text-xs text-muted-foreground mt-2">
+                    <p className="text-[10px] md:text-xs text-muted-foreground mt-1.5 md:mt-2 leading-relaxed">
                       {actionTyped.Notes}
                     </p>
                   )}

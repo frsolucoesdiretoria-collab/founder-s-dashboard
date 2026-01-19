@@ -1,0 +1,5 @@
+cd /var/www/founder-dashboard && cp .env.local .env.local.backup && sed -i 's/^NOTION_TOKEN=.*/NOTION_TOKEN=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/' .env.local && echo "✅ Token atualizado!" && echo "" && echo "Verificando token:" && grep "^NOTION_TOKEN=" .env.local | head -c 60 && echo "..." && echo "" && echo "Reiniciando servidor..." && pm2 restart founder-dashboard --update-env && sleep 10 && echo "" && echo "=== TESTE API KPIs ===" && curl -s http://localhost:3001/api/kpis/public && echo "" && echo "" && echo "=== QUANTIDADE DE KPIs ===" && curl -s http://localhost:3001/api/kpis/public | grep -o '"id"' | wc -l && echo "" && echo "=== LOGS (últimas 20 linhas) ===" && pm2 logs founder-dashboard --lines 20 --nostream | tail -15
+
+
+
+

@@ -97,7 +97,7 @@ export function JournalModal({ open, onClose, onSubmit, date, required = false }
               placeholder="O que aconteceu de mais importante?"
               value={formData.Summary}
               onChange={(e) => setFormData(prev => ({ ...prev, Summary: e.target.value }))}
-              className="min-h-[80px]"
+              className="min-h-[80px] text-base"
             />
           </div>
 
@@ -112,7 +112,7 @@ export function JournalModal({ open, onClose, onSubmit, date, required = false }
               placeholder="Vitórias, acertos, coisas que deram certo..."
               value={formData.WhatWorked}
               onChange={(e) => setFormData(prev => ({ ...prev, WhatWorked: e.target.value }))}
-              className="min-h-[60px]"
+              className="min-h-[60px] text-base"
             />
           </div>
 
@@ -127,7 +127,7 @@ export function JournalModal({ open, onClose, onSubmit, date, required = false }
               placeholder="Erros, falhas, o que poderia ser melhor..."
               value={formData.WhatFailed}
               onChange={(e) => setFormData(prev => ({ ...prev, WhatFailed: e.target.value }))}
-              className="min-h-[60px]"
+              className="min-h-[60px] text-base"
             />
           </div>
 
@@ -142,7 +142,7 @@ export function JournalModal({ open, onClose, onSubmit, date, required = false }
               placeholder="Aprendizados e descobertas..."
               value={formData.Insights}
               onChange={(e) => setFormData(prev => ({ ...prev, Insights: e.target.value }))}
-              className="min-h-[60px]"
+              className="min-h-[60px] text-base"
             />
           </div>
 
@@ -157,7 +157,7 @@ export function JournalModal({ open, onClose, onSubmit, date, required = false }
               placeholder="Objeções de clientes ou prospects..."
               value={formData.Objections}
               onChange={(e) => setFormData(prev => ({ ...prev, Objections: e.target.value }))}
-              className="min-h-[60px]"
+              className="min-h-[60px] text-base"
             />
           </div>
 
@@ -172,7 +172,7 @@ export function JournalModal({ open, onClose, onSubmit, date, required = false }
               placeholder="Melhorias de processo, automações..."
               value={formData.ProcessIdeas}
               onChange={(e) => setFormData(prev => ({ ...prev, ProcessIdeas: e.target.value }))}
-              className="min-h-[60px]"
+              className="min-h-[60px] text-base"
             />
           </div>
         </div>

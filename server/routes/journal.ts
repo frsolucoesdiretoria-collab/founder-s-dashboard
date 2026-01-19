@@ -6,33 +6,70 @@ import { getJournalByDate, upsertJournalByDate, getJournals } from '../lib/notio
 export const journalRouter = Router();
 
 /**
- * GET /api/journal/today/status
- * Returns morningDone, nightDone, filled for current date
+ * GET /api/journal
+ * List journals with pagination and filters
+ * Query params: start, end, page, pageSize, query
  */
-journalRouter.get('/today/status', async (_req, res) => {
+journalRouter.get('/', async (req, res) => {
   try {
-    const today = new Date().toISOString().split('T')[0];
-    const journal = await getJournalByDate(today);
+    const start = req.query.start as string | undefined;
+    const end = req.query.end as string | undefined;
+    const page = req.query.page ? parseInt(req.query.page as string, 10) : undefined;
+    const pageSize = req.query.pageSize ? parseInt(req.query.pageSize as string, 10) : undefined;
+    const query = req.query.query as string | undefined;
 
-    const morningDone = !!(
-      journal?.MorningCompletedAt ||
-      journal?.ReviewedAt ||
-      journal?.Reviewed ||
-      journal?.Filled
-    );
-    const nightDone = !!(journal?.NightSubmittedAt || journal?.Filled);
-    const filled = nightDone;
+    const result = await getJournals({
+      start,
+      end,
+      page,
+      pageSize
+    });
+
+    // Filter by query (search in Summary) if provided
+    let items = result.items;
+    if (query && query.trim()) {
+      const searchTerm = query.toLowerCase();
+      items = items.filter((journal) => 
+        (journal.Summary || '').toLowerCase().includes(searchTerm)
+      );
+    }
 
     res.json({
-      date: today,
-      morningDone,
-      nightDone,
-      filled
+      items,
+      hasMore: result.hasMore,
+      nextCursor: result.nextCursor
     });
   } catch (error: any) {
-    console.error('Error checking today status:', error);
-    res.status(500).json({
-      error: 'Failed to get today status',
+    console.error('Error listing journals:', error);
+    res.status(500).json({ 
+      error: 'Failed to list journals',
+      message: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+/**
+ * GET /api/journal/yesterday/check
+ * Check if yesterday's journal is filled (for lock check)
+ * Must come before /:date route to avoid matching "yesterday" as a date
+ */
+journalRouter.get('/yesterday/check', async (req, res) => {
+  try {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    
+    const journal = await getJournalByDate(yesterdayStr);
+    
+    res.json({
+      exists: !!journal,
+      filled: journal?.Filled || false,
+      locked: !journal || !journal.Filled
+    });
+  } catch (error: any) {
+    console.error('Error checking yesterday journal:', error);
+    res.status(500).json({ 
+      error: 'Failed to check journal',
       message: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
@@ -56,60 +93,6 @@ journalRouter.get('/:date', async (req, res) => {
     console.error('Error fetching journal:', error);
     res.status(500).json({ 
       error: 'Failed to fetch journal',
-      message: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-});
-
-/**
- * GET /api/journal
- * List journals with optional date range, pagination and query
- * Query params: start, end, page, pageSize, query
- */
-journalRouter.get('/', async (req, res) => {
-  try {
-    const { start, end, page, pageSize } = req.query;
-    const pageNum = page ? parseInt(page as string, 10) : 1;
-    const sizeNum = pageSize ? parseInt(pageSize as string, 10) : 30;
-
-    const result = await getJournals({
-      start: start as string | undefined,
-      end: end as string | undefined,
-      page: pageNum,
-      pageSize: sizeNum
-    });
-
-    res.json(result);
-  } catch (error: any) {
-    console.error('Error listing journals:', error);
-    res.status(500).json({
-      error: 'Failed to list journals',
-      message: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-});
-
-/**
- * GET /api/journal/yesterday/check
- * Check if yesterday's journal is filled (for lock check)
- */
-journalRouter.get('/yesterday/check', async (req, res) => {
-  try {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split('T')[0];
-    
-    const journal = await getJournalByDate(yesterdayStr);
-    
-    res.json({
-      exists: !!journal,
-      filled: journal?.Filled || false,
-      locked: !journal || !journal.Filled
-    });
-  } catch (error: any) {
-    console.error('Error checking yesterday journal:', error);
-    res.status(500).json({ 
-      error: 'Failed to check journal',
       message: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }

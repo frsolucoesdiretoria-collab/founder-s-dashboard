@@ -26,7 +26,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --include=dev
 
       - name: Build application
         run: npm run build
@@ -53,27 +53,95 @@ jobs:
             
             cd $PROJECT_PATH
             
-            # Pull latest changes
+            # Pull latest changes (discard local changes and sync with remote)
             echo "📥 Pulling latest changes from ${{ github.ref_name }}..."
             git fetch origin
-            git checkout ${{ github.ref_name }}
-            git pull origin ${{ github.ref_name }}
+            git reset --hard origin/${{ github.ref_name }}
+            git clean -fd
             
-            # Install dependencies
+            # Configure .env.local with Enzo database IDs (preserve existing file)
+            echo "⚙️  Configuring .env.local..."
+            if [ ! -f .env.local ]; then
+              echo "   ⚠️  .env.local not found! Creating from env.local.example..."
+              echo "   ⚠️  WARNING: You MUST configure NOTION_TOKEN manually!"
+              cp env.local.example .env.local
+            else
+              echo "   ✅ .env.local exists, preserving existing configuration"
+            fi
+            
+            # Ensure Enzo database IDs are set (only add if not present)
+            if ! grep -q "NOTION_DB_KPIS_ENZO=" .env.local; then
+              echo "   Adding Enzo database IDs to .env.local..."
+              echo "" >> .env.local
+              echo "# Enzo Canei Dashboard Databases" >> .env.local
+              echo "NOTION_DB_KPIS_ENZO=2ed84566a5fa81299c07c412630f9aa4" >> .env.local
+              echo "NOTION_DB_GOALS_ENZO=2ed84566a5fa81ada870cf698ec50bf0" >> .env.local
+              echo "NOTION_DB_ACTIONS_ENZO=2ed84566a5fa81c4a8cbc23841abdc1e" >> .env.local
+              echo "NOTION_DB_CONTACTS_ENZO=2ed84566a5fa81a7bf7afeaa38ea6eff" >> .env.local
+            else
+              echo "   ✅ Enzo database IDs already configured"
+            fi
+            
+            # Ensure CONTACTS_ENZO is set if KPIs_ENZO exists but CONTACTS_ENZO doesn't
+            if grep -q "NOTION_DB_KPIS_ENZO=" .env.local && ! grep -q "NOTION_DB_CONTACTS_ENZO=" .env.local; then
+              echo "   Adding NOTION_DB_CONTACTS_ENZO to .env.local..."
+              echo "NOTION_DB_CONTACTS_ENZO=2ed84566a5fa81a7bf7afeaa38ea6eff" >> .env.local
+            fi
+            
+            # Install dependencies (including devDependencies for build)
             echo "📦 Installing dependencies..."
-            npm ci
+            npm ci --include=dev
             
             # Build application
             echo "🔨 Building application..."
-            npm run build
+            NODE_ENV=production npm run build
+            
+            # Install PM2 if not available
+            if ! command -v pm2 &> /dev/null; then
+              echo "📦 PM2 not found. Installing PM2 globally..."
+              npm install -g pm2
+            fi
             
             # Restart application (PM2)
-            if command -v pm2 &> /dev/null; then
-              echo "🔄 Restarting application with PM2..."
-              pm2 restart founder-dashboard || pm2 start npm --name "founder-dashboard" -- start
-              pm2 save
+            echo "🔄 Restarting application with PM2..."
+            # Parar e remover processo existente
+            pm2 stop founder-dashboard 2>/dev/null || true
+            pm2 delete founder-dashboard 2>/dev/null || true
+            # Matar processo na porta 3001 se existir
+            lsof -ti:3001 | xargs kill -9 2>/dev/null || true
+            sleep 2
+            
+            # Iniciar com NODE_ENV=production explicitamente
+            echo "🚀 Starting application..."
+            cd "$PROJECT_PATH"
+            # Usar tsx diretamente em vez de npm para melhor controle
+            NODE_ENV=production PORT=3001 pm2 start npm --name "founder-dashboard" -- start
+            pm2 save
+            
+            # Aguardar servidor iniciar
+            sleep 5
+            
+            # Verificar se servidor iniciou corretamente
+            if pm2 list | grep -q "founder-dashboard.*online"; then
+              echo "✅ Application started successfully with PM2"
+              
+              # Verificar se está respondendo
+              sleep 3
+              if curl -s http://localhost:3001/api/health > /dev/null; then
+                echo "✅ API está respondendo corretamente!"
+                curl http://localhost:3001/api/health
+              else
+                echo "⚠️  Servidor iniciou mas API não está respondendo"
+                echo "📋 Logs do servidor:"
+                pm2 logs founder-dashboard --lines 30 --nostream
+                exit 1
+              fi
+              
+              pm2 logs founder-dashboard --lines 10 --nostream
             else
-              echo "⚠️  PM2 not found. Please restart the application manually."
+              echo "❌ Application failed to start with PM2"
+              pm2 logs founder-dashboard --lines 50 --nostream
+              exit 1
             fi
             
             echo "✅ Deployment completed successfully!"

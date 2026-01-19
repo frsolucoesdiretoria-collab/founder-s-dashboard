@@ -10,6 +10,7 @@ import type { NotionKPI, NotionGoal } from '@/lib/notion/types';
 import { toast } from 'sonner';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
+import { DailyRoutine } from '@/components/DailyRoutine';
 
 type PeriodGroup = 'Mensal' | 'Trimestral' | 'Semestral' | 'Anual';
 
@@ -43,6 +44,10 @@ export default function DashboardV02() {
         getPublicGoals()
       ]);
 
+      console.log('📊 KPIs carregados:', kpisData.length);
+      console.log('📈 Goals carregados:', goalsData.length);
+      console.log('📋 Goals com Actual > 0:', goalsData.filter(g => (g.Actual || 0) > 0).length);
+
       // Remove duplicate KPIs by name (keep first occurrence, prefer higher SortOrder)
       const uniqueKPIs = new Map<string, KPI>();
       kpisData.forEach(kpi => {
@@ -71,8 +76,15 @@ export default function DashboardV02() {
       if (err.message?.includes('429') || err.message?.includes('rate limit')) {
         setError('Muitas requisições. Aguarde alguns segundos e recarregue a página.');
         toast.error('Limite de requisições atingido. Aguarde um momento.');
+      } else if (err.message?.includes('Database not found') || err.message?.includes('not configured')) {
+        setError('Erro de configuração: Database do Notion não encontrada. Verifique as configurações do servidor.');
+        toast.error('Erro de configuração do Notion');
+      } else if (err.message?.includes('conectar ao servidor') || err.message?.includes('Failed to fetch')) {
+        setError('Não foi possível conectar ao servidor. Verifique se o servidor está rodando.');
+        toast.error('Erro de conexão com o servidor');
       } else {
-        setError('Erro ao carregar dados. Verifique sua conexão.');
+        const errorMsg = err.message || 'Erro desconhecido ao carregar dados';
+        setError(`Erro ao carregar dados: ${errorMsg}`);
         toast.error('Erro ao carregar dashboard');
       }
     } finally {
@@ -103,6 +115,10 @@ export default function DashboardV02() {
   };
 
   try {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1; // 1-12
+    
     kpis.forEach((kpi) => {
       if (!kpi || !kpi.Name || !kpi.Periodicity) {
         return;
@@ -121,7 +137,45 @@ export default function DashboardV02() {
         return;
       }
 
-      const goal = goals.find(g => g.KPI === kpi.id);
+      // Find the most relevant goal for this KPI based on period
+      let goal: Goal | undefined;
+      
+      const goalsForKPI = goals.filter(g => g.KPI === kpi.id && g.VisiblePublic);
+      
+      if (goalsForKPI.length === 0) {
+        goal = undefined;
+      } else if (period === 'Mensal') {
+        // For monthly: find goal for current month and year
+        goal = goalsForKPI.find(g => 
+          g.Year === currentYear && 
+          g.Month === currentMonth
+        ) || goalsForKPI[0]; // Fallback to first if no exact match
+      } else if (period === 'Trimestral') {
+        // For quarterly: find goal for current year, no specific month
+        goal = goalsForKPI.find(g => 
+          g.Year === currentYear && 
+          (!g.Month || g.Month === 0)
+        ) || goalsForKPI[0]; // Fallback to first if no exact match
+      } else if (period === 'Semestral') {
+        // For semi-annual: find goal for current year, no specific month
+        goal = goalsForKPI.find(g => 
+          g.Year === currentYear && 
+          (!g.Month || g.Month === 0)
+        ) || goalsForKPI[0]; // Fallback to first if no exact match
+      } else if (period === 'Anual') {
+        // For annual: find goal for current year, no specific month
+        goal = goalsForKPI.find(g => 
+          g.Year === currentYear && 
+          (!g.Month || g.Month === 0)
+        ) || goalsForKPI[0]; // Fallback to first if no exact match
+      }
+      
+      // Log matching for debugging
+      if (goal) {
+        console.log(`✅ Match encontrado: KPI "${kpi.Name}" → Goal "${goal.Name}" (Actual: ${goal.Actual || 0}/${goal.Target || 0})`);
+      } else {
+        console.log(`⚠️  Nenhum goal encontrado para KPI "${kpi.Name}" (ID: ${kpi.id.substring(0, 8)}...)`);
+      }
       
       if (period === 'Mensal') {
         groupedKPIs.Mensal.push({ kpi, goal });
@@ -188,11 +242,13 @@ export default function DashboardV02() {
   return (
     <AppLayout>
       <div className="space-y-4 md:space-y-6 pb-6">
-        <div className="px-1 flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-xl md:text-2xl font-bold text-foreground">Dashboard V02</h1>
-            <p className="text-sm md:text-base text-muted-foreground">
-              Execução por período • {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
+        <div className="px-1 md:px-0 flex flex-col md:flex-row items-center md:items-start justify-between gap-4">
+          <div className="text-center md:text-left w-full md:w-auto">
+            <h1 className="text-xl md:text-2xl font-bold text-foreground">
+              Os números apontam o caminho. Quem mede, evolui. Quem não mensura, não melhora e fica estagnado
+            </h1>
+            <p className="text-sm md:text-base text-muted-foreground mt-2">
+              Revise os números mais importantes da empresa diariamente para que os objetivos de crescimento de 2026 sejam alcançados com êxito.
             </p>
           </div>
           <Button 
@@ -200,11 +256,15 @@ export default function DashboardV02() {
             variant="outline" 
             size="sm"
             disabled={loading || refreshing}
+            className="md:flex-shrink-0"
           >
             <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
             Atualizar
           </Button>
         </div>
+
+        {/* TEMPORÁRIO: Campo de rotinas diárias oculto - Bruno não deve ver profetização e agradecimentos */}
+        {/* <DailyRoutine /> */}
 
         {error && (
           <Alert variant="destructive">

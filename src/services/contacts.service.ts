@@ -104,3 +104,133 @@ export async function deleteContact(id: string): Promise<void> {
     throw error;
   }
 }
+
+/**
+ * Enzo Contact type (simplified)
+ */
+export interface EnzoContact {
+  id: string;
+  Name: string;
+  WhatsApp?: string;
+  Status?: string;
+}
+
+/**
+ * Get Enzo's contacts
+ */
+export async function getEnzoContacts(): Promise<EnzoContact[]> {
+  try {
+    // Usar URL relativa em produção, absoluta apenas em desenvolvimento
+    const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
+    const apiUrl = API_BASE ? `${API_BASE}/api/enzo/contacts` : '/api/enzo/contacts';
+    
+    const response = await fetch(apiUrl);
+    
+    if (response.status === 429) {
+      throw new Error('Rate limit: Muitas requisições. Aguarde alguns segundos.');
+    }
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || error.error || 'Failed to fetch Enzo contacts');
+    }
+    
+    return response.json();
+  } catch (error: any) {
+    console.error('Error fetching Enzo contacts:', error);
+    if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError') || error.name === 'TypeError') {
+      throw new Error('Não foi possível conectar ao servidor. Verifique se o servidor está rodando.');
+    }
+    throw error;
+  }
+}
+
+/**
+ * Create Enzo contact
+ */
+export async function createEnzoContact(name: string, whatsapp?: string): Promise<EnzoContact> {
+  try {
+    // Usar URL relativa em produção, absoluta apenas em desenvolvimento
+    const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
+    const apiUrl = API_BASE ? `${API_BASE}/api/enzo/contacts` : '/api/enzo/contacts';
+    
+    console.log('🔍 Creating Enzo contact:', { name, whatsapp, apiUrl });
+    
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name, whatsapp })
+    });
+
+    console.log('📡 Create contact response status:', response.status);
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      const errorMessage = errorData.message || errorData.error || `HTTP ${response.status}: ${response.statusText}`;
+      console.error('❌ Error creating contact:', errorData);
+      throw new Error(errorMessage);
+    }
+
+    const contact = await response.json();
+    console.log('✅ Contact created:', contact);
+    return contact;
+  } catch (error: any) {
+    console.error('❌ Error creating Enzo contact:', error);
+    // Re-throw para que o componente possa tratar
+    throw error;
+  }
+}
+
+/**
+ * Update Enzo contact
+ */
+export async function updateEnzoContact(id: string, updates: { name?: string; whatsapp?: string; status?: string }): Promise<EnzoContact> {
+  try {
+    // Usar URL relativa em produção, absoluta apenas em desenvolvimento
+    const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
+    const apiUrl = API_BASE ? `${API_BASE}/api/enzo/contacts/${id}` : `/api/enzo/contacts/${id}`;
+    
+    const response = await fetch(apiUrl, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updates)
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || error.error || 'Failed to update Enzo contact');
+    }
+
+    return response.json();
+  } catch (error: any) {
+    console.error('Error updating Enzo contact:', error);
+    throw error;
+  }
+}
+
+/**
+ * Delete Enzo contact
+ */
+export async function deleteEnzoContact(id: string): Promise<void> {
+  try {
+    // Usar URL relativa em produção, absoluta apenas em desenvolvimento
+    const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
+    const apiUrl = API_BASE ? `${API_BASE}/api/enzo/contacts/${id}` : `/api/enzo/contacts/${id}`;
+    
+    const response = await fetch(apiUrl, {
+      method: 'DELETE'
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || error.error || 'Failed to delete Enzo contact');
+    }
+  } catch (error: any) {
+    console.error('Error deleting Enzo contact:', error);
+    throw error;
+  }
+}

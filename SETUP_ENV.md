@@ -14,6 +14,8 @@ Na raiz do projeto, crie um arquivo chamado `.env.local`:
 touch .env.local
 ```
 
+> Dica: existe um template `env.local.example` (sem ponto) na raiz do repo para você copiar/colar.
+
 ### 2. Preencher variáveis obrigatórias
 
 Copie o conteúdo abaixo para `.env.local` e **substitua o NOTION_TOKEN**:
@@ -22,6 +24,9 @@ Copie o conteúdo abaixo para `.env.local` e **substitua o NOTION_TOKEN**:
 # Notion API Token (REQUIRED)
 # Obtenha em: https://www.notion.so/my-integrations
 NOTION_TOKEN=secret_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# Notion API Token (Doterra - workspace separado)
+NOTION_TOKEN_DOTERRA=ntn_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 # Notion Database IDs (REQUIRED - Core databases)
 NOTION_DB_KPIS=2d984566a5fa800bb45dd3d53bdadfa3
@@ -46,6 +51,35 @@ NOTION_DB_PARTNERNUDGES=2d984566a5fa8159a321c95e14c52bd6
 
 # Admin Passcode (default: admin123 for development)
 ADMIN_PASSCODE=admin123
+
+# Doterra (OPTIONAL - client isolated)
+# Após criar a database via POST /api/doterra/setup, defina este ID:
+NOTION_DB_DOTERRA_LEADS=<<<SET_DOTERRA_DB_ID_HERE>>>
+# Passcode dedicado para o módulo Doterra (recomendado)
+DOTERRA_ADMIN_PASSCODE=expandircomtec
+# Para gerar variações de mensagem por cohort (botão IA no /doterra):
+OPENAI_API_KEY=<<<SET_OPENAI_API_KEY_HERE>>>
+# Alternativa ao x-admin-passcode no webhook (n8n/Z-API):
+DOTERRA_WEBHOOK_SECRET=<<<OPTIONAL_SECRET>>>
+
+# Frontend passwords (Vite)
+# Senha do app geral (AXIS)
+VITE_APP_PASSWORD=<<<SET_APP_PASSWORD_HERE>>>
+# Senha específica da página Doterra (/doterra)
+VITE_DOTERRA_PASSWORD=expandircomtec
+
+# Vende Mais Obras - Notion Databases
+# Após executar server/scripts/setupVendeMaisObras.ts, defina estes IDs:
+NOTION_DB_SERVICOS=<<<SET_DATABASE_ID_HERE>>>
+NOTION_DB_USUARIOS=<<<SET_DATABASE_ID_HERE>>>
+NOTION_DB_CLIENTES=<<<SET_DATABASE_ID_HERE>>>
+NOTION_DB_ORCAMENTOS=<<<SET_DATABASE_ID_HERE>>>
+NOTION_DB_LEADS=<<<SET_DATABASE_ID_HERE>>>
+
+# JWT Secret para autenticação (gerar com: openssl rand -base64 32)
+JWT_SECRET=<<<SET_JWT_SECRET_HERE>>>
+# Expiração do token JWT (padrão: 7d)
+JWT_EXPIRES_IN=7d
 
 # Server Configuration
 PORT=3001
@@ -81,6 +115,53 @@ npm run dev
 ```
 
 O servidor deve iniciar sem erros. Se aparecer erro sobre variáveis faltando, verifique o `.env.local`.
+
+## 🟣 Doterra (Avivamento de clientes inativos)
+
+### Setup da database (uma única database)
+
+1. Suba o projeto (`npm run dev`)
+2. Faça POST em `POST /api/doterra/setup` com header `x-admin-passcode` (ex: `expandircomtec`)
+3. Copie o `database.id` retornado e defina em `.env.local` como `NOTION_DB_DOTERRA_LEADS=...` (32 chars, sem hífens)
+4. Reinicie o backend
+
+Depois disso, acesse `GET /doterra` e use o painel para:
+- importar CSV (base e ativados)
+- exportar CSV filtrado
+- aprovar interessados pendentes
+- gerar variações de mensagem por cohort via IA
+
+## 🏗️ Vende Mais Obras (Sistema de Orçamentos)
+
+### Setup das Databases
+
+1. Execute o script de setup:
+```bash
+tsx server/scripts/setupVendeMaisObras.ts
+```
+
+2. O script criará todas as databases necessárias e retornará os IDs
+3. Copie os IDs retornados e adicione ao `.env.local`:
+   - `NOTION_DB_SERVICOS=...`
+   - `NOTION_DB_USUARIOS=...`
+   - `NOTION_DB_CLIENTES=...`
+   - `NOTION_DB_ORCAMENTOS=...`
+   - `NOTION_DB_LEADS=...`
+
+4. Gere um JWT_SECRET:
+```bash
+openssl rand -base64 32
+```
+
+5. Adicione ao `.env.local`:
+   - `JWT_SECRET=...` (o resultado do comando acima)
+
+6. Compartilhe todas as databases com a integração do Notion (ver passo 4 da configuração geral)
+
+Depois disso, o sistema de orçamentos estará funcional:
+- Usuários podem se cadastrar e fazer login
+- Podem criar orçamentos e clientes (isolados por usuário)
+- Admin pode visualizar métricas e gerenciar leads
 
 ## 🔒 Segurança
 

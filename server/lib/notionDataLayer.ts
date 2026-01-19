@@ -11,12 +11,27 @@ import type {
   NotionCRMPipeline,
   NotionProduto,
   NotionContact,
+  NotionDoterraLead,
   NotionBudgetGoal,
-  NotionTransaction
+  NotionTransaction,
+  NotionGrowthProposal
 } from '../../src/lib/notion/types';
+import { DAILY_PROPHECY_ACTION_NAME } from '../../src/constants/dailyRoutine';
 
-// Notion client instance (lazy initialization)
-let notionClient: Client | null = null;
+const RICH_TEXT_LIMIT = 1800; // margin to Notion 2000-char limit
+
+function toRichTextArray(input?: string): { text: { content: string } }[] {
+  if (!input) return [];
+  const chunks: { text: { content: string } }[] = [];
+  for (let i = 0; i < input.length; i += RICH_TEXT_LIMIT) {
+    chunks.push({ text: { content: input.slice(i, i + RICH_TEXT_LIMIT) } });
+  }
+  return chunks;
+}
+
+// Notion client instances (lazy initialization)
+// We support multiple tokens (e.g. AXIS vs client workspaces like Doterra).
+const notionClientsByToken = new Map<string, Client>();
 
 /**
  * Assert that an environment variable exists
@@ -33,13 +48,25 @@ export function assertEnv(name: string): string {
  * Initialize Notion client
  */
 export function initNotionClient(): Client {
-  if (notionClient) {
-    return notionClient;
-  }
-
   const token = assertEnv('NOTION_TOKEN');
-  notionClient = new Client({ auth: token });
-  return notionClient;
+  return initNotionClientWithToken(token);
+}
+
+export function initNotionClientWithToken(token: string): Client {
+  const t = token?.trim();
+  if (!t) {
+    throw new Error('Missing Notion token');
+  }
+  const existing = notionClientsByToken.get(t);
+  if (existing) return existing;
+  const client = new Client({ auth: t });
+  notionClientsByToken.set(t, client);
+  return client;
+}
+
+function initDoterraNotionClient(): Client {
+  const token = assertEnv('NOTION_TOKEN_DOTERRA');
+  return initNotionClientWithToken(token);
 }
 
 /**
@@ -54,15 +81,32 @@ async function retryWithBackoff<T>(
     try {
       return await fn();
     } catch (error: any) {
+      // Log error details for debugging
+      if (attempt === 0) {
+        console.error(`Notion API error (attempt ${attempt + 1}/${maxRetries}):`, {
+          status: error.status,
+          code: error.code,
+          message: error.message,
+        });
+      }
+      
+      // Handle rate limit errors with retry
       if (error.status === 429 && attempt < maxRetries - 1) {
         const delay = baseDelay * Math.pow(2, attempt);
+        console.warn(`Rate limit hit, retrying after ${delay}ms...`);
         await new Promise(resolve => setTimeout(resolve, delay));
         continue;
       }
+      
+      // Propagate error with more context
+      if (error.code === 'object_not_found') {
+        error.message = `Notion database not found: ${error.message}`;
+      }
+      
       throw error;
     }
   }
-  throw new Error('Max retries exceeded');
+  throw new Error('Max retries exceeded for Notion API call');
 }
 
 /**
@@ -250,7 +294,15 @@ function pageToJournal(page: any): NotionJournal {
     Tags: extractMultiSelect(props.Tags),
     RelatedContact: extractRelation(props.RelatedContact)[0] || '',
     RelatedClient: extractRelation(props.RelatedClient)[0] || '',
-    Attachments: extractRelation(props.Attachments)
+    Attachments: extractRelation(props.Attachments),
+    MorningCompletedAt: extractDate(props.MorningCompletedAt),
+    NightSubmittedAt: extractDate(props.NightSubmittedAt),
+    Comments: extractText(props.Comments),
+    Reviewed: extractBoolean(props.Reviewed),
+    ReviewedBy: extractText(props.ReviewedBy),
+    ReviewedAt: extractDate(props.ReviewedAt),
+    CreatedBy: extractText(props.CreatedBy),
+    LastEditedBy: extractText(props.LastEditedBy)
   };
 }
 
@@ -296,6 +348,39 @@ function pageToContact(page: any): NotionContact {
 }
 
 /**
+ * Convert Notion page to Doterra Lead (single DB, cohort + events + approval)
+ */
+function pageToDoterraLead(page: any): NotionDoterraLead {
+  const props = page.properties;
+  return {
+    id: page.id,
+    Name: extractText(props.Name),
+    WhatsApp: extractPhoneNumber(props.WhatsApp) || undefined,
+    Cohort: extractSelect(props.Cohort) || undefined,
+    MessageVariant: extractSelect(props.MessageVariant) || undefined,
+    MessageText: extractText(props.MessageText) || undefined,
+    Stage: extractSelect(props.Stage) || undefined,
+    ApprovalStatus: extractSelect(props.ApprovalStatus) || undefined,
+    SentAt: extractDate(props.SentAt) || undefined,
+    DeliveredAt: extractDate(props.DeliveredAt) || undefined,
+    ReadAt: extractDate(props.ReadAt) || undefined,
+    RepliedAt: extractDate(props.RepliedAt) || undefined,
+    InterestedAt: extractDate(props.InterestedAt) || undefined,
+    ApprovedAt: extractDate(props.ApprovedAt) || undefined,
+    SoldAt: extractDate(props.SoldAt) || undefined,
+    LastEventAt: extractDate(props.LastEventAt) || undefined,
+    Source: extractSelect(props.Source) || undefined,
+    ExternalMessageId: extractText(props.ExternalMessageId) || undefined,
+    ExternalLeadId: extractText(props.ExternalLeadId) || undefined,
+    Notes: extractText(props.Notes) || undefined,
+    Tags: extractMultiSelect(props.Tags),
+    DoNotContact: extractBoolean(props.DoNotContact),
+    DuplicateOf: extractText(props.DuplicateOf) || undefined,
+    AssignedTo: extractSelect(props.AssignedTo) || undefined
+  };
+}
+
+/**
  * Convert Notion page to Produto
  */
 function pageToProduto(page: any): NotionProduto {
@@ -321,23 +406,47 @@ function pageToProduto(page: any): NotionProduto {
 export async function getKPIsPublic(): Promise<NotionKPI[]> {
   const client = initNotionClient();
   const dbId = getDatabaseId('KPIs');
-  if (!dbId) throw new Error('NOTION_DB_KPIS not configured');
+  if (!dbId) {
+    console.error('❌ NOTION_DB_KPIS not configured');
+    throw new Error('NOTION_DB_KPIS not configured');
+  }
 
-  const response = await retryWithBackoff(() =>
-    client.databases.query({
-      database_id: dbId,
-      filter: {
-        and: [
-          { property: 'Active', checkbox: { equals: true } },
-          { property: 'VisiblePublic', checkbox: { equals: true } },
-          { property: 'IsFinancial', checkbox: { equals: false } }
-        ]
-      },
-      sorts: [{ property: 'SortOrder', direction: 'ascending' }]
-    })
-  );
+  console.log(`🔍 Buscando KPIs públicos da database: ${dbId.substring(0, 8)}...`);
 
-  return response.results.map(pageToKPI);
+  try {
+    const response = await retryWithBackoff(() =>
+      client.databases.query({
+        database_id: dbId,
+        filter: {
+          and: [
+            { property: 'Active', checkbox: { equals: true } },
+            { property: 'VisiblePublic', checkbox: { equals: true } },
+            { property: 'IsFinancial', checkbox: { equals: false } }
+          ]
+        },
+        sorts: [{ property: 'SortOrder', direction: 'ascending' }]
+      })
+    );
+
+    const kpis = response.results.map(pageToKPI);
+    console.log(`✅ Encontrados ${kpis.length} KPIs públicos`);
+    
+    if (kpis.length === 0) {
+      console.warn('⚠️  Nenhum KPI encontrado com os filtros: Active=true, VisiblePublic=true, IsFinancial=false');
+      console.warn('   Verifique se há KPIs no Notion com essas propriedades marcadas');
+    }
+    
+    return kpis;
+  } catch (error: any) {
+    console.error('❌ Erro ao buscar KPIs do Notion:', error);
+    if (error.code === 'object_not_found') {
+      throw new Error(`Database do Notion não encontrada. Verifique se NOTION_DB_KPIS está correto e se a integração tem acesso à database.`);
+    }
+    if (error.status === 401) {
+      throw new Error(`Token do Notion inválido ou sem permissões. Verifique o NOTION_TOKEN e se a integração tem acesso à database.`);
+    }
+    throw error;
+  }
 }
 
 /**
@@ -653,6 +762,369 @@ export async function getActions(range?: { start?: string; end?: string }): Prom
   return allResults.map(pageToAction);
 }
 
+// ============================================================================
+// ENZO CANEI - Dashboard de Vendas (databases separadas)
+// ============================================================================
+
+/**
+ * Get Enzo's KPIs (allowing financial for his sales dashboard)
+ */
+export async function getKPIsEnzo(): Promise<NotionKPI[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('KPIs_Enzo');
+  if (!dbId) throw new Error('NOTION_DB_KPIS_ENZO not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      filter: {
+        property: 'Active',
+        checkbox: { equals: true }
+      },
+      sorts: [{ property: 'SortOrder', direction: 'ascending' }]
+    })
+  );
+
+  return response.results.map(pageToKPI);
+}
+
+/**
+ * Get Enzo's goals
+ */
+export async function getGoalsEnzo(range?: { start?: string; end?: string }): Promise<NotionGoal[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Goals_Enzo');
+  if (!dbId) throw new Error('NOTION_DB_GOALS_ENZO not configured');
+
+  const filter: any = {};
+  if (range?.start || range?.end) {
+    filter.and = [];
+    if (range.start) {
+      filter.and.push({ property: 'PeriodStart', date: { on_or_after: range.start } });
+    }
+    if (range.end) {
+      filter.and.push({ property: 'PeriodEnd', date: { on_or_before: range.end } });
+    }
+  }
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      filter: Object.keys(filter).length > 0 ? filter : undefined
+    })
+  );
+
+  return response.results.map(pageToGoal);
+}
+
+/**
+ * Get Enzo's actions within a date range
+ */
+export async function getActionsEnzo(range?: { start?: string; end?: string }): Promise<NotionAction[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Actions_Enzo');
+  if (!dbId) throw new Error('NOTION_DB_ACTIONS_ENZO not configured');
+
+  const filter: any = {};
+  if (range?.start || range?.end) {
+    filter.and = [];
+    if (range.start) {
+      filter.and.push({ property: 'Date', date: { on_or_after: range.start } });
+    }
+    if (range.end) {
+      filter.and.push({ property: 'Date', date: { on_or_before: range.end } });
+    }
+  }
+
+  const allResults: any[] = [];
+  let hasMore = true;
+  let nextCursor: string | undefined = undefined;
+
+  while (hasMore) {
+    const response = await retryWithBackoff(() =>
+      client.databases.query({
+        database_id: dbId,
+        filter: Object.keys(filter).length > 0 ? filter : undefined,
+        start_cursor: nextCursor,
+        page_size: 100
+      })
+    );
+
+    allResults.push(...response.results);
+    hasMore = response.has_more;
+    nextCursor = response.next_cursor || undefined;
+  }
+
+  return allResults.map(pageToAction);
+}
+
+/**
+ * Ensure Enzo's action has a goal before allowing completion
+ */
+export async function ensureActionHasGoalEnzo(actionId: string): Promise<{ allowed: boolean; reason?: string }> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Actions_Enzo');
+  if (!dbId) throw new Error('NOTION_DB_ACTIONS_ENZO not configured');
+
+  const page = await retryWithBackoff(() =>
+    client.pages.retrieve({ page_id: actionId })
+  );
+
+  const action = pageToAction(page);
+  if (action.Name?.trim().toLowerCase() === DAILY_PROPHECY_ACTION_NAME.toLowerCase()) {
+    return { allowed: true };
+  }
+
+  if (!action.Goal || action.Goal.trim() === '') {
+    return {
+      allowed: false,
+      reason: 'Não é possível concluir uma ação sem meta associada'
+    };
+  }
+
+  return { allowed: true };
+}
+
+/**
+ * Toggle Enzo's action done status
+ */
+export async function toggleActionDoneEnzo(actionId: string, done: boolean): Promise<boolean> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Actions_Enzo');
+  if (!dbId) throw new Error('NOTION_DB_ACTIONS_ENZO not configured');
+
+  await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: actionId,
+      properties: {
+        Done: { checkbox: done }
+      }
+    })
+  );
+
+  return true;
+}
+
+/**
+ * Create Enzo action
+ */
+export async function createActionEnzo(
+  payload: Partial<NotionAction>
+): Promise<NotionAction> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Actions_Enzo');
+  if (!dbId) throw new Error('NOTION_DB_ACTIONS_ENZO not configured');
+
+  // Build Notion properties
+  // Normalize date to prevent timezone issues
+  const normalizedDate = normalizeDate(payload.Date);
+  
+  const properties: any = {
+    Name: { title: [{ text: { content: payload.Name || '' } }] },
+    Type: { select: { name: payload.Type || '' } },
+    Date: { date: { start: normalizedDate } },
+    Done: { checkbox: false },
+    PublicVisible: { checkbox: payload.PublicVisible ?? true },
+  };
+
+  // Add optional fields
+  if (payload.Contribution !== undefined) {
+    properties.Contribution = { number: payload.Contribution };
+  }
+  if (payload.Earned !== undefined) {
+    properties.Earned = { number: payload.Earned };
+  }
+  if (payload.Goal) {
+    properties.Goal = { relation: [{ id: payload.Goal }] };
+  }
+  if (payload.Notes) {
+    properties.Notes = { rich_text: [{ text: { content: payload.Notes } }] };
+  }
+  if (payload.Contact) {
+    properties.Contact = { relation: [{ id: payload.Contact }] };
+  }
+  if (payload.Client) {
+    properties.Client = { relation: [{ id: payload.Client }] };
+  }
+  if (payload.Proposal) {
+    properties.Proposal = { relation: [{ id: payload.Proposal }] };
+  }
+  if (payload.Diagnostic) {
+    properties.Diagnostic = { relation: [{ id: payload.Diagnostic }] };
+  }
+  if (payload.WeekKey) {
+    properties.WeekKey = { rich_text: [{ text: { content: payload.WeekKey } }] };
+  }
+  if (payload.Month !== undefined) {
+    properties.Month = { number: payload.Month };
+  }
+  if (payload.Priority) {
+    properties.Priority = { select: { name: payload.Priority } };
+  }
+
+  const response = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToAction(response);
+}
+
+/**
+ * Convert Notion page to Enzo Contact
+ */
+function pageToContactEnzo(page: any): { id: string; Name: string; WhatsApp?: string; Status?: string } {
+  const props = page.properties;
+  return {
+    id: page.id,
+    Name: extractText(props.Name),
+    WhatsApp: extractPhoneNumber(props.WhatsApp) || undefined,
+    Status: extractSelect(props.Status) || undefined
+  };
+}
+
+/**
+ * Get Enzo's contacts
+ */
+export async function getContactsEnzo(): Promise<Array<{ id: string; Name: string; WhatsApp?: string; Status?: string }>> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Contacts_Enzo');
+  if (!dbId) throw new Error('NOTION_DB_CONTACTS_ENZO not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      sorts: [{ property: 'DateCreated', direction: 'descending' }]
+    })
+  );
+
+  return response.results.map(pageToContactEnzo);
+}
+
+/**
+ * Create Enzo contact
+ */
+export async function createContactEnzo(name: string = '', whatsapp?: string): Promise<{ id: string; Name: string; WhatsApp?: string; Status?: string }> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Contacts_Enzo');
+  if (!dbId) throw new Error('NOTION_DB_CONTACTS_ENZO not configured');
+
+  const today = new Date().toISOString().split('T')[0];
+  const safeName = typeof name === 'string' ? name.trim() : '';
+  const isComplete = !!(safeName && whatsapp);
+
+  const properties: any = {
+    Name: safeName ? { title: [{ text: { content: safeName } }] } : { title: [] },
+    DateCreated: { date: { start: today } },
+    Complete: { checkbox: isComplete }
+  };
+
+  if (whatsapp) {
+    properties.WhatsApp = { phone_number: whatsapp };
+  }
+
+  // Tentar adicionar Status padrão (pode falhar se campo não existir)
+  try {
+    properties.Status = { select: { name: 'Contato Ativado' } };
+  } catch (err) {
+    // Campo Status não existe ainda, ignorar
+    console.warn('Campo Status não existe na database Contacts_Enzo. Adicione manualmente no Notion.');
+  }
+
+  const response = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToContactEnzo(response);
+}
+
+/**
+ * Update Enzo contact
+ */
+export async function updateContactEnzo(id: string, updates: { name?: string; whatsapp?: string; status?: string }): Promise<{ id: string; Name: string; WhatsApp?: string; Status?: string }> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Contacts_Enzo');
+  if (!dbId) throw new Error('NOTION_DB_CONTACTS_ENZO not configured');
+
+  const properties: any = {};
+
+  if (updates.name !== undefined) {
+    const normalizedName = updates.name.trim();
+    properties.Name = normalizedName
+      ? { title: [{ text: { content: normalizedName } }] }
+      : { title: [] };
+  }
+
+  if (updates.whatsapp !== undefined) {
+    if (updates.whatsapp) {
+      properties.WhatsApp = { phone_number: updates.whatsapp };
+    } else {
+      properties.WhatsApp = { phone_number: null };
+    }
+  }
+
+  if (updates.status !== undefined) {
+    try {
+      if (updates.status) {
+        properties.Status = { select: { name: updates.status } };
+      } else {
+        properties.Status = { select: null };
+      }
+    } catch (err) {
+      // Se o campo Status não existe, apenas logar e continuar sem atualizar
+      console.warn('⚠️  Campo Status não existe na database Contacts_Enzo. Adicione um campo Select chamado "Status" com as opções: Contato Ativado, Café Agendado, Café Executado, Proposta Enviada, Venda Fechada, Perdido');
+    }
+  }
+
+  // Update Complete status based on current values
+  // We need to get current page to check both fields
+  const currentPage = await retryWithBackoff(() =>
+    client.pages.retrieve({ page_id: id })
+  );
+  
+  const currentContact = pageToContactEnzo(currentPage);
+  const newName = updates.name !== undefined ? updates.name : currentContact.Name;
+  const newWhatsApp = updates.whatsapp !== undefined ? updates.whatsapp : currentContact.WhatsApp;
+  const isComplete = !!(newName && newWhatsApp);
+  
+  properties.Complete = { checkbox: isComplete };
+
+  const response = await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      properties
+    })
+  );
+
+  const updated = pageToContactEnzo(response);
+  
+  // Se atualizou o status, garantir que está no retorno
+  if (updates.status !== undefined) {
+    updated.Status = updates.status;
+  }
+  
+  return updated;
+}
+
+/**
+ * Delete Enzo contact
+ */
+export async function deleteContactEnzo(id: string): Promise<void> {
+  const client = initNotionClient();
+
+  await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      archived: true
+    })
+  );
+}
+
 /**
  * Toggle action done status
  */
@@ -684,6 +1156,10 @@ export async function ensureActionHasGoal(actionId: string): Promise<{ allowed: 
   );
 
   const action = pageToAction(page);
+  if (action.Name?.trim().toLowerCase() === DAILY_PROPHECY_ACTION_NAME.toLowerCase()) {
+    return { allowed: true };
+  }
+
   if (!action.Goal || action.Goal.trim() === '') {
     return {
       allowed: false,
@@ -859,7 +1335,7 @@ export async function updateAction(
     properties.Month = { number: updates.Month };
   }
   if (updates.Priority !== undefined) {
-    if (updates.Priority === '' || updates.Priority === null) {
+    if (!updates.Priority || updates.Priority === null) {
       properties.Priority = { select: null };
     } else {
       properties.Priority = { select: { name: updates.Priority } };
@@ -1049,6 +1525,59 @@ export async function getJournalByDate(date: string): Promise<NotionJournal | nu
 }
 
 /**
+ * List journals with date range and pagination
+ */
+export async function getJournals(params: {
+  start?: string;
+  end?: string;
+  page?: number;
+  pageSize?: number;
+}): Promise<{ items: NotionJournal[]; hasMore: boolean; nextCursor?: string }> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Journal');
+  if (!dbId) throw new Error('NOTION_DB_JOURNAL not configured');
+
+  const page = params.page && params.page > 0 ? params.page : 1;
+  const pageSize = params.pageSize && params.pageSize > 0 ? params.pageSize : 30;
+
+  const filter: any = {};
+  if (params.start || params.end) {
+    filter.and = [];
+    if (params.start) filter.and.push({ property: 'Date', date: { on_or_after: params.start } });
+    if (params.end) filter.and.push({ property: 'Date', date: { on_or_before: params.end } });
+  }
+
+  let hasMore = true;
+  let nextCursor: string | undefined;
+  let collected: any[] = [];
+
+  while (hasMore && collected.length < page * pageSize) {
+    const response = await retryWithBackoff(() =>
+      client.databases.query({
+        database_id: dbId,
+        filter: Object.keys(filter).length > 0 ? filter : undefined,
+        sorts: [{ property: 'Date', direction: 'descending' }],
+        page_size: Math.min(100, pageSize),
+        start_cursor: nextCursor
+      })
+    );
+
+    collected = collected.concat(response.results);
+    hasMore = response.has_more;
+    nextCursor = response.next_cursor || undefined;
+  }
+
+  const startIndex = (page - 1) * pageSize;
+  const paged = collected.slice(startIndex, startIndex + pageSize).map(pageToJournal);
+
+  return {
+    items: paged,
+    hasMore: hasMore || (collected.length > startIndex + pageSize),
+    nextCursor
+  };
+}
+
+/**
  * Upsert journal by date (create or update)
  */
 export async function upsertJournalByDate(
@@ -1066,12 +1595,20 @@ export async function upsertJournalByDate(
     // Update existing
     const updateProps: any = {};
     if (payload.Filled !== undefined) updateProps.Filled = { checkbox: payload.Filled };
-    if (payload.Summary !== undefined) updateProps.Summary = { rich_text: [{ text: { content: payload.Summary } }] };
-    if (payload.WhatWorked !== undefined) updateProps.WhatWorked = { rich_text: [{ text: { content: payload.WhatWorked } }] };
-    if (payload.WhatFailed !== undefined) updateProps.WhatFailed = { rich_text: [{ text: { content: payload.WhatFailed } }] };
-    if (payload.Insights !== undefined) updateProps.Insights = { rich_text: [{ text: { content: payload.Insights } }] };
-    if (payload.Objections !== undefined) updateProps.Objections = { rich_text: [{ text: { content: payload.Objections } }] };
-    if (payload.ProcessIdeas !== undefined) updateProps.ProcessIdeas = { rich_text: [{ text: { content: payload.ProcessIdeas } }] };
+    if (payload.Summary !== undefined) updateProps.Summary = { rich_text: toRichTextArray(payload.Summary) };
+    if (payload.WhatWorked !== undefined) updateProps.WhatWorked = { rich_text: toRichTextArray(payload.WhatWorked) };
+    if (payload.WhatFailed !== undefined) updateProps.WhatFailed = { rich_text: toRichTextArray(payload.WhatFailed) };
+    if (payload.Insights !== undefined) updateProps.Insights = { rich_text: toRichTextArray(payload.Insights) };
+    if (payload.Objections !== undefined) updateProps.Objections = { rich_text: toRichTextArray(payload.Objections) };
+    if (payload.ProcessIdeas !== undefined) updateProps.ProcessIdeas = { rich_text: toRichTextArray(payload.ProcessIdeas) };
+    if (payload.Comments !== undefined) updateProps.Comments = { rich_text: toRichTextArray(payload.Comments) };
+    if (payload.Reviewed !== undefined) updateProps.Reviewed = { checkbox: payload.Reviewed };
+    if (payload.ReviewedBy !== undefined) updateProps.ReviewedBy = { rich_text: toRichTextArray(payload.ReviewedBy) };
+    if (payload.ReviewedAt !== undefined) updateProps.ReviewedAt = { date: payload.ReviewedAt ? { start: payload.ReviewedAt } : null };
+    if (payload.MorningCompletedAt !== undefined) updateProps.MorningCompletedAt = { date: payload.MorningCompletedAt ? { start: payload.MorningCompletedAt } : null };
+    if (payload.NightSubmittedAt !== undefined) updateProps.NightSubmittedAt = { date: payload.NightSubmittedAt ? { start: payload.NightSubmittedAt } : null };
+    if (payload.CreatedBy !== undefined) updateProps.CreatedBy = { rich_text: toRichTextArray(payload.CreatedBy) };
+    if (payload.LastEditedBy !== undefined) updateProps.LastEditedBy = { rich_text: toRichTextArray(payload.LastEditedBy) };
     if (payload.Tags) updateProps.Tags = { multi_select: payload.Tags.map(tag => ({ name: tag })) };
 
     await retryWithBackoff(() =>
@@ -1090,12 +1627,20 @@ export async function upsertJournalByDate(
       Filled: { checkbox: payload.Filled || false }
     };
 
-    if (payload.Summary) createProps.Summary = { rich_text: [{ text: { content: payload.Summary } }] };
-    if (payload.WhatWorked) createProps.WhatWorked = { rich_text: [{ text: { content: payload.WhatWorked } }] };
-    if (payload.WhatFailed) createProps.WhatFailed = { rich_text: [{ text: { content: payload.WhatFailed } }] };
-    if (payload.Insights) createProps.Insights = { rich_text: [{ text: { content: payload.Insights } }] };
-    if (payload.Objections) createProps.Objections = { rich_text: [{ text: { content: payload.Objections } }] };
-    if (payload.ProcessIdeas) createProps.ProcessIdeas = { rich_text: [{ text: { content: payload.ProcessIdeas } }] };
+    if (payload.Summary) createProps.Summary = { rich_text: toRichTextArray(payload.Summary) };
+    if (payload.WhatWorked) createProps.WhatWorked = { rich_text: toRichTextArray(payload.WhatWorked) };
+    if (payload.WhatFailed) createProps.WhatFailed = { rich_text: toRichTextArray(payload.WhatFailed) };
+    if (payload.Insights) createProps.Insights = { rich_text: toRichTextArray(payload.Insights) };
+    if (payload.Objections) createProps.Objections = { rich_text: toRichTextArray(payload.Objections) };
+    if (payload.ProcessIdeas) createProps.ProcessIdeas = { rich_text: toRichTextArray(payload.ProcessIdeas) };
+    if (payload.Comments) createProps.Comments = { rich_text: toRichTextArray(payload.Comments) };
+    if (payload.Reviewed !== undefined) createProps.Reviewed = { checkbox: payload.Reviewed };
+    if (payload.ReviewedBy) createProps.ReviewedBy = { rich_text: toRichTextArray(payload.ReviewedBy) };
+    if (payload.ReviewedAt) createProps.ReviewedAt = { date: { start: payload.ReviewedAt } };
+    if (payload.MorningCompletedAt) createProps.MorningCompletedAt = { date: { start: payload.MorningCompletedAt } };
+    if (payload.NightSubmittedAt) createProps.NightSubmittedAt = { date: { start: payload.NightSubmittedAt } };
+    if (payload.CreatedBy) createProps.CreatedBy = { rich_text: toRichTextArray(payload.CreatedBy) };
+    if (payload.LastEditedBy) createProps.LastEditedBy = { rich_text: toRichTextArray(payload.LastEditedBy) };
     if (payload.Tags) createProps.Tags = { multi_select: payload.Tags.map(tag => ({ name: tag })) };
 
     const page = await retryWithBackoff(() =>
@@ -1315,8 +1860,14 @@ export async function createDatabase(
       function: 'count' | 'sum' | 'average' | 'min' | 'max' | 'range' | 'checkbox' | 'percent_checked' | 'show_original' | 'show_unique' | 'unique' | 'empty' | 'not_empty' | 'date';
     };
   }>
+,
+  options?: { notionToken?: string; client?: Client }
 ): Promise<any> {
-  const client = initNotionClient();
+  const client = options?.client
+    ? options.client
+    : options?.notionToken
+      ? initNotionClientWithToken(options.notionToken)
+      : initNotionClient();
 
   // Build properties object for Notion API
   const notionProperties: any = {};
@@ -1368,9 +1919,15 @@ export async function createDatabase(
       case 'relation':
         if (!prop.relation) throw new Error(`Relation property "${key}" requires relation configuration`);
         baseProperty.relation = {
-          database_id: prop.relation.database_id,
-          type: prop.relation.type || 'single_property'
+          database_id: prop.relation.database_id
         };
+        // Configurar tipo de relação
+        if (prop.relation.type === 'dual_property') {
+          baseProperty.relation.dual_property = {};
+        } else {
+          // single_property é o padrão
+          baseProperty.relation.single_property = {};
+        }
         break;
       case 'rollup':
         if (!prop.rollup) throw new Error(`Rollup property "${key}" requires rollup configuration`);
@@ -1504,12 +2061,10 @@ export async function countContactsByStatusAndDate(
   const statusFilter =
     statusFilters.length === 1 ? statusFilters[0] : { or: statusFilters };
 
+  // Usar apenas property filter para data (mais compatível)
   const dateFilter = {
-    or: [
-      { property: dateProperty, date: { on_or_after: range.start, on_or_before: range.end } },
-      { timestamp: 'last_edited_time', last_edited_time: { on_or_after: range.start, on_or_before: range.end } },
-      { timestamp: 'created_time', created_time: { on_or_after: range.start, on_or_before: range.end } }
-    ]
+    property: dateProperty,
+    date: { on_or_after: range.start, on_or_before: range.end }
   };
 
   let total = 0;
@@ -1814,6 +2369,162 @@ export async function createContact(data: {
   return pageToContact(response);
 }
 
+function getDoterraDbId(): string {
+  const dbId = getDatabaseId('DoterraLeads');
+  if (!dbId) throw new Error('NOTION_DB_DOTERRA_LEADS not configured');
+  return dbId;
+}
+
+type DoterraLeadQuery = {
+  cohort?: string;
+  stage?: string;
+  approvalStatus?: string;
+  search?: string;
+};
+
+async function queryDoterraLeadsRaw(params: DoterraLeadQuery = {}): Promise<any[]> {
+  const client = initDoterraNotionClient();
+  const dbId = getDoterraDbId();
+
+  const andFilters: any[] = [];
+  if (params.cohort) andFilters.push({ property: 'Cohort', select: { equals: params.cohort } });
+  if (params.stage) andFilters.push({ property: 'Stage', select: { equals: params.stage } });
+  if (params.approvalStatus) andFilters.push({ property: 'ApprovalStatus', select: { equals: params.approvalStatus } });
+  if (params.search && params.search.trim().length > 0) {
+    andFilters.push({ property: 'Name', title: { contains: params.search.trim() } });
+  }
+
+  const filter = andFilters.length > 0 ? { and: andFilters } : undefined;
+
+  const results: any[] = [];
+  let nextCursor: string | undefined = undefined;
+  do {
+    const response = await retryWithBackoff(() =>
+      client.databases.query({
+        database_id: dbId,
+        filter,
+        sorts: [{ timestamp: 'last_edited_time', direction: 'descending' }],
+        start_cursor: nextCursor
+      } as any)
+    );
+    results.push(...response.results);
+    nextCursor = response.has_more ? (response.next_cursor as string | undefined) : undefined;
+  } while (nextCursor);
+
+  return results;
+}
+
+export async function getDoterraLeads(params: DoterraLeadQuery = {}): Promise<NotionDoterraLead[]> {
+  const pages = await queryDoterraLeadsRaw(params);
+  return pages.map(pageToDoterraLead);
+}
+
+export async function getDoterraLeadById(id: string): Promise<NotionDoterraLead> {
+  const client = initDoterraNotionClient();
+  const page = await retryWithBackoff(() => client.pages.retrieve({ page_id: id })) as any;
+  return pageToDoterraLead(page);
+}
+
+export async function findDoterraLeadByWhatsApp(whatsapp: string): Promise<NotionDoterraLead | null> {
+  const client = initDoterraNotionClient();
+  const dbId = getDoterraDbId();
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      filter: { property: 'WhatsApp', phone_number: { equals: whatsapp } }
+    } as any)
+  );
+  const first = response.results?.[0];
+  return first ? pageToDoterraLead(first) : null;
+}
+
+export async function createDoterraLead(data: Partial<NotionDoterraLead> & { Name: string }): Promise<NotionDoterraLead> {
+  const client = initDoterraNotionClient();
+  const dbId = getDoterraDbId();
+
+  const properties: any = {
+    Name: { title: [{ text: { content: data.Name } }] }
+  };
+
+  if (data.WhatsApp) properties.WhatsApp = { phone_number: data.WhatsApp };
+  if (data.Cohort) properties.Cohort = { select: { name: data.Cohort } };
+  if (data.MessageVariant) properties.MessageVariant = { select: { name: data.MessageVariant } };
+  if (data.MessageText !== undefined) properties.MessageText = { rich_text: data.MessageText ? toRichTextArray(data.MessageText) : [] };
+  if (data.Stage) properties.Stage = { select: { name: data.Stage } };
+  if (data.ApprovalStatus) properties.ApprovalStatus = { select: { name: data.ApprovalStatus } };
+
+  if (data.SentAt) properties.SentAt = { date: { start: data.SentAt } };
+  if (data.DeliveredAt) properties.DeliveredAt = { date: { start: data.DeliveredAt } };
+  if (data.ReadAt) properties.ReadAt = { date: { start: data.ReadAt } };
+  if (data.RepliedAt) properties.RepliedAt = { date: { start: data.RepliedAt } };
+  if (data.InterestedAt) properties.InterestedAt = { date: { start: data.InterestedAt } };
+  if (data.ApprovedAt) properties.ApprovedAt = { date: { start: data.ApprovedAt } };
+  if (data.SoldAt) properties.SoldAt = { date: { start: data.SoldAt } };
+  if (data.LastEventAt) properties.LastEventAt = { date: { start: data.LastEventAt } };
+
+  if (data.Source) properties.Source = { select: { name: data.Source } };
+  if (data.ExternalMessageId !== undefined) properties.ExternalMessageId = { rich_text: data.ExternalMessageId ? toRichTextArray(data.ExternalMessageId) : [] };
+  if (data.ExternalLeadId !== undefined) properties.ExternalLeadId = { rich_text: data.ExternalLeadId ? toRichTextArray(data.ExternalLeadId) : [] };
+  if (data.Notes !== undefined) properties.Notes = { rich_text: data.Notes ? toRichTextArray(data.Notes) : [] };
+  if (data.Tags) properties.Tags = { multi_select: data.Tags.map(name => ({ name })) };
+  if (data.DoNotContact !== undefined) properties.DoNotContact = { checkbox: !!data.DoNotContact };
+  if (data.DuplicateOf !== undefined) properties.DuplicateOf = { rich_text: data.DuplicateOf ? toRichTextArray(data.DuplicateOf) : [] };
+  if (data.AssignedTo) properties.AssignedTo = { select: { name: data.AssignedTo } };
+
+  const response = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToDoterraLead(response);
+}
+
+export async function updateDoterraLead(
+  id: string,
+  updates: Partial<NotionDoterraLead>
+): Promise<NotionDoterraLead> {
+  const client = initDoterraNotionClient();
+  const properties: any = {};
+
+  if (updates.Name !== undefined) properties.Name = { title: [{ text: { content: updates.Name || '' } }] };
+  if (updates.WhatsApp !== undefined) properties.WhatsApp = updates.WhatsApp ? { phone_number: updates.WhatsApp } : { phone_number: null };
+
+  if (updates.Cohort !== undefined) properties.Cohort = updates.Cohort ? { select: { name: updates.Cohort } } : { select: null };
+  if (updates.MessageVariant !== undefined) properties.MessageVariant = updates.MessageVariant ? { select: { name: updates.MessageVariant } } : { select: null };
+  if (updates.MessageText !== undefined) properties.MessageText = { rich_text: updates.MessageText ? toRichTextArray(updates.MessageText) : [] };
+  if (updates.Stage !== undefined) properties.Stage = updates.Stage ? { select: { name: updates.Stage } } : { select: null };
+  if (updates.ApprovalStatus !== undefined) properties.ApprovalStatus = updates.ApprovalStatus ? { select: { name: updates.ApprovalStatus } } : { select: null };
+
+  const dateProps: Array<keyof NotionDoterraLead> = [
+    'SentAt','DeliveredAt','ReadAt','RepliedAt','InterestedAt','ApprovedAt','SoldAt','LastEventAt'
+  ];
+  for (const key of dateProps) {
+    if (updates[key] !== undefined) {
+      properties[key] = updates[key] ? { date: { start: updates[key] as string } } : { date: null };
+    }
+  }
+
+  if (updates.Source !== undefined) properties.Source = updates.Source ? { select: { name: updates.Source } } : { select: null };
+  if (updates.ExternalMessageId !== undefined) properties.ExternalMessageId = { rich_text: updates.ExternalMessageId ? toRichTextArray(updates.ExternalMessageId) : [] };
+  if (updates.ExternalLeadId !== undefined) properties.ExternalLeadId = { rich_text: updates.ExternalLeadId ? toRichTextArray(updates.ExternalLeadId) : [] };
+  if (updates.Notes !== undefined) properties.Notes = { rich_text: updates.Notes ? toRichTextArray(updates.Notes) : [] };
+  if (updates.Tags !== undefined) properties.Tags = { multi_select: (updates.Tags || []).map(name => ({ name })) };
+  if (updates.DoNotContact !== undefined) properties.DoNotContact = { checkbox: !!updates.DoNotContact };
+  if (updates.DuplicateOf !== undefined) properties.DuplicateOf = { rich_text: updates.DuplicateOf ? toRichTextArray(updates.DuplicateOf) : [] };
+  if (updates.AssignedTo !== undefined) properties.AssignedTo = updates.AssignedTo ? { select: { name: updates.AssignedTo } } : { select: null };
+
+  await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      properties
+    })
+  );
+
+  return getDoterraLeadById(id);
+}
+
 /**
  * Get all products
  */
@@ -1900,5 +2611,1543 @@ export async function createProduto(payload: Partial<NotionProduto>): Promise<No
   );
 
   return pageToProduto(response);
+}
+
+/**
+ * Extract email from Notion property
+ */
+function extractEmail(property: any): string {
+  if (!property || !property.email) return '';
+  return property.email || '';
+}
+
+/**
+ * Extract URL from Notion property
+ */
+function extractUrl(property: any): string {
+  if (!property || !property.url) return '';
+  return property.url || '';
+}
+
+/**
+ * Convert Notion page to GrowthProposal
+ */
+function pageToGrowthProposal(page: any): NotionGrowthProposal {
+  const props = page.properties;
+  return {
+    id: page.id,
+    Name: extractText(props.Name),
+    ProposalNumber: extractText(props.ProposalNumber),
+    Date: extractDate(props.Date) || new Date().toISOString().split('T')[0],
+    ValidUntil: extractDate(props.ValidUntil),
+    Status: (extractSelect(props.Status) as any) || 'Em criação',
+    
+    // Cliente
+    ClientName: extractText(props.ClientName) || '',
+    ClientCompany: extractText(props.ClientCompany),
+    ClientCNPJ: extractText(props.ClientCNPJ),
+    ClientAddress: extractText(props.ClientAddress),
+    ClientCity: extractText(props.ClientCity),
+    ClientState: extractText(props.ClientState),
+    ClientCEP: extractText(props.ClientCEP),
+    ClientPhone: extractPhoneNumber(props.ClientPhone),
+    ClientEmail: extractEmail(props.ClientEmail),
+    
+    // Valores
+    Subtotal: extractNumber(props.Subtotal),
+    DiscountPercent: extractNumber(props.DiscountPercent),
+    DiscountAmount: extractNumber(props.DiscountAmount),
+    TaxPercent: extractNumber(props.TaxPercent),
+    TaxAmount: extractNumber(props.TaxAmount),
+    Total: extractNumber(props.Total) || 0,
+    
+    // Dados estruturados (JSON)
+    Services: extractText(props.Services),
+    PaymentTerms: extractText(props.PaymentTerms),
+    
+    // Observações
+    Observations: extractText(props.Observations),
+    MaterialsNotIncluded: extractText(props.MaterialsNotIncluded),
+    
+    // Relações
+    RelatedContact: extractRelation(props.RelatedContact)?.[0],
+    RelatedClient: extractRelation(props.RelatedClient)?.[0],
+    RelatedCoffeeDiagnostic: extractRelation(props.RelatedCoffeeDiagnostic)?.[0],
+    
+    // Follow-up
+    SentAt: extractDate(props.SentAt),
+    ApprovedAt: extractDate(props.ApprovedAt),
+    RejectedAt: extractDate(props.RejectedAt),
+    RejectionReason: extractText(props.RejectionReason),
+    
+    // Anexos
+    PDFUrl: extractUrl(props.PDFUrl)
+  };
+}
+
+/**
+ * Get all growth proposals
+ */
+export async function getGrowthProposals(): Promise<NotionGrowthProposal[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('GrowthProposals');
+  if (!dbId) throw new Error('NOTION_DB_GROWTHPROPOSALS not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      sorts: [{ property: 'Date', direction: 'descending' }]
+    })
+  );
+
+  return response.results.map(pageToGrowthProposal);
+}
+
+/**
+ * Get growth proposal by ID
+ */
+export async function getGrowthProposalById(id: string): Promise<NotionGrowthProposal> {
+  const client = initNotionClient();
+  const page = await retryWithBackoff(() => client.pages.retrieve({ page_id: id })) as any;
+  return pageToGrowthProposal(page);
+}
+
+/**
+ * Create growth proposal
+ */
+export async function createGrowthProposal(data: Partial<NotionGrowthProposal>): Promise<NotionGrowthProposal> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('GrowthProposals');
+  if (!dbId) throw new Error('NOTION_DB_GROWTHPROPOSALS not configured');
+
+  const properties: any = {
+    Name: { title: [{ text: { content: data.Name || 'Nova Proposta' } }] },
+    Status: { select: { name: data.Status || 'Em criação' } },
+    Total: { number: data.Total || 0 },
+    // Obrigatórios
+    Date: { date: { start: normalizeDate(data.Date || new Date().toISOString().split('T')[0]) } },
+    ClientName: { rich_text: [{ text: { content: data.ClientName || '' } }] }
+  };
+  if (data.ValidUntil) properties.ValidUntil = { date: { start: normalizeDate(data.ValidUntil) } };
+
+  // Número
+  if (data.ProposalNumber) properties.ProposalNumber = { rich_text: [{ text: { content: data.ProposalNumber } }] };
+
+  // Cliente - ClientName já está acima como obrigatório
+  if (data.ClientCompany) properties.ClientCompany = { rich_text: [{ text: { content: data.ClientCompany } }] };
+  if (data.ClientCNPJ) properties.ClientCNPJ = { rich_text: [{ text: { content: data.ClientCNPJ } }] };
+  if (data.ClientAddress) properties.ClientAddress = { rich_text: [{ text: { content: data.ClientAddress } }] };
+  if (data.ClientCity) properties.ClientCity = { rich_text: [{ text: { content: data.ClientCity } }] };
+  if (data.ClientState) properties.ClientState = { rich_text: [{ text: { content: data.ClientState } }] };
+  if (data.ClientCEP) properties.ClientCEP = { rich_text: [{ text: { content: data.ClientCEP } }] };
+  if (data.ClientPhone) properties.ClientPhone = { phone_number: data.ClientPhone };
+  if (data.ClientEmail) properties.ClientEmail = { email: data.ClientEmail };
+
+  // Valores
+  if (data.Subtotal !== undefined) properties.Subtotal = { number: data.Subtotal };
+  if (data.DiscountPercent !== undefined) properties.DiscountPercent = { number: data.DiscountPercent };
+  if (data.DiscountAmount !== undefined) properties.DiscountAmount = { number: data.DiscountAmount };
+  if (data.TaxPercent !== undefined) properties.TaxPercent = { number: data.TaxPercent };
+  if (data.TaxAmount !== undefined) properties.TaxAmount = { number: data.TaxAmount };
+
+  // JSON fields
+  if (data.Services) properties.Services = { rich_text: [{ text: { content: data.Services } }] };
+  if (data.PaymentTerms) properties.PaymentTerms = { rich_text: [{ text: { content: data.PaymentTerms } }] };
+
+  // Observações
+  if (data.Observations) properties.Observations = { rich_text: toRichTextArray(data.Observations) };
+  if (data.MaterialsNotIncluded) properties.MaterialsNotIncluded = { rich_text: toRichTextArray(data.MaterialsNotIncluded) };
+
+    // Relações - só adiciona se a propriedade existir (evita erro)
+    // Se RelatedContact não existir na database, simplesmente não envia
+    if (data.RelatedContact) {
+      try {
+        properties.RelatedContact = { relation: [{ id: data.RelatedContact }] };
+      } catch {
+        // Ignore if relation property doesn't exist
+      }
+    }
+    if (data.RelatedClient) {
+      try {
+        properties.RelatedClient = { relation: [{ id: data.RelatedClient }] };
+      } catch {
+        // Ignore if relation property doesn't exist
+      }
+    }
+    if (data.RelatedCoffeeDiagnostic) {
+      try {
+        properties.RelatedCoffeeDiagnostic = { relation: [{ id: data.RelatedCoffeeDiagnostic }] };
+      } catch {
+        // Ignore if relation property doesn't exist
+      }
+    }
+
+  // Follow-up dates
+  if (data.SentAt) properties.SentAt = { date: { start: normalizeDate(data.SentAt) } };
+  if (data.ApprovedAt) properties.ApprovedAt = { date: { start: normalizeDate(data.ApprovedAt) } };
+  if (data.RejectedAt) properties.RejectedAt = { date: { start: normalizeDate(data.RejectedAt) } };
+  if (data.RejectionReason) properties.RejectionReason = { rich_text: toRichTextArray(data.RejectionReason) };
+
+  // PDF
+  if (data.PDFUrl) properties.PDFUrl = { url: data.PDFUrl };
+
+  // All properties should now exist in the database (created via setup script)
+  // Just create the page with all properties
+  const response = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToGrowthProposal(response);
+}
+
+/**
+ * Update growth proposal
+ */
+export async function updateGrowthProposal(
+  id: string,
+  updates: Partial<NotionGrowthProposal>
+): Promise<NotionGrowthProposal> {
+  const client = initNotionClient();
+  const properties: any = {};
+
+  if (updates.Name) properties.Name = { title: [{ text: { content: updates.Name } }] };
+  if (updates.Status) properties.Status = { select: { name: updates.Status } };
+  if (updates.ProposalNumber) properties.ProposalNumber = { rich_text: [{ text: { content: updates.ProposalNumber } }] };
+  
+  if (updates.Date) properties.Date = { date: { start: normalizeDate(updates.Date) } };
+  if (updates.ValidUntil) properties.ValidUntil = { date: { start: normalizeDate(updates.ValidUntil) } };
+  
+  if (updates.ClientName) properties.ClientName = { rich_text: [{ text: { content: updates.ClientName } }] };
+  if (updates.ClientCompany !== undefined) properties.ClientCompany = { rich_text: [{ text: { content: updates.ClientCompany || '' } }] };
+  if (updates.ClientCNPJ !== undefined) properties.ClientCNPJ = { rich_text: [{ text: { content: updates.ClientCNPJ || '' } }] };
+  if (updates.ClientAddress !== undefined) properties.ClientAddress = { rich_text: [{ text: { content: updates.ClientAddress || '' } }] };
+  if (updates.ClientCity !== undefined) properties.ClientCity = { rich_text: [{ text: { content: updates.ClientCity || '' } }] };
+  if (updates.ClientState !== undefined) properties.ClientState = { rich_text: [{ text: { content: updates.ClientState || '' } }] };
+  if (updates.ClientCEP !== undefined) properties.ClientCEP = { rich_text: [{ text: { content: updates.ClientCEP || '' } }] };
+  if (updates.ClientPhone !== undefined) properties.ClientPhone = { phone_number: updates.ClientPhone || null };
+  if (updates.ClientEmail !== undefined) properties.ClientEmail = { email: updates.ClientEmail || null };
+  
+  if (updates.Subtotal !== undefined) properties.Subtotal = { number: updates.Subtotal };
+  if (updates.DiscountPercent !== undefined) properties.DiscountPercent = { number: updates.DiscountPercent };
+  if (updates.DiscountAmount !== undefined) properties.DiscountAmount = { number: updates.DiscountAmount };
+  if (updates.TaxPercent !== undefined) properties.TaxPercent = { number: updates.TaxPercent };
+  if (updates.TaxAmount !== undefined) properties.TaxAmount = { number: updates.TaxAmount };
+  if (updates.Total !== undefined) properties.Total = { number: updates.Total };
+  
+  if (updates.Services) properties.Services = { rich_text: [{ text: { content: updates.Services } }] };
+  if (updates.PaymentTerms) properties.PaymentTerms = { rich_text: [{ text: { content: updates.PaymentTerms } }] };
+  
+  if (updates.Observations !== undefined) properties.Observations = { rich_text: updates.Observations ? toRichTextArray(updates.Observations) : [] };
+  if (updates.MaterialsNotIncluded !== undefined) properties.MaterialsNotIncluded = { rich_text: updates.MaterialsNotIncluded ? toRichTextArray(updates.MaterialsNotIncluded) : [] };
+  
+  if (updates.RelatedContact !== undefined) {
+    if (updates.RelatedContact) {
+      properties.RelatedContact = { relation: [{ id: updates.RelatedContact }] };
+    } else {
+      properties.RelatedContact = { relation: [] };
+    }
+  }
+  if (updates.RelatedClient !== undefined) {
+    if (updates.RelatedClient) {
+      properties.RelatedClient = { relation: [{ id: updates.RelatedClient }] };
+    } else {
+      properties.RelatedClient = { relation: [] };
+    }
+  }
+  if (updates.RelatedCoffeeDiagnostic !== undefined) {
+    if (updates.RelatedCoffeeDiagnostic) {
+      properties.RelatedCoffeeDiagnostic = { relation: [{ id: updates.RelatedCoffeeDiagnostic }] };
+    } else {
+      properties.RelatedCoffeeDiagnostic = { relation: [] };
+    }
+  }
+  
+  if (updates.SentAt) properties.SentAt = { date: { start: normalizeDate(updates.SentAt) } };
+  if (updates.ApprovedAt) properties.ApprovedAt = { date: { start: normalizeDate(updates.ApprovedAt) } };
+  if (updates.RejectedAt) properties.RejectedAt = { date: { start: normalizeDate(updates.RejectedAt) } };
+  if (updates.RejectionReason !== undefined) properties.RejectionReason = { rich_text: updates.RejectionReason ? toRichTextArray(updates.RejectionReason) : [] };
+  
+  if (updates.PDFUrl !== undefined) properties.PDFUrl = { url: updates.PDFUrl || null };
+
+  await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      properties
+    })
+  );
+
+  return getGrowthProposalById(id);
+}
+
+/**
+ * Delete growth proposal
+ */
+export async function deleteGrowthProposal(id: string): Promise<void> {
+  const client = initNotionClient();
+  await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      archived: true
+    })
+  );
+}
+
+/**
+ * Ensure GrowthProposals database has all required properties
+ * Creates missing properties automatically
+ */
+export async function ensureGrowthProposalsSchema(): Promise<{
+  created: string[];
+  skipped: string[];
+  errors: { property: string; error: string }[];
+}> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('GrowthProposals');
+  if (!dbId) {
+    throw new Error('NOTION_DB_GROWTHPROPOSALS not configured');
+  }
+
+  // Get current database structure
+  let db: any;
+  try {
+    db = await retryWithBackoff(() =>
+      client.databases.retrieve({ database_id: dbId })
+    );
+  } catch (error: any) {
+    throw new Error(`Failed to retrieve database: ${error.message}`);
+  }
+
+  const existingProps = Object.keys(db.properties || {});
+  const schema = NOTION_SCHEMA.GrowthProposals;
+  
+  const toCreate: Record<string, any> = {};
+  const created: string[] = [];
+  const skipped: string[] = [];
+  const errors: { property: string; error: string }[] = [];
+
+  // Map of property type to Notion API format
+  const typeMap: Record<string, any> = {
+    'title': { title: {} },
+    'rich_text': { rich_text: {} },
+    'date': { date: {} },
+    'number': { number: {} },
+    'email': { email: {} },
+    'phone_number': { phone_number: {} },
+    'url': { url: {} }
+  };
+
+  // Special handling for Status select
+  if (!existingProps.includes('Status')) {
+    toCreate['Status'] = {
+      select: {
+        options: [
+          { name: 'Em criação', color: 'gray' },
+          { name: 'Enviada', color: 'blue' },
+          { name: 'Aprovada', color: 'green' },
+          { name: 'Recusada', color: 'red' }
+        ]
+      }
+    };
+  }
+
+  // Process all properties from schema
+  for (const propSchema of schema.properties) {
+    const propName = propSchema.name;
+    
+    // Skip if already exists
+    if (existingProps.includes(propName)) {
+      skipped.push(propName);
+      continue;
+    }
+
+    // Skip title (always exists by default)
+    if (propSchema.type === 'title') {
+      skipped.push(propName);
+      continue;
+    }
+
+    // Handle relations (need manual setup - can't create programmatically easily)
+    if (propSchema.type === 'relation') {
+      skipped.push(propName); // Skip for now, user needs to create manually
+      continue;
+    }
+
+    // Map property type
+    const notionType = typeMap[propSchema.type];
+    if (!notionType) {
+      errors.push({
+        property: propName,
+        error: `Unknown type: ${propSchema.type}`
+      });
+      continue;
+    }
+
+    toCreate[propName] = notionType;
+  }
+
+  // Create all missing properties
+  if (Object.keys(toCreate).length > 0) {
+    try {
+      // Try to create all at once first
+      await retryWithBackoff(() =>
+        client.databases.update({
+          database_id: dbId,
+          properties: toCreate
+        })
+      );
+      
+      created.push(...Object.keys(toCreate));
+      console.log(`✅ Created ${created.length} properties in GrowthProposals database: ${created.join(', ')}`);
+    } catch (error: any) {
+      // If batch fails, try creating one by one
+      console.warn('⚠️ Batch creation failed, trying individual creation...', error.message);
+      
+      for (const [propName, propDef] of Object.entries(toCreate)) {
+        try {
+          await retryWithBackoff(() =>
+            client.databases.update({
+              database_id: dbId,
+              properties: {
+                [propName]: propDef
+              }
+            })
+          );
+          created.push(propName);
+          console.log(`✅ Created property: ${propName}`);
+        } catch (err: any) {
+          errors.push({
+            property: propName,
+            error: err.message || 'Failed to create'
+          });
+          console.error(`❌ Failed to create property ${propName}:`, err.message);
+        }
+      }
+    }
+  }
+
+  return { created, skipped, errors };
+}
+
+/**
+ * Validate GrowthProposals database schema (read-only check)
+ */
+export async function validateGrowthProposalsSchema(): Promise<{
+  valid: boolean;
+  existing: string[];
+  missing: string[];
+  totalExpected: number;
+  totalExisting: number;
+  errors?: string[];
+}> {
+  try {
+    const client = initNotionClient();
+    const dbId = getDatabaseId('GrowthProposals');
+    if (!dbId) {
+      return {
+        valid: false,
+        existing: [],
+        missing: [],
+        totalExpected: 0,
+        totalExisting: 0,
+        errors: ['NOTION_DB_GROWTHPROPOSALS not configured']
+      };
+    }
+
+    const db = await retryWithBackoff(() =>
+      client.databases.retrieve({ database_id: dbId })
+    );
+
+    const existingProps = Object.keys(db.properties || {});
+    const schema = NOTION_SCHEMA.GrowthProposals;
+    const requiredProps = schema.properties.map(p => p.name);
+    
+    // Filter out title (always exists) and relations (need manual setup)
+    const checkableProps = requiredProps.filter(name => {
+      const prop = schema.properties.find(p => p.name === name);
+      return prop && prop.type !== 'title' && prop.type !== 'relation';
+    });
+    
+    const missing = checkableProps.filter(name => !existingProps.includes(name));
+
+    return {
+      valid: missing.length === 0,
+      existing: existingProps,
+      missing: missing,
+      totalExpected: requiredProps.length,
+      totalExisting: existingProps.length
+    };
+  } catch (error: any) {
+    return {
+      valid: false,
+      existing: [],
+      missing: [],
+      totalExpected: 0,
+      totalExisting: 0,
+      errors: [error.message || 'Unknown error']
+    };
+  }
+}
+
+// ==========================================
+// VENDE MAIS OBRAS - FUNCTIONS
+// ==========================================
+
+/**
+ * Convert Notion page to Servico
+ */
+function pageToServico(page: any): any {
+  const props = page.properties;
+  return {
+    id: page.id,
+    Codigo: extractText(props.Codigo),
+    Nome: extractText(props.Nome),
+    Descricao: extractText(props.Descricao),
+    Categoria: extractSelect(props.Categoria),
+    Preco: extractNumber(props.Preco),
+    Unidade: extractSelect(props.Unidade),
+    Ativo: extractBoolean(props.Ativo),
+    CreatedAt: page.created_time,
+    UpdatedAt: page.last_edited_time
+  };
+}
+
+/**
+ * Convert Notion page to Usuario
+ */
+function pageToUsuario(page: any): any {
+  const props = page.properties;
+  return {
+    id: page.id,
+    Nome: extractText(props.Nome),
+    Email: extractEmail(props.Email),
+    Telefone: extractPhoneNumber(props.Telefone),
+    PasswordHash: extractText(props.PasswordHash), // nunca retornar ao frontend
+    Status: extractSelect(props.Status),
+    TrialInicio: extractDate(props.TrialInicio),
+    TrialFim: extractDate(props.TrialFim),
+    PlanoAtivo: extractBoolean(props.PlanoAtivo),
+    MercadoPagoSubscriptionId: extractText(props.MercadoPagoSubscriptionId),
+    CreatedAt: page.created_time,
+    ActivatedAt: extractDate(props.ActivatedAt),
+    LastAccessAt: extractDate(props.LastAccessAt),
+    ChurnedAt: extractDate(props.ChurnedAt)
+  };
+}
+
+/**
+ * Convert Notion page to Cliente
+ */
+function pageToCliente(page: any): any {
+  const props = page.properties;
+  const usuarioRelation = extractRelation(props.Usuario);
+  return {
+    id: page.id,
+    Nome: extractText(props.Nome),
+    Email: extractEmail(props.Email),
+    Telefone: extractPhoneNumber(props.Telefone),
+    Documento: extractText(props.Documento),
+    Endereco: extractText(props.Endereco),
+    Cidade: extractText(props.Cidade),
+    Estado: extractSelect(props.Estado),
+    UsuarioId: usuarioRelation[0] || '',
+    CreatedAt: page.created_time,
+    UpdatedAt: page.last_edited_time
+  };
+}
+
+/**
+ * Convert Notion page to Orcamento
+ */
+function pageToOrcamento(page: any): any {
+  const props = page.properties;
+  const usuarioRelation = extractRelation(props.Usuario);
+  const clienteRelation = extractRelation(props.Cliente);
+  const itensJson = extractText(props.Itens);
+  
+  let itens: any[] = [];
+  try {
+    itens = itensJson ? JSON.parse(itensJson) : [];
+  } catch {
+    itens = [];
+  }
+  
+  return {
+    id: page.id,
+    Numero: extractText(props.Numero),
+    UsuarioId: usuarioRelation[0] || '',
+    ClienteId: clienteRelation[0] || '',
+    Status: extractSelect(props.Status),
+    Total: extractNumber(props.Total),
+    Itens: itens,
+    Observacoes: extractText(props.Observacoes),
+    Validade: extractDate(props.Validade),
+    CreatedAt: page.created_time,
+    UpdatedAt: page.last_edited_time,
+    EnviadoAt: extractDate(props.EnviadoAt),
+    AprovadoAt: extractDate(props.AprovadoAt)
+  };
+}
+
+/**
+ * Convert Notion page to Lead
+ */
+function pageToLead(page: any): any {
+  const props = page.properties;
+  return {
+    id: page.id,
+    Name: extractText(props.Nome),
+    Email: extractEmail(props.Email),
+    Telefone: extractPhoneNumber(props.Telefone),
+    Profissao: extractText(props.Profissao),
+    Cidade: extractText(props.Cidade),
+    Status: extractSelect(props.Status),
+    Source: extractSelect(props.Source),
+    Notes: extractText(props.Notes),
+    CreatedAt: page.created_time,
+    ContactedAt: extractDate(props.ContactedAt),
+    QualifiedAt: extractDate(props.QualifiedAt),
+    ActivatedAt: extractDate(props.ActivatedAt),
+    ConvertedAt: extractDate(props.ConvertedAt),
+    ChurnedAt: extractDate(props.ChurnedAt)
+  };
+}
+
+/**
+ * ==========================================
+ * SERVIÇOS
+ * ==========================================
+ */
+
+export async function getServicos(categoria?: string, ativo?: boolean): Promise<any[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Servicos');
+  if (!dbId) throw new Error('NOTION_DB_SERVICOS not configured');
+
+  const filters: any[] = [];
+  if (categoria) {
+    filters.push({ property: 'Categoria', select: { equals: categoria } });
+  }
+  if (ativo !== undefined) {
+    filters.push({ property: 'Ativo', checkbox: { equals: ativo } });
+  }
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      filter: filters.length > 0 ? { and: filters } : undefined,
+      sorts: [{ property: 'Nome', direction: 'ascending' }]
+    })
+  );
+
+  return response.results.map(pageToServico);
+}
+
+export async function getServicoById(id: string): Promise<any | null> {
+  const client = initNotionClient();
+  try {
+    const page = await retryWithBackoff(() =>
+      client.pages.retrieve({ page_id: id })
+    );
+    return pageToServico(page);
+  } catch {
+    return null;
+  }
+}
+
+export async function createServico(servico: any): Promise<any> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Servicos');
+  if (!dbId) throw new Error('NOTION_DB_SERVICOS not configured');
+
+  const properties: any = {
+    Codigo: { title: [{ text: { content: servico.Codigo } }] },
+    Nome: { rich_text: [{ text: { content: servico.Nome } }] },
+    Categoria: { select: { name: servico.Categoria } },
+    Preco: { number: servico.Preco },
+    Unidade: { select: { name: servico.Unidade } },
+    Ativo: { checkbox: servico.Ativo ?? true }
+  };
+
+  if (servico.Descricao) {
+    properties.Descricao = { rich_text: [{ text: { content: servico.Descricao } }] };
+  }
+
+  const created = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToServico(created);
+}
+
+export async function updateServico(id: string, servico: any): Promise<any> {
+  const client = initNotionClient();
+  const properties: any = {};
+
+  if (servico.Codigo !== undefined) {
+    properties.Codigo = { title: [{ text: { content: servico.Codigo } }] };
+  }
+  if (servico.Nome !== undefined) {
+    properties.Nome = { rich_text: [{ text: { content: servico.Nome } }] };
+  }
+  if (servico.Descricao !== undefined) {
+    properties.Descricao = servico.Descricao
+      ? { rich_text: [{ text: { content: servico.Descricao } }] }
+      : { rich_text: [] };
+  }
+  if (servico.Categoria !== undefined) {
+    properties.Categoria = { select: { name: servico.Categoria } };
+  }
+  if (servico.Preco !== undefined) {
+    properties.Preco = { number: servico.Preco };
+  }
+  if (servico.Unidade !== undefined) {
+    properties.Unidade = { select: { name: servico.Unidade } };
+  }
+  if (servico.Ativo !== undefined) {
+    properties.Ativo = { checkbox: servico.Ativo };
+  }
+
+  const updated = await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      properties
+    })
+  );
+
+  return pageToServico(updated);
+}
+
+export async function deleteServico(id: string): Promise<void> {
+  const client = initNotionClient();
+  await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      archived: true
+    })
+  );
+}
+
+/**
+ * ==========================================
+ * USUÁRIOS
+ * ==========================================
+ */
+
+export async function getUsuarioByEmail(email: string): Promise<any | null> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Usuarios');
+  if (!dbId) throw new Error('NOTION_DB_USUARIOS not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      filter: { property: 'Email', email: { equals: email } },
+      page_size: 1
+    })
+  );
+
+  if (response.results.length === 0) return null;
+  return pageToUsuario(response.results[0]);
+}
+
+export async function getUsuarioById(id: string): Promise<any | null> {
+  const client = initNotionClient();
+  try {
+    const page = await retryWithBackoff(() =>
+      client.pages.retrieve({ page_id: id })
+    );
+    return pageToUsuario(page);
+  } catch {
+    return null;
+  }
+}
+
+export async function getAllUsuarios(): Promise<any[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Usuarios');
+  if (!dbId) throw new Error('NOTION_DB_USUARIOS not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      sorts: [{ timestamp: 'created_time', direction: 'descending' }]
+    })
+  );
+
+  return response.results.map(pageToUsuario);
+}
+
+export async function createUsuario(usuario: any, passwordHash: string): Promise<any> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Usuarios');
+  if (!dbId) throw new Error('NOTION_DB_USUARIOS not configured');
+
+  // Verificar se email já existe
+  const existing = await getUsuarioByEmail(usuario.Email);
+  if (existing) {
+    throw new Error('Email já cadastrado');
+  }
+
+  const trialInicio = new Date();
+  const trialFim = new Date();
+  trialFim.setDate(trialFim.getDate() + 7); // 7 dias de trial
+
+  const properties: any = {
+    Nome: { title: [{ text: { content: usuario.Nome } }] },
+    Email: { email: usuario.Email },
+    PasswordHash: { rich_text: [{ text: { content: passwordHash } }] },
+    Status: { select: { name: usuario.Status || 'Trial' } },
+    TrialInicio: { date: { start: normalizeDate(trialInicio.toISOString()) } },
+    TrialFim: { date: { start: normalizeDate(trialFim.toISOString()) } },
+    PlanoAtivo: { checkbox: false }
+  };
+
+  if (usuario.Telefone) {
+    properties.Telefone = { phone_number: usuario.Telefone };
+  }
+
+  const created = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToUsuario(created);
+}
+
+export async function updateUsuario(id: string, usuario: any, passwordHash?: string): Promise<any> {
+  const client = initNotionClient();
+  const properties: any = {};
+
+  if (usuario.Nome !== undefined) {
+    properties.Nome = { title: [{ text: { content: usuario.Nome } }] };
+  }
+  if (usuario.Email !== undefined) {
+    // Verificar se email já existe em outro usuário
+    const existing = await getUsuarioByEmail(usuario.Email);
+    if (existing && existing.id !== id) {
+      throw new Error('Email já cadastrado');
+    }
+    properties.Email = { email: usuario.Email };
+  }
+  if (usuario.Telefone !== undefined) {
+    properties.Telefone = usuario.Telefone
+      ? { phone_number: usuario.Telefone }
+      : { phone_number: null };
+  }
+  if (passwordHash) {
+    properties.PasswordHash = { rich_text: [{ text: { content: passwordHash } }] };
+  }
+  if (usuario.Status !== undefined) {
+    properties.Status = { select: { name: usuario.Status } };
+  }
+  if (usuario.TrialInicio !== undefined) {
+    properties.TrialInicio = usuario.TrialInicio
+      ? { date: { start: normalizeDate(usuario.TrialInicio) } }
+      : { date: null };
+  }
+  if (usuario.TrialFim !== undefined) {
+    properties.TrialFim = usuario.TrialFim
+      ? { date: { start: normalizeDate(usuario.TrialFim) } }
+      : { date: null };
+  }
+  if (usuario.PlanoAtivo !== undefined) {
+    properties.PlanoAtivo = { checkbox: usuario.PlanoAtivo };
+  }
+  if (usuario.MercadoPagoSubscriptionId !== undefined) {
+    properties.MercadoPagoSubscriptionId = usuario.MercadoPagoSubscriptionId
+      ? { rich_text: [{ text: { content: usuario.MercadoPagoSubscriptionId } }] }
+      : { rich_text: [] };
+  }
+  if (usuario.LastAccessAt !== undefined) {
+    properties.LastAccessAt = usuario.LastAccessAt
+      ? { date: { start: normalizeDate(usuario.LastAccessAt) } }
+      : { date: null };
+  }
+  if (usuario.ActivatedAt !== undefined) {
+    properties.ActivatedAt = usuario.ActivatedAt
+      ? { date: { start: normalizeDate(usuario.ActivatedAt) } }
+      : { date: null };
+  }
+  if (usuario.ChurnedAt !== undefined) {
+    properties.ChurnedAt = usuario.ChurnedAt
+      ? { date: { start: normalizeDate(usuario.ChurnedAt) } }
+      : { date: null };
+  }
+
+  const updated = await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      properties
+    })
+  );
+
+  return pageToUsuario(updated);
+}
+
+/**
+ * ==========================================
+ * ORÇAMENTOS
+ * ==========================================
+ */
+
+export async function getOrcamentosByUsuario(usuarioId: string): Promise<any[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Orcamentos');
+  if (!dbId) throw new Error('NOTION_DB_ORCAMENTOS not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      filter: { property: 'Usuario', relation: { contains: usuarioId } },
+      sorts: [{ timestamp: 'created_time', direction: 'descending' }]
+    })
+  );
+
+  return response.results.map(pageToOrcamento);
+}
+
+export async function getOrcamentoById(id: string, usuarioId?: string): Promise<any | null> {
+  const client = initNotionClient();
+  try {
+    const page = await retryWithBackoff(() =>
+      client.pages.retrieve({ page_id: id })
+    );
+    const orcamento = pageToOrcamento(page);
+    
+    // Verificar ownership se usuarioId fornecido
+    if (usuarioId && orcamento.UsuarioId !== usuarioId) {
+      return null;
+    }
+    
+    return orcamento;
+  } catch {
+    return null;
+  }
+}
+
+export async function getAllOrcamentos(): Promise<any[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Orcamentos');
+  if (!dbId) throw new Error('NOTION_DB_ORCAMENTOS not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      sorts: [{ timestamp: 'created_time', direction: 'descending' }]
+    })
+  );
+
+  return response.results.map(pageToOrcamento);
+}
+
+export async function createOrcamento(orcamento: any): Promise<any> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Orcamentos');
+  if (!dbId) throw new Error('NOTION_DB_ORCAMENTOS not configured');
+
+  // Gerar número se não fornecido
+  if (!orcamento.Numero) {
+    const all = await getAllOrcamentos();
+    const numero = `ORC-${String(all.length + 1).padStart(4, '0')}`;
+    orcamento.Numero = numero;
+  }
+
+  const properties: any = {
+    Numero: { title: [{ text: { content: orcamento.Numero } }] },
+    Usuario: { relation: [{ id: orcamento.UsuarioId }] },
+    Cliente: { relation: [{ id: orcamento.ClienteId }] },
+    Status: { select: { name: orcamento.Status || 'Rascunho' } },
+    Total: { number: orcamento.Total },
+    Itens: { rich_text: [{ text: { content: JSON.stringify(orcamento.Itens || []) } }] }
+  };
+
+  if (orcamento.Observacoes) {
+    properties.Observacoes = { rich_text: [{ text: { content: orcamento.Observacoes } }] };
+  }
+  if (orcamento.Validade) {
+    properties.Validade = { date: { start: normalizeDate(orcamento.Validade) } };
+  }
+
+  const created = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToOrcamento(created);
+}
+
+export async function updateOrcamento(id: string, orcamento: any, usuarioId: string): Promise<any> {
+  const client = initNotionClient();
+  
+  // Verificar ownership
+  const existing = await getOrcamentoById(id, usuarioId);
+  if (!existing) {
+    throw new Error('Orçamento não encontrado ou não pertence ao usuário');
+  }
+
+  const properties: any = {};
+
+  if (orcamento.ClienteId !== undefined) {
+    properties.Cliente = { relation: [{ id: orcamento.ClienteId }] };
+  }
+  if (orcamento.Status !== undefined) {
+    properties.Status = { select: { name: orcamento.Status } };
+  }
+  if (orcamento.Total !== undefined) {
+    properties.Total = { number: orcamento.Total };
+  }
+  if (orcamento.Itens !== undefined) {
+    properties.Itens = { rich_text: [{ text: { content: JSON.stringify(orcamento.Itens) } }] };
+  }
+  if (orcamento.Observacoes !== undefined) {
+    properties.Observacoes = orcamento.Observacoes
+      ? { rich_text: [{ text: { content: orcamento.Observacoes } }] }
+      : { rich_text: [] };
+  }
+  if (orcamento.Validade !== undefined) {
+    properties.Validade = orcamento.Validade
+      ? { date: { start: normalizeDate(orcamento.Validade) } }
+      : { date: null };
+  }
+  if (orcamento.EnviadoAt !== undefined) {
+    properties.EnviadoAt = orcamento.EnviadoAt
+      ? { date: { start: normalizeDate(orcamento.EnviadoAt) } }
+      : { date: null };
+  }
+  if (orcamento.AprovadoAt !== undefined) {
+    properties.AprovadoAt = orcamento.AprovadoAt
+      ? { date: { start: normalizeDate(orcamento.AprovadoAt) } }
+      : { date: null };
+  }
+
+  const updated = await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      properties
+    })
+  );
+
+  return pageToOrcamento(updated);
+}
+
+export async function deleteOrcamento(id: string, usuarioId: string): Promise<void> {
+  const client = initNotionClient();
+  
+  // Verificar ownership
+  const existing = await getOrcamentoById(id, usuarioId);
+  if (!existing) {
+    throw new Error('Orçamento não encontrado ou não pertence ao usuário');
+  }
+
+  await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      archived: true
+    })
+  );
+}
+
+/**
+ * ==========================================
+ * CLIENTES
+ * ==========================================
+ */
+
+export async function getClientesByUsuario(usuarioId: string): Promise<any[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Clientes');
+  if (!dbId) throw new Error('NOTION_DB_CLIENTES not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      filter: { property: 'Usuario', relation: { contains: usuarioId } },
+      sorts: [{ property: 'Nome', direction: 'ascending' }]
+    })
+  );
+
+  return response.results.map(pageToCliente);
+}
+
+export async function getClienteById(id: string, usuarioId?: string): Promise<any | null> {
+  const client = initNotionClient();
+  try {
+    const page = await retryWithBackoff(() =>
+      client.pages.retrieve({ page_id: id })
+    );
+    const cliente = pageToCliente(page);
+    
+    // Verificar ownership se usuarioId fornecido
+    if (usuarioId && cliente.UsuarioId !== usuarioId) {
+      return null;
+    }
+    
+    return cliente;
+  } catch {
+    return null;
+  }
+}
+
+export async function createCliente(cliente: any): Promise<any> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Clientes');
+  if (!dbId) throw new Error('NOTION_DB_CLIENTES not configured');
+
+  const properties: any = {
+    Nome: { title: [{ text: { content: cliente.Nome } }] },
+    Usuario: { relation: [{ id: cliente.UsuarioId }] }
+  };
+
+  if (cliente.Email) properties.Email = { email: cliente.Email };
+  if (cliente.Telefone) properties.Telefone = { phone_number: cliente.Telefone };
+  if (cliente.Documento) properties.Documento = { rich_text: [{ text: { content: cliente.Documento } }] };
+  if (cliente.Endereco) properties.Endereco = { rich_text: [{ text: { content: cliente.Endereco } }] };
+  if (cliente.Cidade) properties.Cidade = { rich_text: [{ text: { content: cliente.Cidade } }] };
+  if (cliente.Estado) properties.Estado = { select: { name: cliente.Estado } };
+
+  const created = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToCliente(created);
+}
+
+export async function updateCliente(id: string, cliente: any, usuarioId: string): Promise<any> {
+  const client = initNotionClient();
+  
+  // Verificar ownership
+  const existing = await getClienteById(id, usuarioId);
+  if (!existing) {
+    throw new Error('Cliente não encontrado ou não pertence ao usuário');
+  }
+
+  const properties: any = {};
+
+  if (cliente.Nome !== undefined) {
+    properties.Nome = { title: [{ text: { content: cliente.Nome } }] };
+  }
+  if (cliente.Email !== undefined) {
+    properties.Email = cliente.Email ? { email: cliente.Email } : { email: null };
+  }
+  if (cliente.Telefone !== undefined) {
+    properties.Telefone = cliente.Telefone ? { phone_number: cliente.Telefone } : { phone_number: null };
+  }
+  if (cliente.Documento !== undefined) {
+    properties.Documento = cliente.Documento
+      ? { rich_text: [{ text: { content: cliente.Documento } }] }
+      : { rich_text: [] };
+  }
+  if (cliente.Endereco !== undefined) {
+    properties.Endereco = cliente.Endereco
+      ? { rich_text: [{ text: { content: cliente.Endereco } }] }
+      : { rich_text: [] };
+  }
+  if (cliente.Cidade !== undefined) {
+    properties.Cidade = cliente.Cidade
+      ? { rich_text: [{ text: { content: cliente.Cidade } }] }
+      : { rich_text: [] };
+  }
+  if (cliente.Estado !== undefined) {
+    properties.Estado = cliente.Estado ? { select: { name: cliente.Estado } } : { select: null };
+  }
+
+  const updated = await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      properties
+    })
+  );
+
+  return pageToCliente(updated);
+}
+
+export async function deleteCliente(id: string, usuarioId: string): Promise<void> {
+  const client = initNotionClient();
+  
+  // Verificar ownership
+  const existing = await getClienteById(id, usuarioId);
+  if (!existing) {
+    throw new Error('Cliente não encontrado ou não pertence ao usuário');
+  }
+
+  await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      archived: true
+    })
+  );
+}
+
+/**
+ * ==========================================
+ * LEADS
+ * ==========================================
+ */
+
+export async function getLeads(status?: string): Promise<any[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Leads');
+  if (!dbId) throw new Error('NOTION_DB_LEADS not configured');
+
+  const filter = status
+    ? { property: 'Status', select: { equals: status } }
+    : undefined;
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      filter,
+      sorts: [{ timestamp: 'created_time', direction: 'descending' }]
+    })
+  );
+
+  return response.results.map(pageToLead);
+}
+
+export async function createLead(lead: any): Promise<any> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Leads');
+  if (!dbId) throw new Error('NOTION_DB_LEADS not configured');
+
+  const properties: any = {
+    Nome: { title: [{ text: { content: lead.Nome } }] },
+    Status: { select: { name: lead.Status || 'Novo' } }
+  };
+
+  if (lead.Email) properties.Email = { email: lead.Email };
+  if (lead.Telefone) properties.Telefone = { phone_number: lead.Telefone };
+  if (lead.Profissao) properties.Profissao = { rich_text: [{ text: { content: lead.Profissao } }] };
+  if (lead.Cidade) properties.Cidade = { rich_text: [{ text: { content: lead.Cidade } }] };
+  if (lead.Source) properties.Source = { select: { name: lead.Source } };
+  if (lead.Notes) properties.Notes = { rich_text: [{ text: { content: lead.Notes } }] };
+
+  const created = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToLead(created);
+}
+
+export async function updateLeadStatus(id: string, status: string, dataAtualizacao?: Date): Promise<any> {
+  const client = initNotionClient();
+  const properties: any = {
+    Status: { select: { name: status } }
+  };
+
+  const dataStr = dataAtualizacao ? normalizeDate(dataAtualizacao.toISOString()) : normalizeDate(new Date().toISOString());
+
+  // Atualizar campo de data apropriado baseado no status
+  if (status === 'Contactado') {
+    properties.ContactedAt = { date: { start: dataStr } };
+  } else if (status === 'Qualificado' || status === 'Cadastrado') {
+    properties.QualifiedAt = { date: { start: dataStr } };
+  } else if (status === 'Ativado' || status === 'Usuário Ativo') {
+    properties.ActivatedAt = { date: { start: dataStr } };
+  } else if (status === 'Pago' || status === 'Usuário Pagante') {
+    properties.ConvertedAt = { date: { start: dataStr } };
+  } else if (status === 'Perdido' || status === 'Churn') {
+    properties.ChurnedAt = { date: { start: dataStr } };
+  }
+
+  const updated = await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      properties
+    })
+  );
+
+  return pageToLead(updated);
+}
+
+export async function getAllLeads(): Promise<any[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Leads');
+  if (!dbId) throw new Error('NOTION_DB_LEADS not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      sorts: [{ timestamp: 'created_time', direction: 'descending' }]
+    })
+  );
+
+  return response.results.map(pageToLead);
+}
+
+/**
+ * ==========================================
+ * MÉTRICAS
+ * ==========================================
+ */
+
+export async function getVendeMaisObrasMetricas(): Promise<any> {
+  const leads = await getAllLeads();
+  const usuarios = await getAllUsuarios();
+  const orcamentos = await getAllOrcamentos();
+
+  const leadsTotal = leads.length;
+  const leadsContactados = leads.filter(l => l.Status === 'Contactado').length;
+  const leadsInteressados = leads.filter(l => l.Status === 'Interessado' || l.Status === 'Respondeu').length;
+  
+  const usuariosTrial = usuarios.filter(u => u.Status === 'Trial').length;
+  const usuariosAtivos = usuarios.filter(u => u.Status === 'Ativo').length;
+  const usuariosPagantes = usuarios.filter(u => u.PlanoAtivo === true).length;
+  
+  const orcamentosCriados = orcamentos.length;
+  const orcamentosAprovados = orcamentos.filter(o => o.Status === 'Aprovado').length;
+
+  const usuariosQuePagaram = usuarios.filter(u => u.PlanoAtivo === true).length;
+  const usuariosTrialTotal = usuarios.filter(u => u.Status === 'Trial' || (u.TrialFim && new Date(u.TrialFim) < new Date())).length;
+  const conversaoTrialParaPago = usuariosTrialTotal > 0
+    ? (usuariosQuePagaram / usuariosTrialTotal) * 100
+    : 0;
+
+  const usuariosChurned = usuarios.filter(u => u.ChurnedAt && u.Status === 'Cancelado').length;
+  const usuariosTotais = usuarios.length;
+  const churn = usuariosTotais > 0 ? (usuariosChurned / usuariosTotais) * 100 : 0;
+
+  return {
+    leadsTotal,
+    leadsContactados,
+    leadsInteressados,
+    usuariosTrial,
+    usuariosAtivos,
+    usuariosPagantes,
+    orcamentosCriados,
+    orcamentosAprovados,
+    conversaoTrialParaPago: Math.round(conversaoTrialParaPago * 100) / 100,
+    churn: Math.round(churn * 100) / 100
+  };
+}
+
+// ==========================================
+// TRANSACTIONS - FUNCTIONS
+// ==========================================
+
+/**
+ * Convert Notion page to Transaction
+ */
+function pageToTransaction(page: any): NotionTransaction {
+  const props = page.properties;
+  const budgetGoalRelation = extractRelation(props.BudgetGoal);
+  
+  return {
+    id: page.id,
+    Name: extractText(props.Name),
+    Date: extractDate(props.Date) || new Date().toISOString().split('T')[0],
+    Amount: extractNumber(props.Amount) || 0,
+    Type: (extractSelect(props.Type) as 'Entrada' | 'Saída') || 'Saída',
+    Category: extractSelect(props.Category) || undefined,
+    Account: extractSelect(props.Account) || '',
+    Description: extractText(props.Description) || undefined,
+    BudgetGoal: budgetGoalRelation[0] || undefined,
+    Imported: extractBoolean(props.Imported),
+    ImportedAt: extractDate(props.ImportedAt) || undefined,
+    FileSource: extractText(props.FileSource) || undefined
+  };
+}
+
+/**
+ * Get all transactions with optional filters
+ */
+export async function getTransactions(filters?: {
+  account?: string;
+  category?: string;
+  type?: 'Entrada' | 'Saída';
+  startDate?: string;
+  endDate?: string;
+  imported?: boolean;
+}): Promise<NotionTransaction[]> {
+  try {
+    const client = initNotionClient();
+    const dbId = getDatabaseId('Transactions');
+    if (!dbId) {
+      console.warn('NOTION_DB_TRANSACTIONS not configured');
+      return [];
+    }
+
+    const filterConditions: any[] = [];
+
+    if (filters?.account) {
+      filterConditions.push({
+        property: 'Account',
+        select: { equals: filters.account }
+      });
+    }
+
+    if (filters?.category) {
+      filterConditions.push({
+        property: 'Category',
+        select: { equals: filters.category }
+      });
+    }
+
+    if (filters?.type) {
+      filterConditions.push({
+        property: 'Type',
+        select: { equals: filters.type }
+      });
+    }
+
+    if (filters?.startDate || filters?.endDate) {
+      const dateFilter: any = { property: 'Date', date: {} };
+      if (filters.startDate) {
+        dateFilter.date.on_or_after = filters.startDate;
+      }
+      if (filters.endDate) {
+        dateFilter.date.on_or_before = filters.endDate;
+      }
+      filterConditions.push(dateFilter);
+    }
+
+    if (filters?.imported !== undefined) {
+      filterConditions.push({
+        property: 'Imported',
+        checkbox: { equals: filters.imported }
+      });
+    }
+
+    const query: any = {
+      database_id: dbId,
+      sorts: [{ property: 'Date', direction: 'descending' }]
+    };
+
+    if (filterConditions.length > 0) {
+      query.filter = filterConditions.length === 1 
+        ? filterConditions[0]
+        : { and: filterConditions };
+    }
+
+    const response = await retryWithBackoff(() =>
+      client.databases.query(query)
+    );
+
+    return response.results.map(pageToTransaction);
+  } catch (error: any) {
+    console.error('❌ Erro ao buscar transações do Notion:', error);
+    if (error.code === 'object_not_found') {
+      throw new Error(`Database do Notion não encontrada. Verifique se NOTION_DB_TRANSACTIONS está correto e se a integração tem acesso à database.`);
+    }
+    if (error.status === 401) {
+      throw new Error(`Token do Notion inválido ou sem permissões. Verifique o NOTION_TOKEN e se a integração tem acesso à database.`);
+    }
+    throw error;
+  }
+}
+
+/**
+ * Create a single transaction in Notion
+ */
+export async function createTransaction(transaction: Omit<NotionTransaction, 'id'>): Promise<NotionTransaction> {
+  try {
+    const client = initNotionClient();
+    const dbId = getDatabaseId('Transactions');
+    if (!dbId) {
+      throw new Error('NOTION_DB_TRANSACTIONS not configured');
+    }
+
+    const properties: any = {
+      Name: {
+        title: [{ text: { content: transaction.Name } }]
+      },
+      Date: {
+        date: { start: normalizeDate(transaction.Date) }
+      },
+      Amount: {
+        number: transaction.Amount
+      },
+      Type: {
+        select: { name: transaction.Type }
+      },
+      Account: {
+        select: { name: transaction.Account }
+      },
+      Imported: {
+        checkbox: transaction.Imported || false
+      }
+    };
+
+    if (transaction.Category) {
+      properties.Category = {
+        select: { name: transaction.Category }
+      };
+    }
+
+    if (transaction.Description) {
+      properties.Description = {
+        rich_text: toRichTextArray(transaction.Description)
+      };
+    }
+
+    if (transaction.BudgetGoal) {
+      properties.BudgetGoal = {
+        relation: [{ id: transaction.BudgetGoal }]
+      };
+    }
+
+    if (transaction.ImportedAt) {
+      properties.ImportedAt = {
+        date: { start: normalizeDate(transaction.ImportedAt) }
+      };
+    }
+
+    if (transaction.FileSource) {
+      properties.FileSource = {
+        rich_text: toRichTextArray(transaction.FileSource)
+      };
+    }
+
+    const response = await retryWithBackoff(() =>
+      client.pages.create({
+        parent: { database_id: dbId },
+        properties
+      })
+    );
+
+    return pageToTransaction(response);
+  } catch (error: any) {
+    console.error('❌ Erro ao criar transação no Notion:', error);
+    throw error;
+  }
+}
+
+/**
+ * Create multiple transactions in bulk
+ */
+export async function createTransactionsBulk(
+  transactions: Omit<NotionTransaction, 'id'>[]
+): Promise<{ created: number; skipped: number; errors: string[] }> {
+  let created = 0;
+  let skipped = 0;
+  const errors: string[] = [];
+
+  for (const transaction of transactions) {
+    try {
+      await createTransaction(transaction);
+      created++;
+    } catch (error: any) {
+      skipped++;
+      errors.push(`Erro ao criar transação "${transaction.Name}": ${error.message}`);
+      console.error(`Erro ao criar transação:`, error);
+    }
+  }
+
+  return { created, skipped, errors };
 }
 

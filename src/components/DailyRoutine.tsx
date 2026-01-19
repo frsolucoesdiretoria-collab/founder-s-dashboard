@@ -58,6 +58,9 @@ const clearSnooze = (key: string) => {
   localStorage.removeItem(key);
 };
 
+// TEMPORÁRIO: Desativado para reunião
+const ENABLE_ROUTINE_POPUPS = false;
+
 export function DailyRoutine() {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -195,18 +198,21 @@ export function DailyRoutine() {
   }, [ensureAction, loadNightStatus, loadTodayStatus]);
 
   useEffect(() => {
+    if (!ENABLE_ROUTINE_POPUPS) return; // TEMPORÁRIO: Desativado para reunião
     if (shouldOpenMorning()) {
       setShowMorningModal(true);
     }
   }, [morningDone]);
 
   useEffect(() => {
+    if (!ENABLE_ROUTINE_POPUPS) return; // TEMPORÁRIO: Desativado para reunião
     if (shouldOpenNight()) {
       setShowNightModal(true);
     }
   }, [nightDone]);
 
   useEffect(() => {
+    if (!ENABLE_ROUTINE_POPUPS) return; // TEMPORÁRIO: Desativado para reunião
     if (nightDone) return;
     const checkNight = () => {
       if (shouldOpenNight()) {
@@ -404,28 +410,34 @@ export function DailyRoutine() {
               <div
                 key={text}
                 className={cn(
-                  'flex items-start gap-3 p-3 rounded-lg border',
+                  'flex items-start gap-3 p-3 rounded-lg border touch-manipulation',
                   subtasks[index] ? 'bg-muted/70' : 'bg-card'
                 )}
               >
-                <Checkbox checked={subtasks[index]} onCheckedChange={() => handleSubtaskToggle(index)} />
-                <p className="text-sm leading-relaxed">{text}</p>
+                <div className="pt-1">
+                  <Checkbox 
+                    checked={subtasks[index]} 
+                    onCheckedChange={() => handleSubtaskToggle(index)}
+                    className="h-5 w-5"
+                  />
+                </div>
+                <p className="text-sm leading-relaxed flex-1">{text}</p>
               </div>
             ))}
           </div>
 
           <DialogFooter className="flex flex-col gap-2 sm:flex-row sm:justify-between">
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={snoozeMorning}>
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+              <Button variant="outline" onClick={snoozeMorning} className="w-full sm:w-auto">
                 <BellOff className="h-4 w-4 mr-2" />
                 Lembrar em 10 min
               </Button>
-              <Button variant="secondary" onClick={() => setShowMorningModal(false)}>
+              <Button variant="secondary" onClick={() => setShowMorningModal(false)} className="w-full sm:w-auto">
                 <X className="h-4 w-4 mr-2" />
                 Fechar
               </Button>
             </div>
-            <Button onClick={markAll} disabled={morningDone}>
+            <Button onClick={markAll} disabled={morningDone} className="w-full sm:w-auto">
               <CheckCircle2 className="h-4 w-4 mr-2" />
               Marcar tudo
             </Button>
@@ -451,9 +463,15 @@ export function DailyRoutine() {
           </DialogHeader>
 
           <div className="space-y-4">
-            <div className="flex items-start gap-3 p-3 rounded-lg border bg-card">
-              <Checkbox checked={nightAcknowledged} onCheckedChange={() => setNightAcknowledged((prev) => !prev)} />
-              <p className="text-sm">{NIGHT_GRATITUDE_TEXT}</p>
+            <div className="flex items-start gap-3 p-3 rounded-lg border bg-card touch-manipulation">
+              <div className="pt-1">
+                <Checkbox 
+                  checked={nightAcknowledged} 
+                  onCheckedChange={() => setNightAcknowledged((prev) => !prev)}
+                  className="h-5 w-5"
+                />
+              </div>
+              <p className="text-sm flex-1">{NIGHT_GRATITUDE_TEXT}</p>
             </div>
 
             <div className="space-y-2">
@@ -463,29 +481,29 @@ export function DailyRoutine() {
                 value={nightText}
                 onChange={(e) => setNightText(e.target.value)}
                 placeholder="Erros, acertos, rotinas a repetir, ideias..."
-                className="min-h-[120px]"
+                className="min-h-[120px] text-base"
               />
             </div>
 
             <Separator />
             <div className="flex flex-wrap gap-2">
-              <Button variant="outline" onClick={() => snoozeNight(15)}>
+              <Button variant="outline" onClick={() => snoozeNight(15)} className="flex-1 sm:flex-none">
                 Postergar 15 min
               </Button>
-              <Button variant="outline" onClick={() => snoozeNight(30)}>
+              <Button variant="outline" onClick={() => snoozeNight(30)} className="flex-1 sm:flex-none">
                 Postergar 30 min
               </Button>
-              <Button variant="outline" onClick={() => snoozeNight(60)}>
+              <Button variant="outline" onClick={() => snoozeNight(60)} className="flex-1 sm:flex-none">
                 Postergar 60 min
               </Button>
             </div>
           </div>
 
-          <DialogFooter className="flex justify-between">
-            <Button variant="secondary" onClick={() => setShowNightModal(false)}>
+          <DialogFooter className="flex flex-col-reverse sm:flex-row gap-2">
+            <Button variant="secondary" onClick={() => setShowNightModal(false)} className="w-full sm:w-auto">
               Cancelar
             </Button>
-            <Button onClick={handleNightSubmit} disabled={nightChecking || nightDone}>
+            <Button onClick={handleNightSubmit} disabled={nightChecking || nightDone} className="w-full sm:w-auto">
               {nightChecking ? 'Salvando...' : 'Concluir e salvar'}
             </Button>
           </DialogFooter>
