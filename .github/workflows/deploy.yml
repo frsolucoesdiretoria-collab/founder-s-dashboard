@@ -59,6 +59,25 @@ jobs:
             git reset --hard origin/${{ github.ref_name }}
             git clean -fd
             
+            # Configure .env.local with Enzo database IDs
+            echo "⚙️  Configuring .env.local..."
+            if [ ! -f .env.local ]; then
+              echo "   Creating .env.local from env.local.example..."
+              cp env.local.example .env.local
+            fi
+            
+            # Ensure Enzo database IDs are set (from env.local.example)
+            if ! grep -q "NOTION_DB_KPIS_ENZO=" .env.local; then
+              echo "   Adding Enzo database IDs to .env.local..."
+              echo "" >> .env.local
+              echo "# Enzo Canei Dashboard Databases" >> .env.local
+              echo "NOTION_DB_KPIS_ENZO=2ed84566a5fa818b8b0d000c657c9913" >> .env.local
+              echo "NOTION_DB_GOALS_ENZO=2ed84566a5fa812d8244000c3a5cdf24" >> .env.local
+              echo "NOTION_DB_ACTIONS_ENZO=2ed84566a5fa8182ab81000c1905c93e" >> .env.local
+            else
+              echo "   Enzo database IDs already configured in .env.local"
+            fi
+            
             # Install dependencies (including devDependencies for build)
             echo "📦 Installing dependencies..."
             npm ci --include=dev
