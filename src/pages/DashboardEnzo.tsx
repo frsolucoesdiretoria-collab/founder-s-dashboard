@@ -3,10 +3,9 @@ import { AppLayout } from '@/components/AppLayout';
 import { KPICard } from '@/components/KPICard';
 import { KPIChart } from '@/components/KPIChart';
 import { ActionChecklist } from '@/components/ActionChecklist';
-import { ContactsToActivate } from '@/components/ContactsToActivate';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Loader2, RefreshCw } from 'lucide-react';
-import { getEnzoKPIs, getEnzoGoals, getEnzoDailyActions, updateEnzoActionDone, getEnzoContacts, createEnzoContact, updateEnzoContact } from '@/services';
+import { getEnzoKPIs, getEnzoGoals, getEnzoDailyActions, updateEnzoActionDone } from '@/services';
 import type { KPI } from '@/types/kpi';
 import type { Goal } from '@/types/goal';
 import type { Action } from '@/types/action';
@@ -14,19 +13,12 @@ import type { NotionKPI, NotionGoal, NotionAction } from '@/lib/notion/types';
 import { toast } from 'sonner';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-
-interface Contact {
-  id: string;
-  name: string;
-  whatsapp?: string;
-}
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function DashboardEnzo() {
   const [kpis, setKpis] = useState<KPI[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
   const [actions, setActions] = useState<Action[]>([]);
-  const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -45,14 +37,12 @@ export default function DashboardEnzo() {
     const results = await Promise.allSettled([
       getEnzoKPIs(),
       getEnzoGoals(),
-      getEnzoDailyActions(),
-      loadContacts() // Já trata erros internamente
+      getEnzoDailyActions()
     ]);
 
     const kpisData = results[0].status === 'fulfilled' ? results[0].value : [];
     const goalsData = results[1].status === 'fulfilled' ? results[1].value : [];
     const actionsData = results[2].status === 'fulfilled' ? results[2].value : [];
-    const contactsData = results[3].status === 'fulfilled' ? results[3].value : [];
 
     // Verificar erros específicos nos KPIs (mais crítico)
     if (results[0].status === 'rejected') {
@@ -101,29 +91,6 @@ export default function DashboardEnzo() {
     setRefreshing(false);
   }
 
-  async function loadContacts(): Promise<Contact[]> {
-    try {
-      const contactsData = await getEnzoContacts();
-      // Convert from API format (Name) to component format (name)
-      const convertedContacts: Contact[] = contactsData.map(c => ({
-        id: c.id,
-        name: c.Name,
-        whatsapp: c.WhatsApp
-      }));
-      setContacts(convertedContacts);
-      return convertedContacts;
-    } catch (err: any) {
-      console.error('Error loading contacts:', err);
-      // If contacts DB is not configured, return empty array (don't fail entire load)
-      if (err.message?.includes('NOTION_DB_CONTACTS_ENZO') || err.message?.includes('not configured')) {
-        console.warn('Contacts database not configured, using empty list');
-        return [];
-      }
-      // For other errors, also return empty array to not break the dashboard
-      return [];
-    }
-  }
-
   const handleRefresh = () => {
     setRefreshing(true);
     loadData();
@@ -141,48 +108,6 @@ export default function DashboardEnzo() {
     } catch (err: any) {
       console.error('Error updating action:', err);
       toast.error(err.reason || err.message || 'Erro ao atualizar ação');
-    }
-  };
-
-  const handleUpdateContact = async (id: string, updates: Partial<Contact>) => {
-    try {
-      // Update in Notion
-      const notionUpdates: { name?: string; whatsapp?: string } = {};
-      if (updates.name !== undefined) {
-        notionUpdates.name = updates.name;
-      }
-      if (updates.whatsapp !== undefined) {
-        notionUpdates.whatsapp = updates.whatsapp;
-      }
-
-      const updated = await updateEnzoContact(id, notionUpdates);
-      
-      // Update local state
-      setContacts(prev => prev.map(c => 
-        c.id === id 
-          ? { id: updated.id, name: updated.Name, whatsapp: updated.WhatsApp }
-          : c
-      ));
-    } catch (err: any) {
-      console.error('Error updating contact:', err);
-      toast.error('Erro ao atualizar contato. Tente novamente.');
-    }
-  };
-
-  const handleAddContact = async () => {
-    if (contacts.length >= 20) return;
-    try {
-      const newContact = await createEnzoContact('');
-      
-      // Update local state
-      setContacts(prev => [...prev, {
-        id: newContact.id,
-        name: newContact.Name,
-        whatsapp: newContact.WhatsApp
-      }]);
-    } catch (err: any) {
-      console.error('Error creating contact:', err);
-      toast.error('Erro ao adicionar contato. Tente novamente.');
     }
   };
 
@@ -304,36 +229,23 @@ export default function DashboardEnzo() {
           </Alert>
         )}
 
-        {/* Ações do Dia */}
-        <div className="space-y-3 md:space-y-4">
-          <div>
-            <h2 className="text-base md:text-xl font-bold text-foreground">Ações do Dia</h2>
-            <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
-              Checklist para hoje
-            </p>
+        {/* Ações do Dia (To-dos) */}
+        {kpis.length > 0 && (
+          <div className="space-y-3 md:space-y-4">
+            <div>
+              <h2 className="text-base md:text-xl font-bold text-foreground">Ações do Dia</h2>
+              <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+                Checklist para hoje
+              </p>
+            </div>
+            <ActionChecklist
+              actions={actions as NotionAction[]}
+              onToggle={handleToggleAction}
+              journalBlocked={false}
+              refreshing={refreshing}
+            />
           </div>
-          <ActionChecklist
-            actions={actions as NotionAction[]}
-            onToggle={handleToggleAction}
-            journalBlocked={false}
-            refreshing={refreshing}
-          />
-        </div>
-
-        {/* Contatos para Ativar - Sempre visível */}
-        <div className="space-y-3 md:space-y-4">
-          <div>
-            <h2 className="text-base md:text-xl font-bold text-foreground">Contatos para Ativar</h2>
-            <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
-              Complete os dados até atingir 20 contatos
-            </p>
-          </div>
-          <ContactsToActivate
-            contacts={contacts}
-            onUpdateContact={handleUpdateContact}
-            onAddContact={handleAddContact}
-          />
-        </div>
+        )}
       </div>
     </AppLayout>
   );
