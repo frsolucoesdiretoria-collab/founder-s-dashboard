@@ -865,6 +865,73 @@ export async function toggleActionDoneEnzo(actionId: string, done: boolean): Pro
 }
 
 /**
+ * Create Enzo action
+ */
+export async function createActionEnzo(
+  payload: Partial<NotionAction>
+): Promise<NotionAction> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Actions_Enzo');
+  if (!dbId) throw new Error('NOTION_DB_ACTIONS_ENZO not configured');
+
+  // Build Notion properties
+  // Normalize date to prevent timezone issues
+  const normalizedDate = normalizeDate(payload.Date);
+  
+  const properties: any = {
+    Name: { title: [{ text: { content: payload.Name || '' } }] },
+    Type: { select: { name: payload.Type || '' } },
+    Date: { date: { start: normalizedDate } },
+    Done: { checkbox: false },
+    PublicVisible: { checkbox: payload.PublicVisible ?? true },
+  };
+
+  // Add optional fields
+  if (payload.Contribution !== undefined) {
+    properties.Contribution = { number: payload.Contribution };
+  }
+  if (payload.Earned !== undefined) {
+    properties.Earned = { number: payload.Earned };
+  }
+  if (payload.Goal) {
+    properties.Goal = { relation: [{ id: payload.Goal }] };
+  }
+  if (payload.Notes) {
+    properties.Notes = { rich_text: [{ text: { content: payload.Notes } }] };
+  }
+  if (payload.Contact) {
+    properties.Contact = { relation: [{ id: payload.Contact }] };
+  }
+  if (payload.Client) {
+    properties.Client = { relation: [{ id: payload.Client }] };
+  }
+  if (payload.Proposal) {
+    properties.Proposal = { relation: [{ id: payload.Proposal }] };
+  }
+  if (payload.Diagnostic) {
+    properties.Diagnostic = { relation: [{ id: payload.Diagnostic }] };
+  }
+  if (payload.WeekKey) {
+    properties.WeekKey = { rich_text: [{ text: { content: payload.WeekKey } }] };
+  }
+  if (payload.Month !== undefined) {
+    properties.Month = { number: payload.Month };
+  }
+  if (payload.Priority) {
+    properties.Priority = { select: { name: payload.Priority } };
+  }
+
+  const response = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToAction(response);
+}
+
+/**
  * Convert Notion page to Enzo Contact
  */
 function pageToContactEnzo(page: any): { id: string; Name: string; WhatsApp?: string } {

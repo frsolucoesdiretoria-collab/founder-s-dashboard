@@ -17,8 +17,20 @@ export function KPICard({ kpi, goal }: KPICardProps) {
   // If TargetValue is 0 or empty, progress is 0
   const progress = targetValue > 0 ? Math.min(100, (actual / targetValue) * 100) : 0;
   
-  // Format target display: show "—" if TargetValue is empty/zero
-  const targetDisplay = targetValue > 0 ? targetValue.toString() : '—';
+  // Format currency for Brazilian Real
+  const formatCurrency = (value: number): string => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(value);
+  };
+  
+  // Format values based on whether it's financial
+  const isFinancial = kpi.IsFinancial === true;
+  const actualDisplay = isFinancial ? formatCurrency(actual) : actual.toString();
+  const targetDisplay = targetValue > 0 
+    ? (isFinancial ? formatCurrency(targetValue) : `${targetValue.toString()}${kpi.Unit ? ` ${kpi.Unit}` : ''}`)
+    : '—';
   
   return (
     <div className="w-full">
@@ -37,10 +49,10 @@ export function KPICard({ kpi, goal }: KPICardProps) {
       </div>
       <div className="flex items-baseline gap-1.5 md:gap-2 mb-2 md:mb-3">
         <span className="text-xl md:text-2xl font-bold text-foreground">
-          {actual}
+          {actualDisplay}
         </span>
         <span className="text-xs md:text-sm text-muted-foreground">
-          / {targetDisplay}{kpi.Unit ? ` ${kpi.Unit}` : ''}
+          / {targetDisplay}
         </span>
       </div>
       

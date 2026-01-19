@@ -252,22 +252,10 @@ export default function DashboardEnzo() {
             </p>
           </div>
           
-          {/* Grid de KPIs - Meta Semanal destacada + Input KPIs */}
+          {/* Grid de KPIs - Input KPIs primeiro, Meta Semanal por último */}
           {kpis.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-              {/* Meta Semanal (output) - primeira se for financeiro, senão após os inputs */}
-              {outputKPI && (
-                <Card key={outputKPI.id} className="border-2 border-primary/50 overflow-hidden">
-                  <CardContent className="pt-4 md:pt-6">
-                    <KPICard 
-                      kpi={outputKPI as NotionKPI}
-                      goal={goals.find(g => g.KPI === outputKPI.id) as NotionGoal | undefined}
-                    />
-                  </CardContent>
-                </Card>
-              )}
-              
-              {/* Input KPIs */}
+              {/* Input KPIs primeiro */}
               {inputKPIs.map((kpi) => {
                 const goal = goals.find(g => g.KPI === kpi.id);
                 return (
@@ -281,6 +269,18 @@ export default function DashboardEnzo() {
                   </Card>
                 );
               })}
+              
+              {/* Meta Semanal (output) - sempre por último */}
+              {outputKPI && (
+                <Card key={outputKPI.id} className="border-2 border-primary/50 overflow-hidden">
+                  <CardContent className="pt-4 md:pt-6">
+                    <KPICard 
+                      kpi={outputKPI as NotionKPI}
+                      goal={goals.find(g => g.KPI === outputKPI.id) as NotionGoal | undefined}
+                    />
+                  </CardContent>
+                </Card>
+              )}
             </div>
           ) : (
             !loading && (
