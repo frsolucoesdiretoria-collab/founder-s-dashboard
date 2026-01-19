@@ -90,6 +90,10 @@ jobs:
             
             # Install dependencies (including devDependencies for build)
             echo "📦 Installing dependencies..."
+            # Limpar node_modules antes de instalar para evitar erros ENOTEMPTY
+            echo "   Limpando node_modules antigo..."
+            rm -rf node_modules package-lock.json 2>/dev/null || true
+            echo "   Instalando dependências..."
             npm ci --include=dev
             
             # Build application
