@@ -1,0 +1,43 @@
+# COMANDO INLINE PARA EXECUTAR DIRETAMENTE NA VPS
+# Copie e cole este comando COMPLETO no terminal da VPS
+
+# Opção 1: Se você sabe o caminho do projeto, execute:
+cd /caminho/do/projeto && git pull origin staging && bash scripts/fix-vps-enzo-auto.sh
+
+# Opção 2: Se não sabe o caminho, encontre primeiro:
+find /home -name "package.json" -path "*/founder-s-dashboard/*" 2>/dev/null | head -1 | xargs dirname
+
+# Opção 3: COMANDO COMPLETO INLINE (executa tudo de uma vez):
+# Copie e cole este bloco INTEIRO no terminal da VPS:
+
+PROJECT_DIR=$(find /home /root -name "package.json" -path "*founder-s-dashboard*" 2>/dev/null | head -1 | xargs dirname 2>/dev/null || echo "")
+if [ -z "$PROJECT_DIR" ]; then
+  echo "❌ Projeto não encontrado. Execute manualmente:"
+  echo "   cd /caminho/do/projeto"
+  echo "   git pull origin staging"
+  echo "   bash scripts/fix-vps-enzo-auto.sh"
+else
+  cd "$PROJECT_DIR" && git pull origin staging && bash scripts/fix-vps-enzo-auto.sh
+fi
+
+# Opção 4: COMANDO DIRETO SEM GIT (se já estiver no diretório certo):
+# Execute diretamente o código do script inline:
+
+KPIS_ID="2ed84566a5fa81299c07c412630f9aa4"
+GOALS_ID="2ed84566a5fa81ada870cf698ec50bf0"
+ACTIONS_ID="2ed84566a5fa81c4a8cbc23841abdc1e"
+CONTACTS_ID="2ed84566a5fa81a7bf7afeaa38ea6eff"
+
+[ ! -f ".env.local" ] && ([ -f "env.local.example" ] && cp env.local.example .env.local || touch .env.local)
+
+grep -q "^NOTION_DB_KPIS_ENZO=" .env.local || (echo "" >> .env.local && echo "# Enzo Canei Dashboard Databases" >> .env.local && echo "NOTION_DB_KPIS_ENZO=$KPIS_ID" >> .env.local)
+grep -q "^NOTION_DB_GOALS_ENZO=" .env.local || echo "NOTION_DB_GOALS_ENZO=$GOALS_ID" >> .env.local
+grep -q "^NOTION_DB_ACTIONS_ENZO=" .env.local || echo "NOTION_DB_ACTIONS_ENZO=$ACTIONS_ID" >> .env.local
+grep -q "^NOTION_DB_CONTACTS_ENZO=" .env.local || echo "NOTION_DB_CONTACTS_ENZO=$CONTACTS_ID" >> .env.local
+
+pm2 restart founder-dashboard 2>/dev/null || (NODE_ENV=production pm2 start npm --name "founder-dashboard" -- start && pm2 save)
+sleep 5
+curl -s http://localhost:3001/api/health | head -c 50
+echo ""
+curl -s http://localhost:3001/api/enzo/kpis | grep -o '"id"' | wc -l | xargs echo "KPIs encontrados:"
+
