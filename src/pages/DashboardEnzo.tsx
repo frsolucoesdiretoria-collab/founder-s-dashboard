@@ -32,6 +32,14 @@ export default function DashboardEnzo() {
 
   useEffect(() => {
     loadData();
+    // Retry após 2 segundos se não houver KPIs
+    const retryTimer = setTimeout(() => {
+      if (kpis.length === 0 && !loading) {
+        console.log('🔄 Retrying to load KPIs...');
+        loadData();
+      }
+    }, 2000);
+    return () => clearTimeout(retryTimer);
   }, []);
 
   async function loadData() {
@@ -112,6 +120,7 @@ export default function DashboardEnzo() {
 
   const handleRefresh = () => {
     setRefreshing(true);
+    console.log('🔄 Manual refresh triggered');
     loadData();
   };
 
