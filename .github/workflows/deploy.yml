@@ -149,17 +149,60 @@ jobs:
             echo "🚀 Starting application..."
             cd "$PROJECT_PATH"
             
-            # Carregar variáveis de ambiente do .env.local
-            set -a
-            source .env.local 2>/dev/null || true
-            set +a
-            
             # Garantir que NODE_ENV e PORT estão definidos
             export NODE_ENV=production
             export PORT=3001
             
-            # Usar pm2 com variáveis de ambiente explícitas
+            # Carregar variáveis de ambiente do .env.local manualmente
+            # e passar para o PM2
+            echo "📋 Carregando variáveis de ambiente do .env.local..."
+            if [ -f .env.local ]; then
+              # Exportar todas as variáveis do .env.local
+              set -a
+              source .env.local 2>/dev/null || true
+              set +a
+              echo "   ✅ Variáveis carregadas"
+            else
+              echo "   ⚠️  .env.local não encontrado!"
+            fi
+            
+            # Criar arquivo de ecossistema PM2 temporário com variáveis
+            cat > ecosystem.config.js << 'EOF'
+            module.exports = {
+              apps: [{
+                name: 'founder-dashboard',
+                script: 'npm',
+                args: 'start',
+                cwd: process.cwd(),
+                env: {
+                  NODE_ENV: 'production',
+                  PORT: 3001
+                },
+                autorestart: true,
+                watch: false,
+                max_memory_restart: '1G',
+                min_uptime: '10s',
+                max_restarts: 10
+              }]
+            };
+            EOF
+            
+            # Usar PM2 ecosystem ou fallback para comando direto
+            # Primeiro, tenta carregar .env.local e passar variáveis
+            if [ -f .env.local ]; then
+              # Carregar .env.local e exportar todas as variáveis
+              export $(cat .env.local | grep -v '^#' | xargs)
+            fi
+            
+            # Garantir NODE_ENV e PORT
+            export NODE_ENV=production
+            export PORT=3001
+            
+            # Iniciar PM2 com variáveis carregadas
+            echo "🚀 Iniciando PM2..."
+            pm2 start ecosystem.config.js --update-env || \
             pm2 start npm --name "founder-dashboard" -- start --update-env
+            
             pm2 save
             
             # Aguardar servidor iniciar (aumentado para 10 segundos)
