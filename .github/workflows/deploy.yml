@@ -77,7 +77,6 @@ jobs:
               lsof -ti:3001 | xargs kill -9 2>/dev/null || true
               sleep 2
               # Iniciar com NODE_ENV=production explicitamente
-              cd ${{ secrets.VPS_DEPLOY_PATH }}
               NODE_ENV=production pm2 start npm --name "founder-dashboard" -- start
               pm2 save
               pm2 logs founder-dashboard --lines 20 --nostream
