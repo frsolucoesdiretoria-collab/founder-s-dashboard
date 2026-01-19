@@ -108,7 +108,7 @@ Os KPIs devem aparecer com dados! 🎉
 ## 📞 Resumo dos Links Importantes
 
 - **Adicionar Secret:** https://github.com/frsolucoesdiretoria-collab/founder-s-dashboard/settings/secrets/actions
-- **Executar Workflow:** https://github.com/frsolucoesdiretoria-collab/founder-s-dashboard/actions/workflows/setup-notion-token.yml
+- **Executar Workflow:** https://github.com/frsolucoesdiretoria-collab/founder-s-dashboard/actions (use "Fix Notion Connection on VPS")
 - **Ver Workflows:** https://github.com/frsolucoesdiretoria-collab/founder-s-dashboard/actions
 - **Obter NOTION_TOKEN:** https://www.notion.so/my-integrations
 - **Testar Site:** https://frtechltda.com.br/dashboard-enzo
