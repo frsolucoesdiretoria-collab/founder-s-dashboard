@@ -130,50 +130,31 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
   });
 });
 
-// Start server with retry logic for port conflicts
-function startServer() {
-  const server = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-    console.log(`📊 API available at http://localhost:${PORT}/api`);
-    console.log(`\n💡 Health check: http://localhost:${PORT}/api/health`);
-    console.log(`💡 Admin health: http://localhost:${PORT}/api/admin/health`);
-    console.log(`💡 Self test: http://localhost:${PORT}/api/__selftest\n`);
-  }).on('error', (err: NodeJS.ErrnoException) => {
-    if (err.code === 'EADDRINUSE') {
-      console.error(`❌ Port ${PORT} is already in use.`);
-      console.error(`   Attempting to kill process on port ${PORT}...`);
-      // Try to kill the process on the port (Linux/Mac)
-      try {
-        if (process.platform !== 'win32') {
-          execSync(`lsof -ti:${PORT} | xargs kill -9 2>/dev/null || true`, { stdio: 'ignore' });
-          console.log(`   Waiting 2 seconds before retry...`);
-          setTimeout(() => {
-            console.log(`   Retrying to start server...`);
-            startServer();
-          }, 2000);
-        } else {
-          console.error(`   Please stop the process using port ${PORT} or change PORT in .env.local`);
-          process.exit(1);
-        }
-      } catch (killErr) {
-        console.error(`   Could not kill process on port ${PORT}. Please stop it manually.`);
-        process.exit(1);
-      }
-    } else {
-      console.error('❌ Failed to start server:', err.message);
-      process.exit(1);
-    }
-  });
-  
-  // Graceful shutdown
-  process.on('SIGTERM', () => {
-    console.log('SIGTERM received, shutting down gracefully...');
-    server.close(() => {
-      console.log('Server closed');
-      process.exit(0);
-    });
-  });
-}
+// Start server
+// PM2 já gerencia a porta, então não precisamos de retry complexo
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`📊 API available at http://localhost:${PORT}/api`);
+  console.log(`\n💡 Health check: http://localhost:${PORT}/api/health`);
+  console.log(`💡 Admin health: http://localhost:${PORT}/api/admin/health`);
+  console.log(`💡 Self test: http://localhost:${PORT}/api/__selftest\n`);
+}).on('error', (err: NodeJS.ErrnoException) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`❌ Port ${PORT} is already in use.`);
+    console.error(`   PM2 should handle this. If error persists, check: pm2 list`);
+  } else {
+    console.error('❌ Failed to start server:', err.message);
+  }
+  // Não crashar imediatamente, deixar PM2 gerenciar
+  setTimeout(() => process.exit(1), 1000);
+});
 
-startServer();
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down gracefully...');
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
+});
 
