@@ -48,14 +48,16 @@ export default function DashboardEnzo() {
       const kpiError = results[0].reason;
       console.error('Error loading KPIs:', kpiError);
       
-      if (kpiError?.message?.includes('429') || kpiError?.message?.includes('rate limit')) {
+      const errorMsg = kpiError?.message || '';
+      
+      if (errorMsg.includes('429') || errorMsg.includes('rate limit')) {
         setError('Muitas requisições. Aguarde alguns segundos e recarregue a página.');
-      } else if (kpiError?.message?.includes('NOTION_DB_KPIS_ENZO') || kpiError?.message?.includes('not configured')) {
+      } else if (errorMsg.includes('NOTION_DB_KPIS_ENZO') || errorMsg.includes('not configured')) {
         setError('Database de KPIs não configurada. Verifique NOTION_DB_KPIS_ENZO no .env.local da VPS.');
-      } else if (kpiError?.message?.includes('Failed to fetch') || kpiError?.message?.includes('NetworkError') || kpiError?.message?.includes('conectar ao servidor')) {
-        setError('Não foi possível conectar ao servidor. Verifique se o servidor está rodando na VPS.');
+      } else if (errorMsg.includes('Failed to fetch') || errorMsg.includes('NetworkError') || errorMsg.includes('conectar ao servidor') || errorMsg.includes('Servidor não está respondendo')) {
+        setError('Não foi possível conectar ao servidor. Verifique se o servidor está rodando na VPS na porta 3001.');
       } else {
-        setError(`Erro ao carregar KPIs: ${kpiError?.message || 'Erro desconhecido'}`);
+        setError(`Erro ao carregar KPIs: ${errorMsg || 'Erro desconhecido'}`);
       }
     } else if (kpisData.length === 0) {
       // KPIs carregaram mas estão vazios (não é erro, apenas não há dados)

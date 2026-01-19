@@ -42,10 +42,15 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || process.env.VITE_DEV_SERVER_URL || 'http://localhost:8080',
+// CORS: Em produção, aceitar requisições do mesmo domínio (mesmo servidor)
+// Em desenvolvimento, aceitar do Vite dev server
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? true // Aceitar qualquer origem em produção (mesmo servidor)
+    : (process.env.CORS_ORIGIN || process.env.VITE_DEV_SERVER_URL || 'http://localhost:8080'),
   credentials: true
-}));
+};
+app.use(cors(corsOptions));
 // Increase JSON limit to support CSV uploads as text payloads (import)
 app.use(express.json({ limit: '10mb' }));
 
