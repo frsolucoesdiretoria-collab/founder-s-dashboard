@@ -1,0 +1,8 @@
+# COMANDO PARA TESTAR INÍCIO MANUAL (VER ERRO DIRETO)
+# Execute na VPS para ver o erro real:
+
+cd /var/www/founder-dashboard && pm2 delete founder-dashboard 2>/dev/null || true && NODE_ENV=production PORT=3001 npm start
+
+# Isso vai mostrar o erro diretamente no terminal
+# Pressione Ctrl+C para parar após ver o erro
+

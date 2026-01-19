@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -28,23 +28,29 @@ export interface EnzoContact {
   name: string;
   whatsapp?: string;
   status?: string;
+  saleValue?: number;
 }
 
 interface EnzoKanbanProps {
   contacts: EnzoContact[];
   onUpdateContactStatus: (id: string, status: string) => void;
+  onUpdateContactSaleValue?: (id: string, saleValue: number | null) => void;
 }
 
 const STATUSES = [
   { id: 'Contato Ativado', label: 'Contato Ativado', icon: Users, color: 'bg-blue-500/10 text-blue-500 border-blue-500/20' },
   { id: 'Café Agendado', label: 'Café Agendado', icon: Calendar, color: 'bg-purple-500/10 text-purple-500 border-purple-500/20' },
-  { id: 'Café Executado', label: 'Café Executado', icon: CheckCircle, color: 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20' },
-  { id: 'Proposta Enviada', label: 'Proposta Enviada', icon: FileText, color: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' },
-  { id: 'Venda Fechada', label: 'Venda Fechada', icon: TrendingUp, color: 'bg-green-500/10 text-green-500 border-green-500/20' },
-  { id: 'Perdido', label: 'Perdido', icon: XCircle, color: 'bg-red-500/10 text-red-500 border-red-500/20' },
+  { id: 'Café Executado', label: 'Reunião 1:1 Feita', icon: CheckCircle, color: 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20' },
+  { id: 'Venda Feita', label: 'Venda Feita', icon: TrendingUp, color: 'bg-green-500/10 text-green-500 border-green-500/20' },
 ];
 
-function DraggableContactCard({ contact }: { contact: EnzoContact }) {
+function DraggableContactCard({ 
+  contact, 
+  onUpdateSaleValue 
+}: { 
+  contact: EnzoContact;
+  onUpdateSaleValue?: (id: string, saleValue: number | null) => void;
+}) {
   const {
     attributes,
     listeners,
@@ -62,13 +68,72 @@ function DraggableContactCard({ contact }: { contact: EnzoContact }) {
     opacity: isDragging ? 0.5 : 1
   };
 
+  const isInVendaFeita = contact.status === 'Venda Feita';
+  const [saleValue, setSaleValue] = useState<string>(contact.saleValue?.toString() || '');
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleSaleValueChange = (value: string) => {
+    setSaleValue(value);
+  };
+
+  const handleSaleValueBlur = () => {
+    setIsEditing(false);
+    const numValue = parseFloat(saleValue);
+    if (!isNaN(numValue) && numValue >= 0) {
+      onUpdateSaleValue?.(contact.id, numValue);
+    } else if (saleValue.trim() === '') {
+      onUpdateSaleValue?.(contact.id, null);
+    } else {
+      // Reverter para valor original se inválido
+      setSaleValue(contact.saleValue?.toString() || '');
+    }
+  };
+
+  // Atualizar valor local quando prop mudar
+  useEffect(() => {
+    if (contact.saleValue !== undefined) {
+      setSaleValue(contact.saleValue.toString());
+    } else {
+      setSaleValue('');
+    }
+  }, [contact.saleValue]);
+
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <Card className="p-3 hover:border-primary/50 transition-colors cursor-grab active:cursor-grabbing mb-2">
-        <div className="space-y-1">
+        <div className="space-y-2">
           <p className="font-medium text-sm text-foreground">{contact.name || 'Sem nome'}</p>
           {contact.whatsapp && (
             <p className="text-xs text-muted-foreground">{contact.whatsapp}</p>
+          )}
+          {isInVendaFeita && onUpdateSaleValue && (
+            <div className="pt-2 border-t">
+              <label className="text-xs text-muted-foreground block mb-1">
+                Valor da venda (R$)
+              </label>
+              <input
+                type="number"
+                value={saleValue}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  handleSaleValueChange(e.target.value);
+                  setIsEditing(true);
+                }}
+                onBlur={(e) => {
+                  e.stopPropagation();
+                  handleSaleValueBlur();
+                }}
+                onFocus={(e) => {
+                  e.stopPropagation();
+                  setIsEditing(true);
+                }}
+                onClick={(e) => e.stopPropagation()}
+                placeholder="0,00"
+                className="w-full px-2 py-1 text-xs border rounded bg-background focus:outline-none focus:ring-1 focus:ring-primary"
+                min="0"
+                step="0.01"
+              />
+            </div>
           )}
         </div>
       </Card>
@@ -78,10 +143,12 @@ function DraggableContactCard({ contact }: { contact: EnzoContact }) {
 
 function KanbanColumn({ 
   status, 
-  contacts 
+  contacts,
+  onUpdateSaleValue
 }: { 
   status: typeof STATUSES[0]; 
   contacts: EnzoContact[];
+  onUpdateSaleValue?: (id: string, saleValue: number | null) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ 
     id: status.id,
@@ -105,7 +172,11 @@ function KanbanColumn({
         <CardContent ref={setNodeRef} className={`min-h-[200px] ${isOver ? 'bg-primary/5' : ''}`} data-status={status.id}>
           <SortableContext items={contactIds} strategy={verticalListSortingStrategy}>
             {contacts.map(contact => (
-              <DraggableContactCard key={contact.id} contact={contact} />
+              <DraggableContactCard 
+                key={contact.id} 
+                contact={contact}
+                onUpdateSaleValue={onUpdateSaleValue}
+              />
             ))}
             {contacts.length === 0 && (
               <p className="text-xs text-muted-foreground text-center py-8">
@@ -119,7 +190,7 @@ function KanbanColumn({
   );
 }
 
-export function EnzoKanban({ contacts, onUpdateContactStatus }: EnzoKanbanProps) {
+export function EnzoKanban({ contacts, onUpdateContactStatus, onUpdateContactSaleValue }: EnzoKanbanProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -128,9 +199,16 @@ export function EnzoKanban({ contacts, onUpdateContactStatus }: EnzoKanbanProps)
     })
   );
 
-  // Agrupar contatos por status
+  // Agrupar contatos por status (normalizar status antigos)
   const contactsByStatus = STATUSES.reduce((acc, status) => {
-    acc[status.id] = contacts.filter(c => (c.status || 'Contato Ativado') === status.id);
+    acc[status.id] = contacts.filter(c => {
+      const contactStatus = c.status || 'Contato Ativado';
+      // Migrar status antigos para novos
+      const normalizedStatus = contactStatus === 'Proposta Enviada' || contactStatus === 'Venda Fechada' 
+        ? 'Venda Feita' 
+        : contactStatus;
+      return normalizedStatus === status.id;
+    });
     return acc;
   }, {} as Record<string, EnzoContact[]>);
 
@@ -196,17 +274,27 @@ export function EnzoKanban({ contacts, onUpdateContactStatus }: EnzoKanbanProps)
       return;
     }
 
-    // Verificar se o status realmente mudou
+    // Verificar se o status realmente mudou (normalizar antes de comparar)
     const currentStatus = contact.status || 'Contato Ativado';
-    if (currentStatus === newStatus) {
+    const normalizedCurrentStatus = currentStatus === 'Proposta Enviada' || currentStatus === 'Venda Fechada' 
+      ? 'Venda Feita' 
+      : currentStatus;
+    
+    // Normalizar novo status também
+    let normalizedNewStatus = newStatus;
+    if (newStatus === 'Proposta Enviada' || newStatus === 'Venda Fechada') {
+      normalizedNewStatus = 'Venda Feita';
+    }
+    
+    if (normalizedCurrentStatus === normalizedNewStatus) {
       console.log('Status unchanged, skipping update');
       return;
     }
 
-    console.log(`✅ Updating contact ${contactId} from "${currentStatus}" to "${newStatus}"`);
+    console.log(`✅ Updating contact ${contactId} from "${currentStatus}" to "${normalizedNewStatus}"`);
     
-    // Atualizar status
-    onUpdateContactStatus(contactId, newStatus);
+    // Atualizar status (usar status normalizado)
+    onUpdateContactStatus(contactId, normalizedNewStatus);
   };
 
   return (
@@ -230,6 +318,7 @@ export function EnzoKanban({ contacts, onUpdateContactStatus }: EnzoKanbanProps)
               key={status.id}
               status={status}
               contacts={contactsByStatus[status.id] || []}
+              onUpdateSaleValue={onUpdateContactSaleValue}
             />
           ))}
         </div>

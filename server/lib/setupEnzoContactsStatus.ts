@@ -5,6 +5,84 @@
 import { initNotionClient } from './notionDataLayer';
 import { getDatabaseId } from '../../src/lib/notion/schema';
 
+/**
+ * Migrate contacts from old status to new status
+ */
+async function migrateContactsStatus(client: any, dbId: string): Promise<void> {
+  try {
+    // Buscar todos os contatos com status antigo
+    const response = await client.databases.query({
+      database_id: dbId,
+      filter: {
+        or: [
+          { property: 'Status', select: { equals: 'Proposta Enviada' } },
+          { property: 'Status', select: { equals: 'Venda Fechada' } }
+        ]
+      }
+    });
+
+    // Migrar cada contato
+    for (const page of response.results) {
+      const currentStatus = page.properties.Status?.select?.name;
+      if (currentStatus === 'Proposta Enviada' || currentStatus === 'Venda Fechada') {
+        await client.pages.update({
+          page_id: page.id,
+          properties: {
+            Status: {
+              select: { name: 'Venda Feita' }
+            }
+          }
+        });
+        console.log(`✅ Migrated contact ${page.id} from "${currentStatus}" to "Venda Feita"`);
+      }
+    }
+  } catch (error: any) {
+    // Se falhar, apenas logar (não é crítico)
+    console.warn('⚠️  Could not migrate contacts status:', error.message);
+  }
+}
+
+/**
+ * Ensure ValorVenda field exists
+ */
+async function ensureValorVendaField(client: any, dbId: string): Promise<{ success: boolean; message: string }> {
+  try {
+    const database = await client.databases.retrieve({ database_id: dbId });
+    const hasValorVendaField = database.properties.ValorVenda?.type === 'number';
+    
+    if (hasValorVendaField) {
+      return {
+        success: true,
+        message: 'Campo ValorVenda já existe.'
+      };
+    }
+
+    // Create ValorVenda field
+    await client.databases.update({
+      database_id: dbId,
+      properties: {
+        ValorVenda: {
+          number: {
+            format: 'currency',
+            currency_code: 'BRL'
+          }
+        }
+      }
+    });
+
+    return {
+      success: true,
+      message: 'Campo ValorVenda criado com sucesso.'
+    };
+  } catch (error: any) {
+    console.warn('⚠️  Could not create ValorVenda field:', error.message);
+    return {
+      success: false,
+      message: `Erro ao criar campo ValorVenda: ${error.message || 'Erro desconhecido'}`
+    };
+  }
+}
+
 export async function ensureEnzoContactsStatusField(): Promise<{ success: boolean; message: string }> {
   try {
     // Check if Notion is configured - don't crash if not
@@ -32,6 +110,15 @@ export async function ensureEnzoContactsStatusField(): Promise<{ success: boolea
     // First, retrieve the database to check if Status field exists
     const database = await client.databases.retrieve({ database_id: dbId });
     
+    // Migrar contatos com status antigo antes de atualizar opções
+    await migrateContactsStatus(client, dbId);
+    
+    // Ensure ValorVenda field exists
+    const valorVendaResult = await ensureValorVendaField(client, dbId);
+    if (valorVendaResult.success) {
+      console.log('✅', valorVendaResult.message);
+    }
+    
     const hasStatusField = database.properties.Status?.type === 'select';
     
     if (hasStatusField) {
@@ -42,9 +129,7 @@ export async function ensureEnzoContactsStatusField(): Promise<{ success: boolea
         'Contato Ativado',
         'Café Agendado',
         'Café Executado',
-        'Proposta Enviada',
-        'Venda Fechada',
-        'Perdido'
+        'Venda Feita'
       ];
 
       // Check which options are missing
@@ -91,10 +176,8 @@ export async function ensureEnzoContactsStatusField(): Promise<{ success: boolea
             options: [
               { name: 'Contato Ativado', color: 'blue' },
               { name: 'Café Agendado', color: 'purple' },
-              { name: 'Café Executado', color: 'blue' },
-              { name: 'Proposta Enviada', color: 'yellow' },
-              { name: 'Venda Fechada', color: 'green' },
-              { name: 'Perdido', color: 'red' }
+              { name: 'Café Executado', color: 'indigo' },
+              { name: 'Venda Feita', color: 'green' }
             ]
           }
         }

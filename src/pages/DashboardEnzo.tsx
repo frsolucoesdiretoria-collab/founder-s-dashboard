@@ -21,6 +21,7 @@ interface Contact {
   name: string;
   whatsapp?: string;
   status?: string;
+  saleValue?: number;
 }
 
 export default function DashboardEnzo() {
@@ -161,7 +162,8 @@ export default function DashboardEnzo() {
         id: c.id,
         name: c.Name,
         whatsapp: c.WhatsApp,
-        status: c.Status || 'Contato Ativado'
+        status: c.Status || 'Contato Ativado',
+        saleValue: (c as any).ValorVenda || undefined
       }));
     } catch (err: any) {
       // Se database não está configurada, retornar array vazio
@@ -188,7 +190,13 @@ export default function DashboardEnzo() {
       // Atualizar com dados reais do servidor
       setContacts(prev => prev.map(c => 
         c.id === id 
-          ? { id: updated.id, name: updated.Name, whatsapp: updated.WhatsApp, status: updated.Status || status }
+          ? { 
+              id: updated.id, 
+              name: updated.Name, 
+              whatsapp: updated.WhatsApp, 
+              status: updated.Status || status,
+              saleValue: (updated as any).ValorVenda || undefined
+            }
           : c
       ));
 
@@ -241,12 +249,15 @@ export default function DashboardEnzo() {
     ));
 
     try {
-      const notionUpdates: { name?: string; whatsapp?: string } = {};
+      const notionUpdates: { name?: string; whatsapp?: string; saleValue?: number | null } = {};
       if (updates.name !== undefined) {
         notionUpdates.name = updates.name;
       }
       if (updates.whatsapp !== undefined) {
         notionUpdates.whatsapp = updates.whatsapp;
+      }
+      if (updates.saleValue !== undefined) {
+        notionUpdates.saleValue = updates.saleValue ?? null;
       }
 
       const updated = await updateEnzoContact(id, notionUpdates);
@@ -254,9 +265,19 @@ export default function DashboardEnzo() {
       // Atualiza com os dados reais do servidor após sucesso
       setContacts(prev => prev.map(c => 
         c.id === id 
-          ? { id: updated.id, name: updated.Name, whatsapp: updated.WhatsApp, status: updated.Status || 'Contato Ativado' }
+          ? { 
+              id: updated.id, 
+              name: updated.Name, 
+              whatsapp: updated.WhatsApp, 
+              status: updated.Status || 'Contato Ativado',
+              saleValue: (updated as any).ValorVenda || undefined
+            }
           : c
       ));
+      
+      // Recarregar Goals para atualizar KPIs (especialmente Meta Semanal de Vendas)
+      const updatedGoals = await getEnzoGoals();
+      setGoals(updatedGoals);
     } catch (err: any) {
       console.error('Error updating contact:', err);
       // Reverte para o estado anterior em caso de erro
@@ -267,6 +288,10 @@ export default function DashboardEnzo() {
       }
       toast.error('Erro ao atualizar contato. Tente novamente.');
     }
+  };
+
+  const handleUpdateContactSaleValue = async (id: string, saleValue: number | null) => {
+    await handleUpdateContact(id, { saleValue });
   };
 
   const handleAddContact = async () => {
@@ -452,6 +477,7 @@ export default function DashboardEnzo() {
           <EnzoKanban
             contacts={contacts.filter(c => c.name && c.whatsapp)} // Apenas contatos completos
             onUpdateContactStatus={handleUpdateContactStatus}
+            onUpdateContactSaleValue={handleUpdateContactSaleValue}
           />
         </div>
       </div>

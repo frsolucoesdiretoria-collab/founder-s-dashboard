@@ -113,6 +113,7 @@ export interface EnzoContact {
   Name: string;
   WhatsApp?: string;
   Status?: string;
+  ValorVenda?: number;
 }
 
 /**
@@ -186,7 +187,7 @@ export async function createEnzoContact(name: string, whatsapp?: string): Promis
 /**
  * Update Enzo contact
  */
-export async function updateEnzoContact(id: string, updates: { name?: string; whatsapp?: string; status?: string }): Promise<EnzoContact> {
+export async function updateEnzoContact(id: string, updates: { name?: string; whatsapp?: string; status?: string; saleValue?: number | null }): Promise<EnzoContact> {
   try {
     // Usar URL relativa em produção, absoluta apenas em desenvolvimento
     const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');

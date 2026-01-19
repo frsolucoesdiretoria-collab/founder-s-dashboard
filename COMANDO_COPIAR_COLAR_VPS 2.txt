@@ -1,0 +1,14 @@
+# COMANDO COMPLETO PARA COPIAR E COLAR NA VPS
+# Conecte na VPS primeiro: ssh root@frtechltda.com.br
+# Depois copie e cole TODO o bloco abaixo:
+
+cd /var/www/founder-dashboard && git pull origin main && npm install --production && npm run build && pm2 restart founder-dashboard && pm2 save && echo "✅ Deploy concluído!" && pm2 status
+
+# Se der erro de PM2 não encontrado, execute primeiro:
+# npm install -g pm2
+
+# Se a aplicação não estiver rodando, execute:
+# pm2 start npm --name "founder-dashboard" -- start && pm2 save
+
+# Para ver logs:
+# pm2 logs founder-dashboard --lines 20

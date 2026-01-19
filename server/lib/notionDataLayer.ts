@@ -771,8 +771,18 @@ export async function getActions(range?: { start?: string; end?: string }): Prom
  */
 export async function getKPIsEnzo(): Promise<NotionKPI[]> {
   const client = initNotionClient();
-  const dbId = getDatabaseId('KPIs_Enzo');
-  if (!dbId) throw new Error('NOTION_DB_KPIS_ENZO not configured');
+  
+  // Tentar usar database específica do Enzo primeiro
+  let dbId = getDatabaseId('KPIs_Enzo');
+  
+  // Se não estiver configurada, usar a database principal de KPIs como fallback
+  if (!dbId) {
+    console.warn('⚠️  NOTION_DB_KPIS_ENZO not configured, falling back to NOTION_DB_KPIS');
+    dbId = getDatabaseId('KPIs');
+    if (!dbId) {
+      throw new Error('NOTION_DB_KPIS_ENZO and NOTION_DB_KPIS not configured');
+    }
+  }
 
   const response = await retryWithBackoff(() =>
     client.databases.query({
@@ -975,20 +985,21 @@ export async function createActionEnzo(
 /**
  * Convert Notion page to Enzo Contact
  */
-function pageToContactEnzo(page: any): { id: string; Name: string; WhatsApp?: string; Status?: string } {
+function pageToContactEnzo(page: any): { id: string; Name: string; WhatsApp?: string; Status?: string; ValorVenda?: number } {
   const props = page.properties;
   return {
     id: page.id,
     Name: extractText(props.Name),
     WhatsApp: extractPhoneNumber(props.WhatsApp) || undefined,
-    Status: extractSelect(props.Status) || undefined
+    Status: extractSelect(props.Status) || undefined,
+    ValorVenda: extractNumber(props.ValorVenda) || undefined
   };
 }
 
 /**
  * Get Enzo's contacts
  */
-export async function getContactsEnzo(): Promise<Array<{ id: string; Name: string; WhatsApp?: string; Status?: string }>> {
+export async function getContactsEnzo(): Promise<Array<{ id: string; Name: string; WhatsApp?: string; Status?: string; ValorVenda?: number }>> {
   const client = initNotionClient();
   const dbId = getDatabaseId('Contacts_Enzo');
   if (!dbId) throw new Error('NOTION_DB_CONTACTS_ENZO not configured');
@@ -1006,7 +1017,7 @@ export async function getContactsEnzo(): Promise<Array<{ id: string; Name: strin
 /**
  * Create Enzo contact
  */
-export async function createContactEnzo(name: string = '', whatsapp?: string): Promise<{ id: string; Name: string; WhatsApp?: string; Status?: string }> {
+export async function createContactEnzo(name: string = '', whatsapp?: string): Promise<{ id: string; Name: string; WhatsApp?: string; Status?: string; ValorVenda?: number }> {
   const client = initNotionClient();
   const dbId = getDatabaseId('Contacts_Enzo');
   if (!dbId) throw new Error('NOTION_DB_CONTACTS_ENZO not configured');
@@ -1046,7 +1057,7 @@ export async function createContactEnzo(name: string = '', whatsapp?: string): P
 /**
  * Update Enzo contact
  */
-export async function updateContactEnzo(id: string, updates: { name?: string; whatsapp?: string; status?: string }): Promise<{ id: string; Name: string; WhatsApp?: string; Status?: string }> {
+export async function updateContactEnzo(id: string, updates: { name?: string; whatsapp?: string; status?: string; saleValue?: number }): Promise<{ id: string; Name: string; WhatsApp?: string; Status?: string; ValorVenda?: number }> {
   const client = initNotionClient();
   const dbId = getDatabaseId('Contacts_Enzo');
   if (!dbId) throw new Error('NOTION_DB_CONTACTS_ENZO not configured');
@@ -1070,14 +1081,33 @@ export async function updateContactEnzo(id: string, updates: { name?: string; wh
 
   if (updates.status !== undefined) {
     try {
-      if (updates.status) {
-        properties.Status = { select: { name: updates.status } };
+      // Migrar status antigos para novos
+      let normalizedStatus = updates.status;
+      if (normalizedStatus === 'Proposta Enviada' || normalizedStatus === 'Venda Fechada') {
+        normalizedStatus = 'Venda Feita';
+      }
+      
+      if (normalizedStatus) {
+        properties.Status = { select: { name: normalizedStatus } };
       } else {
         properties.Status = { select: null };
       }
     } catch (err) {
       // Se o campo Status não existe, apenas logar e continuar sem atualizar
-      console.warn('⚠️  Campo Status não existe na database Contacts_Enzo. Adicione um campo Select chamado "Status" com as opções: Contato Ativado, Café Agendado, Café Executado, Proposta Enviada, Venda Fechada, Perdido');
+      console.warn('⚠️  Campo Status não existe na database Contacts_Enzo. Adicione um campo Select chamado "Status" com as opções: Contato Ativado, Café Agendado, Café Executado, Venda Feita');
+    }
+  }
+
+  if (updates.saleValue !== undefined) {
+    try {
+      if (updates.saleValue !== null && updates.saleValue !== undefined) {
+        properties.ValorVenda = { number: updates.saleValue };
+      } else {
+        properties.ValorVenda = { number: null };
+      }
+    } catch (err) {
+      // Se o campo ValorVenda não existe, apenas logar e continuar sem atualizar
+      console.warn('⚠️  Campo ValorVenda não existe na database Contacts_Enzo. Adicione um campo Number chamado "ValorVenda".');
     }
   }
 
@@ -1103,9 +1133,18 @@ export async function updateContactEnzo(id: string, updates: { name?: string; wh
 
   const updated = pageToContactEnzo(response);
   
-  // Se atualizou o status, garantir que está no retorno
+  // Se atualizou o status, garantir que está no retorno (com normalização)
   if (updates.status !== undefined) {
-    updated.Status = updates.status;
+    let normalizedStatus = updates.status;
+    if (normalizedStatus === 'Proposta Enviada' || normalizedStatus === 'Venda Fechada') {
+      normalizedStatus = 'Venda Feita';
+    }
+    updated.Status = normalizedStatus;
+  }
+  
+  // Se atualizou o valor da venda, garantir que está no retorno
+  if (updates.saleValue !== undefined) {
+    updated.ValorVenda = updates.saleValue;
   }
   
   return updated;

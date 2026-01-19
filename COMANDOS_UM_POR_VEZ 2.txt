@@ -1,0 +1,32 @@
+# COMANDOS PARA COPIAR E COLAR UM POR VEZ NA VPS
+# Execute cada linha, aguarde terminar, depois execute a próxima
+
+# === PASSO 1: Ir para o diretório ===
+cd /var/www/founder-dashboard
+
+# === PASSO 2: Resolver Git (copie e cole uma linha de cada vez) ===
+git stash
+
+git fetch origin main
+
+git reset --hard origin/main
+
+# === PASSO 3: Instalar dependências ===
+npm install --production
+
+# === PASSO 4: Fazer build ===
+npm run build
+
+# === PASSO 5: Reiniciar servidor ===
+pm2 restart founder-dashboard
+
+# === PASSO 6: Salvar configuração PM2 ===
+pm2 save
+
+# === PASSO 7: Ver status ===
+pm2 status
+
+# === PRONTO! ===
+# Site: https://frtechltda.com.br/finance
+# Senha: flora123
+

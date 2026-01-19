@@ -1,0 +1,8 @@
+# 🔍 DIAGNÓSTICO COMPLETO - Execute na VPS
+# Copie e cole este comando:
+
+cd /var/www/founder-dashboard && echo "========================================" && echo "1. NOTION_TOKEN" && echo "========================================" && grep "^NOTION_TOKEN=" .env.local | head -c 50 && echo "" && echo "" && echo "========================================" && echo "2. DATABASE IDs" && echo "========================================" && grep "^NOTION_DB_KPIS=" .env.local && grep "^NOTION_DB_GOALS=" .env.local && echo "" && echo "========================================" && echo "3. TESTE API KPIs" && echo "========================================" && curl -s http://localhost:3001/api/kpis/public && echo "" && echo "" && echo "========================================" && echo "4. STATUS CODE" && echo "========================================" && curl -s -o /dev/null -w "HTTP Status: %{http_code}\n" http://localhost:3001/api/kpis/public && echo "" && echo "========================================" && echo "5. LOGS (últimos erros)" && echo "========================================" && pm2 logs founder-dashboard --lines 50 --nostream | grep -i -E "notion|error|kpi|database" | tail -15
+
+
+
+

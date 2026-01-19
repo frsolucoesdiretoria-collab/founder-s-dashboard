@@ -1,0 +1,8 @@
+# 🔍 COMANDO PARA VERIFICAR POR QUE KPIs NÃO APARECEM
+# Copie e cole na VPS:
+
+cd /var/www/founder-dashboard && echo "=== NOTION_TOKEN ===" && grep "^NOTION_TOKEN=" .env.local && echo "" && echo "=== DATABASE IDs ===" && grep "^NOTION_DB_" .env.local && echo "" && echo "=== TESTE KPIs ===" && curl -s http://localhost:3001/api/kpis/public | head -c 500 && echo "" && echo "" && echo "=== STATUS CODE ===" && curl -s -o /dev/null -w "Status: %{http_code}\n" http://localhost:3001/api/kpis/public && echo "" && echo "=== LOGS (erros Notion) ===" && pm2 logs founder-dashboard --lines 100 --nostream | grep -i -E "notion|error|database|token" | tail -20
+
+
+
+

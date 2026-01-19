@@ -1,0 +1,9 @@
+# COMANDO PARA VER O ERRO REAL
+# Execute na VPS (copie e cole):
+
+cd /var/www/founder-dashboard && pm2 delete founder-dashboard 2>/dev/null || true && sleep 2 && NODE_ENV=production PORT=3001 npm start 2>&1 | head -50
+
+# Isso vai mostrar o erro diretamente!
+# Pressione Ctrl+C para parar após ver o erro
+# Me diga o que apareceu e eu corrijo!
+

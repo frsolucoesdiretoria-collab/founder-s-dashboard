@@ -3,7 +3,7 @@
 
 import { Router } from 'express';
 import { getKPIsEnzo, getGoalsEnzo, getActionsEnzo, ensureActionHasGoalEnzo, toggleActionDoneEnzo, getContactsEnzo, createContactEnzo, updateContactEnzo, deleteContactEnzo, getAllKPIsIncludingInactive } from '../lib/notionDataLayer';
-import { countEnzoContactsByStatus, getStatusesForKPI } from '../lib/enzoContactsCounter';
+import { countEnzoContactsByStatus, getStatusesForKPI, getCountForKPI, getSumOfSaleValues } from '../lib/enzoContactsCounter';
 import { ensureEnzoContactsStatusField } from '../lib/setupEnzoContactsStatus';
 
 export const enzoRouter = Router();
@@ -83,27 +83,49 @@ enzoRouter.get('/goals', async (req, res) => {
     console.log(`📈 Enzo Goals - Found ${goals.length} goals and ${kpis.length} KPIs`);
 
     // Enriquecer goals com contagem automática baseada em status dos contatos
-    const enriched = goals.map(goal => {
+    // Usar nova lógica acumulativa para KPIs do Enzo
+    const enriched = await Promise.all(goals.map(async (goal) => {
       const kpi = kpis.find(k => k.id === goal.KPI);
       if (!kpi) {
         console.log(`⚠️  Goal "${goal.Name}" não tem KPI correspondente (KPI ID: ${goal.KPI})`);
         return goal;
       }
 
-      const statuses = getStatusesForKPI(kpi.Name || '');
+      const kpiName = kpi.Name || '';
+      const kpiNameLower = kpiName.toLowerCase();
+      
+      // Se é Meta Semanal de Vendas (KPI financeiro), usar soma dos valores de venda
+      if (kpi.IsFinancial && (kpiNameLower.includes('meta') || kpiNameLower.includes('semanal') || kpiNameLower.includes('vendas') || kpiNameLower.includes('venda'))) {
+        const sumOfSales = await getSumOfSaleValues();
+        console.log(`✅ Goal "${goal.Name}" (KPI: "${kpiName}"): soma de vendas = R$ ${sumOfSales}`);
+        return { ...goal, Actual: sumOfSales };
+      }
+
+      // Usar nova lógica acumulativa para contagem de leads
+      const count = await getCountForKPI(kpiName);
+      if (count > 0 || kpiNameLower.includes('convites') || kpiNameLower.includes('áudios') || kpiNameLower.includes('audios') || kpiNameLower.includes('reunião') || kpiNameLower.includes('reuniões') || kpiNameLower.includes('1:1') || kpiNameLower.includes('venda') || kpiNameLower.includes('vendas')) {
+        console.log(`✅ Goal "${goal.Name}" (KPI: "${kpiName}"): contagem acumulativa = ${count}`);
+        return { ...goal, Actual: count };
+      }
+
+      // Fallback para lógica antiga se não for KPI específico do Enzo
+      const statuses = getStatusesForKPI(kpiName);
       if (statuses.length === 0) {
         // Se não há contagem automática, manter o Actual do Notion
-        console.log(`ℹ️  Goal "${goal.Name}" (KPI: "${kpi.Name}") não tem contagem automática, usando Actual do Notion: ${goal.Actual || 0}`);
+        console.log(`ℹ️  Goal "${goal.Name}" (KPI: "${kpiName}") não tem contagem automática, usando Actual do Notion: ${goal.Actual || 0}`);
         return goal;
       }
 
-      // Contar contatos com os statuses relevantes
-      const count = statuses.reduce((sum, status) => sum + (statusCounts[status] || 0), 0);
+      // Contar contatos com os statuses relevantes (lógica antiga)
+      const countLegacy = statuses.reduce((sum, status) => {
+        const normalizedStatus = status === 'Proposta Enviada' || status === 'Venda Fechada' ? 'Venda Feita' : status;
+        return sum + (statusCounts[normalizedStatus] || 0);
+      }, 0);
       
-      console.log(`✅ Goal "${goal.Name}" (KPI: "${kpi.Name}"): contagem automática = ${count} (statuses: ${statuses.join(', ')})`);
+      console.log(`✅ Goal "${goal.Name}" (KPI: "${kpiName}"): contagem automática = ${countLegacy} (statuses: ${statuses.join(', ')})`);
       
-      return { ...goal, Actual: count };
-    });
+      return { ...goal, Actual: countLegacy };
+    }));
 
     console.log(`📦 Retornando ${enriched.length} goals enriquecidos`);
     res.json(enriched);
@@ -236,9 +258,9 @@ enzoRouter.post('/contacts', async (req, res) => {
 enzoRouter.patch('/contacts/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, whatsapp, status } = req.body;
+    const { name, whatsapp, status, saleValue } = req.body;
 
-    const updates: { name?: string; whatsapp?: string; status?: string } = {};
+    const updates: { name?: string; whatsapp?: string; status?: string; saleValue?: number } = {};
     if (name !== undefined) {
       if (typeof name !== 'string') {
         return res.status(400).json({ error: 'Name must be a string' });
@@ -252,7 +274,18 @@ enzoRouter.patch('/contacts/:id', async (req, res) => {
       if (typeof status !== 'string') {
         return res.status(400).json({ error: 'Status must be a string' });
       }
-      updates.status = status;
+      // Normalizar status antigos para novos
+      let normalizedStatus = status;
+      if (status === 'Proposta Enviada' || status === 'Venda Fechada') {
+        normalizedStatus = 'Venda Feita';
+      }
+      updates.status = normalizedStatus;
+    }
+    if (saleValue !== undefined) {
+      if (typeof saleValue !== 'number' && saleValue !== null) {
+        return res.status(400).json({ error: 'saleValue must be a number or null' });
+      }
+      updates.saleValue = saleValue === null ? undefined : saleValue;
     }
 
     const contact = await updateContactEnzo(id, updates);
@@ -264,7 +297,7 @@ enzoRouter.patch('/contacts/:id', async (req, res) => {
     if (error.message?.includes('Status is not a property') || error.message?.includes('property that exists')) {
       return res.status(400).json({ 
         error: 'Campo Status não existe',
-        message: 'Adicione um campo Select chamado "Status" na database Contacts_Enzo do Notion com as opções: Contato Ativado, Café Agendado, Café Executado, Proposta Enviada, Venda Fechada, Perdido'
+        message: 'Adicione um campo Select chamado "Status" na database Contacts_Enzo do Notion com as opções: Contato Ativado, Café Agendado, Café Executado, Venda Feita'
       });
     }
     

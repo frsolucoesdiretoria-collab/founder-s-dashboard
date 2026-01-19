@@ -1,0 +1,44 @@
+# COMANDO DE DIAGNÓSTICO COMPLETO
+# Copie e cole TODO na VPS:
+
+cd /var/www/founder-dashboard && \
+echo "═══════════════════════════════════════" && \
+echo "🔍 DIAGNÓSTICO COMPLETO - Erro 502" && \
+echo "═══════════════════════════════════════" && \
+echo "" && \
+echo "1️⃣ Status atual do PM2:" && \
+pm2 status && \
+echo "" && \
+echo "2️⃣ Logs do PM2 (últimas 50 linhas):" && \
+pm2 logs founder-dashboard --lines 50 --nostream 2>&1 || echo "   Sem logs disponíveis" && \
+echo "" && \
+echo "3️⃣ Logs de ERRO do PM2:" && \
+pm2 logs founder-dashboard --err --lines 50 --nostream 2>&1 || echo "   Sem logs de erro" && \
+echo "" && \
+echo "4️⃣ Verificando porta 3001:" && \
+lsof -i:3001 2>&1 || echo "   Porta 3001 não está em uso" && \
+echo "" && \
+echo "5️⃣ Verificando arquivo .env:" && \
+if [ -f .env ]; then \
+  echo "   ✅ Arquivo .env existe" && \
+  echo "   Variáveis principais:" && \
+  grep -E "NOTION_TOKEN|NOTION_DB_KPIS|PORT|NODE_ENV" .env | head -5 || echo "   Sem variáveis encontradas"; \
+else \
+  echo "   ❌ Arquivo .env NÃO existe"; \
+fi && \
+echo "" && \
+echo "6️⃣ Verificando se dist/ existe:" && \
+ls -la dist/ 2>/dev/null | head -3 || echo "   ❌ Pasta dist/ não existe (precisa rodar: npm run build)" && \
+echo "" && \
+echo "7️⃣ Parando PM2 para teste manual:" && \
+pm2 delete founder-dashboard 2>/dev/null || true && \
+sleep 2 && \
+echo "" && \
+echo "8️⃣ TESTANDO INÍCIO MANUAL (vai mostrar o erro):" && \
+echo "   Aguarde 15 segundos ou pressione Ctrl+C..." && \
+timeout 15 bash -c 'cd /var/www/founder-dashboard && NODE_ENV=production PORT=3001 npm start 2>&1' 2>&1 || echo "" && \
+echo "" && \
+echo "═══════════════════════════════════════" && \
+echo "📊 FIM DO DIAGNÓSTICO" && \
+echo "═══════════════════════════════════════"
+

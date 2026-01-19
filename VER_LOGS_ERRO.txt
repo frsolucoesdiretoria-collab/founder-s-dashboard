@@ -1,0 +1,11 @@
+# COMANDO PARA VER LOGS DETALHADOS DO ERRO
+# Execute na VPS para ver o que está acontecendo:
+
+cd /var/www/founder-dashboard && pm2 logs founder-dashboard --lines 50 --nostream
+
+# Se não mostrar nada, tente:
+pm2 logs founder-dashboard --err --lines 50 --nostream
+
+# Ou veja TODOS os logs:
+pm2 logs founder-dashboard --lines 100 --nostream
+

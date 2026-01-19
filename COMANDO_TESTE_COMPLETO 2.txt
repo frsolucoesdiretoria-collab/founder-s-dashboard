@@ -1,0 +1,5 @@
+cd /var/www/founder-dashboard && TOKEN=$(grep "^NOTION_TOKEN=" .env.local | cut -d'=' -f2) && echo "=== TESTE 1: Verificar se token funciona ===" && curl -s -X GET "https://api.notion.com/v1/users/me" -H "Notion-Version: 2022-06-28" -H "Authorization: Bearer $TOKEN" && echo "" && echo "" && echo "=== TESTE 2: Verificar acesso à database de KPIs ===" && DB_KPIS=$(grep "^NOTION_DB_KPIS=" .env.local | cut -d'=' -f2) && echo "Database ID: $DB_KPIS" && curl -s -X POST "https://api.notion.com/v1/databases/$DB_KPIS/query" -H "Notion-Version: 2022-06-28" -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{}' | head -c 1000 && echo "" && echo "" && echo "=== Se aparecer 'unauthorized' ou 'object_not_found': ===" && echo "→ Compartilhe a database com a integração no Notion"
+
+
+
+
