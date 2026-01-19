@@ -107,8 +107,8 @@ if [ "$PM2_STATUS" != "online" ]; then
   export PORT=3001
   
   # Iniciar
-  if [ -f ecosystem.config.js ]; then
-    pm2 start ecosystem.config.js
+  if [ -f ecosystem.config.cjs ]; then
+    pm2 start ecosystem.config.cjs
   else
     pm2 start npm --name "$PM2_NAME" -- start
   fi

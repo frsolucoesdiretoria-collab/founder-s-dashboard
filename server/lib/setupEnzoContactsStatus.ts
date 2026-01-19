@@ -2,19 +2,32 @@
  * Setup Status property for Contacts_Enzo database
  * This function adds the Status field if it doesn't exist
  */
-import { initNotionClient, getDatabaseId } from './notionDataLayer';
+import { initNotionClient } from './notionDataLayer';
+import { getDatabaseId } from '../../src/lib/notion/schema';
 
 export async function ensureEnzoContactsStatusField(): Promise<{ success: boolean; message: string }> {
   try {
-    const client = initNotionClient();
+    // Check if Notion is configured - don't crash if not
+    const notionToken = process.env.NOTION_TOKEN;
+    if (!notionToken || notionToken.trim() === '' || notionToken.startsWith('<<<')) {
+      console.warn('⚠️  NOTION_TOKEN not configured, skipping Contacts_Enzo Status field setup');
+      return {
+        success: false,
+        message: 'NOTION_TOKEN not configured (optional feature)'
+      };
+    }
+
     const dbId = getDatabaseId('Contacts_Enzo');
     
     if (!dbId) {
+      console.warn('⚠️  NOTION_DB_CONTACTS_ENZO not configured, skipping Status field setup');
       return {
         success: false,
-        message: 'NOTION_DB_CONTACTS_ENZO not configured'
+        message: 'NOTION_DB_CONTACTS_ENZO not configured (optional feature)'
       };
     }
+
+    const client = initNotionClient();
 
     // First, retrieve the database to check if Status field exists
     const database = await client.databases.retrieve({ database_id: dbId });
@@ -78,7 +91,7 @@ export async function ensureEnzoContactsStatusField(): Promise<{ success: boolea
             options: [
               { name: 'Contato Ativado', color: 'blue' },
               { name: 'Café Agendado', color: 'purple' },
-              { name: 'Café Executado', color: 'indigo' },
+              { name: 'Café Executado', color: 'blue' },
               { name: 'Proposta Enviada', color: 'yellow' },
               { name: 'Venda Fechada', color: 'green' },
               { name: 'Perdido', color: 'red' }
