@@ -70,7 +70,10 @@ jobs:
             # Restart application (PM2)
             if command -v pm2 &> /dev/null; then
               echo "🔄 Restarting application with PM2..."
-              pm2 restart founder-dashboard || pm2 start npm --name "founder-dashboard" -- start
+              # Parar processo existente se houver
+              pm2 delete founder-dashboard 2>/dev/null || true
+              # Iniciar com NODE_ENV=production explicitamente
+              NODE_ENV=production pm2 start npm --name "founder-dashboard" -- start
               pm2 save
             else
               echo "⚠️  PM2 not found. Please restart the application manually."
