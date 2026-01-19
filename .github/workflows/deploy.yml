@@ -113,13 +113,30 @@ jobs:
             
             # Iniciar com NODE_ENV=production explicitamente
             echo "🚀 Starting application..."
-            NODE_ENV=production pm2 start npm --name "founder-dashboard" --cwd "$PROJECT_PATH" -- start
+            cd "$PROJECT_PATH"
+            # Usar tsx diretamente em vez de npm para melhor controle
+            NODE_ENV=production PORT=3001 pm2 start npm --name "founder-dashboard" -- start
             pm2 save
             
+            # Aguardar servidor iniciar
+            sleep 5
+            
             # Verificar se servidor iniciou corretamente
-            sleep 3
             if pm2 list | grep -q "founder-dashboard.*online"; then
               echo "✅ Application started successfully with PM2"
+              
+              # Verificar se está respondendo
+              sleep 3
+              if curl -s http://localhost:3001/api/health > /dev/null; then
+                echo "✅ API está respondendo corretamente!"
+                curl http://localhost:3001/api/health
+              else
+                echo "⚠️  Servidor iniciou mas API não está respondendo"
+                echo "📋 Logs do servidor:"
+                pm2 logs founder-dashboard --lines 30 --nostream
+                exit 1
+              fi
+              
               pm2 logs founder-dashboard --lines 10 --nostream
             else
               echo "❌ Application failed to start with PM2"
