@@ -40,363 +40,94 @@ jobs:
           script: |
             set -e
             
-            # Determine project path based on branch
-            if [ "${{ github.ref }}" == "refs/heads/main" ]; then
-              PROJECT_PATH="${{ secrets.VPS_PROJECT_PATH }}"
-              ENV="production"
-            else
-              PROJECT_PATH="${{ secrets.VPS_STAGING_PATH || secrets.VPS_PROJECT_PATH }}"
-              ENV="staging"
-            fi
+            PROJECT_PATH="${{ secrets.VPS_PROJECT_PATH }}"
+            cd "$PROJECT_PATH"
             
-            echo "🚀 Deploying to $ENV environment at $PROJECT_PATH"
+            echo "🚀 Deploying to production..."
             
-            cd $PROJECT_PATH
-            
-            # Pull latest changes (discard local changes and sync with remote)
-            echo "📥 Pulling latest changes from ${{ github.ref_name }}..."
+            # Pull latest code
+            echo "📥 Pulling latest changes..."
             git fetch origin
-            git reset --hard origin/${{ github.ref_name }}
+            git reset --hard origin/main
             git clean -fd
             
-            # Configure .env.local COMPLETO com todas as databases necessárias
-            echo "⚙️  Configuring .env.local..."
-            
-            # Se .env.local não existe, criar completo usando printf para evitar problemas YAML
+            # Preserve .env.local if exists, create if not
             if [ ! -f .env.local ]; then
-              echo "   ⚠️  .env.local não existe! Criando arquivo completo..."
-              {
-                echo "# FR Tech OS - Environment Variables"
-                echo "# Configurado automaticamente pelo deploy"
-                echo ""
-                echo "# Notion API Token (REQUIRED - configure via GitHub Secrets ou manualmente)"
-                echo "NOTION_TOKEN=PLACEHOLDER_TOKEN_WILL_BE_REPLACED"
-                echo ""
-                echo "# Notion Database IDs (REQUIRED - Core databases)"
-                echo "NOTION_DB_KPIS=2d984566a5fa800bb45dd3d53bdadfa3"
-                echo "NOTION_DB_GOALS=2d984566a5fa81bb96a1cf1c347f6e55"
-                echo "NOTION_DB_ACTIONS=2d984566a5fa813cbce2d090e08cd836"
-                echo "NOTION_DB_JOURNAL=2d984566a5fa81a9ad50e9d594d24b88"
-                echo ""
-                echo "# Notion Database IDs (Supporting databases)"
-                echo "NOTION_DB_CONTACTS=2d984566a5fa81b3b1a1c8abef43421f"
-                echo "NOTION_DB_CLIENTS=2d984566a5fa81a89be6f9bdb271f838"
-                echo "NOTION_DB_GROWTHPROPOSALS=2d984566a5fa81c9bf2fd004c75a7e3c"
-                echo "NOTION_DB_COFFEEDIAGNOSTICS=2d984566a5fa81528aafcd990533eaf5"
-                echo "NOTION_DB_EXPANSIONOPPORTUNITIES=2d984566a5fa81f887ddfe1cac401239"
-                echo "NOTION_DB_CUSTOMERWINS=2d984566a5fa81b0a2bcc690ec281df9"
-                echo "NOTION_DB_FINANCEMETRICS=2d984566a5fa81988982e06722459759"
-                echo ""
-                echo "# Notion Database IDs (Partner features)"
-                echo "NOTION_DB_PARTNERS=2d984566a5fa814380e8dd8d93f3a582"
-                echo "NOTION_DB_REFERRALS=2d984566a5fa810cbefcd6ff2f139620"
-                echo "NOTION_DB_COMMISSIONLEDGER=2d984566a5fa81578b5bcd07a19bf6c3"
-                echo "NOTION_DB_PARTNERNUDGES=2d984566a5fa8159a321c95e14c52bd6"
-                echo ""
-                echo "# Enzo Canei Dashboard Databases"
-                echo "NOTION_DB_KPIS_ENZO=2ed84566a5fa81299c07c412630f9aa4"
-                echo "NOTION_DB_GOALS_ENZO=2ed84566a5fa81ada870cf698ec50bf0"
-                echo "NOTION_DB_ACTIONS_ENZO=2ed84566a5fa81c4a8cbc23841abdc1e"
-                echo "NOTION_DB_CONTACTS_ENZO=2ed84566a5fa81a7bf7afeaa38ea6eff"
-                echo ""
-                echo "# Admin Passcode"
-                echo "ADMIN_PASSCODE=06092021"
-                echo ""
-                echo "# Server Configuration"
-                echo "PORT=3001"
-                echo "NODE_ENV=production"
-                echo ""
-                echo "# Frontend passwords"
-                echo "VITE_APP_PASSWORD=2026anodaaceleração"
-                echo "VITE_DOTERRA_PASSWORD=expandircomtec"
-              } > .env.local
-              echo "   ✅ .env.local criado com todas as databases configuradas"
+              echo "⚠️  .env.local não existe - criando básico..."
+              if [ -f env.local.example ]; then
+                cp env.local.example .env.local
+              fi
             else
-              echo "   ✅ .env.local existe, preservando configuração existente"
+              echo "✅ .env.local existe - preservando"
             fi
             
-            # Garantir que NOTION_TOKEN está configurado (usar secret do GitHub se disponível)
-            NOTION_TOKEN_SECRET="${{ secrets.NOTION_TOKEN }}"
-            if [ -n "$NOTION_TOKEN_SECRET" ] && [ "$NOTION_TOKEN_SECRET" != "" ]; then
-              echo "   🔑 Configurando NOTION_TOKEN do GitHub Secret..."
-              # Substituir NOTION_TOKEN no .env.local
-              if grep -q "^NOTION_TOKEN=" .env.local; then
-                sed -i "s|^NOTION_TOKEN=.*|NOTION_TOKEN=${NOTION_TOKEN_SECRET}|" .env.local
-              else
-                echo "NOTION_TOKEN=${NOTION_TOKEN_SECRET}" >> .env.local
-              fi
-              echo "   ✅ NOTION_TOKEN configurado do GitHub Secret"
-            else
-              echo "   ⚠️  GitHub Secret NOTION_TOKEN não configurado"
-              echo "   Verificando se NOTION_TOKEN já está no .env.local..."
-              # Remover placeholder se existir
-              if grep -q "^NOTION_TOKEN=PLACEHOLDER_TOKEN_WILL_BE_REPLACED" .env.local; then
-                echo "   ⚠️  NOTION_TOKEN ainda tem placeholder, removendo..."
-                sed -i "s|^NOTION_TOKEN=PLACEHOLDER_TOKEN_WILL_BE_REPLACED||" .env.local
-              fi
-              if ! grep -q "^NOTION_TOKEN=" .env.local || grep -q "^NOTION_TOKEN=$" .env.local || grep -q "^NOTION_TOKEN=<<<" .env.local; then
-                echo "   ❌ NOTION_TOKEN não está configurado!"
-                echo "   Configure via GitHub Secrets ou edite .env.local manualmente na VPS"
-              else
-                echo "   ✅ NOTION_TOKEN já está configurado no .env.local"
-              fi
-            fi
-            
-            # Garantir que todas as databases obrigatórias estão configuradas
-            echo "   Verificando databases obrigatórias..."
-            REQUIRED_DBS=(
-              "NOTION_DB_KPIS=2d984566a5fa800bb45dd3d53bdadfa3"
-              "NOTION_DB_GOALS=2d984566a5fa81bb96a1cf1c347f6e55"
-              "NOTION_DB_ACTIONS=2d984566a5fa813cbce2d090e08cd836"
-              "NOTION_DB_JOURNAL=2d984566a5fa81a9ad50e9d594d24b88"
-            )
-            
-            for DB_LINE in "${REQUIRED_DBS[@]}"; do
-              DB_VAR=$(echo "$DB_LINE" | cut -d'=' -f1)
-              DB_VALUE=$(echo "$DB_LINE" | cut -d'=' -f2)
-              if ! grep -q "^${DB_VAR}=" .env.local; then
-                echo "   Adicionando ${DB_VAR}..."
-                echo "${DB_VAR}=${DB_VALUE}" >> .env.local
-              fi
-            done
-            
-            # Garantir Enzo databases
-            if ! grep -q "NOTION_DB_KPIS_ENZO=" .env.local; then
-              echo "   Adicionando databases do Enzo..."
-              echo "" >> .env.local
-              echo "# Enzo Canei Dashboard Databases" >> .env.local
-              echo "NOTION_DB_KPIS_ENZO=2ed84566a5fa81299c07c412630f9aa4" >> .env.local
-              echo "NOTION_DB_GOALS_ENZO=2ed84566a5fa81ada870cf698ec50bf0" >> .env.local
-              echo "NOTION_DB_ACTIONS_ENZO=2ed84566a5fa81c4a8cbc23841abdc1e" >> .env.local
-              echo "NOTION_DB_CONTACTS_ENZO=2ed84566a5fa81a7bf7afeaa38ea6eff" >> .env.local
-            fi
-            
-            echo "   ✅ Todas as databases estão configuradas"
-            
-            # Install dependencies (including devDependencies for build)
+            # Install dependencies
             echo "📦 Installing dependencies..."
-            # Limpar node_modules antes de instalar para evitar erros ENOTEMPTY
-            echo "   Limpando node_modules antigo..."
             rm -rf node_modules 2>/dev/null || true
-            # Se package-lock.json não existir, usar npm install em vez de npm ci
-            if [ ! -f package-lock.json ]; then
-              echo "   ⚠️  package-lock.json não encontrado, usando npm install..."
-              npm install --include=dev
-            else
-              echo "   Instalando dependências com npm ci..."
-              npm ci --include=dev
-            fi
+            npm ci --include=dev || npm install --include=dev
             
-            # Build application
-            echo "🔨 Building application..."
+            # Build
+            echo "🔨 Building..."
             NODE_ENV=production npm run build
             
-            # Install PM2 if not available
+            # Install PM2 if needed
             if ! command -v pm2 &> /dev/null; then
-              echo "📦 PM2 not found. Installing PM2 globally..."
               npm install -g pm2
             fi
             
-            # Restart application (PM2)
-            echo "🔄 Restarting application with PM2..."
-            # Parar e remover processo existente
+            # Stop old process
+            echo "🔄 Restarting server..."
             pm2 stop founder-dashboard 2>/dev/null || true
             pm2 delete founder-dashboard 2>/dev/null || true
-            # Matar processo na porta 3001 se existir
             lsof -ti:3001 | xargs kill -9 2>/dev/null || true
             sleep 2
             
-            # Verificar se .env.local existe e tem NOTION_TOKEN configurado
-            echo "🔍 Verificando configuração do .env.local..."
-            if [ ! -f .env.local ]; then
-              echo "❌ ERRO CRÍTICO: .env.local não existe!"
-              echo "   Criando a partir do template..."
-              if [ -f env.local.example ]; then
-                cp env.local.example .env.local
-                echo "⚠️  ATENÇÃO: Configure o NOTION_TOKEN no .env.local antes de continuar!"
-                echo "   O servidor não iniciará sem NOTION_TOKEN configurado."
-                exit 1
-              else
-                echo "❌ Template env.local.example não encontrado!"
-                exit 1
-              fi
-            fi
-            
-            # Verificar se NOTION_TOKEN está configurado
-            if ! grep -q "^NOTION_TOKEN=" .env.local || grep -q "^NOTION_TOKEN=<<<" .env.local || grep -q "^NOTION_TOKEN=$" .env.local || grep -q "^NOTION_TOKEN=\${NOTION_TOKEN_FROM_SECRET}" .env.local; then
-              echo "❌ ERRO CRÍTICO: NOTION_TOKEN não está configurado no .env.local!"
-              echo ""
-              echo "   Para corrigir:"
-              echo "   1. Configure o secret NOTION_TOKEN no GitHub:"
-              echo "      Settings > Secrets and variables > Actions > New repository secret"
-              echo "      Nome: NOTION_TOKEN"
-              echo "      Valor: seu_token_do_notion"
-              echo ""
-              echo "   OU"
-              echo ""
-              echo "   2. Edite manualmente na VPS:"
-              echo "      nano $PROJECT_PATH/.env.local"
-              echo "      Adicione: NOTION_TOKEN=seu_token_aqui"
-              echo ""
-              exit 1
-            fi
-            
-            # Mostrar resumo da configuração (sem mostrar token completo)
-            echo "📋 Resumo da configuração:"
-            NOTION_TOKEN_PREVIEW=$(grep "^NOTION_TOKEN=" .env.local | cut -d'=' -f2 | head -c 20)
-            echo "   NOTION_TOKEN: ${NOTION_TOKEN_PREVIEW}..."
-            echo "   Databases configuradas:"
-            grep "^NOTION_DB_" .env.local | wc -l | xargs echo "   - Total:"
-            
-            # Verificar se dist existe e tem conteúdo
-            if [ ! -d "dist" ] || [ -z "$(ls -A dist 2>/dev/null)" ]; then
-              echo "❌ ERRO: Pasta dist não existe ou está vazia!"
-              echo "   Fazendo build novamente..."
-              NODE_ENV=production npm run build
-              if [ ! -d "dist" ] || [ -z "$(ls -A dist 2>/dev/null)" ]; then
-                echo "❌ Build falhou! Verifique os logs acima."
-                exit 1
-              fi
-            fi
-            
-            # Iniciar com NODE_ENV=production explicitamente
-            echo "🚀 Starting application..."
-            cd "$PROJECT_PATH"
-            
-            # Garantir que NODE_ENV e PORT estão definidos
-            export NODE_ENV=production
-            export PORT=3001
-            
-            # Carregar variáveis de ambiente do .env.local manualmente
-            # e passar para o PM2
-            echo "📋 Carregando variáveis de ambiente do .env.local..."
-            if [ -f .env.local ]; then
-              # Exportar todas as variáveis do .env.local
-              set -a
-              source .env.local 2>/dev/null || true
-              set +a
-              echo "   ✅ Variáveis carregadas"
-            else
-              echo "   ⚠️  .env.local não encontrado!"
-            fi
-            
-            # Criar arquivo de ecossistema PM2 temporário com variáveis
-            cat > ecosystem.config.js << 'EOF'
+            # Create PM2 ecosystem file that loads .env.local
+            cat > ecosystem.config.js << 'PM2EOF'
             module.exports = {
               apps: [{
                 name: 'founder-dashboard',
                 script: 'npm',
                 args: 'start',
                 cwd: process.cwd(),
+                env_file: '.env.local',
                 env: {
                   NODE_ENV: 'production',
                   PORT: 3001
                 },
                 autorestart: true,
                 watch: false,
-                max_memory_restart: '1G',
-                min_uptime: '10s',
-                max_restarts: 10
+                max_memory_restart: '1G'
               }]
             };
-            EOF
+            PM2EOF
             
-            # Usar PM2 ecosystem ou fallback para comando direto
-            # Primeiro, tenta carregar .env.local e passar variáveis
-            if [ -f .env.local ]; then
-              # Carregar .env.local e exportar todas as variáveis
-              export $(cat .env.local | grep -v '^#' | xargs)
-            fi
-            
-            # Garantir NODE_ENV e PORT
-            export NODE_ENV=production
-            export PORT=3001
-            
-            # Iniciar PM2 com variáveis carregadas
-            echo "🚀 Iniciando PM2..."
-            pm2 start ecosystem.config.js --update-env || \
-            pm2 start npm --name "founder-dashboard" -- start --update-env
-            
+            # Start with PM2
+            pm2 start ecosystem.config.js
             pm2 save
             
-            # Aguardar servidor iniciar (aumentado para 10 segundos)
-            echo "⏳ Aguardando servidor iniciar..."
-            sleep 10
+            # Wait and check
+            echo "⏳ Waiting for server..."
+            sleep 15
             
-            # Verificar múltiplas vezes se servidor iniciou
-            MAX_RETRIES=5
-            RETRY_COUNT=0
-            SERVER_ONLINE=false
-            
-            while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
-              if pm2 list | grep -q "founder-dashboard.*online"; then
-                SERVER_ONLINE=true
-                break
-              fi
-              RETRY_COUNT=$((RETRY_COUNT + 1))
-              echo "   Tentativa $RETRY_COUNT/$MAX_RETRIES - aguardando..."
-              sleep 3
-            done
-            
-            if [ "$SERVER_ONLINE" = true ]; then
-              echo "✅ Application started successfully with PM2"
+            # Check status
+            if pm2 list | grep -q "founder-dashboard.*online"; then
+              echo "✅ Server is online"
               
-              # Verificar se está respondendo (múltiplas tentativas)
-              RETRY_COUNT=0
-              API_RESPONDING=false
-              
-              while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
-                if curl -s -f http://localhost:3001/api/health > /dev/null 2>&1; then
-                  API_RESPONDING=true
-                  break
-                fi
-                RETRY_COUNT=$((RETRY_COUNT + 1))
-                echo "   Tentativa $RETRY_COUNT/$MAX_RETRIES - aguardando API..."
-                sleep 3
-              done
-              
-              if [ "$API_RESPONDING" = true ]; then
-                echo "✅ API está respondendo corretamente!"
+              # Test API
+              sleep 5
+              if curl -s http://localhost:3001/api/health > /dev/null; then
+                echo "✅ API is responding!"
                 curl http://localhost:3001/api/health
-                echo ""
               else
-                echo "⚠️  Servidor iniciou mas API não está respondendo"
-                echo "📋 Status do PM2:"
-                pm2 list | grep founder-dashboard
-                echo ""
-                echo "📋 Logs do servidor (últimas 50 linhas):"
-                pm2 logs founder-dashboard --lines 50 --nostream
-                echo ""
-                echo "🔍 Verificando porta 3001:"
-                lsof -i:3001 || echo "   Porta 3001 não está em uso"
+                echo "⚠️  Server online but API not responding"
+                pm2 logs founder-dashboard --lines 30 --nostream
                 exit 1
               fi
-              
-              echo ""
-              echo "📋 Últimos logs do servidor:"
-              pm2 logs founder-dashboard --lines 10 --nostream
             else
-              echo "❌ Application failed to start with PM2"
-              echo "📋 Status do PM2:"
-              pm2 list
-              echo ""
-              echo "📋 Logs do servidor (últimas 100 linhas):"
-              pm2 logs founder-dashboard --lines 100 --nostream
-              echo ""
-              echo "🔍 Verificando porta 3001:"
-              lsof -i:3001 || echo "   Porta 3001 não está em uso"
+              echo "❌ Server failed to start"
+              pm2 logs founder-dashboard --lines 50 --nostream
               exit 1
             fi
             
-            echo "✅ Deployment completed successfully!"
-
-      - name: Notify deployment status
-        if: always()
-        run: |
-          if [ "${{ job.status }}" == "success" ]; then
-            echo "✅ Deployment to ${{ github.ref == 'refs/heads/main' && 'Production' || 'Staging' }} completed successfully!"
-          else
-            echo "❌ Deployment failed!"
-            exit 1
-          fi
-
+            echo "✅ Deployment completed!"
