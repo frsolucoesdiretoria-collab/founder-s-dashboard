@@ -6,7 +6,7 @@ import { ActionChecklist } from '@/components/ActionChecklist';
 import { ContactsToActivate } from '@/components/ContactsToActivate';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Loader2, RefreshCw } from 'lucide-react';
-import { getEnzoKPIs, getEnzoGoals, getEnzoDailyActions, updateEnzoActionDone } from '@/services';
+import { getEnzoKPIs, getEnzoGoals, getEnzoDailyActions, updateEnzoActionDone, getEnzoContacts, createEnzoContact, updateEnzoContact } from '@/services';
 import type { KPI } from '@/types/kpi';
 import type { Goal } from '@/types/goal';
 import type { Action } from '@/types/action';
@@ -22,45 +22,11 @@ interface Contact {
   whatsapp?: string;
 }
 
-// Contatos pré-definidos do exemplo
-const PREDEFINED_CONTACT_NAMES = [
-  'Jeferson Boss',
-  'Leo ames',
-  'Tarcisio STZ',
-  'Machado consórcios',
-  'José Carlos',
-  'Melkis',
-  'Natan',
-  'Cavali',
-  'Julia Hermes',
-  'Mariana da Procedere',
-  'André da ayty',
-];
-
-function createInitialContacts(): Contact[] {
-  return PREDEFINED_CONTACT_NAMES.map((name, index) => ({
-    id: `contact-${index}`,
-    name,
-    whatsapp: undefined,
-  }));
-}
-
 export default function DashboardEnzo() {
   const [kpis, setKpis] = useState<KPI[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
   const [actions, setActions] = useState<Action[]>([]);
-  const [contacts, setContacts] = useState<Contact[]>(() => {
-    // Load from localStorage or create initial list
-    const stored = localStorage.getItem('enzo_contacts');
-    if (stored) {
-      try {
-        return JSON.parse(stored);
-      } catch {
-        return createInitialContacts();
-      }
-    }
-    return createInitialContacts();
-  });
+  const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -75,10 +41,11 @@ export default function DashboardEnzo() {
     }
     setError(null);
     try {
-      const [kpisData, goalsData, actionsData] = await Promise.all([
+      const [kpisData, goalsData, actionsData, contactsData] = await Promise.all([
         getEnzoKPIs(),
         getEnzoGoals(),
-        getEnzoDailyActions()
+        getEnzoDailyActions(),
+        loadContacts()
       ]);
 
       const sortedKpis = kpisData.sort((a, b) => (a.SortOrder || 0) - (b.SortOrder || 0));
@@ -105,6 +72,29 @@ export default function DashboardEnzo() {
     }
   }
 
+  async function loadContacts(): Promise<Contact[]> {
+    try {
+      const contactsData = await getEnzoContacts();
+      // Convert from API format (Name) to component format (name)
+      const convertedContacts: Contact[] = contactsData.map(c => ({
+        id: c.id,
+        name: c.Name,
+        whatsapp: c.WhatsApp
+      }));
+      setContacts(convertedContacts);
+      return convertedContacts;
+    } catch (err: any) {
+      console.error('Error loading contacts:', err);
+      // If contacts DB is not configured, return empty array (don't fail entire load)
+      if (err.message?.includes('NOTION_DB_CONTACTS_ENZO') || err.message?.includes('not configured')) {
+        console.warn('Contacts database not configured, using empty list');
+        return [];
+      }
+      // For other errors, also return empty array to not break the dashboard
+      return [];
+    }
+  }
+
   const handleRefresh = () => {
     setRefreshing(true);
     loadData();
@@ -125,24 +115,46 @@ export default function DashboardEnzo() {
     }
   };
 
-  const handleUpdateContact = (id: string, updates: Partial<Contact>) => {
-    setContacts(prev => {
-      const updated = prev.map(c => c.id === id ? { ...c, ...updates } : c);
-      localStorage.setItem('enzo_contacts', JSON.stringify(updated));
-      return updated;
-    });
+  const handleUpdateContact = async (id: string, updates: Partial<Contact>) => {
+    try {
+      // Update in Notion
+      const notionUpdates: { name?: string; whatsapp?: string } = {};
+      if (updates.name !== undefined) {
+        notionUpdates.name = updates.name;
+      }
+      if (updates.whatsapp !== undefined) {
+        notionUpdates.whatsapp = updates.whatsapp;
+      }
+
+      const updated = await updateEnzoContact(id, notionUpdates);
+      
+      // Update local state
+      setContacts(prev => prev.map(c => 
+        c.id === id 
+          ? { id: updated.id, name: updated.Name, whatsapp: updated.WhatsApp }
+          : c
+      ));
+    } catch (err: any) {
+      console.error('Error updating contact:', err);
+      toast.error('Erro ao atualizar contato. Tente novamente.');
+    }
   };
 
-  const handleAddContact = () => {
+  const handleAddContact = async () => {
     if (contacts.length >= 20) return;
-    const newContact: Contact = {
-      id: `contact-${Date.now()}`,
-      name: '',
-      whatsapp: undefined,
-    };
-    const updated = [...contacts, newContact];
-    setContacts(updated);
-    localStorage.setItem('enzo_contacts', JSON.stringify(updated));
+    try {
+      const newContact = await createEnzoContact('');
+      
+      // Update local state
+      setContacts(prev => [...prev, {
+        id: newContact.id,
+        name: newContact.Name,
+        whatsapp: newContact.WhatsApp
+      }]);
+    } catch (err: any) {
+      console.error('Error creating contact:', err);
+      toast.error('Erro ao adicionar contato. Tente novamente.');
+    }
   };
 
   // Separate KPIs: output (financial) vs inputs (non-financial)

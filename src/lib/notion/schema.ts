@@ -470,6 +470,17 @@ export const NOTION_SCHEMA: Record<string, DatabaseSchema> = {
       { name: 'PublicVisible', type: 'checkbox', required: true, description: 'Visível no dashboard público' },
       { name: 'Notes', type: 'rich_text', required: false, description: 'Notas adicionais' }
     ]
+  },
+  Contacts_Enzo: {
+    name: 'Contacts_Enzo',
+    envVar: 'NOTION_DB_CONTACTS_ENZO',
+    required: false,
+    properties: [
+      { name: 'Name', type: 'title', required: true, description: 'Nome do contato' },
+      { name: 'WhatsApp', type: 'phone_number', required: false, description: 'Número do WhatsApp' },
+      { name: 'DateCreated', type: 'date', required: false, description: 'Data de criação' },
+      { name: 'Complete', type: 'checkbox', required: false, description: 'Contato completo (nome e WhatsApp preenchidos)' }
+    ]
   }
 };
 

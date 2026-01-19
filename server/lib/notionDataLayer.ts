@@ -865,6 +865,126 @@ export async function toggleActionDoneEnzo(actionId: string, done: boolean): Pro
 }
 
 /**
+ * Convert Notion page to Enzo Contact
+ */
+function pageToContactEnzo(page: any): { id: string; Name: string; WhatsApp?: string } {
+  const props = page.properties;
+  return {
+    id: page.id,
+    Name: extractText(props.Name),
+    WhatsApp: extractPhoneNumber(props.WhatsApp) || undefined
+  };
+}
+
+/**
+ * Get Enzo's contacts
+ */
+export async function getContactsEnzo(): Promise<Array<{ id: string; Name: string; WhatsApp?: string }>> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Contacts_Enzo');
+  if (!dbId) throw new Error('NOTION_DB_CONTACTS_ENZO not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      sorts: [{ property: 'DateCreated', direction: 'descending' }]
+    })
+  );
+
+  return response.results.map(pageToContactEnzo);
+}
+
+/**
+ * Create Enzo contact
+ */
+export async function createContactEnzo(name: string, whatsapp?: string): Promise<{ id: string; Name: string; WhatsApp?: string }> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Contacts_Enzo');
+  if (!dbId) throw new Error('NOTION_DB_CONTACTS_ENZO not configured');
+
+  const today = new Date().toISOString().split('T')[0];
+  const isComplete = !!(name && whatsapp);
+
+  const properties: any = {
+    Name: { title: [{ text: { content: name } }] },
+    DateCreated: { date: { start: today } },
+    Complete: { checkbox: isComplete }
+  };
+
+  if (whatsapp) {
+    properties.WhatsApp = { phone_number: whatsapp };
+  }
+
+  const response = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  return pageToContactEnzo(response);
+}
+
+/**
+ * Update Enzo contact
+ */
+export async function updateContactEnzo(id: string, updates: { name?: string; whatsapp?: string }): Promise<{ id: string; Name: string; WhatsApp?: string }> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Contacts_Enzo');
+  if (!dbId) throw new Error('NOTION_DB_CONTACTS_ENZO not configured');
+
+  const properties: any = {};
+
+  if (updates.name !== undefined) {
+    properties.Name = { title: [{ text: { content: updates.name } }] };
+  }
+
+  if (updates.whatsapp !== undefined) {
+    if (updates.whatsapp) {
+      properties.WhatsApp = { phone_number: updates.whatsapp };
+    } else {
+      properties.WhatsApp = { phone_number: null };
+    }
+  }
+
+  // Update Complete status based on current values
+  // We need to get current page to check both fields
+  const currentPage = await retryWithBackoff(() =>
+    client.pages.retrieve({ page_id: id })
+  );
+  
+  const currentContact = pageToContactEnzo(currentPage);
+  const newName = updates.name !== undefined ? updates.name : currentContact.Name;
+  const newWhatsApp = updates.whatsapp !== undefined ? updates.whatsapp : currentContact.WhatsApp;
+  const isComplete = !!(newName && newWhatsApp);
+  
+  properties.Complete = { checkbox: isComplete };
+
+  const response = await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      properties
+    })
+  );
+
+  return pageToContactEnzo(response);
+}
+
+/**
+ * Delete Enzo contact
+ */
+export async function deleteContactEnzo(id: string): Promise<void> {
+  const client = initNotionClient();
+
+  await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: id,
+      archived: true
+    })
+  );
+}
+
+/**
  * Toggle action done status
  */
 export async function toggleActionDone(actionId: string, done: boolean): Promise<boolean> {

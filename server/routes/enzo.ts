@@ -2,7 +2,7 @@
 // Dashboard de vendas separado da Axis
 
 import { Router } from 'express';
-import { getKPIsEnzo, getGoalsEnzo, getActionsEnzo, ensureActionHasGoalEnzo, toggleActionDoneEnzo } from '../lib/notionDataLayer';
+import { getKPIsEnzo, getGoalsEnzo, getActionsEnzo, ensureActionHasGoalEnzo, toggleActionDoneEnzo, getContactsEnzo, createContactEnzo, updateContactEnzo, deleteContactEnzo } from '../lib/notionDataLayer';
 
 export const enzoRouter = Router();
 
@@ -93,6 +93,97 @@ enzoRouter.patch('/actions/:id/done', async (req, res) => {
     console.error('Error updating Enzo action:', error);
     res.status(500).json({ 
       error: 'Failed to update action',
+      message: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+/**
+ * GET /api/enzo/contacts
+ * Get all Enzo's contacts
+ */
+enzoRouter.get('/contacts', async (req, res) => {
+  try {
+    const contacts = await getContactsEnzo();
+    res.json(contacts);
+  } catch (error: any) {
+    console.error('Error fetching Enzo contacts:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch contacts',
+      message: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+/**
+ * POST /api/enzo/contacts
+ * Create a new Enzo contact
+ */
+enzoRouter.post('/contacts', async (req, res) => {
+  try {
+    const { name, whatsapp } = req.body;
+
+    if (!name || typeof name !== 'string' || name.trim() === '') {
+      return res.status(400).json({ 
+        error: 'Name is required' 
+      });
+    }
+
+    const contact = await createContactEnzo(name.trim(), whatsapp);
+    res.json(contact);
+  } catch (error: any) {
+    console.error('Error creating Enzo contact:', error);
+    res.status(500).json({ 
+      error: 'Failed to create contact',
+      message: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+/**
+ * PATCH /api/enzo/contacts/:id
+ * Update an Enzo contact
+ */
+enzoRouter.patch('/contacts/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, whatsapp } = req.body;
+
+    const updates: { name?: string; whatsapp?: string } = {};
+    if (name !== undefined) {
+      if (typeof name !== 'string') {
+        return res.status(400).json({ error: 'Name must be a string' });
+      }
+      updates.name = name.trim();
+    }
+    if (whatsapp !== undefined) {
+      updates.whatsapp = typeof whatsapp === 'string' ? whatsapp.trim() : undefined;
+    }
+
+    const contact = await updateContactEnzo(id, updates);
+    res.json(contact);
+  } catch (error: any) {
+    console.error('Error updating Enzo contact:', error);
+    res.status(500).json({ 
+      error: 'Failed to update contact',
+      message: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+/**
+ * DELETE /api/enzo/contacts/:id
+ * Delete an Enzo contact
+ */
+enzoRouter.delete('/contacts/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await deleteContactEnzo(id);
+    res.json({ success: true });
+  } catch (error: any) {
+    console.error('Error deleting Enzo contact:', error);
+    res.status(500).json({ 
+      error: 'Failed to delete contact',
       message: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }

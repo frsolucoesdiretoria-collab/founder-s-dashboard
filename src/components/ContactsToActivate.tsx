@@ -18,20 +18,6 @@ interface ContactsToActivateProps {
   onAddContact: () => void;
 }
 
-// Contatos pré-definidos do exemplo
-const PREDEFINED_CONTACTS: Omit<Contact, 'id'>[] = [
-  { name: 'Jeferson Boss' },
-  { name: 'Leo ames' },
-  { name: 'Tarcisio STZ' },
-  { name: 'Machado consórcios' },
-  { name: 'José Carlos' },
-  { name: 'Melkis' },
-  { name: 'Natan' },
-  { name: 'Cavali' },
-  { name: 'Julia Hermes' },
-  { name: 'Mariana da Procedere' },
-  { name: 'André da ayty' },
-];
 
 export function ContactsToActivate({ contacts, onUpdateContact, onAddContact }: ContactsToActivateProps) {
   const completedCount = contacts.filter(c => c.name && c.whatsapp).length;
@@ -57,7 +43,6 @@ export function ContactsToActivate({ contacts, onUpdateContact, onAddContact }: 
       </CardHeader>
       <CardContent className="px-3 md:px-6 pb-3 md:pb-6 space-y-2 md:space-y-3">
         {contacts.map((contact, index) => {
-          const isPredefined = index < PREDEFINED_CONTACTS.length;
           const isComplete = contact.name && contact.whatsapp;
           
           return (
@@ -74,11 +59,6 @@ export function ContactsToActivate({ contacts, onUpdateContact, onAddContact }: 
                 <span className="text-xs md:text-sm font-medium text-muted-foreground min-w-[24px]">
                   {index + 1}.
                 </span>
-                {isPredefined && (
-                  <Badge variant="outline" className="text-[10px] md:text-xs px-1.5 md:px-2 py-0.5">
-                    Exemplo
-                  </Badge>
-                )}
                 {isComplete && (
                   <Badge variant="outline" className="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 text-[10px] md:text-xs px-1.5 md:px-2 py-0.5">
                     Completo
@@ -92,7 +72,6 @@ export function ContactsToActivate({ contacts, onUpdateContact, onAddContact }: 
                   value={contact.name}
                   onChange={(e) => onUpdateContact(contact.id, { name: e.target.value })}
                   className="text-xs md:text-sm h-8 md:h-9"
-                  disabled={isPredefined}
                 />
                 <div className="flex items-center gap-2">
                   <Phone className="h-3 w-3 md:h-4 md:w-4 text-muted-foreground flex-shrink-0" />
