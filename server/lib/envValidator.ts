@@ -41,7 +41,8 @@ export function validateEnvVars(): EnvValidationResult {
   const optionalDbs = [
     'Contacts', 'Clients', 'GrowthProposals', 'CoffeeDiagnostics',
     'ExpansionOpportunities', 'CustomerWins', 'FinanceMetrics',
-    'Partners', 'Referrals', 'CommissionLedger', 'PartnerNudges'
+    'Partners', 'Referrals', 'CommissionLedger', 'PartnerNudges',
+    'KPIs_Enzo', 'Goals_Enzo', 'Actions_Enzo', 'Contacts_Enzo'
   ];
   for (const dbName of optionalDbs) {
     const schema = NOTION_SCHEMA[dbName];

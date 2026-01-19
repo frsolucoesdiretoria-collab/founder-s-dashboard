@@ -15,6 +15,11 @@ enzoRouter.get('/kpis', async (req, res) => {
     const kpis = await getKPIsEnzo();
     res.json(kpis);
   } catch (error: any) {
+    // Se database não está configurada, retornar array vazio em vez de erro
+    if (error.message?.includes('not configured')) {
+      console.warn('⚠️  Enzo KPIs database not configured, returning empty array');
+      return res.json([]);
+    }
     console.error('Error fetching Enzo KPIs:', error);
     res.status(500).json({ 
       error: 'Failed to fetch KPIs',
@@ -38,6 +43,11 @@ enzoRouter.get('/goals', async (req, res) => {
     const goals = await getGoalsEnzo(range);
     res.json(goals);
   } catch (error: any) {
+    // Se database não está configurada, retornar array vazio em vez de erro
+    if (error.message?.includes('not configured')) {
+      console.warn('⚠️  Enzo Goals database not configured, returning empty array');
+      return res.json([]);
+    }
     console.error('Error fetching Enzo goals:', error);
     res.status(500).json({ 
       error: 'Failed to fetch goals',
@@ -61,6 +71,11 @@ enzoRouter.get('/actions', async (req, res) => {
     const actions = await getActionsEnzo(range);
     res.json(actions);
   } catch (error: any) {
+    // Se database não está configurada, retornar array vazio em vez de erro
+    if (error.message?.includes('not configured')) {
+      console.warn('⚠️  Enzo Actions database not configured, returning empty array');
+      return res.json([]);
+    }
     console.error('Error fetching Enzo actions:', error);
     res.status(500).json({ 
       error: 'Failed to fetch actions',
@@ -107,6 +122,11 @@ enzoRouter.get('/contacts', async (req, res) => {
     const contacts = await getContactsEnzo();
     res.json(contacts);
   } catch (error: any) {
+    // Se database não está configurada, retornar array vazio em vez de erro
+    if (error.message?.includes('not configured')) {
+      console.warn('⚠️  Enzo Contacts database not configured, returning empty array');
+      return res.json([]);
+    }
     console.error('Error fetching Enzo contacts:', error);
     res.status(500).json({ 
       error: 'Failed to fetch contacts',
