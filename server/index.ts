@@ -207,9 +207,37 @@ try {
   process.exit(1);
 }
 
+// Handle uncaught errors
+process.on('uncaughtException', (error: Error) => {
+  console.error('❌ Uncaught Exception:', error);
+  console.error('   Message:', error.message);
+  console.error('   Stack:', error.stack);
+  // Don't exit immediately, let PM2 handle it
+  setTimeout(() => {
+    process.exit(1);
+  }, 1000);
+});
+
+process.on('unhandledRejection', (reason: any, promise: Promise<any>) => {
+  console.error('❌ Unhandled Rejection at:', promise);
+  console.error('   Reason:', reason);
+  // Don't exit immediately, let PM2 handle it
+  setTimeout(() => {
+    process.exit(1);
+  }, 1000);
+});
+
 // Graceful shutdown
 process.on('SIGTERM', () => {
   console.log('SIGTERM received, shutting down gracefully...');
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('SIGINT received, shutting down gracefully...');
   server.close(() => {
     console.log('Server closed');
     process.exit(0);

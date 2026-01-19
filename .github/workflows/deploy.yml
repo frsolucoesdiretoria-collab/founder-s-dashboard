@@ -111,36 +111,123 @@ jobs:
             lsof -ti:3001 | xargs kill -9 2>/dev/null || true
             sleep 2
             
+            # Verificar se .env.local existe e tem NOTION_TOKEN configurado
+            echo "🔍 Verificando configuração do .env.local..."
+            if [ ! -f .env.local ]; then
+              echo "❌ ERRO CRÍTICO: .env.local não existe!"
+              echo "   Criando a partir do template..."
+              if [ -f env.local.example ]; then
+                cp env.local.example .env.local
+                echo "⚠️  ATENÇÃO: Configure o NOTION_TOKEN no .env.local antes de continuar!"
+                echo "   O servidor não iniciará sem NOTION_TOKEN configurado."
+                exit 1
+              else
+                echo "❌ Template env.local.example não encontrado!"
+                exit 1
+              fi
+            fi
+            
+            # Verificar se NOTION_TOKEN está configurado
+            if ! grep -q "^NOTION_TOKEN=" .env.local || grep -q "^NOTION_TOKEN=<<<" .env.local || grep -q "^NOTION_TOKEN=$" .env.local; then
+              echo "❌ ERRO CRÍTICO: NOTION_TOKEN não está configurado no .env.local!"
+              echo "   Configure o NOTION_TOKEN antes de continuar."
+              exit 1
+            fi
+            
+            # Verificar se dist existe e tem conteúdo
+            if [ ! -d "dist" ] || [ -z "$(ls -A dist 2>/dev/null)" ]; then
+              echo "❌ ERRO: Pasta dist não existe ou está vazia!"
+              echo "   Fazendo build novamente..."
+              NODE_ENV=production npm run build
+              if [ ! -d "dist" ] || [ -z "$(ls -A dist 2>/dev/null)" ]; then
+                echo "❌ Build falhou! Verifique os logs acima."
+                exit 1
+              fi
+            fi
+            
             # Iniciar com NODE_ENV=production explicitamente
             echo "🚀 Starting application..."
             cd "$PROJECT_PATH"
-            # Usar tsx diretamente em vez de npm para melhor controle
-            NODE_ENV=production PORT=3001 pm2 start npm --name "founder-dashboard" -- start
+            
+            # Carregar variáveis de ambiente do .env.local
+            set -a
+            source .env.local 2>/dev/null || true
+            set +a
+            
+            # Garantir que NODE_ENV e PORT estão definidos
+            export NODE_ENV=production
+            export PORT=3001
+            
+            # Usar pm2 com variáveis de ambiente explícitas
+            pm2 start npm --name "founder-dashboard" -- start --update-env
             pm2 save
             
-            # Aguardar servidor iniciar
-            sleep 5
+            # Aguardar servidor iniciar (aumentado para 10 segundos)
+            echo "⏳ Aguardando servidor iniciar..."
+            sleep 10
             
-            # Verificar se servidor iniciou corretamente
-            if pm2 list | grep -q "founder-dashboard.*online"; then
+            # Verificar múltiplas vezes se servidor iniciou
+            MAX_RETRIES=5
+            RETRY_COUNT=0
+            SERVER_ONLINE=false
+            
+            while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+              if pm2 list | grep -q "founder-dashboard.*online"; then
+                SERVER_ONLINE=true
+                break
+              fi
+              RETRY_COUNT=$((RETRY_COUNT + 1))
+              echo "   Tentativa $RETRY_COUNT/$MAX_RETRIES - aguardando..."
+              sleep 3
+            done
+            
+            if [ "$SERVER_ONLINE" = true ]; then
               echo "✅ Application started successfully with PM2"
               
-              # Verificar se está respondendo
-              sleep 3
-              if curl -s http://localhost:3001/api/health > /dev/null; then
+              # Verificar se está respondendo (múltiplas tentativas)
+              RETRY_COUNT=0
+              API_RESPONDING=false
+              
+              while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+                if curl -s -f http://localhost:3001/api/health > /dev/null 2>&1; then
+                  API_RESPONDING=true
+                  break
+                fi
+                RETRY_COUNT=$((RETRY_COUNT + 1))
+                echo "   Tentativa $RETRY_COUNT/$MAX_RETRIES - aguardando API..."
+                sleep 3
+              done
+              
+              if [ "$API_RESPONDING" = true ]; then
                 echo "✅ API está respondendo corretamente!"
                 curl http://localhost:3001/api/health
+                echo ""
               else
                 echo "⚠️  Servidor iniciou mas API não está respondendo"
-                echo "📋 Logs do servidor:"
-                pm2 logs founder-dashboard --lines 30 --nostream
+                echo "📋 Status do PM2:"
+                pm2 list | grep founder-dashboard
+                echo ""
+                echo "📋 Logs do servidor (últimas 50 linhas):"
+                pm2 logs founder-dashboard --lines 50 --nostream
+                echo ""
+                echo "🔍 Verificando porta 3001:"
+                lsof -i:3001 || echo "   Porta 3001 não está em uso"
                 exit 1
               fi
               
+              echo ""
+              echo "📋 Últimos logs do servidor:"
               pm2 logs founder-dashboard --lines 10 --nostream
             else
               echo "❌ Application failed to start with PM2"
-              pm2 logs founder-dashboard --lines 50 --nostream
+              echo "📋 Status do PM2:"
+              pm2 list
+              echo ""
+              echo "📋 Logs do servidor (últimas 100 linhas):"
+              pm2 logs founder-dashboard --lines 100 --nostream
+              echo ""
+              echo "🔍 Verificando porta 3001:"
+              lsof -i:3001 || echo "   Porta 3001 não está em uso"
               exit 1
             fi
             
