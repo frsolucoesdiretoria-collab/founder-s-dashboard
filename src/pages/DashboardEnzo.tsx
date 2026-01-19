@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { AppLayout } from '@/components/AppLayout';
 import { KPICard } from '@/components/KPICard';
 import { ActionChecklist } from '@/components/ActionChecklist';
+import { ContactsToActivate } from '@/components/ContactsToActivate';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Loader2, RefreshCw } from 'lucide-react';
-import { getEnzoKPIs, getEnzoGoals, getEnzoDailyActions, updateEnzoActionDone } from '@/services';
+import { getEnzoKPIs, getEnzoGoals, getEnzoDailyActions, updateEnzoActionDone, getEnzoContacts, createEnzoContact, updateEnzoContact } from '@/services';
 import type { KPI } from '@/types/kpi';
 import type { Goal } from '@/types/goal';
 import type { Action } from '@/types/action';
@@ -14,10 +15,17 @@ import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
+interface Contact {
+  id: string;
+  name: string;
+  whatsapp?: string;
+}
+
 export default function DashboardEnzo() {
   const [kpis, setKpis] = useState<KPI[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
   const [actions, setActions] = useState<Action[]>([]);
+  const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -36,12 +44,14 @@ export default function DashboardEnzo() {
     const results = await Promise.allSettled([
       getEnzoKPIs(),
       getEnzoGoals(),
-      getEnzoDailyActions()
+      getEnzoDailyActions(),
+      loadContacts()
     ]);
 
     const kpisData = results[0].status === 'fulfilled' ? results[0].value : [];
     const goalsData = results[1].status === 'fulfilled' ? results[1].value : [];
     const actionsData = results[2].status === 'fulfilled' ? results[2].value : [];
+    const contactsData = results[3].status === 'fulfilled' ? results[3].value : [];
 
     // Verificar erros específicos nos KPIs (mais crítico)
     if (results[0].status === 'rejected') {
@@ -79,6 +89,7 @@ export default function DashboardEnzo() {
     setKpis(sortedKpis);
     setGoals(goalsData);
     setActions(actionsData);
+    setContacts(contactsData);
     
     if (refreshing) {
       if (kpisData.length > 0) {
@@ -97,6 +108,24 @@ export default function DashboardEnzo() {
     loadData();
   };
 
+  async function loadContacts(): Promise<Contact[]> {
+    try {
+      const contactsData = await getEnzoContacts();
+      return contactsData.map(c => ({
+        id: c.id,
+        name: c.Name,
+        whatsapp: c.WhatsApp
+      }));
+    } catch (err: any) {
+      // Se database não está configurada, retornar array vazio
+      if (err.message?.includes('not configured')) {
+        return [];
+      }
+      console.error('Error loading contacts:', err);
+      return [];
+    }
+  }
+
   const handleToggleAction = async (actionId: string, done: boolean) => {
     try {
       await updateEnzoActionDone(actionId, done);
@@ -109,6 +138,45 @@ export default function DashboardEnzo() {
     } catch (err: any) {
       console.error('Error updating action:', err);
       toast.error(err.reason || err.message || 'Erro ao atualizar ação');
+    }
+  };
+
+  const handleUpdateContact = async (id: string, updates: Partial<Contact>) => {
+    try {
+      const notionUpdates: { name?: string; whatsapp?: string } = {};
+      if (updates.name !== undefined) {
+        notionUpdates.name = updates.name;
+      }
+      if (updates.whatsapp !== undefined) {
+        notionUpdates.whatsapp = updates.whatsapp;
+      }
+
+      const updated = await updateEnzoContact(id, notionUpdates);
+      
+      setContacts(prev => prev.map(c => 
+        c.id === id 
+          ? { id: updated.id, name: updated.Name, whatsapp: updated.WhatsApp }
+          : c
+      ));
+    } catch (err: any) {
+      console.error('Error updating contact:', err);
+      toast.error('Erro ao atualizar contato. Tente novamente.');
+    }
+  };
+
+  const handleAddContact = async () => {
+    if (contacts.length >= 20) return;
+    try {
+      const newContact = await createEnzoContact('');
+      
+      setContacts(prev => [...prev, {
+        id: newContact.id,
+        name: newContact.Name,
+        whatsapp: newContact.WhatsApp
+      }]);
+    } catch (err: any) {
+      console.error('Error creating contact:', err);
+      toast.error('Erro ao adicionar contato. Tente novamente.');
     }
   };
 
@@ -244,6 +312,23 @@ export default function DashboardEnzo() {
               onToggle={handleToggleAction}
               journalBlocked={false}
               refreshing={refreshing}
+            />
+          </div>
+        )}
+
+        {/* Contatos para Ativar */}
+        {kpis.length > 0 && (
+          <div className="space-y-3 md:space-y-4">
+            <div>
+              <h2 className="text-base md:text-xl font-bold text-foreground">Contatos para Ativar</h2>
+              <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+                Complete os dados até atingir 20 contatos
+              </p>
+            </div>
+            <ContactsToActivate
+              contacts={contacts}
+              onUpdateContact={handleUpdateContact}
+              onAddContact={handleAddContact}
             />
           </div>
         )}
