@@ -406,6 +406,70 @@ export const NOTION_SCHEMA: Record<string, DatabaseSchema> = {
       { name: 'ConvertedAt', type: 'date', required: false, description: 'Data de conversão em pago' },
       { name: 'ChurnedAt', type: 'date', required: false, description: 'Data do churn' }
     ]
+  },
+  // Enzo Canei - Dashboard de Vendas (separado da Axis)
+  KPIs_Enzo: {
+    name: 'KPIs_Enzo',
+    envVar: 'NOTION_DB_KPIS_ENZO',
+    required: false,
+    properties: [
+      { name: 'Name', type: 'title', required: true, description: 'Nome do KPI' },
+      { name: 'Category', type: 'select', required: true, description: 'Categoria do KPI' },
+      { name: 'Periodicity', type: 'select', required: true, description: 'Periodicidade: Anual, Mensal, Trimestral, Semestral, Semanal, Diário' },
+      { name: 'ChartType', type: 'select', required: true, description: 'Tipo de gráfico: line, bar, area, number' },
+      { name: 'Unit', type: 'rich_text', required: false, description: 'Unidade de medida' },
+      { name: 'TargetValue', type: 'number', required: false, description: 'Valor alvo (meta) do KPI' },
+      { name: 'VisiblePublic', type: 'checkbox', required: true, description: 'Visível no dashboard público' },
+      { name: 'VisibleAdmin', type: 'checkbox', required: true, description: 'Visível no admin' },
+      { name: 'IsFinancial', type: 'checkbox', required: true, description: 'Indica se é KPI financeiro (R$)' },
+      { name: 'SortOrder', type: 'number', required: true, description: 'Ordem de exibição' },
+      { name: 'Active', type: 'checkbox', required: true, description: 'KPI ativo' },
+      { name: 'Description', type: 'rich_text', required: false, description: 'Descrição do KPI' }
+    ]
+  },
+  Goals_Enzo: {
+    name: 'Goals_Enzo',
+    envVar: 'NOTION_DB_GOALS_ENZO',
+    required: false,
+    properties: [
+      { name: 'Name', type: 'title', required: true, description: 'Nome da meta' },
+      { name: 'KPI', type: 'relation', required: true, description: 'Relacionamento com KPI' },
+      { name: 'Year', type: 'number', required: true, description: 'Ano da meta' },
+      { name: 'Month', type: 'number', required: false, description: 'Mês da meta (1-12)' },
+      { name: 'WeekKey', type: 'rich_text', required: false, description: 'Chave da semana (YYYY-WW)' },
+      { name: 'PeriodStart', type: 'date', required: true, description: 'Início do período' },
+      { name: 'PeriodEnd', type: 'date', required: true, description: 'Fim do período' },
+      { name: 'Target', type: 'number', required: true, description: 'Valor alvo' },
+      { name: 'Actions', type: 'relation', required: false, description: 'Ações relacionadas' },
+      { name: 'Actual', type: 'number', required: false, description: 'Valor atual' },
+      { name: 'ProgressPct', type: 'formula', required: false, description: 'Percentual de progresso' },
+      { name: 'VisiblePublic', type: 'checkbox', required: true, description: 'Visível no dashboard público' },
+      { name: 'VisibleAdmin', type: 'checkbox', required: true, description: 'Visível no admin' },
+      { name: 'Notes', type: 'rich_text', required: false, description: 'Notas adicionais' }
+    ]
+  },
+  Actions_Enzo: {
+    name: 'Actions_Enzo',
+    envVar: 'NOTION_DB_ACTIONS_ENZO',
+    required: false,
+    properties: [
+      { name: 'Name', type: 'title', required: true, description: 'Nome da ação' },
+      { name: 'Type', type: 'select', required: true, description: 'Tipo: Café, Ativação de Rede, Proposta, Processo, Rotina, Automação, Agente, Diário' },
+      { name: 'Date', type: 'date', required: true, description: 'Data da ação' },
+      { name: 'Done', type: 'checkbox', required: true, description: 'Ação concluída' },
+      { name: 'Contribution', type: 'number', required: false, description: 'Contribuição para a meta' },
+      { name: 'Earned', type: 'number', required: false, description: 'Valor ganho (financeiro)' },
+      { name: 'Goal', type: 'relation', required: false, description: 'Meta relacionada (OBRIGATÓRIO para concluir)' },
+      { name: 'Contact', type: 'relation', required: false, description: 'Contato relacionado' },
+      { name: 'Client', type: 'relation', required: false, description: 'Cliente relacionado' },
+      { name: 'Proposal', type: 'relation', required: false, description: 'Proposta relacionada' },
+      { name: 'Diagnostic', type: 'relation', required: false, description: 'Diagnóstico relacionado' },
+      { name: 'WeekKey', type: 'rich_text', required: false, description: 'Chave da semana' },
+      { name: 'Month', type: 'number', required: false, description: 'Mês (1-12)' },
+      { name: 'Priority', type: 'select', required: false, description: 'Prioridade: Alta, Média, Baixa' },
+      { name: 'PublicVisible', type: 'checkbox', required: true, description: 'Visível no dashboard público' },
+      { name: 'Notes', type: 'rich_text', required: false, description: 'Notas adicionais' }
+    ]
   }
 };
 

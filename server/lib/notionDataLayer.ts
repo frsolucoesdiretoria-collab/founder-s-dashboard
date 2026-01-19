@@ -721,6 +721,149 @@ export async function getActions(range?: { start?: string; end?: string }): Prom
   return allResults.map(pageToAction);
 }
 
+// ============================================================================
+// ENZO CANEI - Dashboard de Vendas (databases separadas)
+// ============================================================================
+
+/**
+ * Get Enzo's KPIs (allowing financial for his sales dashboard)
+ */
+export async function getKPIsEnzo(): Promise<NotionKPI[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('KPIs_Enzo');
+  if (!dbId) throw new Error('NOTION_DB_KPIS_ENZO not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      filter: {
+        property: 'Active',
+        checkbox: { equals: true }
+      },
+      sorts: [{ property: 'SortOrder', direction: 'ascending' }]
+    })
+  );
+
+  return response.results.map(pageToKPI);
+}
+
+/**
+ * Get Enzo's goals
+ */
+export async function getGoalsEnzo(range?: { start?: string; end?: string }): Promise<NotionGoal[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Goals_Enzo');
+  if (!dbId) throw new Error('NOTION_DB_GOALS_ENZO not configured');
+
+  const filter: any = {};
+  if (range?.start || range?.end) {
+    filter.and = [];
+    if (range.start) {
+      filter.and.push({ property: 'PeriodStart', date: { on_or_after: range.start } });
+    }
+    if (range.end) {
+      filter.and.push({ property: 'PeriodEnd', date: { on_or_before: range.end } });
+    }
+  }
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      filter: Object.keys(filter).length > 0 ? filter : undefined
+    })
+  );
+
+  return response.results.map(pageToGoal);
+}
+
+/**
+ * Get Enzo's actions within a date range
+ */
+export async function getActionsEnzo(range?: { start?: string; end?: string }): Promise<NotionAction[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Actions_Enzo');
+  if (!dbId) throw new Error('NOTION_DB_ACTIONS_ENZO not configured');
+
+  const filter: any = {};
+  if (range?.start || range?.end) {
+    filter.and = [];
+    if (range.start) {
+      filter.and.push({ property: 'Date', date: { on_or_after: range.start } });
+    }
+    if (range.end) {
+      filter.and.push({ property: 'Date', date: { on_or_before: range.end } });
+    }
+  }
+
+  const allResults: any[] = [];
+  let hasMore = true;
+  let nextCursor: string | undefined = undefined;
+
+  while (hasMore) {
+    const response = await retryWithBackoff(() =>
+      client.databases.query({
+        database_id: dbId,
+        filter: Object.keys(filter).length > 0 ? filter : undefined,
+        start_cursor: nextCursor,
+        page_size: 100
+      })
+    );
+
+    allResults.push(...response.results);
+    hasMore = response.has_more;
+    nextCursor = response.next_cursor || undefined;
+  }
+
+  return allResults.map(pageToAction);
+}
+
+/**
+ * Ensure Enzo's action has a goal before allowing completion
+ */
+export async function ensureActionHasGoalEnzo(actionId: string): Promise<{ allowed: boolean; reason?: string }> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Actions_Enzo');
+  if (!dbId) throw new Error('NOTION_DB_ACTIONS_ENZO not configured');
+
+  const page = await retryWithBackoff(() =>
+    client.pages.retrieve({ page_id: actionId })
+  );
+
+  const action = pageToAction(page);
+  if (action.Name?.trim().toLowerCase() === DAILY_PROPHECY_ACTION_NAME.toLowerCase()) {
+    return { allowed: true };
+  }
+
+  if (!action.Goal || action.Goal.trim() === '') {
+    return {
+      allowed: false,
+      reason: 'Não é possível concluir uma ação sem meta associada'
+    };
+  }
+
+  return { allowed: true };
+}
+
+/**
+ * Toggle Enzo's action done status
+ */
+export async function toggleActionDoneEnzo(actionId: string, done: boolean): Promise<boolean> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Actions_Enzo');
+  if (!dbId) throw new Error('NOTION_DB_ACTIONS_ENZO not configured');
+
+  await retryWithBackoff(() =>
+    client.pages.update({
+      page_id: actionId,
+      properties: {
+        Done: { checkbox: done }
+      }
+    })
+  );
+
+  return true;
+}
+
 /**
  * Toggle action done status
  */

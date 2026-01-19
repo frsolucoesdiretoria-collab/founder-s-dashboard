@@ -35,6 +35,7 @@ import VendeMaisObrasDashboard from "./pages/VendeMaisObrasDashboard";
 import VendeMaisObrasProfile from "./pages/VendeMaisObrasProfile";
 import VendeMaisObrasOrcamentos from "./pages/VendeMaisObrasOrcamentos";
 import VendeMaisObrasClientes from "./pages/VendeMaisObrasClientes";
+import DashboardEnzo from "./pages/DashboardEnzo";
 // TEMPORÁRIO: Removido para reunião - import TestePage from "./pages/Teste";
 
 const queryClient = new QueryClient({
@@ -50,6 +51,7 @@ const appPassword = import.meta.env.VITE_APP_PASSWORD as string | undefined;
 const doterraPassword = import.meta.env.VITE_DOTERRA_PASSWORD as string | undefined;
 const domaCondoPassword = "deixeatecnologiafazer";
 const vendeMaisObrasPassword = import.meta.env.VITE_VENDE_MAIS_OBRAS_PASSWORD as string | undefined;
+const enzoPassword = "2026anodaaceleração";
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -249,6 +251,20 @@ const App = () => (
           element={
             <PasswordProtection storageKey="app_authenticated" correctPassword={appPassword || ''}>
               <RelatosPage />
+            </PasswordProtection>
+          }
+        />
+        {/* Enzo Canei - Dashboard de Vendas */}
+        <Route
+          path="/dashboard-enzo"
+          element={
+            <PasswordProtection
+              storageKey="enzo_authenticated"
+              correctPassword={enzoPassword}
+              title="Acesso Restrito — Enzo Canei"
+              description="Digite a senha para acessar o dashboard de vendas"
+            >
+              <DashboardEnzo />
             </PasswordProtection>
           }
         />

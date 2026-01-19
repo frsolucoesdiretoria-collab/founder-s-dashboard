@@ -45,3 +45,4 @@ export function getRelatorioByClienteAndMes(
   return getRelatorioMensal(clienteId, mesReferencia);
 }
 
+

@@ -21,43 +21,39 @@ export function KPICard({ kpi, goal }: KPICardProps) {
   const targetDisplay = targetValue > 0 ? targetValue.toString() : '—';
   
   return (
-    <Card className="overflow-hidden">
-      <CardHeader className="pb-2">
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-wide">
-              {kpi.Category}
-            </p>
-            <CardTitle className="text-base font-medium mt-1">
-              {kpi.Name}
-            </CardTitle>
-          </div>
-          <div className="p-2 rounded-full bg-green-50 dark:bg-green-950/20">
-            <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-500" />
-          </div>
+    <div className="w-full">
+      <div className="flex items-start justify-between mb-2">
+        <div className="flex-1 min-w-0">
+          <p className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wide">
+            {kpi.Category}
+          </p>
+          <CardTitle className="text-sm md:text-base font-medium mt-0.5 md:mt-1 leading-tight">
+            {kpi.Name}
+          </CardTitle>
         </div>
-      </CardHeader>
-      <CardContent>
-        <div className="flex items-baseline gap-2 mb-3">
-          <span className="text-2xl font-bold text-foreground">
-            {actual}
-          </span>
-          <span className="text-sm text-muted-foreground">
-            / {targetDisplay}{kpi.Unit ? ` ${kpi.Unit}` : ''}
-          </span>
+        <div className="p-1.5 md:p-2 rounded-full bg-green-50 dark:bg-green-950/20 ml-2 flex-shrink-0">
+          <TrendingUp className="h-3 w-3 md:h-4 md:w-4 text-green-600 dark:text-green-500" />
         </div>
-        
-        <Progress value={progress} className="h-2" />
-        
-        <div className="flex justify-between items-center mt-2">
-          <span className="text-xs text-muted-foreground">
-            {kpi.Periodicity}
-          </span>
-          <span className="text-sm font-medium text-primary">
-            {progress.toFixed(0)}%
-          </span>
-        </div>
-      </CardContent>
-    </Card>
+      </div>
+      <div className="flex items-baseline gap-1.5 md:gap-2 mb-2 md:mb-3">
+        <span className="text-xl md:text-2xl font-bold text-foreground">
+          {actual}
+        </span>
+        <span className="text-xs md:text-sm text-muted-foreground">
+          / {targetDisplay}{kpi.Unit ? ` ${kpi.Unit}` : ''}
+        </span>
+      </div>
+      
+      <Progress value={progress} className="h-1.5 md:h-2" />
+      
+      <div className="flex justify-between items-center mt-1.5 md:mt-2">
+        <span className="text-[10px] md:text-xs text-muted-foreground">
+          {kpi.Periodicity}
+        </span>
+        <span className="text-xs md:text-sm font-medium text-primary">
+          {progress.toFixed(0)}%
+        </span>
+      </div>
+    </div>
   );
 }

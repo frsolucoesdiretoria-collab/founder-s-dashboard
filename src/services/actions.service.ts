@@ -170,3 +170,76 @@ export async function deleteAction(actionId: string): Promise<void> {
     throw error;
   }
 }
+
+/**
+ * Get Enzo's daily actions
+ */
+export async function getEnzoDailyActions(): Promise<Action[]> {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const response = await fetch(`/api/enzo/actions?start=${today}&end=${today}`);
+    
+    if (response.status === 429) {
+      throw new Error('Rate limit: Muitas requisições. Aguarde alguns segundos.');
+    }
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch Enzo actions: ${response.statusText}`);
+    }
+    const actions: Action[] = await response.json();
+    return actions.filter(action => action.PublicVisible === true);
+  } catch (error) {
+    console.error('Error fetching Enzo daily actions:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get all Enzo's actions
+ */
+export async function getEnzoActions(range?: { start?: string; end?: string }): Promise<Action[]> {
+  try {
+    const params = new URLSearchParams();
+    if (range?.start) params.append('start', range.start);
+    if (range?.end) params.append('end', range.end);
+    
+    const response = await fetch(`/api/enzo/actions?${params.toString()}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch Enzo actions: ${response.statusText}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching Enzo actions:', error);
+    return [];
+  }
+}
+
+/**
+ * Update Enzo's action done status
+ */
+export async function updateEnzoActionDone(actionId: string, done: boolean): Promise<boolean> {
+  try {
+    const response = await fetch(`/api/enzo/actions/${actionId}/done`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ done })
+    });
+    
+    if (response.status === 429) {
+      throw new Error('Rate limit: Muitas requisições. Aguarde alguns segundos.');
+    }
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.reason || error.error || 'Failed to update Enzo action');
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Error updating Enzo action:', error);
+    throw error;
+  }
+}

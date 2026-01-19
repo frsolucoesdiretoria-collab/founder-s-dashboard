@@ -21,6 +21,7 @@ import { doterraRouter } from './routes/doterra';
 import { vendeMaisObrasRouter } from './routes/vendeMaisObras';
 import proposalsRouter from './routes/proposals';
 import { domaCondoClientRouter } from './routes/domaCondoClient';
+import { enzoRouter } from './routes/enzo';
 import { assertEnvVars } from './lib/envValidator';
 
 // Load environment variables (priority: .env.local > .env)
@@ -69,6 +70,7 @@ app.use('/api/doterra', doterraRouter);
 app.use('/api/vende-mais-obras', vendeMaisObrasRouter);
 app.use('/api/proposals', proposalsRouter);
 app.use('/api/doma-condo-clientes', domaCondoClientRouter);
+app.use('/api/enzo', enzoRouter);
 
 // Serve static files in production/staging (after API routes)
 if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {

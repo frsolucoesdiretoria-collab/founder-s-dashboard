@@ -90,3 +90,37 @@ export async function getCurrentWeekGoals(): Promise<Goal[]> {
   
   return goals.filter(goal => goal.WeekKey);
 }
+
+/**
+ * Get Enzo's goals
+ */
+export async function getEnzoGoals(range?: { start?: string; end?: string }): Promise<Goal[]> {
+  try {
+    const params = new URLSearchParams();
+    if (range?.start) params.append('start', range.start);
+    if (range?.end) params.append('end', range.end);
+    
+    const response = await fetch(`/api/enzo/goals?${params.toString()}`);
+    
+    if (response.status === 429) {
+      throw new Error('Rate limit: Muitas requisições. Aguarde alguns segundos.');
+    }
+    
+    if (response.status === 0 || !response.ok) {
+      if (!response.ok && response.status !== 500) {
+        throw new Error(`Servidor não está respondendo. Verifique se o servidor está rodando na porta 3001.`);
+      }
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || errorData.error || `Failed to fetch Enzo goals: ${response.statusText}`);
+    }
+    
+    const goals: Goal[] = await response.json();
+    return filterPublicGoals(goals);
+  } catch (error: any) {
+    console.error('Error fetching Enzo goals:', error);
+    if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError') || error.name === 'TypeError') {
+      throw new Error('Não foi possível conectar ao servidor. Verifique se o servidor está rodando.');
+    }
+    throw error;
+  }
+}

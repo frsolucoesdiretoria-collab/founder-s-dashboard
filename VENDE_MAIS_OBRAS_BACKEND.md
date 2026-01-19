@@ -242,3 +242,4 @@ O backend está completo e funcional. Próximas implementações sugeridas:
 - Rotas admin requerem o header `x-admin-passcode`
 
 
+

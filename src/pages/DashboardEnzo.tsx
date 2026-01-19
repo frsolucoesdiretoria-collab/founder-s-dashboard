@@ -1,0 +1,281 @@
+import { useState, useEffect } from 'react';
+import { AppLayout } from '@/components/AppLayout';
+import { KPICard } from '@/components/KPICard';
+import { KPIChart } from '@/components/KPIChart';
+import { ActionChecklist } from '@/components/ActionChecklist';
+import { ContactsToActivate } from '@/components/ContactsToActivate';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle, Loader2, RefreshCw } from 'lucide-react';
+import { getEnzoKPIs, getEnzoGoals, getEnzoDailyActions, updateEnzoActionDone } from '@/services';
+import type { KPI } from '@/types/kpi';
+import type { Goal } from '@/types/goal';
+import type { Action } from '@/types/action';
+import type { NotionKPI, NotionGoal, NotionAction } from '@/lib/notion/types';
+import { toast } from 'sonner';
+import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+interface Contact {
+  id: string;
+  name: string;
+  whatsapp?: string;
+}
+
+// Contatos pré-definidos do exemplo
+const PREDEFINED_CONTACT_NAMES = [
+  'Jeferson Boss',
+  'Leo ames',
+  'Tarcisio STZ',
+  'Machado consórcios',
+  'José Carlos',
+  'Melkis',
+  'Natan',
+  'Cavali',
+  'Julia Hermes',
+  'Mariana da Procedere',
+  'André da ayty',
+];
+
+function createInitialContacts(): Contact[] {
+  return PREDEFINED_CONTACT_NAMES.map((name, index) => ({
+    id: `contact-${index}`,
+    name,
+    whatsapp: undefined,
+  }));
+}
+
+export default function DashboardEnzo() {
+  const [kpis, setKpis] = useState<KPI[]>([]);
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [actions, setActions] = useState<Action[]>([]);
+  const [contacts, setContacts] = useState<Contact[]>(() => {
+    // Load from localStorage or create initial list
+    const stored = localStorage.getItem('enzo_contacts');
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch {
+        return createInitialContacts();
+      }
+    }
+    return createInitialContacts();
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  async function loadData() {
+    if (!refreshing) {
+      setLoading(true);
+    }
+    setError(null);
+    try {
+      const [kpisData, goalsData, actionsData] = await Promise.all([
+        getEnzoKPIs(),
+        getEnzoGoals(),
+        getEnzoDailyActions()
+      ]);
+
+      const sortedKpis = kpisData.sort((a, b) => (a.SortOrder || 0) - (b.SortOrder || 0));
+      setKpis(sortedKpis);
+      setGoals(goalsData);
+      setActions(actionsData);
+      
+      if (refreshing) {
+        toast.success('Dados atualizados');
+      }
+    } catch (err: any) {
+      console.error('Error loading Enzo dashboard data:', err);
+      
+      if (err.message?.includes('429') || err.message?.includes('rate limit')) {
+        setError('Muitas requisições. Aguarde alguns segundos e recarregue a página.');
+        toast.error('Limite de requisições atingido. Aguarde um momento.');
+      } else {
+        setError('Erro ao carregar dados. Verifique sua conexão.');
+        toast.error('Erro ao carregar dashboard');
+      }
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    loadData();
+  };
+
+  const handleToggleAction = async (actionId: string, done: boolean) => {
+    try {
+      await updateEnzoActionDone(actionId, done);
+      // Reload actions to get updated data
+      const updatedActions = await getEnzoDailyActions();
+      setActions(updatedActions);
+      // Reload goals to update progress
+      const updatedGoals = await getEnzoGoals();
+      setGoals(updatedGoals);
+    } catch (err: any) {
+      console.error('Error updating action:', err);
+      toast.error(err.reason || err.message || 'Erro ao atualizar ação');
+    }
+  };
+
+  const handleUpdateContact = (id: string, updates: Partial<Contact>) => {
+    setContacts(prev => {
+      const updated = prev.map(c => c.id === id ? { ...c, ...updates } : c);
+      localStorage.setItem('enzo_contacts', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const handleAddContact = () => {
+    if (contacts.length >= 20) return;
+    const newContact: Contact = {
+      id: `contact-${Date.now()}`,
+      name: '',
+      whatsapp: undefined,
+    };
+    const updated = [...contacts, newContact];
+    setContacts(updated);
+    localStorage.setItem('enzo_contacts', JSON.stringify(updated));
+  };
+
+  // Separate KPIs: output (financial) vs inputs (non-financial)
+  const outputKPI = kpis.find(kpi => kpi.IsFinancial === true); // KPI 4 - Meta Semanal
+  const inputKPIs = kpis.filter(kpi => kpi.IsFinancial === false); // KPI 1, 2, 3
+
+  if (loading) {
+    return (
+      <AppLayout>
+        <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <div className="text-muted-foreground">Carregando dashboard...</div>
+        </div>
+      </AppLayout>
+    );
+  }
+
+  return (
+    <AppLayout>
+      <div className="space-y-3 md:space-y-6 pb-4 md:pb-6 px-2 md:px-0">
+        {/* Header - Mobile Optimized */}
+        <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between md:gap-4">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-lg md:text-2xl font-bold text-foreground leading-tight">
+              Dashboard Enzo Canei
+            </h1>
+            <p className="text-xs md:text-base text-muted-foreground mt-1">
+              PDA Semana 3 | Meta: R$ 20K até 23/01
+            </p>
+          </div>
+          <Button 
+            onClick={handleRefresh} 
+            variant="outline" 
+            size="sm"
+            disabled={loading || refreshing}
+            className="w-full md:w-auto md:flex-shrink-0 h-9"
+          >
+            <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin mr-2' : 'mr-2'}`} />
+            <span className="text-xs md:text-sm">Atualizar</span>
+          </Button>
+        </div>
+
+        {error && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
+        {/* KPIs no Topo - Sempre visível quando existirem */}
+        {kpis.length > 0 && (
+          <div className="space-y-3 md:space-y-4">
+            <div>
+              <h2 className="text-base md:text-xl font-bold text-foreground">Métricas e Metas</h2>
+              <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+                Progresso semanal até 23/01/2026
+              </p>
+            </div>
+            {/* Grid de KPIs - Meta Semanal destacada + Input KPIs */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+              {/* Meta Semanal (output) - primeira se for financeiro, senão após os inputs */}
+              {outputKPI && (
+                <Card key={outputKPI.id} className="border-2 border-primary/50 overflow-hidden">
+                  <CardContent className="pt-4 md:pt-6">
+                    <KPICard 
+                      kpi={outputKPI as NotionKPI}
+                      goal={goals.find(g => g.KPI === outputKPI.id) as NotionGoal | undefined}
+                    />
+                  </CardContent>
+                </Card>
+              )}
+              
+              {/* Input KPIs */}
+              {inputKPIs.map((kpi) => {
+                const goal = goals.find(g => g.KPI === kpi.id);
+                return (
+                  <Card key={kpi.id} className="overflow-hidden">
+                    <CardContent className="pt-4 md:pt-6">
+                      <KPICard 
+                        kpi={kpi as NotionKPI}
+                        goal={goal as NotionGoal | undefined}
+                      />
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+            <Separator className="my-3 md:my-6" />
+          </div>
+        )}
+
+        {/* Mensagem se não houver KPIs */}
+        {kpis.length === 0 && (
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription className="text-xs md:text-sm">
+              Nenhum KPI configurado. Execute: <code className="text-xs">npx tsx scripts/populate-enzo-kpis.ts</code>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Ações do Dia */}
+        <div className="space-y-3 md:space-y-4">
+          <div>
+            <h2 className="text-base md:text-xl font-bold text-foreground">Ações do Dia</h2>
+            <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+              Checklist para hoje
+            </p>
+          </div>
+          <ActionChecklist
+            actions={actions as NotionAction[]}
+            onToggle={handleToggleAction}
+            journalBlocked={false}
+            refreshing={refreshing}
+          />
+        </div>
+
+        {/* Contatos para Ativar - Sempre visível */}
+        <div className="space-y-3 md:space-y-4">
+          <div>
+            <h2 className="text-base md:text-xl font-bold text-foreground">Contatos para Ativar</h2>
+            <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+              Complete os dados até atingir 20 contatos
+            </p>
+          </div>
+          <ContactsToActivate
+            contacts={contacts}
+            onUpdateContact={handleUpdateContact}
+            onAddContact={handleAddContact}
+          />
+        </div>
+      </div>
+    </AppLayout>
+  );
+}
+

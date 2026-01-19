@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 
 const navItems = [
   { path: '/dashboard', label: 'Mapa de metas e métricas', icon: LayoutDashboard },
+  { path: '/dashboard-enzo', label: 'Dashboard Enzo Canei', icon: TrendingUp },
   // TEMPORÁRIO: Removido para reunião - { path: '/coffee', label: 'Café', icon: Coffee },
   // TEMPORÁRIO: Removido para reunião - { path: '/expansion', label: 'Expansão', icon: TrendingUp },
   { path: '/finance', label: 'Financeiro', icon: DollarSign },

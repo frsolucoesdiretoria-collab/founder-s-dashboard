@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
   LineChart, Line, BarChart, Bar, AreaChart, Area, ComposedChart,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
@@ -205,7 +204,7 @@ export function KPIChart({ kpi, goals }: KPIChartProps) {
     if (kpi.Periodicity === 'Anual') {
       // Line chart: Projetado vs Realizado (cumulative)
       return (
-        <ResponsiveContainer width="100%" height={200}>
+        <ResponsiveContainer width="100%" height={160} className="md:h-[200px]">
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
             <XAxis 
@@ -246,7 +245,7 @@ export function KPIChart({ kpi, goals }: KPIChartProps) {
     if (kpi.Periodicity === 'Mensal') {
       // Composed chart: bars for actual, line for projected
       return (
-        <ResponsiveContainer width="100%" height={200}>
+        <ResponsiveContainer width="100%" height={160} className="md:h-[200px]">
           <ComposedChart data={data}>
             <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
             <XAxis 
@@ -287,7 +286,7 @@ export function KPIChart({ kpi, goals }: KPIChartProps) {
     
     // Weekly: Cumulative line with projected (using ComposedChart to combine Line and Area)
     return (
-      <ResponsiveContainer width="100%" height={200}>
+      <ResponsiveContainer width="100%" height={160} className="md:h-[200px]">
         <ComposedChart data={data}>
           <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
           <XAxis 
@@ -328,29 +327,17 @@ export function KPIChart({ kpi, goals }: KPIChartProps) {
   };
 
   return (
-    <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-base font-medium">
-          {kpi.Name}
-        </CardTitle>
-        <p className="text-xs text-muted-foreground">
-          {kpi.Periodicity === 'Anual' && 'Projetado vs Realizado (acumulado)'}
-          {kpi.Periodicity === 'Mensal' && 'Avanço mensal por semana'}
-          {kpi.Periodicity === 'Semanal' && 'Evolução acumulada'}
-        </p>
-      </CardHeader>
-      <CardContent className="relative">
-        {renderChart()}
-        {!hasData && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="bg-background/90 px-3 py-1.5 rounded-md border border-border">
-              <p className="text-xs text-muted-foreground font-medium">
-                Sem dados configurados
-              </p>
-            </div>
+    <div className="relative w-full">
+      {renderChart()}
+      {!hasData && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="bg-background/90 px-3 py-1.5 rounded-md border border-border">
+            <p className="text-xs text-muted-foreground font-medium">
+              Sem dados configurados
+            </p>
           </div>
-        )}
-      </CardContent>
-    </Card>
+        </div>
+      )}
+    </div>
   );
 }
