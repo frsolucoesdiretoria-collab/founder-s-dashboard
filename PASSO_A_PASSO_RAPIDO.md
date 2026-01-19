@@ -24,37 +24,28 @@ Configurar o `NOTION_TOKEN` na VPS automaticamente em 2 passos.
 
 ## 🚀 Passo 2: Executar Workflow (1 minuto)
 
-**Opção A: Via página de Actions (Recomendado)**
+**Use o workflow "Fix Notion Connection on VPS" que já existe e funciona!**
 
 1. **Acesse este link:**
    ```
    https://github.com/frsolucoesdiretoria-collab/founder-s-dashboard/actions
    ```
 
-2. **No menu lateral esquerdo**, procure por **"Setup Notion Token on VPS"**
+2. **No menu lateral esquerdo**, clique em **"Fix Notion Connection on VPS"**
    - Se não aparecer, clique em **"All workflows"** primeiro
    - Depois procure na lista
 
-3. **Clique em "Setup Notion Token on VPS"**
+3. **Clique no botão azul:** `Run workflow` (no canto superior direito)
 
-4. **Clique no botão azul:** `Run workflow` (no canto superior direito)
-
-5. **Selecione:**
+4. **Selecione:**
    - Branch: `staging`
    - Deixe tudo como está
 
-6. **Clique em:** `Run workflow` (botão verde)
-
-**Opção B: Se o workflow não aparecer**
-
-O GitHub pode levar alguns minutos para processar. Enquanto isso:
-
-1. Acesse: https://github.com/frsolucoesdiretoria-collab/founder-s-dashboard/actions
-2. Clique em **"New workflow"** (botão verde no canto superior direito)
-3. Procure por **"Setup Notion Token on VPS"** na lista
-4. Ou use o workflow **"Fix Notion Connection on VPS"** que já existe e funciona
+5. **Clique em:** `Run workflow` (botão verde)
 
 ✅ **Pronto! O workflow está executando.**
+
+**Importante:** Este workflow agora também configura o `NOTION_TOKEN` automaticamente usando o secret `NOTION_TOKEN_VPS` que você adicionou no Passo 1!
 
 ## ⏱️ Aguardar (2-3 minutos)
 
