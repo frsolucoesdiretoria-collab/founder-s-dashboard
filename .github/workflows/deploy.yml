@@ -82,17 +82,9 @@ jobs:
             lsof -ti:3001 | xargs kill -9 2>/dev/null || true
             sleep 2
             
-            # Load .env.local and start PM2
-            if [ -f .env.local ]; then
-              echo "📋 Loading .env.local..."
-              export $(cat .env.local | grep -v '^#' | xargs)
-            fi
-            
-            export NODE_ENV=production
-            export PORT=3001
-            
-            # Start with PM2 using npm start (which loads .env.local via dotenv)
-            pm2 start npm --name "founder-dashboard" -- start
+            # Use ecosystem.config.js which loads .env.local automatically
+            echo "📋 Starting PM2 with ecosystem.config.js..."
+            pm2 start ecosystem.config.js || pm2 start npm --name "founder-dashboard" -- start
             pm2 save
             
             # Wait and check
