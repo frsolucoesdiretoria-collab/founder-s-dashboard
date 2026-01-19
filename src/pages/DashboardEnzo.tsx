@@ -42,18 +42,25 @@ export default function DashboardEnzo() {
     setError(null);
     
     // Carregar dados de forma independente para não falhar tudo se uma parte falhar
+    let kpisError: any = null;
+    let goalsError: any = null;
+    let actionsError: any = null;
+    
     const results = await Promise.allSettled([
       getEnzoKPIs().catch(err => {
         console.error('Error loading KPIs:', err);
-        return [];
+        kpisError = err;
+        throw err; // Re-throw para que Promise.allSettled capture como rejected
       }),
       getEnzoGoals().catch(err => {
         console.error('Error loading Goals:', err);
-        return [];
+        goalsError = err;
+        throw err;
       }),
       getEnzoDailyActions().catch(err => {
         console.error('Error loading Actions:', err);
-        return [];
+        actionsError = err;
+        throw err;
       }),
       loadContacts() // Já trata erros internamente
     ]);
@@ -63,30 +70,24 @@ export default function DashboardEnzo() {
     const actionsData = results[2].status === 'fulfilled' ? results[2].value : [];
     const contactsData = results[3].status === 'fulfilled' ? results[3].value : [];
 
-    // Verificar se houve erros críticos
-    const hasErrors = results.some((r, index) => {
-      if (index === 3) return false; // Contacts é opcional
-      return r.status === 'rejected' || (r.status === 'fulfilled' && Array.isArray(r.value) && r.value.length === 0);
-    });
-
-    // Verificar erros específicos
+    // Verificar erros específicos nos KPIs (mais crítico)
     if (kpisData.length === 0) {
-      // Se não conseguiu carregar KPIs, verificar o motivo
       const kpiResult = results[0];
-      if (kpiResult.status === 'rejected') {
-        const kpiError = kpiResult.reason;
-        if (kpiError?.message?.includes('429') || kpiError?.message?.includes('rate limit')) {
+      const error = kpiResult.status === 'rejected' ? kpiResult.reason : kpisError;
+      
+      if (error) {
+        if (error.message?.includes('429') || error.message?.includes('rate limit')) {
           setError('Muitas requisições. Aguarde alguns segundos e recarregue a página.');
-        } else if (kpiError?.message?.includes('NOTION_DB_KPIS_ENZO') || kpiError?.message?.includes('not configured')) {
+        } else if (error.message?.includes('NOTION_DB_KPIS_ENZO') || error.message?.includes('not configured')) {
           setError('Database de KPIs não configurada. Verifique NOTION_DB_KPIS_ENZO no .env.local da VPS.');
-        } else if (kpiError?.message?.includes('Failed to fetch') || kpiError?.message?.includes('NetworkError')) {
-          setError('Não foi possível conectar ao servidor. Verifique se o servidor está rodando.');
+        } else if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError') || error.message?.includes('conectar ao servidor')) {
+          setError('Não foi possível conectar ao servidor. Verifique se o servidor está rodando na VPS.');
         } else {
-          setError('Erro ao carregar KPIs. Verifique a configuração das databases do Enzo na VPS.');
+          setError(`Erro ao carregar KPIs: ${error.message || 'Erro desconhecido'}`);
         }
       } else {
-        // KPIs carregaram mas estão vazios
-        setError(null); // Não é erro, apenas não há KPIs
+        // KPIs carregaram mas estão vazios (não é erro, apenas não há dados)
+        setError(null);
       }
     } else {
       // KPIs carregaram com sucesso, limpar erro
