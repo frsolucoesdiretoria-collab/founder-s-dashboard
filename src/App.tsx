@@ -47,11 +47,11 @@ const queryClient = new QueryClient({
   },
 });
 
-const appPassword = import.meta.env.VITE_APP_PASSWORD as string | undefined;
-const doterraPassword = import.meta.env.VITE_DOTERRA_PASSWORD as string | undefined;
-const domaCondoPassword = "deixeatecnologiafazer";
-const vendeMaisObrasPassword = import.meta.env.VITE_VENDE_MAIS_OBRAS_PASSWORD as string | undefined;
-const enzoPassword = "2026anodaaceleração";
+const appPassword = "1234567890";
+const doterraPassword = "1234567890";
+const domaCondoPassword = "1234567890";
+const vendeMaisObrasPassword = "1234567890";
+const enzoPassword = "1234567890";
 
 const App = () => (
   <QueryClientProvider client={queryClient}>

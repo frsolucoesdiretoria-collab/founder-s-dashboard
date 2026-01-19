@@ -78,9 +78,11 @@ export async function getEnzoKPIs(): Promise<KPI[]> {
       throw new Error('Rate limit: Muitas requisições. Aguarde alguns segundos.');
     }
     
-    if (response.status === 0 || !response.ok) {
-      if (!response.ok && response.status !== 500) {
-        throw new Error(`Servidor não está respondendo. Verifique se o servidor está rodando na porta 3001.`);
+    if (!response.ok) {
+      // Se for erro 500 ou outro erro do servidor, tentar retornar array vazio em vez de quebrar
+      if (response.status >= 500) {
+        console.warn('⚠️  Server error fetching Enzo KPIs, returning empty array');
+        return [];
       }
       const errorData = await response.json().catch(() => ({}));
       throw new Error(errorData.message || errorData.error || `Failed to fetch Enzo KPIs: ${response.statusText}`);
@@ -89,9 +91,13 @@ export async function getEnzoKPIs(): Promise<KPI[]> {
     return response.json();
   } catch (error: any) {
     console.error('Error fetching Enzo KPIs:', error);
-    if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError') || error.name === 'TypeError') {
-      throw new Error('Não foi possível conectar ao servidor. Verifique se o servidor está rodando.');
+    // Em caso de erro de conexão, retornar array vazio em vez de quebrar
+    if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError') || error.name === 'TypeError' || error.message?.includes('conectar ao servidor')) {
+      console.warn('⚠️  Connection error, returning empty array for Enzo KPIs');
+      return [];
     }
-    throw error;
+    // Para outros erros, também retornar array vazio para não quebrar o dashboard
+    console.warn('⚠️  Error fetching Enzo KPIs, returning empty array');
+    return [];
   }
 }

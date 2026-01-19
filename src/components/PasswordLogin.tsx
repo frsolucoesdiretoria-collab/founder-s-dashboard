@@ -30,10 +30,10 @@ export function PasswordLogin({
       .map(p => p.trim())
       .filter(Boolean);
 
-  // Se não houver senha configurada via env/props, habilita os dois acessos informados
+  // Se não houver senha configurada via env/props, usa senha padrão
   const allowedPasswords = normalizedPasswords.length > 0
     ? normalizedPasswords
-    : ['crescercomtec', 'expandir com tec', '123456'];
+    : ['1234567890'];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

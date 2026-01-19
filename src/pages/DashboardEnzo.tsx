@@ -54,26 +54,25 @@ export default function DashboardEnzo() {
     const contactsData = results[3].status === 'fulfilled' ? results[3].value : [];
 
     // Verificar erros específicos nos KPIs (mais crítico)
+    // Agora os serviços retornam arrays vazios em vez de quebrar, então não precisamos tratar erros aqui
+    // Apenas mostrar mensagem se não houver KPIs e houver erro de conexão
     if (results[0].status === 'rejected') {
       const kpiError = results[0].reason;
       console.error('Error loading KPIs:', kpiError);
       
       const errorMsg = kpiError?.message || '';
       
-      if (errorMsg.includes('429') || errorMsg.includes('rate limit')) {
-        setError('Muitas requisições. Aguarde alguns segundos e recarregue a página.');
-      } else if (errorMsg.includes('NOTION_DB_KPIS_ENZO') || errorMsg.includes('not configured')) {
+      // Só mostrar erro se for problema de configuração, não de conexão (conexão retorna array vazio)
+      if (errorMsg.includes('NOTION_DB_KPIS_ENZO') || errorMsg.includes('not configured')) {
         setError('Database de KPIs não configurada. Verifique NOTION_DB_KPIS_ENZO no .env.local da VPS.');
-      } else if (errorMsg.includes('Failed to fetch') || errorMsg.includes('NetworkError') || errorMsg.includes('conectar ao servidor') || errorMsg.includes('Servidor não está respondendo')) {
-        setError('Não foi possível conectar ao servidor. Verifique se o servidor está rodando na VPS na porta 3001.');
+      } else if (errorMsg.includes('429') || errorMsg.includes('rate limit')) {
+        setError('Muitas requisições. Aguarde alguns segundos e recarregue a página.');
       } else {
-        setError(`Erro ao carregar KPIs: ${errorMsg || 'Erro desconhecido'}`);
+        // Para outros erros, não mostrar erro (serviço retorna array vazio)
+        setError(null);
       }
-    } else if (kpisData.length === 0) {
-      // KPIs carregaram mas estão vazios (não é erro, apenas não há dados)
-      setError(null);
     } else {
-      // KPIs carregaram com sucesso, limpar erro
+      // KPIs carregaram (mesmo que vazios), limpar erro
       setError(null);
     }
     

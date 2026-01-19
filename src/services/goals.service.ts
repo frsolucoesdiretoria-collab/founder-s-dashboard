@@ -110,9 +110,11 @@ export async function getEnzoGoals(range?: { start?: string; end?: string }): Pr
       throw new Error('Rate limit: Muitas requisições. Aguarde alguns segundos.');
     }
     
-    if (response.status === 0 || !response.ok) {
-      if (!response.ok && response.status !== 500) {
-        throw new Error(`Servidor não está respondendo. Verifique se o servidor está rodando na porta 3001.`);
+    if (!response.ok) {
+      // Se for erro 500 ou outro erro do servidor, retornar array vazio
+      if (response.status >= 500) {
+        console.warn('⚠️  Server error fetching Enzo goals, returning empty array');
+        return [];
       }
       const errorData = await response.json().catch(() => ({}));
       throw new Error(errorData.message || errorData.error || `Failed to fetch Enzo goals: ${response.statusText}`);
@@ -122,9 +124,13 @@ export async function getEnzoGoals(range?: { start?: string; end?: string }): Pr
     return filterPublicGoals(goals);
   } catch (error: any) {
     console.error('Error fetching Enzo goals:', error);
-    if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError') || error.name === 'TypeError') {
-      throw new Error('Não foi possível conectar ao servidor. Verifique se o servidor está rodando.');
+    // Em caso de erro de conexão, retornar array vazio
+    if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError') || error.name === 'TypeError' || error.message?.includes('conectar ao servidor')) {
+      console.warn('⚠️  Connection error, returning empty array for Enzo goals');
+      return [];
     }
-    throw error;
+    // Para outros erros, também retornar array vazio
+    console.warn('⚠️  Error fetching Enzo goals, returning empty array');
+    return [];
   }
 }

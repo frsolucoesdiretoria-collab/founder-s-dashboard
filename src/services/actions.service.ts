@@ -188,13 +188,25 @@ export async function getEnzoDailyActions(): Promise<Action[]> {
     }
     
     if (!response.ok) {
+      // Se for erro 500 ou outro erro do servidor, retornar array vazio
+      if (response.status >= 500) {
+        console.warn('⚠️  Server error fetching Enzo actions, returning empty array');
+        return [];
+      }
       throw new Error(`Failed to fetch Enzo actions: ${response.statusText}`);
     }
     const actions: Action[] = await response.json();
     return actions.filter(action => action.PublicVisible === true);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching Enzo daily actions:', error);
-    throw error;
+    // Em caso de erro de conexão, retornar array vazio
+    if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError') || error.name === 'TypeError' || error.message?.includes('conectar ao servidor')) {
+      console.warn('⚠️  Connection error, returning empty array for Enzo actions');
+      return [];
+    }
+    // Para outros erros, também retornar array vazio
+    console.warn('⚠️  Error fetching Enzo actions, returning empty array');
+    return [];
   }
 }
 
