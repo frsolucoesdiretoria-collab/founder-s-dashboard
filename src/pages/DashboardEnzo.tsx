@@ -226,16 +226,17 @@ export default function DashboardEnzo() {
           </Alert>
         )}
 
-        {/* KPIs no Topo - Sempre visível quando existirem */}
-        {kpis.length > 0 && (
-          <div className="space-y-3 md:space-y-4">
-            <div>
-              <h2 className="text-base md:text-xl font-bold text-foreground">Métricas e Metas</h2>
-              <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
-                Progresso semanal até 23/01/2026
-              </p>
-            </div>
-            {/* Grid de KPIs - Meta Semanal destacada + Input KPIs */}
+        {/* KPIs no Topo - Sempre visível */}
+        <div className="space-y-3 md:space-y-4">
+          <div>
+            <h2 className="text-base md:text-xl font-bold text-foreground">Métricas e Metas</h2>
+            <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+              Progresso semanal até 23/01/2026
+            </p>
+          </div>
+          
+          {/* Grid de KPIs - Meta Semanal destacada + Input KPIs */}
+          {kpis.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
               {/* Meta Semanal (output) - primeira se for financeiro, senão após os inputs */}
               {outputKPI && (
@@ -264,73 +265,65 @@ export default function DashboardEnzo() {
                 );
               })}
             </div>
-            <Separator className="my-3 md:my-6" />
-          </div>
-        )}
+          ) : (
+            !loading && (
+              <Alert>
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription className="text-xs md:text-sm">
+                  {error ? (
+                    <>
+                      {error}
+                      <br />
+                      <br />
+                      <strong>Verifique:</strong>
+                      <ul className="list-disc list-inside mt-2 space-y-1">
+                        <li>Se NOTION_DB_KPIS_ENZO está configurado no .env.local</li>
+                        <li>Se o servidor foi reiniciado após configurar as variáveis</li>
+                        <li>Se os KPIs estão marcados como "Active" na database do Notion</li>
+                      </ul>
+                    </>
+                  ) : (
+                    <>
+                      Carregando KPIs... Se não aparecerem, verifique se os KPIs estão ativos na database do Notion.
+                    </>
+                  )}
+                </AlertDescription>
+              </Alert>
+            )
+          )}
+          <Separator className="my-3 md:my-6" />
+        </div>
 
-        {/* Mensagem se não houver KPIs */}
-        {kpis.length === 0 && !loading && (
-          <Alert>
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription className="text-xs md:text-sm">
-              {error ? (
-                <>
-                  {error}
-                  <br />
-                  <br />
-                  <strong>Verifique:</strong>
-                  <ul className="list-disc list-inside mt-2 space-y-1">
-                    <li>Se NOTION_DB_KPIS_ENZO está configurado no .env.local</li>
-                    <li>Se o servidor foi reiniciado após configurar as variáveis</li>
-                    <li>Se os KPIs estão marcados como "Active" na database do Notion</li>
-                  </ul>
-                </>
-              ) : (
-                <>
-                  Nenhum KPI encontrado. Verifique se os KPIs estão ativos na database do Notion.
-                  <br />
-                  <br />
-                  Para criar KPIs iniciais, execute: <code className="text-xs">npx tsx scripts/populate-enzo-kpis.ts</code>
-                </>
-              )}
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {/* Ações do Dia (To-dos) */}
-        {kpis.length > 0 && (
-          <div className="space-y-3 md:space-y-4">
-            <div>
-              <h2 className="text-base md:text-xl font-bold text-foreground">Ações do Dia</h2>
-              <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
-                Checklist para hoje
-              </p>
-            </div>
-            <ActionChecklist
-              actions={actions as NotionAction[]}
-              onToggle={handleToggleAction}
-              journalBlocked={false}
-              refreshing={refreshing}
-            />
+        {/* Ações do Dia (To-dos) - Sempre visível */}
+        <div className="space-y-3 md:space-y-4">
+          <div>
+            <h2 className="text-base md:text-xl font-bold text-foreground">Ações do Dia</h2>
+            <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+              Checklist para hoje
+            </p>
           </div>
-        )}
+          <ActionChecklist
+            actions={actions as NotionAction[]}
+            onToggle={handleToggleAction}
+            journalBlocked={false}
+            refreshing={refreshing}
+          />
+        </div>
 
-        {/* Contatos para Ativar */}
-        {kpis.length > 0 && (
-          <div className="space-y-3 md:space-y-4">
-            <div>
-              <h2 className="text-base md:text-xl font-bold text-foreground">Contatos para Ativar</h2>
-              <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
-                Complete os dados até atingir 20 contatos
-              </p>
-            </div>
-            <ContactsToActivate
-              contacts={contacts}
-              onUpdateContact={handleUpdateContact}
-              onAddContact={handleAddContact}
-            />
+        {/* Contatos para Ativar - Sempre visível */}
+        <div className="space-y-3 md:space-y-4">
+          <div>
+            <h2 className="text-base md:text-xl font-bold text-foreground">Contatos para Ativar</h2>
+            <p className="text-xs md:text-sm text-muted-foreground mt-0.5">
+              Complete os dados até atingir 20 contatos
+            </p>
           </div>
-        )}
+          <ContactsToActivate
+            contacts={contacts}
+            onUpdateContact={handleUpdateContact}
+            onAddContact={handleAddContact}
+          />
+        </div>
       </div>
     </AppLayout>
   );
