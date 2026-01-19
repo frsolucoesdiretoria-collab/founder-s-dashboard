@@ -92,9 +92,15 @@ jobs:
             echo "📦 Installing dependencies..."
             # Limpar node_modules antes de instalar para evitar erros ENOTEMPTY
             echo "   Limpando node_modules antigo..."
-            rm -rf node_modules package-lock.json 2>/dev/null || true
-            echo "   Instalando dependências..."
-            npm ci --include=dev
+            rm -rf node_modules 2>/dev/null || true
+            # Se package-lock.json não existir, usar npm install em vez de npm ci
+            if [ ! -f package-lock.json ]; then
+              echo "   ⚠️  package-lock.json não encontrado, usando npm install..."
+              npm install --include=dev
+            else
+              echo "   Instalando dependências com npm ci..."
+              npm ci --include=dev
+            fi
             
             # Build application
             echo "🔨 Building application..."
