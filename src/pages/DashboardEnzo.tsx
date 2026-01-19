@@ -40,36 +40,74 @@ export default function DashboardEnzo() {
       setLoading(true);
     }
     setError(null);
-    try {
-      const [kpisData, goalsData, actionsData, contactsData] = await Promise.all([
-        getEnzoKPIs(),
-        getEnzoGoals(),
-        getEnzoDailyActions(),
-        loadContacts()
-      ]);
+    
+    // Carregar dados de forma independente para não falhar tudo se uma parte falhar
+    const results = await Promise.allSettled([
+      getEnzoKPIs().catch(err => {
+        console.error('Error loading KPIs:', err);
+        return [];
+      }),
+      getEnzoGoals().catch(err => {
+        console.error('Error loading Goals:', err);
+        return [];
+      }),
+      getEnzoDailyActions().catch(err => {
+        console.error('Error loading Actions:', err);
+        return [];
+      }),
+      loadContacts() // Já trata erros internamente
+    ]);
 
-      const sortedKpis = kpisData.sort((a, b) => (a.SortOrder || 0) - (b.SortOrder || 0));
-      setKpis(sortedKpis);
-      setGoals(goalsData);
-      setActions(actionsData);
-      
-      if (refreshing) {
-        toast.success('Dados atualizados');
-      }
-    } catch (err: any) {
-      console.error('Error loading Enzo dashboard data:', err);
-      
-      if (err.message?.includes('429') || err.message?.includes('rate limit')) {
-        setError('Muitas requisições. Aguarde alguns segundos e recarregue a página.');
-        toast.error('Limite de requisições atingido. Aguarde um momento.');
+    const kpisData = results[0].status === 'fulfilled' ? results[0].value : [];
+    const goalsData = results[1].status === 'fulfilled' ? results[1].value : [];
+    const actionsData = results[2].status === 'fulfilled' ? results[2].value : [];
+    const contactsData = results[3].status === 'fulfilled' ? results[3].value : [];
+
+    // Verificar se houve erros críticos
+    const hasErrors = results.some((r, index) => {
+      if (index === 3) return false; // Contacts é opcional
+      return r.status === 'rejected' || (r.status === 'fulfilled' && Array.isArray(r.value) && r.value.length === 0);
+    });
+
+    // Verificar erros específicos
+    if (kpisData.length === 0) {
+      // Se não conseguiu carregar KPIs, verificar o motivo
+      const kpiResult = results[0];
+      if (kpiResult.status === 'rejected') {
+        const kpiError = kpiResult.reason;
+        if (kpiError?.message?.includes('429') || kpiError?.message?.includes('rate limit')) {
+          setError('Muitas requisições. Aguarde alguns segundos e recarregue a página.');
+        } else if (kpiError?.message?.includes('NOTION_DB_KPIS_ENZO') || kpiError?.message?.includes('not configured')) {
+          setError('Database de KPIs não configurada. Verifique NOTION_DB_KPIS_ENZO no .env.local da VPS.');
+        } else if (kpiError?.message?.includes('Failed to fetch') || kpiError?.message?.includes('NetworkError')) {
+          setError('Não foi possível conectar ao servidor. Verifique se o servidor está rodando.');
+        } else {
+          setError('Erro ao carregar KPIs. Verifique a configuração das databases do Enzo na VPS.');
+        }
       } else {
-        setError('Erro ao carregar dados. Verifique sua conexão.');
-        toast.error('Erro ao carregar dashboard');
+        // KPIs carregaram mas estão vazios
+        setError(null); // Não é erro, apenas não há KPIs
       }
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
+    } else {
+      // KPIs carregaram com sucesso, limpar erro
+      setError(null);
     }
+
+    const sortedKpis = kpisData.sort((a, b) => (a.SortOrder || 0) - (b.SortOrder || 0));
+    setKpis(sortedKpis);
+    setGoals(goalsData);
+    setActions(actionsData);
+    
+    if (refreshing) {
+      if (kpisData.length > 0) {
+        toast.success('Dados atualizados');
+      } else if (error) {
+        toast.error('Erro ao atualizar dados');
+      }
+    }
+    
+    setLoading(false);
+    setRefreshing(false);
   }
 
   async function loadContacts(): Promise<Contact[]> {
@@ -247,11 +285,30 @@ export default function DashboardEnzo() {
         )}
 
         {/* Mensagem se não houver KPIs */}
-        {kpis.length === 0 && (
+        {kpis.length === 0 && !loading && (
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription className="text-xs md:text-sm">
-              Nenhum KPI configurado. Execute: <code className="text-xs">npx tsx scripts/populate-enzo-kpis.ts</code>
+              {error ? (
+                <>
+                  {error}
+                  <br />
+                  <br />
+                  <strong>Verifique:</strong>
+                  <ul className="list-disc list-inside mt-2 space-y-1">
+                    <li>Se NOTION_DB_KPIS_ENZO está configurado no .env.local</li>
+                    <li>Se o servidor foi reiniciado após configurar as variáveis</li>
+                    <li>Se os KPIs estão marcados como "Active" na database do Notion</li>
+                  </ul>
+                </>
+              ) : (
+                <>
+                  Nenhum KPI encontrado. Verifique se os KPIs estão ativos na database do Notion.
+                  <br />
+                  <br />
+                  Para criar KPIs iniciais, execute: <code className="text-xs">npx tsx scripts/populate-enzo-kpis.ts</code>
+                </>
+              )}
             </AlertDescription>
           </Alert>
         )}
