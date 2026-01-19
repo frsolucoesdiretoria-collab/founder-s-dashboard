@@ -343,6 +343,329 @@ Você pode testar acessando [caminho da página]."
    - Adicione validações apropriadas
    - Documente com comentários
 
+## 🎯 PADRÕES OBRIGATÓRIOS PARA NOVAS PÁGINAS E FEATURES
+
+**⚠️ CRÍTICO: Sempre siga EXATAMENTE os mesmos padrões das páginas existentes. Não invente novos padrões que possam quebrar compatibilidade no deploy.**
+
+### Antes de criar QUALQUER nova página ou feature:
+
+1. **SEMPRE pesquise e estude páginas similares existentes**
+   - Use `codebase_search` para encontrar páginas similares
+   - Leia pelo menos 2-3 páginas existentes como referência
+   - Exemplos: `DashboardV02.tsx`, `DashboardEnzo.tsx`, `Doterra.tsx`
+
+2. **SEMPRE siga a mesma estrutura de arquivos**
+   - **Página React:** `src/pages/MyPage.tsx`
+   - **Service:** `src/services/myPage.service.ts` (se precisar chamar APIs)
+   - **Tipos:** `src/types/myPage.ts` (se precisar tipos customizados)
+   - **Backend Route:** `server/routes/myPage.ts` (se precisar API backend)
+   - **Data Layer:** Adicione funções em `server/lib/notionDataLayer.ts` (se precisar acessar Notion)
+
+3. **SEMPRE siga o padrão de rota em `src/App.tsx`**
+   - **Páginas protegidas por senha:**
+     ```tsx
+     <Route
+       path="/my-page"
+       element={
+         <PasswordProtection
+           storageKey="app_authenticated"
+           correctPassword={appPassword || ''}
+         >
+           <MyPage />
+         </PasswordProtection>
+       }
+     />
+     ```
+   - **Páginas com senha separada:**
+     ```tsx
+     <Route
+       path="/my-page"
+       element={
+         <PasswordProtection
+           storageKey="my_page_authenticated"
+           correctPassword={myPagePassword}
+           title="Acesso Restrito — Meu Produto"
+           description="Digite a senha para acessar"
+         >
+           <MyPage />
+         </PasswordProtection>
+       }
+     />
+     ```
+   - **Páginas com autenticação (ProtectedRoute):**
+     ```tsx
+     <Route
+       path="/my-page"
+       element={
+         <ProtectedRoute>
+           <MyPage />
+         </ProtectedRoute>
+       }
+     />
+     ```
+   - **NUNCA crie rotas sem PasswordProtection ou ProtectedRoute (exceto páginas públicas como login)**
+
+4. **SEMPRE siga o padrão de estrutura de página React**
+   ```tsx
+   import { useState, useEffect } from 'react';
+   import { AppLayout } from '@/components/AppLayout';
+   // ... outros imports
+   import { getMyData } from '@/services'; // SEMPRE use services, nunca fetch direto
+   import type { MyType } from '@/types/myPage';
+   import { toast } from 'sonner';
+
+   export default function MyPage() {
+     const [data, setData] = useState<MyType[]>([]);
+     const [loading, setLoading] = useState(true);
+     const [error, setError] = useState<string | null>(null);
+
+     useEffect(() => {
+       loadData();
+     }, []);
+
+     async function loadData() {
+       setLoading(true);
+       setError(null);
+       try {
+         const data = await getMyData();
+         setData(data);
+       } catch (err: any) {
+         setError(err.message || 'Erro ao carregar dados');
+         toast.error('Erro ao carregar dados');
+         console.error(err);
+       } finally {
+         setLoading(false);
+       }
+     }
+
+     if (loading) {
+       return (
+         <AppLayout>
+           <div className="flex items-center justify-center min-h-[60vh]">
+             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+           </div>
+         </AppLayout>
+       );
+     }
+
+     if (error) {
+       return (
+         <AppLayout>
+           <Alert variant="destructive">
+             <AlertCircle className="h-4 w-4" />
+             <AlertDescription>{error}</AlertDescription>
+           </Alert>
+         </AppLayout>
+       );
+     }
+
+     return (
+       <AppLayout>
+         {/* Conteúdo da página */}
+       </AppLayout>
+     );
+   }
+   ```
+
+5. **SEMPRE use Services para chamar APIs (NUNCA fetch direto na página)**
+   ```tsx
+   // ✅ CORRETO: Service em src/services/myPage.service.ts
+   export async function getMyData(): Promise<MyType[]> {
+     try {
+       const response = await fetch('/api/my-page');
+       if (!response.ok) {
+         throw new Error(`Failed to fetch: ${response.statusText}`);
+       }
+       return response.json();
+     } catch (error) {
+       console.error('Error fetching data:', error);
+       throw error;
+     }
+   }
+
+   // ❌ ERRADO: Fetch direto na página
+   // fetch('/api/my-page') // NUNCA faça isso na página
+   ```
+
+6. **SEMPRE siga o padrão de rotas backend**
+   ```tsx
+   // server/routes/myPage.ts
+   import { Router } from 'express';
+   import { getMyDataFromNotion } from '../lib/notionDataLayer';
+
+   export const myPageRouter = Router();
+
+   /**
+    * GET /api/my-page
+    * Get data for my page
+    */
+   myPageRouter.get('/', async (req, res) => {
+     try {
+       const data = await getMyDataFromNotion();
+       res.json(data);
+     } catch (error: any) {
+       console.error('Error fetching data:', error);
+       // Em produção, retornar array vazio em vez de erro se database não configurada
+       if (error.message?.includes('not configured') && process.env.NODE_ENV === 'production') {
+         return res.json([]);
+       }
+       res.status(500).json({
+         error: 'Failed to fetch data',
+         message: process.env.NODE_ENV === 'development' ? error.message : undefined
+       });
+     }
+   });
+   ```
+
+7. **SEMPRE registre a rota em `server/index.ts`**
+   ```tsx
+   // Adicionar import
+   import { myPageRouter } from './routes/myPage';
+
+   // Adicionar rota (antes do middleware de static files)
+   app.use('/api/my-page', myPageRouter);
+   ```
+
+8. **SEMPRE siga o padrão de Notion Data Layer**
+   ```tsx
+   // Em server/lib/notionDataLayer.ts
+   export async function getMyDataFromNotion(): Promise<MyType[]> {
+     const dbId = getDatabaseId('MyDatabase');
+     if (!dbId) {
+       throw new Error('NOTION_DB_MY_DATABASE not configured');
+     }
+
+     const client = initNotionClient();
+     const response = await client.databases.query({
+       database_id: dbId,
+       // ... filtros, ordenação, etc
+     });
+
+     return response.results.map((page) => {
+       // Mapear propriedades do Notion para tipo TypeScript
+       // SEMPRE use os nomes EXATOS das propriedades do schema
+     });
+   }
+   ```
+
+9. **SEMPRE use tipos TypeScript explícitos**
+   ```tsx
+   // src/types/myPage.ts
+   export interface MyType {
+     id: string;
+     name: string;
+     // ... outras propriedades
+   }
+   ```
+
+10. **SEMPRE use componentes compartilhados**
+    - `AppLayout`: Wrapper padrão para todas as páginas
+    - `KPICard`: Para exibir KPIs (se aplicável)
+    - Componentes shadcn/ui: `Card`, `Button`, `Input`, etc. (importe de `@/components/ui/`)
+    - NUNCA crie componentes duplicados que já existem
+
+### Checklist obrigatório antes de finalizar uma nova página/feature:
+
+- [ ] Li pelo menos 2-3 páginas existentes similares como referência
+- [ ] A página segue EXATAMENTE a mesma estrutura das páginas existentes
+- [ ] A rota está registrada em `src/App.tsx` com o mesmo padrão das outras
+- [ ] Criei service em `src/services/` (NUNCA fetch direto na página)
+- [ ] Criei rota backend em `server/routes/` se precisar de API
+- [ ] Registrei a rota em `server/index.ts`
+- [ ] Usei funções do `notionDataLayer.ts` para acessar Notion (não criei novas funções duplicadas)
+- [ ] Usei `AppLayout` como wrapper da página
+- [ ] Tratamento de erros implementado (loading, error states)
+- [ ] Testei no browser e funciona corretamente
+- [ ] Nenhuma outra página quebrou
+- [ ] Não criei padrões novos, apenas reutilizei padrões existentes
+
+### ⚠️ AVISO CRÍTICO:
+
+**Se você criar uma nova página ou feature que não siga EXATAMENTE os padrões das páginas existentes:**
+- O deploy pode falhar na VPS
+- Rotas podem não funcionar
+- Direcionamentos podem quebrar
+- O sistema pode entrar em loop de restart
+
+**Para evitar isso:**
+1. SEMPRE estude páginas existentes antes de criar algo novo
+2. SEMPRE copie a estrutura de páginas similares
+3. SEMPRE use os mesmos padrões de rota, service, e backend
+4. SEMPRE teste que nada quebrou após criar
+
+## 🚀 COMPATIBILIDADE COM DEPLOY E VPS
+
+**⚠️ CRÍTICO: Mudanças que quebram padrões existentes podem causar falhas no deploy na VPS.**
+
+### Regras obrigatórias para evitar problemas no deploy:
+
+1. **NUNCA modifique a estrutura de módulos sem verificar compatibilidade**
+   - O projeto usa `"type": "module"` no `package.json`
+   - PM2 usa `ecosystem.config.cjs` (CommonJS) - NUNCA tente usar `ecosystem.config.js`
+   - Imports: Use `import` (não `require`), exceto em arquivos `.cjs`
+
+2. **NUNCA crie rotas que não seguem o padrão do projeto**
+   - Todas as rotas API começam com `/api/`
+   - Frontend usa proxy `/api` → `http://localhost:3001` (configurado no `vite.config.ts`)
+   - Em produção, o mesmo servidor Express serve API e static files
+
+3. **NUNCA modifique arquivos de configuração críticos sem entender**
+   - `package.json`: `"type": "module"` é obrigatório
+   - `vite.config.ts`: Proxy `/api` é obrigatório
+   - `ecosystem.config.cjs`: Deve usar CommonJS (`require`, `module.exports`)
+   - `server/index.ts`: Ordem das rotas importa (API antes de static files)
+
+4. **SEMPRE valide que novos imports não quebram o build**
+   - Verifique que todos os imports estão corretos
+   - Certifique-se de que tipos TypeScript estão corretos
+   - Teste `npm run build` localmente antes de fazer commit
+
+5. **SEMPRE use os mesmos padrões de importação**
+   ```tsx
+   // ✅ CORRETO: Imports de componentes compartilhados
+   import { AppLayout } from '@/components/AppLayout';
+   import { Button } from '@/components/ui/button';
+   
+   // ✅ CORRETO: Imports de services
+   import { getMyData } from '@/services';
+   
+   // ✅ CORRETO: Imports de tipos
+   import type { MyType } from '@/types/myPage';
+   
+   // ❌ ERRADO: Imports relativos complexos
+   // import { MyComponent } from '../../../components/MyComponent';
+   ```
+
+6. **SEMPRE valide que a estrutura de arquivos segue o padrão**
+   - Páginas: `src/pages/MyPage.tsx`
+   - Services: `src/services/myPage.service.ts`
+   - Tipos: `src/types/myPage.ts`
+   - Rotas backend: `server/routes/myPage.ts`
+   - NUNCA crie estruturas diferentes que possam confundir o build
+
+7. **SEMPRE teste o build local antes de fazer push**
+   ```bash
+   npm run build
+   # Verificar que não há erros
+   npm run server
+   # Verificar que servidor inicia corretamente
+   ```
+
+8. **SEMPRE verifique que rotas estão funcionando após mudanças**
+   - Teste rotas API: `curl http://localhost:3001/api/health`
+   - Teste páginas frontend: Acesse no browser e verifique console
+   - Verifique que rotas antigas ainda funcionam (sem regressões)
+
+### Antes de fazer commit que modifica estrutura:
+
+- [ ] Build local funciona (`npm run build`)
+- [ ] Servidor inicia sem erros (`npm run server`)
+- [ ] APIs retornam dados corretamente
+- [ ] Frontend carrega e funciona
+- [ ] Nenhuma rota quebrou
+- [ ] Nenhum erro no console (browser e servidor)
+- [ ] Estrutura de arquivos segue padrões existentes
+
 ## ⚠️ LEMBRE-SE
 
 Você é um desenvolvedor experiente trabalhando para um empresário.
@@ -350,6 +673,7 @@ Você é um desenvolvedor experiente trabalhando para um empresário.
 - Teste tudo antes de entregar
 - Não deixe trabalho para o usuário
 - Foque em resultados, não em processos
+- **SEMPRE siga os padrões existentes - não invente novos padrões que possam quebrar o deploy**
 
 **O usuário quer ver o resultado final funcionando, não quer aprender como fazer.**
 
