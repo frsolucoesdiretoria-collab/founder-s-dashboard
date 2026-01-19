@@ -51,7 +51,7 @@ jobs:
             git reset --hard origin/main
             git clean -fd
             
-            # Preserve .env.local if exists, create if not
+            # Preserve .env.local
             if [ ! -f .env.local ]; then
               echo "⚠️  .env.local não existe - criando básico..."
               if [ -f env.local.example ]; then
@@ -61,109 +61,111 @@ jobs:
               echo "✅ .env.local existe - preservando"
             fi
             
-            # Install dependencies - limpar TUDO primeiro
-            echo "📦 Installing dependencies..."
-            echo "   Limpando completamente node_modules e cache..."
-            rm -rf node_modules package-lock.json 2>/dev/null || true
-            npm cache clean --force 2>/dev/null || true
-            
-            echo "   Instalando dependências (pode demorar)..."
-            # Usar npm install em vez de npm ci para evitar problemas com lockfile corrompido
-            npm install --include=dev --legacy-peer-deps --no-audit --no-fund || {
-              echo "⚠️  Primeira tentativa falhou, tentando novamente..."
-              rm -rf node_modules 2>/dev/null || true
-              npm install --include=dev --legacy-peer-deps --no-audit --no-fund
-            }
-            
-            # Build
-            echo "🔨 Building..."
-            # Verificar se node_modules foi instalado corretamente
-            if [ ! -d "node_modules" ] || [ -z "$(ls -A node_modules 2>/dev/null)" ]; then
-              echo "❌ node_modules vazio ou não existe!"
-              exit 1
-            fi
-            
-            NODE_ENV=production npm run build || {
-              echo "⚠️  Build falhou, tentando novamente..."
-              npm run build
-            }
-            
-            # Install PM2 if needed
-            if ! command -v pm2 &> /dev/null; then
-              npm install -g pm2
-            fi
-            
-            # Stop old process
-            echo "🔄 Restarting server..."
-            pm2 stop founder-dashboard 2>/dev/null || true
-            pm2 delete founder-dashboard 2>/dev/null || true
-            lsof -ti:3001 | xargs kill -9 2>/dev/null || true
-            sleep 2
-            
-            # Use ecosystem.config.js which loads .env.local automatically
-            echo "📋 Starting PM2 with ecosystem.config.js..."
-            pm2 start ecosystem.config.js || pm2 start npm --name "founder-dashboard" -- start
-            pm2 save
-            
-            # Wait and check
-            echo "⏳ Waiting for server to start..."
-            sleep 20
-            
-            # Check PM2 status multiple times
-            MAX_RETRIES=10
-            RETRY=0
-            SERVER_ONLINE=false
-            
-            while [ $RETRY -lt $MAX_RETRIES ]; do
-              if pm2 list | grep -q "founder-dashboard.*online"; then
-                SERVER_ONLINE=true
-                break
-              fi
-              RETRY=$((RETRY + 1))
-              echo "   Tentativa $RETRY/$MAX_RETRIES - aguardando..."
-              sleep 3
-            done
-            
-            if [ "$SERVER_ONLINE" = true ]; then
-              echo "✅ Server is online"
+            # Usar script de diagnóstico e correção
+            if [ -f scripts/diagnose-and-fix.sh ]; then
+              echo "🔧 Executando script de diagnóstico e correção..."
+              chmod +x scripts/diagnose-and-fix.sh
+              bash scripts/diagnose-and-fix.sh
+            else
+              echo "⚠️  Script de diagnóstico não encontrado, usando método manual..."
               
-              # Test API multiple times
+              # Install dependencies
+              echo "📦 Installing dependencies..."
+              rm -rf node_modules package-lock.json 2>/dev/null || true
+              npm cache clean --force 2>/dev/null || true
+              npm install --include=dev --legacy-peer-deps --no-audit --no-fund || {
+                echo "⚠️  Primeira tentativa falhou, tentando novamente..."
+                rm -rf node_modules 2>/dev/null || true
+                npm install --include=dev --legacy-peer-deps --no-audit --no-fund
+              }
+              
+              # Build
+              echo "🔨 Building..."
+              if [ ! -d "node_modules" ] || [ -z "$(ls -A node_modules 2>/dev/null)" ]; then
+                echo "❌ node_modules vazio ou não existe!"
+                exit 1
+              fi
+              
+              NODE_ENV=production npm run build || {
+                echo "⚠️  Build falhou, tentando novamente..."
+                npm run build
+              }
+              
+              # Install PM2 if needed
+              if ! command -v pm2 &> /dev/null; then
+                npm install -g pm2
+              fi
+              
+              # Stop old process
+              echo "🔄 Restarting server..."
+              pm2 stop founder-dashboard 2>/dev/null || true
+              pm2 delete founder-dashboard 2>/dev/null || true
+              lsof -ti:3001 | xargs kill -9 2>/dev/null || true
+              sleep 2
+              
+              # Load .env.local and start
+              if [ -f .env.local ]; then
+                set -a
+                source .env.local 2>/dev/null || true
+                set +a
+              fi
+              
+              export NODE_ENV=production
+              export PORT=3001
+              
+              # Start PM2
+              if [ -f ecosystem.config.js ]; then
+                pm2 start ecosystem.config.js || pm2 start npm --name "founder-dashboard" -- start
+              else
+                pm2 start npm --name "founder-dashboard" -- start
+              fi
+              pm2 save
+              
+              # Wait and check
+              echo "⏳ Waiting for server..."
+              sleep 20
+              
+              MAX_RETRIES=10
               RETRY=0
-              API_OK=false
-              while [ $RETRY -lt 5 ]; do
-                if curl -s -f http://localhost:3001/api/health > /dev/null 2>&1; then
-                  API_OK=true
+              SERVER_ONLINE=false
+              
+              while [ $RETRY -lt $MAX_RETRIES ]; do
+                if pm2 list | grep -q "founder-dashboard.*online"; then
+                  SERVER_ONLINE=true
                   break
                 fi
                 RETRY=$((RETRY + 1))
-                echo "   Testando API - tentativa $RETRY/5..."
+                echo "   Tentativa $RETRY/$MAX_RETRIES..."
                 sleep 3
               done
               
-              if [ "$API_OK" = true ]; then
-                echo "✅ API is responding!"
-                curl http://localhost:3001/api/health
-                echo ""
+              if [ "$SERVER_ONLINE" = true ]; then
+                echo "✅ Server is online"
+                
+                RETRY=0
+                API_OK=false
+                while [ $RETRY -lt 5 ]; do
+                  if curl -s -f http://localhost:3001/api/health > /dev/null 2>&1; then
+                    API_OK=true
+                    break
+                  fi
+                  RETRY=$((RETRY + 1))
+                  sleep 3
+                done
+                
+                if [ "$API_OK" = true ]; then
+                  echo "✅ API is responding!"
+                  curl http://localhost:3001/api/health
+                else
+                  echo "⚠️  API not responding"
+                  pm2 logs founder-dashboard --lines 50 --nostream
+                  exit 1
+                fi
               else
-                echo "⚠️  Server online but API not responding"
-                echo "📋 PM2 Status:"
-                pm2 list | grep founder-dashboard
-                echo ""
-                echo "📋 Logs (últimas 50 linhas):"
-                pm2 logs founder-dashboard --lines 50 --nostream
+                echo "❌ Server failed to start"
+                pm2 logs founder-dashboard --lines 100 --nostream
                 exit 1
               fi
-            else
-              echo "❌ Server failed to start"
-              echo "📋 PM2 Status:"
-              pm2 list
-              echo ""
-              echo "📋 Logs (últimas 100 linhas):"
-              pm2 logs founder-dashboard --lines 100 --nostream
-              echo ""
-              echo "🔍 Verificando porta 3001:"
-              lsof -i:3001 || echo "   Porta 3001 não está em uso"
-              exit 1
             fi
             
             echo "✅ Deployment completed!"
