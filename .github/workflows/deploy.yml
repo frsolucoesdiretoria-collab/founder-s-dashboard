@@ -59,34 +59,113 @@ jobs:
             git reset --hard origin/${{ github.ref_name }}
             git clean -fd
             
-            # Configure .env.local with Enzo database IDs (preserve existing file)
+            # Configure .env.local COMPLETO com todas as databases necessárias
             echo "⚙️  Configuring .env.local..."
+            
+            # Se .env.local não existe, criar completo
             if [ ! -f .env.local ]; then
-              echo "   ⚠️  .env.local not found! Creating from env.local.example..."
-              echo "   ⚠️  WARNING: You MUST configure NOTION_TOKEN manually!"
-              cp env.local.example .env.local
+              echo "   ⚠️  .env.local não existe! Criando arquivo completo..."
+              cat > .env.local << 'ENVEOF'
+# FR Tech OS - Environment Variables
+# Configurado automaticamente pelo deploy
+
+# Notion API Token (REQUIRED - configure via GitHub Secrets ou manualmente)
+NOTION_TOKEN=${NOTION_TOKEN_FROM_SECRET}
+
+# Notion Database IDs (REQUIRED - Core databases)
+NOTION_DB_KPIS=2d984566a5fa800bb45dd3d53bdadfa3
+NOTION_DB_GOALS=2d984566a5fa81bb96a1cf1c347f6e55
+NOTION_DB_ACTIONS=2d984566a5fa813cbce2d090e08cd836
+NOTION_DB_JOURNAL=2d984566a5fa81a9ad50e9d594d24b88
+
+# Notion Database IDs (Supporting databases)
+NOTION_DB_CONTACTS=2d984566a5fa81b3b1a1c8abef43421f
+NOTION_DB_CLIENTS=2d984566a5fa81a89be6f9bdb271f838
+NOTION_DB_GROWTHPROPOSALS=2d984566a5fa81c9bf2fd004c75a7e3c
+NOTION_DB_COFFEEDIAGNOSTICS=2d984566a5fa81528aafcd990533eaf5
+NOTION_DB_EXPANSIONOPPORTUNITIES=2d984566a5fa81f887ddfe1cac401239
+NOTION_DB_CUSTOMERWINS=2d984566a5fa81b0a2bcc690ec281df9
+NOTION_DB_FINANCEMETRICS=2d984566a5fa81988982e06722459759
+
+# Notion Database IDs (Partner features)
+NOTION_DB_PARTNERS=2d984566a5fa814380e8dd8d93f3a582
+NOTION_DB_REFERRALS=2d984566a5fa810cbefcd6ff2f139620
+NOTION_DB_COMMISSIONLEDGER=2d984566a5fa81578b5bcd07a19bf6c3
+NOTION_DB_PARTNERNUDGES=2d984566a5fa8159a321c95e14c52bd6
+
+# Enzo Canei Dashboard Databases
+NOTION_DB_KPIS_ENZO=2ed84566a5fa81299c07c412630f9aa4
+NOTION_DB_GOALS_ENZO=2ed84566a5fa81ada870cf698ec50bf0
+NOTION_DB_ACTIONS_ENZO=2ed84566a5fa81c4a8cbc23841abdc1e
+NOTION_DB_CONTACTS_ENZO=2ed84566a5fa81a7bf7afeaa38ea6eff
+
+# Admin Passcode
+ADMIN_PASSCODE=06092021
+
+# Server Configuration
+PORT=3001
+NODE_ENV=production
+
+# Frontend passwords
+VITE_APP_PASSWORD=2026anodaaceleração
+VITE_DOTERRA_PASSWORD=expandircomtec
+ENVEOF
+              echo "   ✅ .env.local criado com todas as databases configuradas"
             else
-              echo "   ✅ .env.local exists, preserving existing configuration"
+              echo "   ✅ .env.local existe, preservando configuração existente"
             fi
             
-            # Ensure Enzo database IDs are set (only add if not present)
+            # Garantir que NOTION_TOKEN está configurado (usar secret do GitHub se disponível)
+            if [ -n "${{ secrets.NOTION_TOKEN }}" ]; then
+              echo "   🔑 Configurando NOTION_TOKEN do GitHub Secret..."
+              # Substituir NOTION_TOKEN no .env.local
+              if grep -q "^NOTION_TOKEN=" .env.local; then
+                sed -i "s|^NOTION_TOKEN=.*|NOTION_TOKEN=${{ secrets.NOTION_TOKEN }}|" .env.local
+              else
+                echo "NOTION_TOKEN=${{ secrets.NOTION_TOKEN }}" >> .env.local
+              fi
+              echo "   ✅ NOTION_TOKEN configurado do GitHub Secret"
+            else
+              echo "   ⚠️  GitHub Secret NOTION_TOKEN não configurado"
+              echo "   Verificando se NOTION_TOKEN já está no .env.local..."
+              if ! grep -q "^NOTION_TOKEN=" .env.local || grep -q "^NOTION_TOKEN=\${NOTION_TOKEN_FROM_SECRET}" .env.local || grep -q "^NOTION_TOKEN=<<<" .env.local || grep -q "^NOTION_TOKEN=$" .env.local; then
+                echo "   ❌ NOTION_TOKEN não está configurado!"
+                echo "   Configure via GitHub Secrets ou edite .env.local manualmente na VPS"
+              else
+                echo "   ✅ NOTION_TOKEN já está configurado no .env.local"
+              fi
+            fi
+            
+            # Garantir que todas as databases obrigatórias estão configuradas
+            echo "   Verificando databases obrigatórias..."
+            REQUIRED_DBS=(
+              "NOTION_DB_KPIS=2d984566a5fa800bb45dd3d53bdadfa3"
+              "NOTION_DB_GOALS=2d984566a5fa81bb96a1cf1c347f6e55"
+              "NOTION_DB_ACTIONS=2d984566a5fa813cbce2d090e08cd836"
+              "NOTION_DB_JOURNAL=2d984566a5fa81a9ad50e9d594d24b88"
+            )
+            
+            for DB_LINE in "${REQUIRED_DBS[@]}"; do
+              DB_VAR=$(echo "$DB_LINE" | cut -d'=' -f1)
+              DB_VALUE=$(echo "$DB_LINE" | cut -d'=' -f2)
+              if ! grep -q "^${DB_VAR}=" .env.local; then
+                echo "   Adicionando ${DB_VAR}..."
+                echo "${DB_VAR}=${DB_VALUE}" >> .env.local
+              fi
+            done
+            
+            # Garantir Enzo databases
             if ! grep -q "NOTION_DB_KPIS_ENZO=" .env.local; then
-              echo "   Adding Enzo database IDs to .env.local..."
+              echo "   Adicionando databases do Enzo..."
               echo "" >> .env.local
               echo "# Enzo Canei Dashboard Databases" >> .env.local
               echo "NOTION_DB_KPIS_ENZO=2ed84566a5fa81299c07c412630f9aa4" >> .env.local
               echo "NOTION_DB_GOALS_ENZO=2ed84566a5fa81ada870cf698ec50bf0" >> .env.local
               echo "NOTION_DB_ACTIONS_ENZO=2ed84566a5fa81c4a8cbc23841abdc1e" >> .env.local
               echo "NOTION_DB_CONTACTS_ENZO=2ed84566a5fa81a7bf7afeaa38ea6eff" >> .env.local
-            else
-              echo "   ✅ Enzo database IDs already configured"
             fi
             
-            # Ensure CONTACTS_ENZO is set if KPIs_ENZO exists but CONTACTS_ENZO doesn't
-            if grep -q "NOTION_DB_KPIS_ENZO=" .env.local && ! grep -q "NOTION_DB_CONTACTS_ENZO=" .env.local; then
-              echo "   Adding NOTION_DB_CONTACTS_ENZO to .env.local..."
-              echo "NOTION_DB_CONTACTS_ENZO=2ed84566a5fa81a7bf7afeaa38ea6eff" >> .env.local
-            fi
+            echo "   ✅ Todas as databases estão configuradas"
             
             # Install dependencies (including devDependencies for build)
             echo "📦 Installing dependencies..."
