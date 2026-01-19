@@ -74,11 +74,18 @@ jobs:
               echo "   Adding Enzo database IDs to .env.local..."
               echo "" >> .env.local
               echo "# Enzo Canei Dashboard Databases" >> .env.local
-              echo "NOTION_DB_KPIS_ENZO=2ed84566a5fa818b8b0d000c657c9913" >> .env.local
-              echo "NOTION_DB_GOALS_ENZO=2ed84566a5fa812d8244000c3a5cdf24" >> .env.local
-              echo "NOTION_DB_ACTIONS_ENZO=2ed84566a5fa8182ab81000c1905c93e" >> .env.local
+              echo "NOTION_DB_KPIS_ENZO=2ed84566a5fa81299c07c412630f9aa4" >> .env.local
+              echo "NOTION_DB_GOALS_ENZO=2ed84566a5fa81ada870cf698ec50bf0" >> .env.local
+              echo "NOTION_DB_ACTIONS_ENZO=2ed84566a5fa81c4a8cbc23841abdc1e" >> .env.local
+              echo "NOTION_DB_CONTACTS_ENZO=2ed84566a5fa81a7bf7afeaa38ea6eff" >> .env.local
             else
               echo "   ✅ Enzo database IDs already configured"
+            fi
+            
+            # Ensure CONTACTS_ENZO is set if KPIs_ENZO exists but CONTACTS_ENZO doesn't
+            if grep -q "NOTION_DB_KPIS_ENZO=" .env.local && ! grep -q "NOTION_DB_CONTACTS_ENZO=" .env.local; then
+              echo "   Adding NOTION_DB_CONTACTS_ENZO to .env.local..."
+              echo "NOTION_DB_CONTACTS_ENZO=2ed84566a5fa81a7bf7afeaa38ea6eff" >> .env.local
             fi
             
             # Install dependencies (including devDependencies for build)
