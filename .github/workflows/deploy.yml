@@ -70,7 +70,7 @@ jobs:
 # Configurado automaticamente pelo deploy
 
 # Notion API Token (REQUIRED - configure via GitHub Secrets ou manualmente)
-NOTION_TOKEN=${NOTION_TOKEN_FROM_SECRET}
+NOTION_TOKEN=PLACEHOLDER_TOKEN_WILL_BE_REPLACED
 
 # Notion Database IDs (REQUIRED - Core databases)
 NOTION_DB_KPIS=2d984566a5fa800bb45dd3d53bdadfa3
@@ -116,19 +116,25 @@ ENVEOF
             fi
             
             # Garantir que NOTION_TOKEN está configurado (usar secret do GitHub se disponível)
-            if [ -n "${{ secrets.NOTION_TOKEN }}" ]; then
+            NOTION_TOKEN_SECRET="${{ secrets.NOTION_TOKEN }}"
+            if [ -n "$NOTION_TOKEN_SECRET" ] && [ "$NOTION_TOKEN_SECRET" != "" ]; then
               echo "   🔑 Configurando NOTION_TOKEN do GitHub Secret..."
               # Substituir NOTION_TOKEN no .env.local
               if grep -q "^NOTION_TOKEN=" .env.local; then
-                sed -i "s|^NOTION_TOKEN=.*|NOTION_TOKEN=${{ secrets.NOTION_TOKEN }}|" .env.local
+                sed -i "s|^NOTION_TOKEN=.*|NOTION_TOKEN=${NOTION_TOKEN_SECRET}|" .env.local
               else
-                echo "NOTION_TOKEN=${{ secrets.NOTION_TOKEN }}" >> .env.local
+                echo "NOTION_TOKEN=${NOTION_TOKEN_SECRET}" >> .env.local
               fi
               echo "   ✅ NOTION_TOKEN configurado do GitHub Secret"
             else
               echo "   ⚠️  GitHub Secret NOTION_TOKEN não configurado"
               echo "   Verificando se NOTION_TOKEN já está no .env.local..."
-              if ! grep -q "^NOTION_TOKEN=" .env.local || grep -q "^NOTION_TOKEN=\${NOTION_TOKEN_FROM_SECRET}" .env.local || grep -q "^NOTION_TOKEN=<<<" .env.local || grep -q "^NOTION_TOKEN=$" .env.local; then
+              # Remover placeholder se existir
+              if grep -q "^NOTION_TOKEN=PLACEHOLDER_TOKEN_WILL_BE_REPLACED" .env.local; then
+                echo "   ⚠️  NOTION_TOKEN ainda tem placeholder, removendo..."
+                sed -i "s|^NOTION_TOKEN=PLACEHOLDER_TOKEN_WILL_BE_REPLACED||" .env.local
+              fi
+              if ! grep -q "^NOTION_TOKEN=" .env.local || grep -q "^NOTION_TOKEN=$" .env.local || grep -q "^NOTION_TOKEN=<<<" .env.local; then
                 echo "   ❌ NOTION_TOKEN não está configurado!"
                 echo "   Configure via GitHub Secrets ou edite .env.local manualmente na VPS"
               else
