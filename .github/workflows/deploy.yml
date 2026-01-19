@@ -59,14 +59,17 @@ jobs:
             git reset --hard origin/${{ github.ref_name }}
             git clean -fd
             
-            # Configure .env.local with Enzo database IDs
+            # Configure .env.local with Enzo database IDs (preserve existing file)
             echo "⚙️  Configuring .env.local..."
             if [ ! -f .env.local ]; then
-              echo "   Creating .env.local from env.local.example..."
+              echo "   ⚠️  .env.local not found! Creating from env.local.example..."
+              echo "   ⚠️  WARNING: You MUST configure NOTION_TOKEN manually!"
               cp env.local.example .env.local
+            else
+              echo "   ✅ .env.local exists, preserving existing configuration"
             fi
             
-            # Ensure Enzo database IDs are set (from env.local.example)
+            # Ensure Enzo database IDs are set (only add if not present)
             if ! grep -q "NOTION_DB_KPIS_ENZO=" .env.local; then
               echo "   Adding Enzo database IDs to .env.local..."
               echo "" >> .env.local
@@ -75,7 +78,7 @@ jobs:
               echo "NOTION_DB_GOALS_ENZO=2ed84566a5fa812d8244000c3a5cdf24" >> .env.local
               echo "NOTION_DB_ACTIONS_ENZO=2ed84566a5fa8182ab81000c1905c93e" >> .env.local
             else
-              echo "   Enzo database IDs already configured in .env.local"
+              echo "   ✅ Enzo database IDs already configured"
             fi
             
             # Install dependencies (including devDependencies for build)

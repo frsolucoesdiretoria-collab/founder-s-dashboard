@@ -6,7 +6,6 @@ import cors from 'cors';
 import { config } from 'dotenv';
 import { resolve, join } from 'path';
 import { existsSync } from 'fs';
-import { execSync } from 'child_process';
 import { healthRouter } from './routes/health';
 import { selftestRouter } from './routes/selftest';
 import { kpisRouter } from './routes/kpis';
@@ -23,7 +22,7 @@ import { vendeMaisObrasRouter } from './routes/vendeMaisObras';
 import proposalsRouter from './routes/proposals';
 import { domaCondoClientRouter } from './routes/domaCondoClient';
 import { enzoRouter } from './routes/enzo';
-import { assertEnvVars } from './lib/envValidator';
+import { validateEnvVars } from './lib/envValidator';
 
 // Load environment variables (priority: .env.local > .env)
 // .env.local takes precedence and is not committed to git
@@ -31,12 +30,35 @@ config({ path: resolve(process.cwd(), '.env.local') });
 config({ path: resolve(process.cwd(), '.env') });
 
 // Validate environment variables before starting server
+// Em produção, não crashar se variáveis opcionais estiverem faltando
 try {
-  assertEnvVars();
-  console.log('✅ Environment variables validated');
+  const result = validateEnvVars();
+  if (result.valid) {
+    console.log('✅ Environment variables validated');
+  } else {
+    // Em produção, apenas avisar mas não crashar
+    if (process.env.NODE_ENV === 'production') {
+      console.warn('⚠️  Some environment variables are missing, but continuing...');
+      console.warn('   Missing:', result.missing.join(', '));
+    } else {
+      // Em desenvolvimento, crashar para forçar configuração
+      console.error('\n' + '❌ Missing required environment variables:\n' + result.missing.map(v => `   - ${v}`).join('\n') + '\n');
+      process.exit(1);
+    }
+  }
+  if (result.warnings.length > 0) {
+    console.warn('⚠️  Environment variable warnings:');
+    result.warnings.forEach(w => console.warn(`   ${w}`));
+  }
 } catch (error: any) {
-  console.error('\n' + error.message + '\n');
-  process.exit(1);
+  // Em produção, apenas avisar
+  if (process.env.NODE_ENV === 'production') {
+    console.warn('⚠️  Error validating environment variables:', error.message);
+    console.warn('   Continuing anyway...');
+  } else {
+    console.error('\n' + error.message + '\n');
+    process.exit(1);
+  }
 }
 
 const app = express();
