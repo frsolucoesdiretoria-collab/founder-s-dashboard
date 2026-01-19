@@ -59,13 +59,13 @@ jobs:
             git reset --hard origin/${{ github.ref_name }}
             git clean -fd
             
-            # Install dependencies
+            # Install dependencies (including devDependencies for build)
             echo "📦 Installing dependencies..."
-            npm ci
+            npm ci --include=dev
             
             # Build application
             echo "🔨 Building application..."
-            npm run build
+            NODE_ENV=production npm run build
             
             # Restart application (PM2)
             if command -v pm2 &> /dev/null; then
