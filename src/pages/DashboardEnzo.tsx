@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AppLayout } from '@/components/AppLayout';
 import { KPICard } from '@/components/KPICard';
-import { KPIChart } from '@/components/KPIChart';
 import { ActionChecklist } from '@/components/ActionChecklist';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Loader2, RefreshCw } from 'lucide-react';

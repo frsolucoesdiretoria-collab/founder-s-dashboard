@@ -39,7 +39,7 @@ npm run dev
 
 Acesse: `http://localhost:8080/dashboard-enzo`
 
-**Senha:** `2026anodaaceleração`
+**Senha:** `2026anodaaceleração` 
 
 ## 🔍 Verificar Configuração
 
