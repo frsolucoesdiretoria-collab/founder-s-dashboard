@@ -12,7 +12,7 @@ env:
 
 jobs:
   deploy:
-    name: Deploy to ${{ github.ref == 'refs/heads/main' && 'Production' || 'Staging' }}
+    name: Deploy to Production
     runs-on: ubuntu-latest
     
     steps:
@@ -38,134 +38,167 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            set -e
+            set +e
             
             PROJECT_PATH="${{ secrets.VPS_PROJECT_PATH }}"
-            cd "$PROJECT_PATH"
+            cd "$PROJECT_PATH" || exit 1
             
-            echo "🚀 Deploying to production..."
+            echo "🚀 DEPLOY AUTOMÁTICO - TUDO SERÁ RESOLVIDO AUTOMATICAMENTE"
+            echo "=========================================================="
             
-            # Pull latest code
-            echo "📥 Pulling latest changes..."
+            # 1. Pull código
+            echo ""
+            echo "1️⃣  Atualizando código..."
             git fetch origin
             git reset --hard origin/main
             git clean -fd
             
-            # Preserve .env.local
+            # 2. Garantir .env.local existe
+            echo ""
+            echo "2️⃣  Verificando .env.local..."
             if [ ! -f .env.local ]; then
-              echo "⚠️  .env.local não existe - criando básico..."
               if [ -f env.local.example ]; then
                 cp env.local.example .env.local
+                echo "   ✅ Criado a partir do template"
+              else
+                echo "   ⚠️  Template não encontrado, continuando..."
               fi
             else
-              echo "✅ .env.local existe - preservando"
+              echo "   ✅ .env.local existe"
             fi
             
-            # Usar script de diagnóstico e correção
-            if [ -f scripts/diagnose-and-fix.sh ]; then
-              echo "🔧 Executando script de diagnóstico e correção..."
-              chmod +x scripts/diagnose-and-fix.sh
-              bash scripts/diagnose-and-fix.sh
-            else
-              echo "⚠️  Script de diagnóstico não encontrado, usando método manual..."
-              
-              # Install dependencies
-              echo "📦 Installing dependencies..."
-              rm -rf node_modules package-lock.json 2>/dev/null || true
-              npm cache clean --force 2>/dev/null || true
-              npm install --include=dev --legacy-peer-deps --no-audit --no-fund || {
-                echo "⚠️  Primeira tentativa falhou, tentando novamente..."
+            # 3. Limpar TUDO e instalar dependências
+            echo ""
+            echo "3️⃣  Instalando dependências (limpando tudo primeiro)..."
+            rm -rf node_modules package-lock.json .npm 2>/dev/null || true
+            npm cache clean --force 2>/dev/null || true
+            
+            # Instalar com múltiplas tentativas
+            npm install --include=dev --legacy-peer-deps --no-audit --no-fund 2>&1 | head -100 || {
+              echo "   ⚠️  Primeira tentativa falhou, limpando e tentando novamente..."
+              rm -rf node_modules 2>/dev/null || true
+              sleep 5
+              npm install --include=dev --legacy-peer-deps --no-audit --no-fund 2>&1 | head -100 || {
+                echo "   ⚠️  Segunda tentativa falhou, última tentativa..."
                 rm -rf node_modules 2>/dev/null || true
+                sleep 5
                 npm install --include=dev --legacy-peer-deps --no-audit --no-fund
               }
-              
-              # Build
-              echo "🔨 Building..."
-              if [ ! -d "node_modules" ] || [ -z "$(ls -A node_modules 2>/dev/null)" ]; then
-                echo "❌ node_modules vazio ou não existe!"
+            }
+            
+            # Verificar se instalou
+            if [ ! -d "node_modules" ] || [ -z "$(ls -A node_modules 2>/dev/null)" ]; then
+              echo "   ❌ Falha crítica: node_modules não foi instalado!"
+              exit 1
+            fi
+            echo "   ✅ Dependências instaladas"
+            
+            # 4. Build
+            echo ""
+            echo "4️⃣  Fazendo build..."
+            NODE_ENV=production npm run build || {
+              echo "   ⚠️  Build falhou, tentando novamente..."
+              npm run build || {
+                echo "   ❌ Build falhou após 2 tentativas"
                 exit 1
-              fi
-              
-              NODE_ENV=production npm run build || {
-                echo "⚠️  Build falhou, tentando novamente..."
-                npm run build
               }
-              
-              # Install PM2 if needed
-              if ! command -v pm2 &> /dev/null; then
-                npm install -g pm2
+            }
+            
+            if [ ! -d "dist" ] || [ -z "$(ls -A dist 2>/dev/null)" ]; then
+              echo "   ❌ Build não gerou pasta dist!"
+              exit 1
+            fi
+            echo "   ✅ Build concluído"
+            
+            # 5. PM2
+            echo ""
+            echo "5️⃣  Configurando PM2..."
+            if ! command -v pm2 &> /dev/null; then
+              npm install -g pm2
+            fi
+            
+            # Parar tudo
+            pm2 stop founder-dashboard 2>/dev/null || true
+            pm2 delete founder-dashboard 2>/dev/null || true
+            lsof -ti:3001 | xargs kill -9 2>/dev/null || true
+            sleep 3
+            
+            # 6. Iniciar servidor
+            echo ""
+            echo "6️⃣  Iniciando servidor..."
+            
+            # Carregar .env.local
+            if [ -f .env.local ]; then
+              set -a
+              source .env.local 2>/dev/null || true
+              set +a
+            fi
+            
+            export NODE_ENV=production
+            export PORT=3001
+            
+            # Iniciar com PM2
+            if [ -f ecosystem.config.js ]; then
+              pm2 start ecosystem.config.js 2>&1 || pm2 start npm --name "founder-dashboard" -- start 2>&1
+            else
+              pm2 start npm --name "founder-dashboard" -- start 2>&1
+            fi
+            
+            pm2 save
+            
+            # 7. Aguardar e verificar
+            echo ""
+            echo "7️⃣  Verificando servidor..."
+            sleep 25
+            
+            # Verificar múltiplas vezes
+            for i in {1..15}; do
+              if pm2 list | grep -q "founder-dashboard.*online"; then
+                echo "   ✅ Servidor está online!"
+                break
               fi
-              
-              # Stop old process
-              echo "🔄 Restarting server..."
-              pm2 stop founder-dashboard 2>/dev/null || true
-              pm2 delete founder-dashboard 2>/dev/null || true
-              lsof -ti:3001 | xargs kill -9 2>/dev/null || true
-              sleep 2
-              
-              # Load .env.local and start
-              if [ -f .env.local ]; then
-                set -a
-                source .env.local 2>/dev/null || true
-                set +a
-              fi
-              
-              export NODE_ENV=production
-              export PORT=3001
-              
-              # Start PM2
-              if [ -f ecosystem.config.js ]; then
-                pm2 start ecosystem.config.js || pm2 start npm --name "founder-dashboard" -- start
-              else
-                pm2 start npm --name "founder-dashboard" -- start
-              fi
-              pm2 save
-              
-              # Wait and check
-              echo "⏳ Waiting for server..."
-              sleep 20
-              
-              MAX_RETRIES=10
-              RETRY=0
-              SERVER_ONLINE=false
-              
-              while [ $RETRY -lt $MAX_RETRIES ]; do
-                if pm2 list | grep -q "founder-dashboard.*online"; then
-                  SERVER_ONLINE=true
-                  break
-                fi
-                RETRY=$((RETRY + 1))
-                echo "   Tentativa $RETRY/$MAX_RETRIES..."
-                sleep 3
-              done
-              
-              if [ "$SERVER_ONLINE" = true ]; then
-                echo "✅ Server is online"
-                
-                RETRY=0
-                API_OK=false
-                while [ $RETRY -lt 5 ]; do
-                  if curl -s -f http://localhost:3001/api/health > /dev/null 2>&1; then
-                    API_OK=true
-                    break
-                  fi
-                  RETRY=$((RETRY + 1))
-                  sleep 3
-                done
-                
-                if [ "$API_OK" = true ]; then
-                  echo "✅ API is responding!"
-                  curl http://localhost:3001/api/health
-                else
-                  echo "⚠️  API not responding"
-                  pm2 logs founder-dashboard --lines 50 --nostream
-                  exit 1
-                fi
-              else
-                echo "❌ Server failed to start"
+              if [ $i -eq 15 ]; then
+                echo "   ❌ Servidor não iniciou após 15 tentativas"
+                echo ""
+                echo "   📋 Status PM2:"
+                pm2 list
+                echo ""
+                echo "   📋 Logs (últimas 100 linhas):"
                 pm2 logs founder-dashboard --lines 100 --nostream
                 exit 1
               fi
-            fi
+              echo "   Tentativa $i/15 - aguardando..."
+              sleep 3
+            done
             
-            echo "✅ Deployment completed!"
+            # 8. Testar API
+            echo ""
+            echo "8️⃣  Testando API..."
+            for i in {1..10}; do
+              if curl -s -f http://localhost:3001/api/health > /dev/null 2>&1; then
+                echo "   ✅ API está respondendo!"
+                curl http://localhost:3001/api/health
+                echo ""
+                echo ""
+                echo "=========================================================="
+                echo "✅ DEPLOY CONCLUÍDO COM SUCESSO!"
+                echo "🌐 Site disponível em: https://frtechltda.com.br"
+                echo "=========================================================="
+                exit 0
+              fi
+              if [ $i -eq 10 ]; then
+                echo "   ❌ API não respondeu após 10 tentativas"
+                echo ""
+                echo "   📋 Status PM2:"
+                pm2 list | grep founder-dashboard
+                echo ""
+                echo "   📋 Logs (últimas 50 linhas):"
+                pm2 logs founder-dashboard --lines 50 --nostream
+                echo ""
+                echo "   🔍 Porta 3001:"
+                lsof -i:3001 || echo "   Porta não está em uso"
+                exit 1
+              fi
+              echo "   Tentativa $i/10 - aguardando API..."
+              sleep 3
+            done
