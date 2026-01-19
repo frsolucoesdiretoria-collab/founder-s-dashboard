@@ -1261,7 +1261,7 @@ export async function updateAction(
     properties.Month = { number: updates.Month };
   }
   if (updates.Priority !== undefined) {
-    if (updates.Priority === '' || updates.Priority === null) {
+    if (!updates.Priority || updates.Priority === null) {
       properties.Priority = { select: null };
     } else {
       properties.Priority = { select: { name: updates.Priority } };
@@ -1845,12 +1845,13 @@ export async function createDatabase(
       case 'relation':
         if (!prop.relation) throw new Error(`Relation property "${key}" requires relation configuration`);
         baseProperty.relation = {
-          database_id: prop.relation.database_id,
-          ...(prop.relation.single_property ? { single_property: {} } : {}),
-          ...(prop.relation.dual_property ? { dual_property: {} } : {})
+          database_id: prop.relation.database_id
         };
-        // Se não especificado, usa single_property por padrão
-        if (!prop.relation.single_property && !prop.relation.dual_property) {
+        // Configurar tipo de relação
+        if (prop.relation.type === 'dual_property') {
+          baseProperty.relation.dual_property = {};
+        } else {
+          // single_property é o padrão
           baseProperty.relation.single_property = {};
         }
         break;
@@ -1986,12 +1987,10 @@ export async function countContactsByStatusAndDate(
   const statusFilter =
     statusFilters.length === 1 ? statusFilters[0] : { or: statusFilters };
 
+  // Usar apenas property filter para data (mais compatível)
   const dateFilter = {
-    or: [
-      { property: dateProperty, date: { on_or_after: range.start, on_or_before: range.end } },
-      { timestamp: 'last_edited_time', last_edited_time: { on_or_after: range.start, on_or_before: range.end } },
-      { timestamp: 'created_time', created_time: { on_or_after: range.start, on_or_before: range.end } }
-    ]
+    property: dateProperty,
+    date: { on_or_after: range.start, on_or_before: range.end }
   };
 
   let total = 0;
