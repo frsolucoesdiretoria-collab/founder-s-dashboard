@@ -1,0 +1,5 @@
+# COMANDO PARA RESOLVER ERRO 502
+# Execute na VPS:
+
+cd /var/www/founder-dashboard && pm2 restart founder-dashboard && sleep 5 && curl http://localhost:3001/api/health && echo "" && pm2 status && pm2 logs founder-dashboard --lines 20 --nostream
+

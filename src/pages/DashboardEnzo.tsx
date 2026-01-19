@@ -3,6 +3,7 @@ import { AppLayout } from '@/components/AppLayout';
 import { KPICard } from '@/components/KPICard';
 import { ActionChecklist } from '@/components/ActionChecklist';
 import { ContactsToActivate } from '@/components/ContactsToActivate';
+import { EnzoKanban } from '@/components/EnzoKanban';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Loader2, RefreshCw } from 'lucide-react';
 import { getEnzoKPIs, getEnzoGoals, getEnzoDailyActions, updateEnzoActionDone, getEnzoContacts, createEnzoContact, updateEnzoContact } from '@/services';
@@ -19,6 +20,7 @@ interface Contact {
   id: string;
   name: string;
   whatsapp?: string;
+  status?: string;
 }
 
 export default function DashboardEnzo() {
@@ -31,6 +33,24 @@ export default function DashboardEnzo() {
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
+    // Setup Status field automatically on mount
+    const setupStatusField = async () => {
+      try {
+        const response = await fetch('/api/enzo/setup-status-field', {
+          method: 'POST'
+        });
+        const result = await response.json();
+        if (result.success) {
+          console.log('✅ Status field configured:', result.message);
+        } else {
+          console.warn('⚠️ Status field setup:', result.message);
+        }
+      } catch (err) {
+        console.warn('⚠️ Could not setup Status field automatically:', err);
+      }
+    };
+    
+    setupStatusField();
     loadData();
     // Retry após 2 segundos se não houver KPIs
     const retryTimer = setTimeout(() => {
@@ -67,6 +87,16 @@ export default function DashboardEnzo() {
       actions: actionsData.length,
       contacts: contactsData.length
     });
+
+    // Log detalhado dos KPIs
+    if (kpisData.length > 0) {
+      console.log('✅ KPIs carregados:', kpisData.map(k => k.Name));
+    } else {
+      console.warn('⚠️  Nenhum KPI foi carregado');
+      if (results[0].status === 'rejected') {
+        console.error('❌ Erro ao carregar KPIs:', results[0].reason);
+      }
+    }
 
     // Verificar erros específicos nos KPIs (mais crítico)
     if (results[0].status === 'rejected') {
@@ -130,7 +160,8 @@ export default function DashboardEnzo() {
       return contactsData.map(c => ({
         id: c.id,
         name: c.Name,
-        whatsapp: c.WhatsApp
+        whatsapp: c.WhatsApp,
+        status: c.Status || 'Contato Ativado'
       }));
     } catch (err: any) {
       // Se database não está configurada, retornar array vazio
@@ -141,6 +172,49 @@ export default function DashboardEnzo() {
       return [];
     }
   }
+
+  const handleUpdateContactStatus = async (id: string, status: string) => {
+    try {
+      console.log(`🔄 Updating contact ${id} to status: ${status}`);
+      
+      // Atualizar estado local imediatamente (optimistic update)
+      setContacts(prev => prev.map(c => 
+        c.id === id ? { ...c, status } : c
+      ));
+
+      // Chamar API para atualizar no backend
+      const updated = await updateEnzoContact(id, { status });
+      
+      // Atualizar com dados reais do servidor
+      setContacts(prev => prev.map(c => 
+        c.id === id 
+          ? { id: updated.id, name: updated.Name, whatsapp: updated.WhatsApp, status: updated.Status || status }
+          : c
+      ));
+
+      // Recarregar Goals para atualizar métricas (KPIs são calculados a partir dos Goals)
+      const updatedGoals = await getEnzoGoals();
+      setGoals(updatedGoals);
+      
+      // Recarregar KPIs também para garantir sincronização
+      const updatedKpis = await getEnzoKPIs();
+      setKpis(updatedKpis.sort((a, b) => (a.SortOrder || 0) - (b.SortOrder || 0)));
+      
+      toast.success(`Contato movido para "${status}" - Métricas atualizadas`);
+    } catch (err: any) {
+      console.error('Error updating contact status:', err);
+      
+      // Reverter estado local em caso de erro
+      const contact = contacts.find(c => c.id === id);
+      if (contact) {
+        setContacts(prev => prev.map(c => 
+          c.id === id ? contact : c
+        ));
+      }
+      
+      toast.error(`Erro ao atualizar status: ${err?.message || 'Erro desconhecido'}`);
+    }
+  };
 
   const handleToggleAction = async (actionId: string, done: boolean) => {
     try {
@@ -158,6 +232,14 @@ export default function DashboardEnzo() {
   };
 
   const handleUpdateContact = async (id: string, updates: Partial<Contact>) => {
+    // Optimistic update - atualiza o estado local imediatamente
+    const previousContact = contacts.find(c => c.id === id);
+    setContacts(prev => prev.map(c => 
+      c.id === id 
+        ? { ...c, ...updates }
+        : c
+    ));
+
     try {
       const notionUpdates: { name?: string; whatsapp?: string } = {};
       if (updates.name !== undefined) {
@@ -169,30 +251,52 @@ export default function DashboardEnzo() {
 
       const updated = await updateEnzoContact(id, notionUpdates);
       
+      // Atualiza com os dados reais do servidor após sucesso
       setContacts(prev => prev.map(c => 
         c.id === id 
-          ? { id: updated.id, name: updated.Name, whatsapp: updated.WhatsApp }
+          ? { id: updated.id, name: updated.Name, whatsapp: updated.WhatsApp, status: updated.Status || 'Contato Ativado' }
           : c
       ));
     } catch (err: any) {
       console.error('Error updating contact:', err);
+      // Reverte para o estado anterior em caso de erro
+      if (previousContact) {
+        setContacts(prev => prev.map(c => 
+          c.id === id ? previousContact : c
+        ));
+      }
       toast.error('Erro ao atualizar contato. Tente novamente.');
     }
   };
 
   const handleAddContact = async () => {
-    if (contacts.length >= 20) return;
+    if (contacts.length >= 20) {
+      toast.error('Limite de 20 contatos atingido');
+      return;
+    }
+    
     try {
+      // Criar contato com nome vazio (será preenchido depois)
       const newContact = await createEnzoContact('');
       
+      // Atualizar estado local imediatamente
       setContacts(prev => [...prev, {
         id: newContact.id,
-        name: newContact.Name,
-        whatsapp: newContact.WhatsApp
+        name: newContact.Name || '',
+        whatsapp: newContact.WhatsApp || '',
+        status: newContact.Status || 'Contato Ativado'
       }]);
+      
+      toast.success('Contato adicionado com sucesso');
     } catch (err: any) {
       console.error('Error creating contact:', err);
-      toast.error('Erro ao adicionar contato. Tente novamente.');
+      const errorMessage = err?.message || err?.error || 'Erro desconhecido';
+      console.error('Error details:', {
+        message: errorMessage,
+        status: err?.status,
+        response: err
+      });
+      toast.error(`Erro ao adicionar contato: ${errorMessage}`);
     }
   };
 
@@ -339,6 +443,15 @@ export default function DashboardEnzo() {
             contacts={contacts}
             onUpdateContact={handleUpdateContact}
             onAddContact={handleAddContact}
+          />
+        </div>
+
+        {/* CRM Kanban - Funil de Vendas */}
+        <div className="space-y-3 md:space-y-4">
+          <Separator className="my-3 md:my-6" />
+          <EnzoKanban
+            contacts={contacts.filter(c => c.name && c.whatsapp)} // Apenas contatos completos
+            onUpdateContactStatus={handleUpdateContactStatus}
           />
         </div>
       </div>

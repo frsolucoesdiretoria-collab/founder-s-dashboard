@@ -99,3 +99,6 @@ Você precisa criar **3 databases** no Notion para o Dashboard do Enzo:
 
 Envie os 3 links das databases e eu extraio os IDs e atualizo o `.env.local` automaticamente!
 
+
+
+

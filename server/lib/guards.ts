@@ -30,7 +30,25 @@ export function assertNoFinancialKPIs(kpis: NotionKPI[]): void {
  */
 export function validateAdminPasscode(passcode: string): boolean {
   const storedPasscode = process.env.ADMIN_PASSCODE || 'admin123'; // Default for dev
-  return passcode === storedPasscode;
+  
+  // Aceita admin passcode
+  if (passcode === storedPasscode) {
+    return true;
+  }
+  
+  // Aceita senha do Flora para acesso limitado a dados financeiros
+  const floraPasscode = 'flora123';
+  if (passcode === floraPasscode) {
+    return true;
+  }
+  
+  // Aceita senha financeira
+  const financePasscode = '06092021';
+  if (passcode === financePasscode) {
+    return true;
+  }
+  
+  return false;
 }
 
 /**

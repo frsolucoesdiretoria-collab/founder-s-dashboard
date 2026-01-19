@@ -1,0 +1,8 @@
+# 🚀 EXECUTE ESTE COMANDO AGORA NA VPS
+# Copie TODO este comando e cole no terminal da VPS:
+
+cd /var/www/founder-dashboard && cp .env.local .env.local.backup && sed -i 's/<<<//g' .env.local && sed -i 's/>>>//g' .env.local && echo "✅ .env.local corrigido" && pm2 delete founder-dashboard 2>/dev/null || true && pm2 stop founder-dashboard 2>/dev/null || true && sleep 2 && lsof -ti:3001 | xargs kill -9 2>/dev/null || true && set -a && source .env.local && set +a && export NODE_ENV=production && export PORT=3001 && pm2 start npm --name "founder-dashboard" --cwd "/var/www/founder-dashboard" -- start --update-env && pm2 save && sleep 20 && echo "========================================" && echo "=== STATUS ===" && pm2 list | grep founder-dashboard && echo "" && echo "=== HEALTH ===" && curl -v http://localhost:3001/api/health 2>&1 && echo "" && echo "=== LOGS ===" && pm2 logs founder-dashboard --lines 30 --nostream
+
+
+
+

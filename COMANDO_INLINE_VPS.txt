@@ -41,3 +41,6 @@ curl -s http://localhost:3001/api/health | head -c 50
 echo ""
 curl -s http://localhost:3001/api/enzo/kpis | grep -o '"id"' | wc -l | xargs echo "KPIs encontrados:"
 
+
+
+

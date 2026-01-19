@@ -1,0 +1,24 @@
+# 🚨 SOLUÇÃO RÁPIDA - Token Inválido (401)
+# 
+# O token está sendo rejeitado pelo Notion como inválido.
+# 
+# SOLUÇÃO EM 3 PASSOS:
+
+# PASSO 1: Obter NOVO token do Notion
+# 1. Acesse: https://www.notion.so/my-integrations
+# 2. Se já tiver integração, DELETE e crie uma NOVA
+# 3. OU clique na integração existente e gere um NOVO token
+# 4. Copie o token (deve começar com "secret_")
+
+# PASSO 2: Configurar na VPS (substitua NOVO_TOKEN pelo token novo)
+cd /var/www/founder-dashboard && cp .env.local .env.local.backup && sed -i 's/NOTION_TOKEN=.*/NOTION_TOKEN=NOVO_TOKEN/' .env.local && echo "✅ Token atualizado" && pm2 restart founder-dashboard --update-env && sleep 10 && curl -s http://localhost:3001/api/kpis/public | head -c 500
+
+# PASSO 3: Compartilhar databases no Notion
+# 1. Abra CADA database (KPIs, Goals, Actions, Journal)
+# 2. Clique nos ... → "Add connections"
+# 3. Escolha sua integração
+# 4. PRONTO!
+
+
+
+

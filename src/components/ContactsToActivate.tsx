@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -20,8 +20,70 @@ interface ContactsToActivateProps {
 
 
 export function ContactsToActivate({ contacts, onUpdateContact, onAddContact }: ContactsToActivateProps) {
-  const completedCount = contacts.filter(c => c.name && c.whatsapp).length;
+  // Estado local para controlar os inputs sem bloquear a digitação
+  const [localContacts, setLocalContacts] = useState<Contact[]>(contacts);
+  const debounceTimers = useRef<Map<string, NodeJS.Timeout>>(new Map());
+  const editingFields = useRef<Set<string>>(new Set()); // Campos sendo editados no momento
+
+  // Sincronizar estado local quando contacts prop mudar, mas apenas se não estiver editando
+  useEffect(() => {
+    // Só sincronizar contatos que não estão sendo editados no momento
+    setLocalContacts(prev => {
+      return contacts.map(contact => {
+        const localContact = prev.find(c => c.id === contact.id);
+        // Se este contato tem campos sendo editados, manter o valor local
+        const isEditing = Array.from(editingFields.current).some(key => key.startsWith(contact.id));
+        if (isEditing && localContact) {
+          return localContact;
+        }
+        // Caso contrário, atualizar com o valor do servidor
+        return contact;
+      });
+    });
+  }, [contacts]);
+
+  const completedCount = localContacts.filter(c => c.name && c.whatsapp).length;
   const totalTarget = 20;
+
+  // Função para atualizar com debounce (espera 800ms após parar de digitar)
+  const handleLocalUpdate = (id: string, field: 'name' | 'whatsapp', value: string) => {
+    const fieldKey = `${id}-${field}`;
+    
+    // Marcar campo como sendo editado
+    editingFields.current.add(fieldKey);
+    
+    // Atualizar estado local imediatamente para feedback visual
+    setLocalContacts(prev => prev.map(c => 
+      c.id === id ? { ...c, [field]: value } : c
+    ));
+
+    // Limpar timer anterior se existir
+    const existingTimer = debounceTimers.current.get(fieldKey);
+    if (existingTimer) {
+      clearTimeout(existingTimer);
+    }
+
+    // Criar novo timer para chamar a API após 800ms sem digitação
+    const newTimer = setTimeout(() => {
+      // Remover do conjunto de campos sendo editados
+      editingFields.current.delete(fieldKey);
+      
+      // Chamar API para atualizar
+      onUpdateContact(id, { [field]: value });
+      
+      debounceTimers.current.delete(fieldKey);
+    }, 800);
+
+    debounceTimers.current.set(fieldKey, newTimer);
+  };
+
+  // Limpar timers ao desmontar
+  useEffect(() => {
+    return () => {
+      debounceTimers.current.forEach(timer => clearTimeout(timer));
+      debounceTimers.current.clear();
+    };
+  }, []);
 
   return (
     <Card>
@@ -42,7 +104,7 @@ export function ContactsToActivate({ contacts, onUpdateContact, onAddContact }: 
         </div>
       </CardHeader>
       <CardContent className="px-3 md:px-6 pb-3 md:pb-6 space-y-2 md:space-y-3">
-        {contacts.map((contact, index) => {
+        {localContacts.map((contact, index) => {
           const isComplete = contact.name && contact.whatsapp;
           
           return (
@@ -69,8 +131,8 @@ export function ContactsToActivate({ contacts, onUpdateContact, onAddContact }: 
               <div className="space-y-2">
                 <Input
                   placeholder="Nome do contato"
-                  value={contact.name}
-                  onChange={(e) => onUpdateContact(contact.id, { name: e.target.value })}
+                  value={contact.name || ''}
+                  onChange={(e) => handleLocalUpdate(contact.id, 'name', e.target.value)}
                   className="text-xs md:text-sm h-8 md:h-9"
                 />
                 <div className="flex items-center gap-2">
@@ -79,7 +141,7 @@ export function ContactsToActivate({ contacts, onUpdateContact, onAddContact }: 
                     type="tel"
                     placeholder="WhatsApp (ex: 11987654321)"
                     value={contact.whatsapp || ''}
-                    onChange={(e) => onUpdateContact(contact.id, { whatsapp: e.target.value })}
+                    onChange={(e) => handleLocalUpdate(contact.id, 'whatsapp', e.target.value)}
                     className="text-xs md:text-sm h-8 md:h-9"
                   />
                 </div>
@@ -88,18 +150,18 @@ export function ContactsToActivate({ contacts, onUpdateContact, onAddContact }: 
           );
         })}
 
-        {contacts.length < totalTarget && (
+        {localContacts.length < totalTarget && (
           <Button
             onClick={onAddContact}
             variant="outline"
             className="w-full h-9 md:h-10 text-xs md:text-sm"
           >
             <Plus className="h-3 w-3 md:h-4 md:w-4 mr-2" />
-            Adicionar Contato ({contacts.length + 1}/{totalTarget})
+            Adicionar Contato ({localContacts.length + 1}/{totalTarget})
           </Button>
         )}
 
-        {contacts.length >= totalTarget && contacts.length > 0 && (
+        {localContacts.length >= totalTarget && localContacts.length > 0 && (
           <div className="pt-2 border-t border-border">
             <p className="text-xs md:text-sm text-muted-foreground text-center">
               {completedCount === totalTarget 

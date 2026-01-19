@@ -18,8 +18,9 @@ const navItems = [
   { path: '/proposals', label: 'Propostas', icon: FileText },
   // TEMPORÁRIO: Removido para reunião - { path: '/produtos', label: 'Produtos FR Tech', icon: Package },
   // TEMPORÁRIO: Removido para reunião - { path: '/apresentacao', label: 'Apresentação', icon: Presentation },
-  { path: '/apresentacao-03', label: 'A1', icon: FileText },
-  { path: '/apresentacao-05', label: 'A2', icon: FileText },
+  // TEMPORÁRIO: A1 e A2 removidos do menu - mantidas adormecidas no sistema
+  // { path: '/apresentacao-03', label: 'A1', icon: FileText },
+  // { path: '/apresentacao-05', label: 'A2', icon: FileText },
   { path: '/relatos', label: 'Relatos', icon: BookOpen },
   { path: '/dashboard-doma-condo', label: 'Mapa de métricas DOMA CONDO', icon: LayoutDashboard },
   { path: '/dashboard-doma-condo-v2', label: 'DOMA CONDO (V2)', icon: LayoutDashboard },

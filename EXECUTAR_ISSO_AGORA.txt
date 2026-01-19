@@ -1,0 +1,5 @@
+cd /var/www/founder-dashboard && cp .env.local .env.local.backup && sed -i 's/^NOTION_TOKEN=.*/NOTION_TOKEN=NOVO_TOKEN/' .env.local && echo "✅ Token atualizado" && pm2 restart founder-dashboard --update-env && sleep 10 && echo "" && echo "=== TESTE ===" && curl -s http://localhost:3001/api/kpis/public && echo "" && echo "" && echo "Quantidade:" && curl -s http://localhost:3001/api/kpis/public | grep -o '"id"' | wc -l
+
+
+
+

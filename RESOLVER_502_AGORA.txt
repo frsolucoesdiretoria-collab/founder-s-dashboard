@@ -1,0 +1,5 @@
+# COMANDO PARA RESOLVER ERRO 502 AGORA
+# Copie e cole na VPS:
+
+cd /var/www/founder-dashboard && pm2 delete founder-dashboard 2>/dev/null || true && pm2 start npm --name "founder-dashboard" -- start && pm2 save && sleep 8 && curl http://localhost:3001/api/health && echo "" && echo "✅ Se apareceu 'status: ok' acima, está funcionando!" && pm2 status
+

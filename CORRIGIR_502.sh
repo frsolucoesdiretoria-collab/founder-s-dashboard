@@ -60,6 +60,15 @@ PROJECT_PATH=$(pwd)
 echo ""
 echo "5️⃣  Diretório do projeto: $PROJECT_PATH"
 
+# Verificar se dist existe
+if [ ! -d "dist" ]; then
+    echo "⚠️  Pasta dist não encontrada. Executando build..."
+    npm run build || {
+        echo "❌ Erro ao fazer build"
+        exit 1
+    }
+fi
+
 # Iniciar PM2 com variáveis de ambiente atualizadas
 echo ""
 echo "6️⃣  Iniciando PM2..."

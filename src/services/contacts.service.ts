@@ -112,6 +112,7 @@ export interface EnzoContact {
   id: string;
   Name: string;
   WhatsApp?: string;
+  Status?: string;
 }
 
 /**
@@ -153,6 +154,8 @@ export async function createEnzoContact(name: string, whatsapp?: string): Promis
     const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
     const apiUrl = API_BASE ? `${API_BASE}/api/enzo/contacts` : '/api/enzo/contacts';
     
+    console.log('🔍 Creating Enzo contact:', { name, whatsapp, apiUrl });
+    
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
@@ -161,14 +164,21 @@ export async function createEnzoContact(name: string, whatsapp?: string): Promis
       body: JSON.stringify({ name, whatsapp })
     });
 
+    console.log('📡 Create contact response status:', response.status);
+
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || error.error || 'Failed to create Enzo contact');
+      const errorData = await response.json().catch(() => ({}));
+      const errorMessage = errorData.message || errorData.error || `HTTP ${response.status}: ${response.statusText}`;
+      console.error('❌ Error creating contact:', errorData);
+      throw new Error(errorMessage);
     }
 
-    return response.json();
+    const contact = await response.json();
+    console.log('✅ Contact created:', contact);
+    return contact;
   } catch (error: any) {
-    console.error('Error creating Enzo contact:', error);
+    console.error('❌ Error creating Enzo contact:', error);
+    // Re-throw para que o componente possa tratar
     throw error;
   }
 }
@@ -176,7 +186,7 @@ export async function createEnzoContact(name: string, whatsapp?: string): Promis
 /**
  * Update Enzo contact
  */
-export async function updateEnzoContact(id: string, updates: { name?: string; whatsapp?: string }): Promise<EnzoContact> {
+export async function updateEnzoContact(id: string, updates: { name?: string; whatsapp?: string; status?: string }): Promise<EnzoContact> {
   try {
     // Usar URL relativa em produção, absoluta apenas em desenvolvimento
     const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');

@@ -479,7 +479,8 @@ export const NOTION_SCHEMA: Record<string, DatabaseSchema> = {
       { name: 'Name', type: 'title', required: true, description: 'Nome do contato' },
       { name: 'WhatsApp', type: 'phone_number', required: false, description: 'Número do WhatsApp' },
       { name: 'DateCreated', type: 'date', required: false, description: 'Data de criação' },
-      { name: 'Complete', type: 'checkbox', required: false, description: 'Contato completo (nome e WhatsApp preenchidos)' }
+      { name: 'Complete', type: 'checkbox', required: false, description: 'Contato completo (nome e WhatsApp preenchidos)' },
+      { name: 'Status', type: 'select', required: false, description: 'Status do funil: Contato Ativado, Café Agendado, Café Executado, Proposta Enviada, Venda Fechada, Perdido' }
     ]
   }
 };

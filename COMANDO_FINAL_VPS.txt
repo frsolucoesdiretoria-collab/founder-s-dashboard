@@ -1,0 +1,7 @@
+# COMANDO COMPLETO PARA RESOLVER E FAZER DEPLOY
+# Copie e cole TODO o bloco abaixo na VPS:
+
+cd /var/www/founder-dashboard && git stash && git fetch origin main && git reset --hard origin/main && npm install --production && npm run build && pm2 restart founder-dashboard && pm2 save && echo "✅ Deploy concluído!" && pm2 status && pm2 logs founder-dashboard --lines 10 --nostream
+
+# Se a aplicação não estiver rodando, execute:
+# pm2 start npm --name "founder-dashboard" -- start && pm2 save

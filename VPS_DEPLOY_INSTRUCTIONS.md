@@ -252,3 +252,6 @@ Se após seguir todas as instruções o problema persistir:
 - ⚠️ As databases do Notion precisam estar compartilhadas com a integração
 - ⚠️ Em produção, o frontend usa URLs relativas (`/api/...`) automaticamente
 
+
+
+

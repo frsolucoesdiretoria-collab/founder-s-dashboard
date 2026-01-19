@@ -1,0 +1,5 @@
+# COMANDO CORRIGIDO - Execute na VPS
+# O problema era que --production não instala vite (que está em devDependencies)
+
+cd /var/www/founder-dashboard && git stash && git fetch origin main && git reset --hard origin/main && npm install && npm run build && pm2 restart founder-dashboard && pm2 save && echo "✅ Deploy concluído! Agora teste: https://frtechltda.com.br/finance"
+

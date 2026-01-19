@@ -134,3 +134,6 @@ echo "   1. Acesse: https://frtechltda.com.br/dashboard-enzo"
 echo "   2. Verifique se os KPIs aparecem com dados"
 echo ""
 
+
+
+

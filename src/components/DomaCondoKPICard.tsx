@@ -117,3 +117,6 @@ export function DomaCondoKPICard({ kpi }: DomaCondoKPICardProps) {
 }
 
 
+
+
+

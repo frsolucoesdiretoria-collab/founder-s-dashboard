@@ -1,0 +1,50 @@
+# 🚨 EXECUTE ISSO AGORA NA VPS
+
+## Copie e cole este comando COMPLETO:
+
+```bash
+cd /var/www/founder-dashboard && pm2 delete founder-dashboard 2>/dev/null || true && pm2 stop founder-dashboard 2>/dev/null || true && sleep 2 && lsof -ti:3001 | xargs kill -9 2>/dev/null || true && [ ! -d "dist" ] && npm run build || echo "Build OK" && set -a && source .env.local && set +a && NODE_ENV=production pm2 start npm --name "founder-dashboard" --cwd "/var/www/founder-dashboard" -- start && pm2 save && sleep 10 && pm2 list | grep founder-dashboard && curl http://localhost:3001/api/health && echo "" && pm2 logs founder-dashboard --lines 20 --nostream
+```
+
+## OU execute passo a passo:
+
+```bash
+# 1. Ir para o projeto
+cd /var/www/founder-dashboard
+
+# 2. Parar processo antigo
+pm2 delete founder-dashboard
+pm2 stop founder-dashboard
+
+# 3. Liberar porta
+lsof -ti:3001 | xargs kill -9 2>/dev/null || true
+
+# 4. Build se necessário
+[ ! -d "dist" ] && npm run build
+
+# 5. Carregar variáveis
+set -a
+source .env.local
+set +a
+
+# 6. INICIAR COM DIRETÓRIO CORRETO (IMPORTANTE!)
+NODE_ENV=production pm2 start npm --name "founder-dashboard" --cwd "/var/www/founder-dashboard" -- start
+
+# 7. Salvar
+pm2 save
+
+# 8. Verificar
+sleep 10
+pm2 list | grep founder-dashboard
+curl http://localhost:3001/api/health
+pm2 logs founder-dashboard --lines 30
+```
+
+## 🔑 A CHAVE É O `--cwd`!
+
+O problema era que o PM2 estava executando no diretório errado. 
+Agora com `--cwd "/var/www/founder-dashboard"` ele vai executar no lugar certo!
+
+
+
+

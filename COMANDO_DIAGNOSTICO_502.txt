@@ -1,0 +1,5 @@
+# COMANDO DE DIAGNÓSTICO - Erro 502 Bad Gateway
+# Execute na VPS para ver o que está acontecendo
+
+cd /var/www/founder-dashboard && echo "=== 1. Status PM2 ===" && pm2 status && echo "" && echo "=== 2. Testando API ===" && curl -s http://localhost:3001/api/health || echo "❌ API não está respondendo" && echo "" && echo "=== 3. Logs (últimas 20 linhas) ===" && pm2 logs founder-dashboard --lines 20 --nostream
+

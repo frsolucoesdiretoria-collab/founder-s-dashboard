@@ -54,3 +54,6 @@ echo "🔄 Reinicie o servidor para aplicar as mudanças:"
 echo "   pm2 restart founder-dashboard"
 echo ""
 
+
+
+

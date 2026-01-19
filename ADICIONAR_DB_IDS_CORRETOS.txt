@@ -1,0 +1,9 @@
+# 🚨 PROBLEMA IDENTIFICADO!
+# O código procura por NOTION_DB_KPIS mas só existe NOTION_DB_KPIS_ENZO
+# Precisamos adicionar as variáveis corretas!
+
+cd /var/www/founder-dashboard && echo "=== ADICIONANDO DATABASE IDs CORRETOS ===" && echo "" && if [ -z "$(grep "^NOTION_DB_KPIS=" .env.local)" ]; then echo "" >> .env.local && echo "# Core Databases (Principal Dashboard)" >> .env.local && echo "NOTION_DB_KPIS=2d984566a5fa800bb45dd3d53bdadfa3" >> .env.local && echo "NOTION_DB_GOALS=2d984566a5fa81bb96a1cf1c347f6e55" >> .env.local && echo "NOTION_DB_ACTIONS=2d984566a5fa813cbce2d090e08cd836" >> .env.local && echo "NOTION_DB_JOURNAL=2d984566a5fa81a9ad50e9d594d24b88" >> .env.local && echo "✅ Database IDs principais adicionados!"; else echo "✅ NOTION_DB_KPIS já existe"; fi && echo "" && echo "=== VERIFICANDO ===" && grep "^NOTION_DB_KPIS=" .env.local && grep "^NOTION_DB_GOALS=" .env.local && echo "" && echo "=== REINICIANDO SERVIDOR ===" && pm2 restart founder-dashboard --update-env && sleep 10 && echo "" && echo "=== TESTE API ===" && curl -s http://localhost:3001/api/kpis/public && echo "" && echo "" && echo "Quantidade de KPIs:" && curl -s http://localhost:3001/api/kpis/public | grep -o '"id"' | wc -l
+
+
+
+

@@ -154,3 +154,6 @@ Se o problema persistir após seguir todas as instruções:
 4. Teste: `curl http://localhost:3001/api/enzo/kpis`
 5. Documente os erros específicos encontrados
 
+
+
+

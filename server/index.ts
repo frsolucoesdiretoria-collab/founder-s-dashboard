@@ -101,25 +101,43 @@ app.use('/api/doma-condo-clientes', domaCondoClientRouter);
 app.use('/api/enzo', enzoRouter);
 
 // Serve static files in production/staging (after API routes)
-if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
-  const distPath = resolve(process.cwd(), 'dist');
-  if (existsSync(distPath)) {
-    app.use(express.static(distPath));
-    
-    // Serve index.html for all non-API routes (SPA routing)
-    app.get('*', (req, res, next) => {
-      // Skip API routes
-      if (req.path.startsWith('/api')) {
-        return next();
+// Also serve in any environment where dist folder exists (for flexibility)
+const distPath = resolve(process.cwd(), 'dist');
+if (existsSync(distPath)) {
+  app.use(express.static(distPath, {
+    maxAge: process.env.NODE_ENV === 'production' ? '1y' : '0',
+    etag: true,
+    lastModified: true,
+  }));
+  
+  // Serve index.html for all non-API routes (SPA routing)
+  app.get('*', (req, res, next) => {
+    // Skip API routes
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    // Skip if it's a file request (has extension)
+    if (req.path.includes('.')) {
+      return next();
+    }
+    res.sendFile(join(distPath, 'index.html'), (err) => {
+      if (err) {
+        console.error('Error sending index.html:', err);
+        res.status(404).json({ error: 'Page not found' });
       }
-      res.sendFile(join(distPath, 'index.html'));
     });
-    
-    console.log(`📁 Serving static files from: ${distPath}`);
-  } else {
+  });
+  
+  console.log(`📁 Serving static files from: ${distPath}`);
+} else {
+  if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
     console.warn(`⚠️  Warning: dist directory not found at ${distPath}`);
+    console.warn(`   Make sure to run 'npm run build' before starting the server in production`);
   }
 }
+
+// Store distPath for logging in server startup
+const distPathForLog = distPath;
 
 // Error handler
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -132,22 +150,41 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 
 // Start server
 // PM2 já gerencia a porta, então não precisamos de retry complexo
-const server = app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📊 API available at http://localhost:${PORT}/api`);
-  console.log(`\n💡 Health check: http://localhost:${PORT}/api/health`);
-  console.log(`💡 Admin health: http://localhost:${PORT}/api/admin/health`);
-  console.log(`💡 Self test: http://localhost:${PORT}/api/__selftest\n`);
-}).on('error', (err: NodeJS.ErrnoException) => {
-  if (err.code === 'EADDRINUSE') {
-    console.error(`❌ Port ${PORT} is already in use.`);
-    console.error(`   PM2 should handle this. If error persists, check: pm2 list`);
-  } else {
-    console.error('❌ Failed to start server:', err.message);
-  }
-  // Não crashar imediatamente, deixar PM2 gerenciar
-  setTimeout(() => process.exit(1), 1000);
-});
+let server: any;
+try {
+  server = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`📊 API available at http://localhost:${PORT}/api`);
+    console.log(`\n💡 Health check: http://localhost:${PORT}/api/health`);
+    console.log(`💡 Admin health: http://localhost:${PORT}/api/admin/health`);
+    console.log(`💡 Self test: http://localhost:${PORT}/api/__selftest\n`);
+    
+    // Log environment status
+    console.log(`📋 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`📋 Port: ${PORT}`);
+    console.log(`📋 Dist path: ${existsSync(distPathForLog) ? distPathForLog : 'NOT FOUND'}`);
+  }).on('error', (err: NodeJS.ErrnoException) => {
+    console.error('❌ Server startup error:', err);
+    if (err.code === 'EADDRINUSE') {
+      console.error(`❌ Port ${PORT} is already in use.`);
+      console.error(`   PM2 should handle this. If error persists, check: pm2 list`);
+      console.error(`   To kill process on port ${PORT}: lsof -ti:${PORT} | xargs kill -9`);
+    } else {
+      console.error('❌ Failed to start server:', err.message);
+      console.error('   Error code:', err.code);
+    }
+    // Não crashar imediatamente, deixar PM2 gerenciar
+    setTimeout(() => {
+      console.error('❌ Exiting due to server startup error');
+      process.exit(1);
+    }, 1000);
+  });
+} catch (error: any) {
+  console.error('❌ Fatal error starting server:', error);
+  console.error('   Message:', error.message);
+  console.error('   Stack:', error.stack);
+  process.exit(1);
+}
 
 // Graceful shutdown
 process.on('SIGTERM', () => {

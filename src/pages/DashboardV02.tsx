@@ -44,6 +44,10 @@ export default function DashboardV02() {
         getPublicGoals()
       ]);
 
+      console.log('📊 KPIs carregados:', kpisData.length);
+      console.log('📈 Goals carregados:', goalsData.length);
+      console.log('📋 Goals com Actual > 0:', goalsData.filter(g => (g.Actual || 0) > 0).length);
+
       // Remove duplicate KPIs by name (keep first occurrence, prefer higher SortOrder)
       const uniqueKPIs = new Map<string, KPI>();
       kpisData.forEach(kpi => {
@@ -72,8 +76,15 @@ export default function DashboardV02() {
       if (err.message?.includes('429') || err.message?.includes('rate limit')) {
         setError('Muitas requisições. Aguarde alguns segundos e recarregue a página.');
         toast.error('Limite de requisições atingido. Aguarde um momento.');
+      } else if (err.message?.includes('Database not found') || err.message?.includes('not configured')) {
+        setError('Erro de configuração: Database do Notion não encontrada. Verifique as configurações do servidor.');
+        toast.error('Erro de configuração do Notion');
+      } else if (err.message?.includes('conectar ao servidor') || err.message?.includes('Failed to fetch')) {
+        setError('Não foi possível conectar ao servidor. Verifique se o servidor está rodando.');
+        toast.error('Erro de conexão com o servidor');
       } else {
-        setError('Erro ao carregar dados. Verifique sua conexão.');
+        const errorMsg = err.message || 'Erro desconhecido ao carregar dados';
+        setError(`Erro ao carregar dados: ${errorMsg}`);
         toast.error('Erro ao carregar dashboard');
       }
     } finally {
@@ -104,6 +115,10 @@ export default function DashboardV02() {
   };
 
   try {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1; // 1-12
+    
     kpis.forEach((kpi) => {
       if (!kpi || !kpi.Name || !kpi.Periodicity) {
         return;
@@ -122,7 +137,45 @@ export default function DashboardV02() {
         return;
       }
 
-      const goal = goals.find(g => g.KPI === kpi.id);
+      // Find the most relevant goal for this KPI based on period
+      let goal: Goal | undefined;
+      
+      const goalsForKPI = goals.filter(g => g.KPI === kpi.id && g.VisiblePublic);
+      
+      if (goalsForKPI.length === 0) {
+        goal = undefined;
+      } else if (period === 'Mensal') {
+        // For monthly: find goal for current month and year
+        goal = goalsForKPI.find(g => 
+          g.Year === currentYear && 
+          g.Month === currentMonth
+        ) || goalsForKPI[0]; // Fallback to first if no exact match
+      } else if (period === 'Trimestral') {
+        // For quarterly: find goal for current year, no specific month
+        goal = goalsForKPI.find(g => 
+          g.Year === currentYear && 
+          (!g.Month || g.Month === 0)
+        ) || goalsForKPI[0]; // Fallback to first if no exact match
+      } else if (period === 'Semestral') {
+        // For semi-annual: find goal for current year, no specific month
+        goal = goalsForKPI.find(g => 
+          g.Year === currentYear && 
+          (!g.Month || g.Month === 0)
+        ) || goalsForKPI[0]; // Fallback to first if no exact match
+      } else if (period === 'Anual') {
+        // For annual: find goal for current year, no specific month
+        goal = goalsForKPI.find(g => 
+          g.Year === currentYear && 
+          (!g.Month || g.Month === 0)
+        ) || goalsForKPI[0]; // Fallback to first if no exact match
+      }
+      
+      // Log matching for debugging
+      if (goal) {
+        console.log(`✅ Match encontrado: KPI "${kpi.Name}" → Goal "${goal.Name}" (Actual: ${goal.Actual || 0}/${goal.Target || 0})`);
+      } else {
+        console.log(`⚠️  Nenhum goal encontrado para KPI "${kpi.Name}" (ID: ${kpi.id.substring(0, 8)}...)`);
+      }
       
       if (period === 'Mensal') {
         groupedKPIs.Mensal.push({ kpi, goal });

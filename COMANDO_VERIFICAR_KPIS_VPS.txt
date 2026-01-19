@@ -1,0 +1,5 @@
+# COMANDO PARA VERIFICAR KPIs NA VPS
+# Execute na VPS para diagnosticar o problema
+
+cd /var/www/founder-dashboard && echo "=== Testando API de KPIs ===" && curl -s -H "x-admin-passcode: flora123" http://localhost:3001/api/kpis/admin | head -20 && echo "" && echo "=== Verificando variáveis ===" && cat .env | grep NOTION_DB_KPIS && echo "=== Verificando logs ===" && pm2 logs founder-dashboard --lines 10 --nostream
+

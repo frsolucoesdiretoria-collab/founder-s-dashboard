@@ -113,7 +113,7 @@ jobs:
             
             # Iniciar com NODE_ENV=production explicitamente
             echo "🚀 Starting application..."
-            NODE_ENV=production pm2 start npm --name "founder-dashboard" -- start
+            NODE_ENV=production pm2 start npm --name "founder-dashboard" --cwd "$PROJECT_PATH" -- start
             pm2 save
             
             # Verificar se servidor iniciou corretamente

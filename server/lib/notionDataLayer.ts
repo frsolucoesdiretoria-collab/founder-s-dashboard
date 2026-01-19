@@ -81,15 +81,32 @@ async function retryWithBackoff<T>(
     try {
       return await fn();
     } catch (error: any) {
+      // Log error details for debugging
+      if (attempt === 0) {
+        console.error(`Notion API error (attempt ${attempt + 1}/${maxRetries}):`, {
+          status: error.status,
+          code: error.code,
+          message: error.message,
+        });
+      }
+      
+      // Handle rate limit errors with retry
       if (error.status === 429 && attempt < maxRetries - 1) {
         const delay = baseDelay * Math.pow(2, attempt);
+        console.warn(`Rate limit hit, retrying after ${delay}ms...`);
         await new Promise(resolve => setTimeout(resolve, delay));
         continue;
       }
+      
+      // Propagate error with more context
+      if (error.code === 'object_not_found') {
+        error.message = `Notion database not found: ${error.message}`;
+      }
+      
       throw error;
     }
   }
-  throw new Error('Max retries exceeded');
+  throw new Error('Max retries exceeded for Notion API call');
 }
 
 /**
@@ -389,23 +406,47 @@ function pageToProduto(page: any): NotionProduto {
 export async function getKPIsPublic(): Promise<NotionKPI[]> {
   const client = initNotionClient();
   const dbId = getDatabaseId('KPIs');
-  if (!dbId) throw new Error('NOTION_DB_KPIS not configured');
+  if (!dbId) {
+    console.error('❌ NOTION_DB_KPIS not configured');
+    throw new Error('NOTION_DB_KPIS not configured');
+  }
 
-  const response = await retryWithBackoff(() =>
-    client.databases.query({
-      database_id: dbId,
-      filter: {
-        and: [
-          { property: 'Active', checkbox: { equals: true } },
-          { property: 'VisiblePublic', checkbox: { equals: true } },
-          { property: 'IsFinancial', checkbox: { equals: false } }
-        ]
-      },
-      sorts: [{ property: 'SortOrder', direction: 'ascending' }]
-    })
-  );
+  console.log(`🔍 Buscando KPIs públicos da database: ${dbId.substring(0, 8)}...`);
 
-  return response.results.map(pageToKPI);
+  try {
+    const response = await retryWithBackoff(() =>
+      client.databases.query({
+        database_id: dbId,
+        filter: {
+          and: [
+            { property: 'Active', checkbox: { equals: true } },
+            { property: 'VisiblePublic', checkbox: { equals: true } },
+            { property: 'IsFinancial', checkbox: { equals: false } }
+          ]
+        },
+        sorts: [{ property: 'SortOrder', direction: 'ascending' }]
+      })
+    );
+
+    const kpis = response.results.map(pageToKPI);
+    console.log(`✅ Encontrados ${kpis.length} KPIs públicos`);
+    
+    if (kpis.length === 0) {
+      console.warn('⚠️  Nenhum KPI encontrado com os filtros: Active=true, VisiblePublic=true, IsFinancial=false');
+      console.warn('   Verifique se há KPIs no Notion com essas propriedades marcadas');
+    }
+    
+    return kpis;
+  } catch (error: any) {
+    console.error('❌ Erro ao buscar KPIs do Notion:', error);
+    if (error.code === 'object_not_found') {
+      throw new Error(`Database do Notion não encontrada. Verifique se NOTION_DB_KPIS está correto e se a integração tem acesso à database.`);
+    }
+    if (error.status === 401) {
+      throw new Error(`Token do Notion inválido ou sem permissões. Verifique o NOTION_TOKEN e se a integração tem acesso à database.`);
+    }
+    throw error;
+  }
 }
 
 /**
@@ -934,19 +975,20 @@ export async function createActionEnzo(
 /**
  * Convert Notion page to Enzo Contact
  */
-function pageToContactEnzo(page: any): { id: string; Name: string; WhatsApp?: string } {
+function pageToContactEnzo(page: any): { id: string; Name: string; WhatsApp?: string; Status?: string } {
   const props = page.properties;
   return {
     id: page.id,
     Name: extractText(props.Name),
-    WhatsApp: extractPhoneNumber(props.WhatsApp) || undefined
+    WhatsApp: extractPhoneNumber(props.WhatsApp) || undefined,
+    Status: extractSelect(props.Status) || undefined
   };
 }
 
 /**
  * Get Enzo's contacts
  */
-export async function getContactsEnzo(): Promise<Array<{ id: string; Name: string; WhatsApp?: string }>> {
+export async function getContactsEnzo(): Promise<Array<{ id: string; Name: string; WhatsApp?: string; Status?: string }>> {
   const client = initNotionClient();
   const dbId = getDatabaseId('Contacts_Enzo');
   if (!dbId) throw new Error('NOTION_DB_CONTACTS_ENZO not configured');
@@ -964,22 +1006,31 @@ export async function getContactsEnzo(): Promise<Array<{ id: string; Name: strin
 /**
  * Create Enzo contact
  */
-export async function createContactEnzo(name: string, whatsapp?: string): Promise<{ id: string; Name: string; WhatsApp?: string }> {
+export async function createContactEnzo(name: string = '', whatsapp?: string): Promise<{ id: string; Name: string; WhatsApp?: string; Status?: string }> {
   const client = initNotionClient();
   const dbId = getDatabaseId('Contacts_Enzo');
   if (!dbId) throw new Error('NOTION_DB_CONTACTS_ENZO not configured');
 
   const today = new Date().toISOString().split('T')[0];
-  const isComplete = !!(name && whatsapp);
+  const safeName = typeof name === 'string' ? name.trim() : '';
+  const isComplete = !!(safeName && whatsapp);
 
   const properties: any = {
-    Name: { title: [{ text: { content: name } }] },
+    Name: safeName ? { title: [{ text: { content: safeName } }] } : { title: [] },
     DateCreated: { date: { start: today } },
     Complete: { checkbox: isComplete }
   };
 
   if (whatsapp) {
     properties.WhatsApp = { phone_number: whatsapp };
+  }
+
+  // Tentar adicionar Status padrão (pode falhar se campo não existir)
+  try {
+    properties.Status = { select: { name: 'Contato Ativado' } };
+  } catch (err) {
+    // Campo Status não existe ainda, ignorar
+    console.warn('Campo Status não existe na database Contacts_Enzo. Adicione manualmente no Notion.');
   }
 
   const response = await retryWithBackoff(() =>
@@ -995,7 +1046,7 @@ export async function createContactEnzo(name: string, whatsapp?: string): Promis
 /**
  * Update Enzo contact
  */
-export async function updateContactEnzo(id: string, updates: { name?: string; whatsapp?: string }): Promise<{ id: string; Name: string; WhatsApp?: string }> {
+export async function updateContactEnzo(id: string, updates: { name?: string; whatsapp?: string; status?: string }): Promise<{ id: string; Name: string; WhatsApp?: string; Status?: string }> {
   const client = initNotionClient();
   const dbId = getDatabaseId('Contacts_Enzo');
   if (!dbId) throw new Error('NOTION_DB_CONTACTS_ENZO not configured');
@@ -1003,7 +1054,10 @@ export async function updateContactEnzo(id: string, updates: { name?: string; wh
   const properties: any = {};
 
   if (updates.name !== undefined) {
-    properties.Name = { title: [{ text: { content: updates.name } }] };
+    const normalizedName = updates.name.trim();
+    properties.Name = normalizedName
+      ? { title: [{ text: { content: normalizedName } }] }
+      : { title: [] };
   }
 
   if (updates.whatsapp !== undefined) {
@@ -1011,6 +1065,19 @@ export async function updateContactEnzo(id: string, updates: { name?: string; wh
       properties.WhatsApp = { phone_number: updates.whatsapp };
     } else {
       properties.WhatsApp = { phone_number: null };
+    }
+  }
+
+  if (updates.status !== undefined) {
+    try {
+      if (updates.status) {
+        properties.Status = { select: { name: updates.status } };
+      } else {
+        properties.Status = { select: null };
+      }
+    } catch (err) {
+      // Se o campo Status não existe, apenas logar e continuar sem atualizar
+      console.warn('⚠️  Campo Status não existe na database Contacts_Enzo. Adicione um campo Select chamado "Status" com as opções: Contato Ativado, Café Agendado, Café Executado, Proposta Enviada, Venda Fechada, Perdido');
     }
   }
 
@@ -1034,7 +1101,14 @@ export async function updateContactEnzo(id: string, updates: { name?: string; wh
     })
   );
 
-  return pageToContactEnzo(response);
+  const updated = pageToContactEnzo(response);
+  
+  // Se atualizou o status, garantir que está no retorno
+  if (updates.status !== undefined) {
+    updated.Status = updates.status;
+  }
+  
+  return updated;
 }
 
 /**
@@ -3860,5 +3934,220 @@ export async function getVendeMaisObrasMetricas(): Promise<any> {
     conversaoTrialParaPago: Math.round(conversaoTrialParaPago * 100) / 100,
     churn: Math.round(churn * 100) / 100
   };
+}
+
+// ==========================================
+// TRANSACTIONS - FUNCTIONS
+// ==========================================
+
+/**
+ * Convert Notion page to Transaction
+ */
+function pageToTransaction(page: any): NotionTransaction {
+  const props = page.properties;
+  const budgetGoalRelation = extractRelation(props.BudgetGoal);
+  
+  return {
+    id: page.id,
+    Name: extractText(props.Name),
+    Date: extractDate(props.Date) || new Date().toISOString().split('T')[0],
+    Amount: extractNumber(props.Amount) || 0,
+    Type: (extractSelect(props.Type) as 'Entrada' | 'Saída') || 'Saída',
+    Category: extractSelect(props.Category) || undefined,
+    Account: extractSelect(props.Account) || '',
+    Description: extractText(props.Description) || undefined,
+    BudgetGoal: budgetGoalRelation[0] || undefined,
+    Imported: extractBoolean(props.Imported),
+    ImportedAt: extractDate(props.ImportedAt) || undefined,
+    FileSource: extractText(props.FileSource) || undefined
+  };
+}
+
+/**
+ * Get all transactions with optional filters
+ */
+export async function getTransactions(filters?: {
+  account?: string;
+  category?: string;
+  type?: 'Entrada' | 'Saída';
+  startDate?: string;
+  endDate?: string;
+  imported?: boolean;
+}): Promise<NotionTransaction[]> {
+  try {
+    const client = initNotionClient();
+    const dbId = getDatabaseId('Transactions');
+    if (!dbId) {
+      console.warn('NOTION_DB_TRANSACTIONS not configured');
+      return [];
+    }
+
+    const filterConditions: any[] = [];
+
+    if (filters?.account) {
+      filterConditions.push({
+        property: 'Account',
+        select: { equals: filters.account }
+      });
+    }
+
+    if (filters?.category) {
+      filterConditions.push({
+        property: 'Category',
+        select: { equals: filters.category }
+      });
+    }
+
+    if (filters?.type) {
+      filterConditions.push({
+        property: 'Type',
+        select: { equals: filters.type }
+      });
+    }
+
+    if (filters?.startDate || filters?.endDate) {
+      const dateFilter: any = { property: 'Date', date: {} };
+      if (filters.startDate) {
+        dateFilter.date.on_or_after = filters.startDate;
+      }
+      if (filters.endDate) {
+        dateFilter.date.on_or_before = filters.endDate;
+      }
+      filterConditions.push(dateFilter);
+    }
+
+    if (filters?.imported !== undefined) {
+      filterConditions.push({
+        property: 'Imported',
+        checkbox: { equals: filters.imported }
+      });
+    }
+
+    const query: any = {
+      database_id: dbId,
+      sorts: [{ property: 'Date', direction: 'descending' }]
+    };
+
+    if (filterConditions.length > 0) {
+      query.filter = filterConditions.length === 1 
+        ? filterConditions[0]
+        : { and: filterConditions };
+    }
+
+    const response = await retryWithBackoff(() =>
+      client.databases.query(query)
+    );
+
+    return response.results.map(pageToTransaction);
+  } catch (error: any) {
+    console.error('❌ Erro ao buscar transações do Notion:', error);
+    if (error.code === 'object_not_found') {
+      throw new Error(`Database do Notion não encontrada. Verifique se NOTION_DB_TRANSACTIONS está correto e se a integração tem acesso à database.`);
+    }
+    if (error.status === 401) {
+      throw new Error(`Token do Notion inválido ou sem permissões. Verifique o NOTION_TOKEN e se a integração tem acesso à database.`);
+    }
+    throw error;
+  }
+}
+
+/**
+ * Create a single transaction in Notion
+ */
+export async function createTransaction(transaction: Omit<NotionTransaction, 'id'>): Promise<NotionTransaction> {
+  try {
+    const client = initNotionClient();
+    const dbId = getDatabaseId('Transactions');
+    if (!dbId) {
+      throw new Error('NOTION_DB_TRANSACTIONS not configured');
+    }
+
+    const properties: any = {
+      Name: {
+        title: [{ text: { content: transaction.Name } }]
+      },
+      Date: {
+        date: { start: normalizeDate(transaction.Date) }
+      },
+      Amount: {
+        number: transaction.Amount
+      },
+      Type: {
+        select: { name: transaction.Type }
+      },
+      Account: {
+        select: { name: transaction.Account }
+      },
+      Imported: {
+        checkbox: transaction.Imported || false
+      }
+    };
+
+    if (transaction.Category) {
+      properties.Category = {
+        select: { name: transaction.Category }
+      };
+    }
+
+    if (transaction.Description) {
+      properties.Description = {
+        rich_text: toRichTextArray(transaction.Description)
+      };
+    }
+
+    if (transaction.BudgetGoal) {
+      properties.BudgetGoal = {
+        relation: [{ id: transaction.BudgetGoal }]
+      };
+    }
+
+    if (transaction.ImportedAt) {
+      properties.ImportedAt = {
+        date: { start: normalizeDate(transaction.ImportedAt) }
+      };
+    }
+
+    if (transaction.FileSource) {
+      properties.FileSource = {
+        rich_text: toRichTextArray(transaction.FileSource)
+      };
+    }
+
+    const response = await retryWithBackoff(() =>
+      client.pages.create({
+        parent: { database_id: dbId },
+        properties
+      })
+    );
+
+    return pageToTransaction(response);
+  } catch (error: any) {
+    console.error('❌ Erro ao criar transação no Notion:', error);
+    throw error;
+  }
+}
+
+/**
+ * Create multiple transactions in bulk
+ */
+export async function createTransactionsBulk(
+  transactions: Omit<NotionTransaction, 'id'>[]
+): Promise<{ created: number; skipped: number; errors: string[] }> {
+  let created = 0;
+  let skipped = 0;
+  const errors: string[] = [];
+
+  for (const transaction of transactions) {
+    try {
+      await createTransaction(transaction);
+      created++;
+    } catch (error: any) {
+      skipped++;
+      errors.push(`Erro ao criar transação "${transaction.Name}": ${error.message}`);
+      console.error(`Erro ao criar transação:`, error);
+    }
+  }
+
+  return { created, skipped, errors };
 }
 

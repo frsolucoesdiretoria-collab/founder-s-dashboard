@@ -530,3 +530,6 @@ export const anomaliesMock: Anomaly[] = [
 ];
 
 
+
+
+

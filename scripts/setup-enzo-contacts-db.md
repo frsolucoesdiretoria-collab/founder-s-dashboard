@@ -157,3 +157,6 @@ Antes de considerar concluído, verifique:
 - [ ] Mudanças nos contatos persistem após recarregar
 - [ ] Testes de API retornam dados corretos
 
+
+
+

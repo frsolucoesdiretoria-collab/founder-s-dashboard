@@ -10,8 +10,9 @@ interface KPICardProps {
 }
 
 export function KPICard({ kpi, goal }: KPICardProps) {
+  // Use goal.Target if available, otherwise fallback to kpi.TargetValue
+  const targetValue = goal?.Target ?? kpi.TargetValue ?? 0;
   const actual = goal?.Actual ?? 0;
-  const targetValue = kpi.TargetValue ?? 0;
   
   // Calculate progress: CurrentValue / TargetValue
   // If TargetValue is 0 or empty, progress is 0
