@@ -10,12 +10,11 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
-*.local
 
 # Environment variables
 .env
-.env.local
 .env.*.local
+# Note: .env.local is now committed for automatic VPS deployment
 
 # Editor directories and files
 .vscode/*

@@ -6,19 +6,17 @@ O servidor backend **NÃO iniciará** sem as variáveis de ambiente configuradas
 
 ## 📝 Passo a Passo
 
-### 1. Criar arquivo `.env.local`
+### 1. Arquivo `.env.local`
 
-Na raiz do projeto, crie um arquivo chamado `.env.local`:
+O arquivo `.env.local` já está commitado no repositório com todas as variáveis de ambiente necessárias.
 
-```bash
-touch .env.local
-```
+> **Deploy Automático**: O `.env.local` é commitado para que o deploy na VPS use automaticamente todas as variáveis sem configuração manual.
 
-> Dica: existe um template `env.local.example` (sem ponto) na raiz do repo para você copiar/colar.
+> **Desenvolvimento Local**: Se precisar modificar variáveis localmente, edite o `.env.local` e faça commit das mudanças para sincronizar com a VPS.
 
-### 2. Preencher variáveis obrigatórias
+### 2. Variáveis de Ambiente
 
-Copie o conteúdo abaixo para `.env.local` e **substitua o NOTION_TOKEN**:
+O arquivo `.env.local` já contém todas as variáveis necessárias, incluindo:
 
 ```env
 # Notion API Token (REQUIRED)
@@ -87,14 +85,26 @@ VITE_DEV_SERVER_URL=http://localhost:8080
 NODE_ENV=development
 ```
 
-### 3. Obter NOTION_TOKEN
+### 3. Atualizar Variáveis (se necessário)
 
+Se precisar atualizar tokens ou IDs de databases:
+
+1. Edite o arquivo `.env.local` localmente
+2. Faça commit e push das mudanças:
+   ```bash
+   git add .env.local
+   git commit -m "Atualizar variáveis de ambiente"
+   git push
+   ```
+3. O próximo deploy na VPS usará automaticamente as novas variáveis
+
+**Para obter novo NOTION_TOKEN:**
 1. Acesse: https://www.notion.so/my-integrations
 2. Clique em "New integration"
 3. Dê um nome (ex: "FR Tech OS")
 4. Selecione o workspace
-5. Copie o token (começa com `secret_`)
-6. Cole no `.env.local` substituindo `<<<INSERIR_TOKEN_AQUI>>>`
+5. Copie o token (começa com `secret_` ou `ntn_`)
+6. Atualize no `.env.local` e faça commit
 
 ### 4. Compartilhar databases com a integração
 
@@ -163,10 +173,12 @@ Depois disso, o sistema de orçamentos estará funcional:
 - Podem criar orçamentos e clientes (isolados por usuário)
 - Admin pode visualizar métricas e gerenciar leads
 
-## 🔒 Segurança
+## 🔒 Segurança e Deploy Automático
 
-- ✅ `.env.local` está no `.gitignore` (não será commitado)
-- ✅ Token nunca aparece no código
+- ✅ `.env.local` é commitado no repositório para deploy automático na VPS
+- ✅ Todas as variáveis de ambiente são sincronizadas automaticamente durante o deploy
+- ✅ Não é necessário configurar manualmente na VPS após o primeiro deploy
+- ✅ Token nunca aparece no código (apenas no arquivo de configuração)
 - ✅ Token só existe server-side
 
 ## 🐛 Troubleshooting
