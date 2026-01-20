@@ -14,6 +14,20 @@ export function KPICard({ kpi, goal }: KPICardProps) {
   const targetValue = goal?.Target ?? kpi.TargetValue ?? 0;
   const actual = goal?.Actual ?? 0;
   
+  // Debug log
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`📊 KPICard renderizando:`, {
+      kpiName: kpi.Name,
+      kpiId: kpi.id,
+      hasGoal: !!goal,
+      goalActual: goal?.Actual,
+      goalTarget: goal?.Target,
+      kpiTargetValue: kpi.TargetValue,
+      finalActual: actual,
+      finalTarget: targetValue
+    });
+  }
+  
   // Calculate progress: CurrentValue / TargetValue
   // If TargetValue is 0 or empty, progress is 0
   const progress = targetValue > 0 ? Math.min(100, (actual / targetValue) * 100) : 0;
