@@ -597,7 +597,7 @@ export default function DashboardEnzo() {
         <div className="space-y-3 md:space-y-4">
           <Separator className="my-3 md:my-6" />
           <EnzoKanban
-            contacts={contacts.filter(c => c.name && c.whatsapp)} // Apenas contatos completos
+            contacts={contacts} // Mostrar TODOS os contatos, mesmo sem nome ou whatsapp
             onUpdateContactStatus={handleUpdateContactStatus}
             onUpdateContactSaleValue={handleUpdateContactSaleValue}
             onDeleteContact={handleDeleteContact}

@@ -260,8 +260,14 @@ export function EnzoKanban({ contacts, onUpdateContactStatus, onUpdateContactSal
   );
 
   // Agrupar contatos por status (normalizar status antigos)
+  // Log para debug
+  console.log('📊 EnzoKanban: Total de contatos recebidos:', contacts.length);
+  contacts.forEach((c, index) => {
+    console.log(`  [${index + 1}] Contato ID=${c.id}, Nome="${c.name || '(vazio)'}", Status="${c.status || '(vazio)'}", WhatsApp="${c.whatsapp || '(vazio)'}"`);
+  });
+  
   const contactsByStatus = STATUSES.reduce((acc, status) => {
-    acc[status.id] = contacts.filter(c => {
+    const filtered = contacts.filter(c => {
       const contactStatus = c.status || 'Contato Ativado';
       // Migrar status antigos para novos
       const normalizedStatus = contactStatus === 'Proposta Enviada' || contactStatus === 'Venda Fechada' 
@@ -269,8 +275,12 @@ export function EnzoKanban({ contacts, onUpdateContactStatus, onUpdateContactSal
         : contactStatus;
       return normalizedStatus === status.id;
     });
+    console.log(`  📋 Status "${status.id}": ${filtered.length} contatos`);
+    acc[status.id] = filtered;
     return acc;
   }, {} as Record<string, EnzoContact[]>);
+  
+  console.log('📊 EnzoKanban: Contatos agrupados por status:', Object.keys(contactsByStatus).map(s => `${s}: ${contactsByStatus[s].length}`).join(', '));
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
