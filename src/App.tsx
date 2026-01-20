@@ -35,6 +35,8 @@ import VendeMaisObrasDashboard from "./pages/VendeMaisObrasDashboard";
 import VendeMaisObrasProfile from "./pages/VendeMaisObrasProfile";
 import VendeMaisObrasOrcamentos from "./pages/VendeMaisObrasOrcamentos";
 import VendeMaisObrasClientes from "./pages/VendeMaisObrasClientes";
+import VendeMaisObrasNovoCliente from "./pages/VendeMaisObrasNovoCliente";
+import VendeMaisObrasNovoOrcamento from "./pages/VendeMaisObrasNovoOrcamento";
 import DashboardEnzo from "./pages/DashboardEnzo";
 // TEMPORÁRIO: Removido para reunião - import TestePage from "./pages/Teste";
 
@@ -146,6 +148,22 @@ const App = () => (
           element={
             <ProtectedRoute>
               <VendeMaisObrasClientes />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/vende-mais-obras/clientes/novo"
+          element={
+            <ProtectedRoute>
+              <VendeMaisObrasNovoCliente />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/vende-mais-obras/orcamentos/novo"
+          element={
+            <ProtectedRoute>
+              <VendeMaisObrasNovoOrcamento />
             </ProtectedRoute>
           }
         />

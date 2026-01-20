@@ -121,11 +121,17 @@ export interface EnzoContact {
  */
 export async function getEnzoContacts(): Promise<EnzoContact[]> {
   try {
-    // Usar URL relativa em produção, absoluta apenas em desenvolvimento
-    const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
-    const apiUrl = API_BASE ? `${API_BASE}/api/enzo/contacts` : '/api/enzo/contacts';
+    // SEMPRE usar URL relativa para funcionar em produção (mesmo servidor)
+    const apiUrl = '/api/enzo/contacts';
     
-    const response = await fetch(apiUrl);
+    console.log('🔍 Fetching Enzo contacts from:', apiUrl);
+    
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     
     if (response.status === 429) {
       throw new Error('Rate limit: Muitas requisições. Aguarde alguns segundos.');
@@ -151,9 +157,8 @@ export async function getEnzoContacts(): Promise<EnzoContact[]> {
  */
 export async function createEnzoContact(name: string, whatsapp?: string): Promise<EnzoContact> {
   try {
-    // Usar URL relativa em produção, absoluta apenas em desenvolvimento
-    const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
-    const apiUrl = API_BASE ? `${API_BASE}/api/enzo/contacts` : '/api/enzo/contacts';
+    // SEMPRE usar URL relativa para funcionar em produção (mesmo servidor)
+    const apiUrl = '/api/enzo/contacts';
     
     console.log('🔍 Creating Enzo contact:', { name, whatsapp, apiUrl });
     
@@ -230,12 +235,16 @@ export async function updateEnzoContact(id: string, updates: { name?: string; wh
  */
 export async function deleteEnzoContact(id: string): Promise<void> {
   try {
-    // Usar URL relativa em produção, absoluta apenas em desenvolvimento
-    const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
-    const apiUrl = API_BASE ? `${API_BASE}/api/enzo/contacts/${id}` : `/api/enzo/contacts/${id}`;
+    // SEMPRE usar URL relativa para funcionar em produção (mesmo servidor)
+    const apiUrl = `/api/enzo/contacts/${id}`;
+    
+    console.log('🔍 Deleting Enzo contact:', { id, apiUrl });
     
     const response = await fetch(apiUrl, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
 
     if (!response.ok) {

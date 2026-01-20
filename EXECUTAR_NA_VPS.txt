@@ -1,0 +1,35 @@
+COMANDO COMPLETO PARA EXECUTAR NA VPS:
+
+===========================================
+1. Acesse a VPS via SSH:
+   ssh seu-usuario@seu-servidor
+
+2. Execute este comando completo (copie e cole tudo):
+
+cd $(find /home /root -name "package.json" -path "*founder-s-dashboard*" 2>/dev/null | head -1 | xargs dirname 2>/dev/null) && git pull origin main && npm install --production && npm run build && pm2 restart founder-dashboard && echo "✅ Atualização concluída!" && pm2 status
+
+===========================================
+
+OU execute o script:
+
+cd $(find /home /root -name "package.json" -path "*founder-s-dashboard*" 2>/dev/null | head -1 | xargs dirname 2>/dev/null) && bash ATUALIZAR_VPS_ENZO.sh
+
+===========================================
+
+APÓS EXECUTAR, VERIFIQUE:
+
+1. Status do servidor:
+   pm2 status
+
+2. Logs do servidor:
+   pm2 logs founder-dashboard --lines 50
+
+3. Teste a API:
+   curl http://localhost:3001/api/enzo/kpis | head -20
+
+4. Teste Goals:
+   curl http://localhost:3001/api/enzo/goals | head -20
+
+5. Teste Contatos:
+   curl http://localhost:3001/api/enzo/contacts | head -20
+

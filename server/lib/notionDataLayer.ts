@@ -3615,7 +3615,27 @@ export async function getOrcamentosByUsuario(usuarioId: string): Promise<any[]> 
     })
   );
 
-  return response.results.map(pageToOrcamento);
+  const orcamentos = response.results.map(pageToOrcamento);
+  
+  // Buscar nomes dos clientes para cada orçamento
+  const orcamentosComClienteNome = await Promise.all(
+    orcamentos.map(async (orcamento) => {
+      if (orcamento.ClienteId) {
+        try {
+          const cliente = await getClienteById(orcamento.ClienteId);
+          if (cliente) {
+            orcamento.ClienteNome = cliente.Nome;
+          }
+        } catch (error) {
+          // Se não conseguir buscar o cliente, continua sem o nome
+          console.error(`Erro ao buscar cliente ${orcamento.ClienteId}:`, error);
+        }
+      }
+      return orcamento;
+    })
+  );
+  
+  return orcamentosComClienteNome;
 }
 
 export async function getOrcamentoById(id: string, usuarioId?: string): Promise<any | null> {
@@ -3629,6 +3649,19 @@ export async function getOrcamentoById(id: string, usuarioId?: string): Promise<
     // Verificar ownership se usuarioId fornecido
     if (usuarioId && orcamento.UsuarioId !== usuarioId) {
       return null;
+    }
+    
+    // Buscar nome do cliente se existir
+    if (orcamento.ClienteId) {
+      try {
+        const cliente = await getClienteById(orcamento.ClienteId);
+        if (cliente) {
+          orcamento.ClienteNome = cliente.Nome;
+        }
+      } catch (error) {
+        // Se não conseguir buscar o cliente, continua sem o nome
+        console.error(`Erro ao buscar cliente ${orcamento.ClienteId}:`, error);
+      }
     }
     
     return orcamento;
@@ -3772,6 +3805,8 @@ export async function getClientesByUsuario(usuarioId: string): Promise<any[]> {
   const dbId = getDatabaseId('Clientes');
   if (!dbId) throw new Error('NOTION_DB_CLIENTES not configured');
 
+  console.log('[getClientesByUsuario] Buscando clientes para usuarioId:', usuarioId);
+
   const response = await retryWithBackoff(() =>
     client.databases.query({
       database_id: dbId,
@@ -3780,7 +3815,14 @@ export async function getClientesByUsuario(usuarioId: string): Promise<any[]> {
     })
   );
 
-  return response.results.map(pageToCliente);
+  console.log('[getClientesByUsuario] Encontrados', response.results.length, 'clientes');
+  
+  const clientes = response.results.map(pageToCliente);
+  clientes.forEach((c, idx) => {
+    console.log(`[getClientesByUsuario] Cliente ${idx + 1}: ${c.Nome}, UsuarioId: ${c.UsuarioId}`);
+  });
+
+  return clientes;
 }
 
 export async function getClienteById(id: string, usuarioId?: string): Promise<any | null> {
@@ -3791,8 +3833,10 @@ export async function getClienteById(id: string, usuarioId?: string): Promise<an
     );
     const cliente = pageToCliente(page);
     
-    // Verificar ownership se usuarioId fornecido
-    if (usuarioId && cliente.UsuarioId !== usuarioId) {
+    // Verificar ownership se usuarioId fornecido (apenas para operações que exigem permissão)
+    // Se usuarioId não for fornecido ou for undefined, retorna o cliente mesmo assim
+    // Isso permite buscar clientes para popular dados como ClienteNome em orçamentos
+    if (usuarioId !== undefined && cliente.UsuarioId !== usuarioId) {
       return null;
     }
     
@@ -3807,6 +3851,11 @@ export async function createCliente(cliente: any): Promise<any> {
   const dbId = getDatabaseId('Clientes');
   if (!dbId) throw new Error('NOTION_DB_CLIENTES not configured');
 
+  // Validar que UsuarioId foi fornecido
+  if (!cliente.UsuarioId) {
+    throw new Error('UsuarioId é obrigatório para criar cliente');
+  }
+
   const properties: any = {
     Nome: { title: [{ text: { content: cliente.Nome } }] },
     Usuario: { relation: [{ id: cliente.UsuarioId }] }
@@ -3819,6 +3868,9 @@ export async function createCliente(cliente: any): Promise<any> {
   if (cliente.Cidade) properties.Cidade = { rich_text: [{ text: { content: cliente.Cidade } }] };
   if (cliente.Estado) properties.Estado = { select: { name: cliente.Estado } };
 
+  console.log('[createCliente] Criando cliente com properties:', JSON.stringify(properties, null, 2));
+  console.log('[createCliente] UsuarioId recebido:', cliente.UsuarioId);
+
   const created = await retryWithBackoff(() =>
     client.pages.create({
       parent: { database_id: dbId },
@@ -3826,7 +3878,11 @@ export async function createCliente(cliente: any): Promise<any> {
     })
   );
 
-  return pageToCliente(created);
+  console.log('[createCliente] Cliente criado:', created.id);
+  const clienteResultado = pageToCliente(created);
+  console.log('[createCliente] Cliente resultado UsuarioId:', clienteResultado.UsuarioId);
+  
+  return clienteResultado;
 }
 
 export async function updateCliente(id: string, cliente: any, usuarioId: string): Promise<any> {

@@ -348,8 +348,16 @@ vendeMaisObrasRouter.post('/clientes', authenticateJWT, requireUsuario, async (r
     const usuarioId = (req as any).usuarioId;
     const { Nome, Email, Telefone, Documento, Endereco, Cidade, Estado } = req.body;
 
+    console.log('[POST /clientes] usuarioId do token:', usuarioId);
+    console.log('[POST /clientes] Dados recebidos:', { Nome, Email, Telefone, Documento, Endereco, Cidade, Estado });
+
     if (!Nome) {
       res.status(400).json({ error: 'Nome é obrigatório' });
+      return;
+    }
+
+    if (!usuarioId) {
+      res.status(401).json({ error: 'Usuário não autenticado' });
       return;
     }
 
@@ -364,8 +372,10 @@ vendeMaisObrasRouter.post('/clientes', authenticateJWT, requireUsuario, async (r
       Estado
     });
 
+    console.log('[POST /clientes] Cliente criado com sucesso:', cliente.id);
     res.status(201).json(cliente);
   } catch (error: any) {
+    console.error('[POST /clientes] Erro ao criar cliente:', error);
     res.status(500).json({ error: 'Failed to create cliente', message: error.message });
   }
 });

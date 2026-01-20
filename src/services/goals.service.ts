@@ -96,15 +96,21 @@ export async function getCurrentWeekGoals(): Promise<Goal[]> {
  */
 export async function getEnzoGoals(range?: { start?: string; end?: string }): Promise<Goal[]> {
   try {
-    // Usar URL relativa em produção, absoluta apenas em desenvolvimento
-    const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
-    
+    // SEMPRE usar URL relativa para funcionar em produção (mesmo servidor)
     const params = new URLSearchParams();
     if (range?.start) params.append('start', range.start);
     if (range?.end) params.append('end', range.end);
     
-    const apiUrl = API_BASE ? `${API_BASE}/api/enzo/goals?${params.toString()}` : `/api/enzo/goals?${params.toString()}`;
-    const response = await fetch(apiUrl);
+    const apiUrl = `/api/enzo/goals${params.toString() ? `?${params.toString()}` : ''}`;
+    
+    console.log('🔍 Fetching Enzo goals from:', apiUrl);
+    
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     
     if (response.status === 429) {
       throw new Error('Rate limit: Muitas requisições. Aguarde alguns segundos.');

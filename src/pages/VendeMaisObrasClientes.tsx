@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 import { VendeMaisObrasLayout } from '@/components/VendeMaisObrasLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -80,10 +81,12 @@ export default function VendeMaisObrasClientes() {
               className="pl-10 bg-[#1f1f1f] border-[#2a2a2a] text-white placeholder:text-gray-500"
             />
           </div>
-          <Button className="bg-[#FFD700] text-[#0a0a0a] hover:bg-[#FFD700]/90">
-            <Plus className="mr-2 h-4 w-4" />
-            Novo Cliente
-          </Button>
+          <Link to="/vende-mais-obras/clientes/novo">
+            <Button className="bg-[#FFD700] text-[#0a0a0a] hover:bg-[#FFD700]/90">
+              <Plus className="mr-2 h-4 w-4" />
+              Novo Cliente
+            </Button>
+          </Link>
         </div>
 
         <Card className="bg-[#1f1f1f] border-[#2a2a2a]">
@@ -105,10 +108,12 @@ export default function VendeMaisObrasClientes() {
                   {searchTerm ? 'Nenhum cliente encontrado.' : 'Nenhum cliente cadastrado ainda.'}
                 </p>
                 {!searchTerm && (
-                  <Button className="bg-[#FFD700] text-[#0a0a0a] hover:bg-[#FFD700]/90">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Cadastrar Primeiro Cliente
-                  </Button>
+                  <Link to="/vende-mais-obras/clientes/novo">
+                    <Button className="bg-[#FFD700] text-[#0a0a0a] hover:bg-[#FFD700]/90">
+                      <Plus className="mr-2 h-4 w-4" />
+                      Cadastrar Primeiro Cliente
+                    </Button>
+                  </Link>
                 )}
               </div>
             ) : (
