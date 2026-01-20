@@ -1,0 +1,9 @@
+# 🚀 COMANDO PARA EXECUTAR NA VPS - DEPLOY AUTOMÁTICO
+# 
+# Copie e cole este comando completo no terminal da VPS:
+
+cd /var/www/founder-dashboard && git fetch origin main && git reset --hard origin/main && npm install && npm run build && pm2 restart founder-dashboard && pm2 save && echo "✅ Deploy concluído! Nova senha: 1000000000"
+
+# OU execute o script:
+# bash deploy.sh
+
