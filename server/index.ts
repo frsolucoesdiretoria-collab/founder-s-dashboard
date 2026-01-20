@@ -100,10 +100,13 @@ app.use('/api/proposals', proposalsRouter);
 app.use('/api/doma-condo-clientes', domaCondoClientRouter);
 app.use('/api/enzo', enzoRouter);
 
-// Serve static files in production/staging (after API routes)
-// Also serve in any environment where dist folder exists (for flexibility)
+// Serve static files (after API routes)
+// Serve in any environment where dist folder exists
 const distPath = resolve(process.cwd(), 'dist');
+const distPathForLog = distPath;
+
 if (existsSync(distPath)) {
+  // Serve static files (JS, CSS, images, etc.)
   app.use(express.static(distPath, {
     maxAge: process.env.NODE_ENV === 'production' ? '1y' : '0',
     etag: true,
@@ -111,15 +114,17 @@ if (existsSync(distPath)) {
   }));
   
   // Serve index.html for all non-API routes (SPA routing)
+  // This must be LAST, after all API routes and static files
   app.get('*', (req, res, next) => {
     // Skip API routes
     if (req.path.startsWith('/api')) {
       return next();
     }
-    // Skip if it's a file request (has extension)
-    if (req.path.includes('.')) {
+    // Skip if it's a file request (has extension) - let express.static handle it
+    if (req.path.includes('.') && !req.path.endsWith('/')) {
       return next();
     }
+    // Serve index.html for SPA routes
     res.sendFile(join(distPath, 'index.html'), (err) => {
       if (err) {
         console.error('Error sending index.html:', err);
@@ -133,30 +138,6 @@ if (existsSync(distPath)) {
   if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
     console.warn(`⚠️  Warning: dist directory not found at ${distPath}`);
     console.warn(`   Make sure to run 'npm run build' before starting the server in production`);
-  }
-}
-
-// Store distPath for logging in server startup
-const distPathForLog = distPath;
-
-// Serve static files in production (after API routes)
-if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
-  const distPath = resolve(process.cwd(), 'dist');
-  if (existsSync(distPath)) {
-    app.use(express.static(distPath));
-    
-    // Serve index.html for all non-API routes (SPA routing)
-    app.get('*', (req, res, next) => {
-      // Skip API routes
-      if (req.path.startsWith('/api')) {
-        return next();
-      }
-      res.sendFile(join(distPath, 'index.html'));
-    });
-    
-    console.log(`📁 Serving static files from: ${distPath}`);
-  } else {
-    console.warn(`⚠️  Warning: dist directory not found at ${distPath}`);
   }
 }
 
