@@ -14,7 +14,8 @@ import type { NotionKPI, NotionGoal, NotionAction } from '@/lib/notion/types';
 import { toast } from 'sonner';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 interface Contact {
   id: string;
@@ -429,12 +430,60 @@ export default function DashboardEnzo() {
     <EnzoLayout>
       <div className="space-y-3 md:space-y-6 pb-4 md:pb-6 px-2 md:px-0">
         {/* Header - Mobile Optimized */}
-        <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between md:gap-4">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between md:gap-6">
+          {/* Metas CORE - Cards Modernos */}
           <div className="flex-1 min-w-0">
-            <div className="text-xs md:text-base text-muted-foreground mt-1 space-y-1">
-              <p><strong>Meta CORE Janeiro:</strong> Finalizar consultorias ativas e iniciar vendas de tecnologia para toda reunião que for executada de 20/01 até 31/01. Plante as sementes de tecnologia, colheremos 100x mais.</p>
-              <p><strong>Meta CORE Fevereiro:</strong> Finalizar consultorias, e Gastar 90% da agenda como CSO, trazendo 50 novos clientes para a base da AXIS.</p>
-              <p><strong>Meta CORE Março:</strong> 50 novos clientes e 100% da agenda como CSO, fazendo as entrevistas para a primeira contratação de vendedor para iniciar o treinamento em abril.</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+              {/* Meta CORE Janeiro */}
+              <Card className="rounded-2xl border border-border/60 bg-card/80 backdrop-blur-sm shadow-sm hover:shadow-lg transition-all duration-200">
+                <CardHeader className="pb-4 px-5 pt-5">
+                  <div className="flex items-center justify-between gap-3 mb-3">
+                    <h3 className="text-lg md:text-xl font-semibold text-foreground tracking-tight">Janeiro</h3>
+                    <Badge variant="secondary" className="text-[10px] md:text-xs font-semibold px-2.5 py-1 shrink-0">
+                      Meta CORE
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0 px-5 pb-5">
+                  <p className="text-sm md:text-[15px] text-muted-foreground leading-relaxed font-normal">
+                    Finalizar consultorias ativas e iniciar vendas de tecnologia para toda reunião que for executada de 20/01 até 31/01. Plante as sementes de tecnologia, colheremos 100x mais.
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Meta CORE Fevereiro */}
+              <Card className="rounded-2xl border border-border/60 bg-card/80 backdrop-blur-sm shadow-sm hover:shadow-lg transition-all duration-200">
+                <CardHeader className="pb-4 px-5 pt-5">
+                  <div className="flex items-center justify-between gap-3 mb-3">
+                    <h3 className="text-lg md:text-xl font-semibold text-foreground tracking-tight">Fevereiro</h3>
+                    <Badge variant="secondary" className="text-[10px] md:text-xs font-semibold px-2.5 py-1 shrink-0">
+                      Meta CORE
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0 px-5 pb-5">
+                  <p className="text-sm md:text-[15px] text-muted-foreground leading-relaxed font-normal">
+                    Finalizar consultorias, e Gastar 90% da agenda como CSO, trazendo 50 novos clientes para a base da AXIS.
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Meta CORE Março */}
+              <Card className="rounded-2xl border border-border/60 bg-card/80 backdrop-blur-sm shadow-sm hover:shadow-lg transition-all duration-200">
+                <CardHeader className="pb-4 px-5 pt-5">
+                  <div className="flex items-center justify-between gap-3 mb-3">
+                    <h3 className="text-lg md:text-xl font-semibold text-foreground tracking-tight">Março</h3>
+                    <Badge variant="secondary" className="text-[10px] md:text-xs font-semibold px-2.5 py-1 shrink-0">
+                      Meta CORE
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0 px-5 pb-5">
+                  <p className="text-sm md:text-[15px] text-muted-foreground leading-relaxed font-normal">
+                    50 novos clientes e 100% da agenda como CSO, fazendo as entrevistas para a primeira contratação de vendedor para iniciar o treinamento em abril.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
           </div>
           <Button 
@@ -442,7 +491,7 @@ export default function DashboardEnzo() {
             variant="outline" 
             size="sm"
             disabled={loading || refreshing}
-            className="w-full md:w-auto md:flex-shrink-0 h-9"
+            className="w-full md:w-auto md:flex-shrink-0 h-9 self-start"
           >
             <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin mr-2' : 'mr-2'}`} />
             <span className="text-xs md:text-sm">Atualizar</span>
