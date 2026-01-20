@@ -13,10 +13,12 @@ import type {
   UpdateClienteInput
 } from '@/types/vendeMaisObras';
 
-// Usar URL relativa em produção, absoluta apenas em desenvolvimento
-const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
+// Usar URL relativa para usar o proxy do Vite em desenvolvimento
+// Em produção, usar URL relativa também (mesmo servidor)
 const API_PATH = '/api/vende-mais-obras';
-const FULL_API_BASE = API_BASE ? `${API_BASE}${API_PATH}` : API_PATH;
+const FULL_API_BASE = import.meta.env.VITE_API_URL 
+  ? `${import.meta.env.VITE_API_URL}${API_PATH}` 
+  : API_PATH;
 
 const TOKEN_KEY = 'vende_mais_obras_token';
 
@@ -61,9 +63,9 @@ function withPasscodeHeaders(passcode: string): HeadersInit {
 async function parseError(response: Response): Promise<string> {
   try {
     const data = await response.json();
-    return data?.message || data?.error || `HTTP ${response.status}`;
+    return data?.message || data?.error || `Erro ${response.status}: ${response.statusText}`;
   } catch {
-    return `HTTP ${response.status}`;
+    return `Erro ${response.status}: ${response.statusText}`;
   }
 }
 
@@ -138,39 +140,61 @@ export interface RefreshTokenResponse {
 
 // Funções de autenticação (públicas)
 export async function register(input: CreateUsuarioInput): Promise<RegisterResponse> {
-  const res = await fetch(`${FULL_API_BASE}/auth/register`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      Nome: input.Nome,
-      Email: input.Email,
-      Telefone: input.Telefone,
-      Password: input.Password
-    })
-  });
-  
-  if (!res.ok) throw new Error(await parseError(res));
-  
-  const data = await res.json();
-  // Não salvar token aqui, o AuthContext faz isso
-  return data;
+  try {
+    const res = await fetch(`${FULL_API_BASE}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        Nome: input.Nome,
+        Email: input.Email,
+        Telefone: input.Telefone,
+        Password: input.Password
+      })
+    });
+    
+    if (!res.ok) {
+      const errorMessage = await parseError(res);
+      throw new Error(errorMessage);
+    }
+    
+    const data = await res.json();
+    // Não salvar token aqui, o AuthContext faz isso
+    return data;
+  } catch (error: any) {
+    // Se for erro de rede, dar mensagem mais clara
+    if (error.message === 'Failed to fetch' || error.name === 'TypeError') {
+      throw new Error('Não foi possível conectar ao servidor. Verifique se o servidor está rodando.');
+    }
+    throw error;
+  }
 }
 
 export async function login(input: LoginInput): Promise<LoginResponse> {
-  const res = await fetch(`${FULL_API_BASE}/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      Email: input.Email,
-      Password: input.Password
-    })
-  });
-  
-  if (!res.ok) throw new Error(await parseError(res));
-  
-  const data = await res.json();
-  // Não salvar token aqui, o AuthContext faz isso
-  return data;
+  try {
+    const res = await fetch(`${FULL_API_BASE}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        Email: input.Email,
+        Password: input.Password
+      })
+    });
+    
+    if (!res.ok) {
+      const errorMessage = await parseError(res);
+      throw new Error(errorMessage);
+    }
+    
+    const data = await res.json();
+    // Não salvar token aqui, o AuthContext faz isso
+    return data;
+  } catch (error: any) {
+    // Se for erro de rede, dar mensagem mais clara
+    if (error.message === 'Failed to fetch' || error.name === 'TypeError') {
+      throw new Error('Não foi possível conectar ao servidor. Verifique se o servidor está rodando.');
+    }
+    throw error;
+  }
 }
 
 export async function refreshToken(): Promise<RefreshTokenResponse> {
