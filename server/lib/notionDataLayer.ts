@@ -1007,18 +1007,38 @@ function pageToContactEnzo(page: any): { id: string; Name: string; WhatsApp?: st
  * Get Enzo's contacts
  */
 export async function getContactsEnzo(): Promise<Array<{ id: string; Name: string; WhatsApp?: string; Status?: string; ValorVenda?: number }>> {
-  const client = initNotionClient();
-  const dbId = getDatabaseId('Contacts_Enzo');
-  if (!dbId) throw new Error('NOTION_DB_CONTACTS_ENZO not configured');
+  try {
+    const client = initNotionClient();
+    const dbId = getDatabaseId('Contacts_Enzo');
+    if (!dbId) {
+      console.error('❌ NOTION_DB_CONTACTS_ENZO not configured');
+      throw new Error('NOTION_DB_CONTACTS_ENZO not configured');
+    }
 
-  const response = await retryWithBackoff(() =>
-    client.databases.query({
-      database_id: dbId,
-      sorts: [{ property: 'DateCreated', direction: 'descending' }]
-    })
-  );
+    console.log(`📥 getContactsEnzo: Buscando contatos da database ${dbId}`);
 
-  return response.results.map(pageToContactEnzo);
+    const response = await retryWithBackoff(() =>
+      client.databases.query({
+        database_id: dbId,
+        sorts: [{ property: 'DateCreated', direction: 'descending' }]
+      })
+    );
+
+    console.log(`✅ getContactsEnzo: Encontrados ${response.results.length} contatos na database`);
+
+    const contacts = response.results.map(pageToContactEnzo);
+    
+    // Log detalhado dos primeiros 5 contatos para debug
+    contacts.slice(0, 5).forEach((contact, index) => {
+      console.log(`  📋 Contato ${index + 1}: ID=${contact.id}, Nome="${contact.Name || '(vazio)'}", Status="${contact.Status || '(vazio)'}", ValorVenda=${contact.ValorVenda || '(vazio)'}`);
+    });
+
+    return contacts;
+  } catch (error: any) {
+    console.error('❌ Erro em getContactsEnzo:', error.message);
+    console.error('   Stack:', error.stack);
+    throw error;
+  }
 }
 
 /**

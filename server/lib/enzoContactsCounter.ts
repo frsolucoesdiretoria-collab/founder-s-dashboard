@@ -146,11 +146,18 @@ export async function getSumOfSaleValues(): Promise<number> {
  */
 export async function getCountForKPI(kpiName: string): Promise<number> {
   try {
+    console.log(`\n🔍 ========== getCountForKPI INICIADO ==========`);
+    console.log(`📝 KPI Name: "${kpiName}"`);
+    
     const contacts = await getContactsEnzo();
     const name = kpiName.toLowerCase();
     
-    console.log(`🔍 getCountForKPI: "${kpiName}" -> "${name}"`);
-    console.log(`📊 Contatos disponíveis: ${contacts.length}`);
+    console.log(`📊 Total de contatos carregados: ${contacts.length}`);
+    
+    if (contacts.length === 0) {
+      console.warn('⚠️  NENHUM CONTATO ENCONTRADO! Verifique se a database Contacts_Enzo está configurada corretamente.');
+      return 0;
+    }
     
     // Usar Set para garantir que cada lead é contado apenas uma vez
     const uniqueIds = new Set<string>();
@@ -158,13 +165,16 @@ export async function getCountForKPI(kpiName: string): Promise<number> {
 
     // KPI1: Convites/Áudios enviados - conta TODOS os leads que estão em qualquer estágio do funil (>= estágio 1)
     if (name.includes('convites') || name.includes('áudios') || name.includes('audios') || name.includes('contato ativado')) {
-      contacts.forEach(contact => {
+      console.log(`  🎯 KPI1 detectado: "${kpiName}"`);
+      contacts.forEach((contact, index) => {
         let status = contact.Status || 'Contato Ativado';
         // Tratar status vazio, null, undefined, ou "Sem status" como "Contato Ativado"
         if (!status || status === '' || status === 'Sem status' || status === 'None' || status === 'null') {
           status = 'Contato Ativado';
         }
         const normalizedStatus = status === 'Proposta Enviada' || status === 'Venda Fechada' ? 'Venda Feita' : status;
+        
+        console.log(`    [${index + 1}/${contacts.length}] Contato ID=${contact.id}, Nome="${contact.Name || '(vazio)'}", Status original="${contact.Status || '(vazio)'}" -> Normalizado="${normalizedStatus}"`);
         
         // Conta todos que estão em qualquer estágio (Contato Ativado, Café Agendado, Café Executado, ou Venda Feita)
         // IMPORTANTE: Contar TODOS os contatos que têm status válido, mesmo sem nome
@@ -173,17 +183,23 @@ export async function getCountForKPI(kpiName: string): Promise<number> {
           if (!uniqueIds.has(contact.id)) {
             uniqueIds.add(contact.id);
             count++;
-            console.log(`  ✅ Contato ${contact.id} (${contact.Name || 'sem nome'}) - Status: ${normalizedStatus} -> contado para KPI1`);
+            console.log(`      ✅ CONTADO! Total agora: ${count}`);
+          } else {
+            console.log(`      ⏭️  Já contado (duplicado ignorado)`);
           }
+        } else {
+          console.log(`      ❌ NÃO contado (status "${normalizedStatus}" não é válido para KPI1)`);
         }
       });
       console.log(`📊 KPI1 (Convites/Áudios): Total contado = ${count} de ${contacts.length} contatos`);
+      console.log(`🔍 ========== getCountForKPI FINALIZADO (KPI1) ==========\n`);
       return count;
     }
 
     // KPI2: Reuniões 1:1 feitas - conta TODOS os leads que chegaram ao estágio 3 (Café Executado) OU 4 (Venda Feita)
     if (name.includes('reunião') || name.includes('reuniões') || name.includes('1:1')) {
-      contacts.forEach(contact => {
+      console.log(`  🎯 KPI2 detectado: "${kpiName}"`);
+      contacts.forEach((contact, index) => {
         let status = contact.Status || 'Contato Ativado';
         // Tratar status vazio, null, undefined, ou "Sem status" como "Contato Ativado"
         if (!status || status === '' || status === 'Sem status' || status === 'None' || status === 'null') {
@@ -191,17 +207,24 @@ export async function getCountForKPI(kpiName: string): Promise<number> {
         }
         const normalizedStatus = status === 'Proposta Enviada' || status === 'Venda Fechada' ? 'Venda Feita' : status;
         
+        console.log(`    [${index + 1}/${contacts.length}] Contato ID=${contact.id}, Nome="${contact.Name || '(vazio)'}", Status="${normalizedStatus}"`);
+        
         // Conta todos que estão em Café Executado OU Venda Feita
         // IMPORTANTE: Contar TODOS os contatos que têm status válido, mesmo sem nome
         if (normalizedStatus === 'Café Executado' || normalizedStatus === 'Venda Feita') {
           if (!uniqueIds.has(contact.id)) {
             uniqueIds.add(contact.id);
             count++;
-            console.log(`  ✅ Contato ${contact.id} (${contact.Name || 'sem nome'}) - Status: ${normalizedStatus} -> contado para KPI2`);
+            console.log(`      ✅ CONTADO! Total agora: ${count}`);
+          } else {
+            console.log(`      ⏭️  Já contado (duplicado ignorado)`);
           }
+        } else {
+          console.log(`      ❌ NÃO contado (status "${normalizedStatus}" não é válido para KPI2)`);
         }
       });
       console.log(`📊 KPI2 (Reuniões 1:1): Total contado = ${count} de ${contacts.length} contatos`);
+      console.log(`🔍 ========== getCountForKPI FINALIZADO (KPI2) ==========\n`);
       return count;
     }
 

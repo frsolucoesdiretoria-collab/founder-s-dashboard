@@ -120,6 +120,8 @@ enzoRouter.get('/goals', async (req, res) => {
       end: end as string | undefined 
     } : undefined;
 
+    console.log('\n🚀 ========== GET /api/enzo/goals INICIADO ==========');
+    
     const [goals, kpis, statusCounts] = await Promise.all([
       getGoalsEnzo(range),
       getKPIsEnzo(), // Usar getKPIsEnzo() em vez de getAllKPIsIncludingInactive() para buscar da database correta
@@ -128,6 +130,14 @@ enzoRouter.get('/goals', async (req, res) => {
 
     console.log('📊 Enzo Goals - Status counts:', statusCounts);
     console.log(`📈 Enzo Goals - Found ${goals.length} goals and ${kpis.length} KPIs`);
+    
+    if (goals.length === 0) {
+      console.warn('⚠️  NENHUM GOAL ENCONTRADO! Verifique se a database Goals_Enzo está configurada e tem Goals criados.');
+    }
+    
+    if (kpis.length === 0) {
+      console.warn('⚠️  NENHUM KPI ENCONTRADO! Verifique se a database KPIs_Enzo está configurada e tem KPIs ativos.');
+    }
 
     // Enriquecer goals com contagem automática baseada em status dos contatos
     // Usar nova lógica acumulativa para KPIs do Enzo
@@ -157,14 +167,25 @@ enzoRouter.get('/goals', async (req, res) => {
       // Usar nova lógica acumulativa para contagem de leads
       // SEMPRE usar getCountForKPI para KPIs do Enzo, mesmo que retorne 0
       const count = await getCountForKPI(kpiName);
-      // SEMPRE atualizar o Actual com a contagem, mesmo se for 0 (para garantir que dados reais sejam exibidos)
-      const shouldUpdate = kpiNameLower.includes('convites') || kpiNameLower.includes('áudios') || kpiNameLower.includes('audios') || 
-                          kpiNameLower.includes('reunião') || kpiNameLower.includes('reuniões') || kpiNameLower.includes('1:1') || 
-                          kpiNameLower.includes('venda') || kpiNameLower.includes('vendas');
+      
+      // Verificar se é um KPI que precisa de contagem automática
+      // KPI1: Convites/Áudios
+      // KPI2: Reuniões 1:1
+      // KPI3: Vendas feitas (5K+) - mas não Meta Semanal
+      const isKPI1 = kpiNameLower.includes('convites') || kpiNameLower.includes('áudios') || kpiNameLower.includes('audios');
+      const isKPI2 = kpiNameLower.includes('reunião') || kpiNameLower.includes('reuniões') || kpiNameLower.includes('1:1');
+      const isKPI3 = (kpiNameLower.includes('venda') || kpiNameLower.includes('vendas')) && 
+                     !kpiNameLower.includes('meta') && 
+                     !kpiNameLower.includes('semanal') &&
+                     (kpiNameLower.includes('5k') || kpiNameLower.includes('5k+') || kpiNameLower.includes('5000') || kpiNameLower.includes('feitas'));
+      
+      const shouldUpdate = isKPI1 || isKPI2 || isKPI3;
       
       if (shouldUpdate) {
-        console.log(`✅ Goal "${goal.Name}" (KPI: "${kpiName}"): contagem acumulativa = ${count} (atualizando Actual)`);
+        console.log(`✅ Goal "${goal.Name}" (KPI: "${kpiName}"): contagem acumulativa = ${count} (atualizando Actual de ${goal.Actual || 0} para ${count})`);
         return { ...goal, Actual: count };
+      } else {
+        console.log(`ℹ️  Goal "${goal.Name}" (KPI: "${kpiName}") não corresponde a KPI1/KPI2/KPI3, mantendo Actual do Notion: ${goal.Actual || 0}`);
       }
       
       console.log(`⚠️  Goal "${goal.Name}" não correspondeu a nenhuma lógica específica, usando fallback`);
