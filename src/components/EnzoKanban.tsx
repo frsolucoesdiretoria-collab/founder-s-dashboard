@@ -123,15 +123,16 @@ function DraggableContactCard({
   return (
     <div ref={setNodeRef} style={style} {...attributes}>
       <Card className="p-3 hover:border-primary/50 transition-colors mb-2 relative group">
-        {/* Botão de deletar - aparece ao passar o mouse */}
+        {/* Botão de deletar - aparece ao passar o mouse no desktop, sempre visível no mobile */}
         {onDelete && (
           <button
             onClick={handleDelete}
             onMouseDown={(e) => e.stopPropagation()}
             onPointerDown={(e) => e.stopPropagation()}
-            className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded hover:bg-destructive/10 text-destructive hover:text-destructive/80"
+            className="absolute top-2 right-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity p-1.5 rounded hover:bg-destructive/10 active:bg-destructive/20 text-destructive hover:text-destructive/80 touch-manipulation"
             title="Excluir contato"
             type="button"
+            aria-label="Excluir contato"
           >
             <Trash2 className="h-3.5 w-3.5" />
           </button>
