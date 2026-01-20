@@ -20,7 +20,7 @@ import {
   useSortable
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Users, Calendar, CheckCircle, FileText, TrendingUp, XCircle } from 'lucide-react';
+import { Users, Calendar, CheckCircle, FileText, TrendingUp, XCircle, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export interface EnzoContact {
@@ -35,6 +35,7 @@ interface EnzoKanbanProps {
   contacts: EnzoContact[];
   onUpdateContactStatus: (id: string, status: string) => void;
   onUpdateContactSaleValue?: (id: string, saleValue: number | null) => void;
+  onDeleteContact?: (id: string) => void;
 }
 
 const STATUSES = [
@@ -46,10 +47,12 @@ const STATUSES = [
 
 function DraggableContactCard({ 
   contact, 
-  onUpdateSaleValue 
+  onUpdateSaleValue,
+  onDelete
 }: { 
   contact: EnzoContact;
   onUpdateSaleValue?: (id: string, saleValue: number | null) => void;
+  onDelete?: (id: string) => void;
 }) {
   const {
     attributes,
@@ -98,44 +101,89 @@ function DraggableContactCard({
     }
   }, [contact.saleValue]);
 
+  // Handler para impedir drag quando interagindo com o input
+  const handleInputPointerDown = (e: React.PointerEvent) => {
+    e.stopPropagation();
+    setIsEditing(true);
+  };
+
+  const handleInputMouseDown = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    
+    if (onDelete && window.confirm(`Tem certeza que deseja excluir o contato "${contact.name || 'Sem nome'}"? Esta ação não pode ser desfeita.`)) {
+      onDelete(contact.id);
+    }
+  };
+
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <Card className="p-3 hover:border-primary/50 transition-colors cursor-grab active:cursor-grabbing mb-2">
-        <div className="space-y-2">
-          <p className="font-medium text-sm text-foreground">{contact.name || 'Sem nome'}</p>
-          {contact.whatsapp && (
-            <p className="text-xs text-muted-foreground">{contact.whatsapp}</p>
-          )}
-          {isInVendaFeita && onUpdateSaleValue && (
-            <div className="pt-2 border-t">
-              <label className="text-xs text-muted-foreground block mb-1">
-                Valor da venda (R$)
-              </label>
-              <input
-                type="number"
-                value={saleValue}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  handleSaleValueChange(e.target.value);
-                  setIsEditing(true);
-                }}
-                onBlur={(e) => {
-                  e.stopPropagation();
-                  handleSaleValueBlur();
-                }}
-                onFocus={(e) => {
-                  e.stopPropagation();
-                  setIsEditing(true);
-                }}
-                onClick={(e) => e.stopPropagation()}
-                placeholder="0,00"
-                className="w-full px-2 py-1 text-xs border rounded bg-background focus:outline-none focus:ring-1 focus:ring-primary"
-                min="0"
-                step="0.01"
-              />
-            </div>
-          )}
+    <div ref={setNodeRef} style={style} {...attributes}>
+      <Card className="p-3 hover:border-primary/50 transition-colors mb-2 relative group">
+        {/* Botão de deletar - aparece ao passar o mouse */}
+        {onDelete && (
+          <button
+            onClick={handleDelete}
+            onMouseDown={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+            className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded hover:bg-destructive/10 text-destructive hover:text-destructive/80"
+            title="Excluir contato"
+            type="button"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        )}
+        
+        {/* Área arrastável - aplica listeners apenas aqui */}
+        <div {...listeners} className="cursor-grab active:cursor-grabbing pr-6">
+          <div className="space-y-2">
+            <p className="font-medium text-sm text-foreground">{contact.name || 'Sem nome'}</p>
+            {contact.whatsapp && (
+              <p className="text-xs text-muted-foreground">{contact.whatsapp}</p>
+            )}
+          </div>
         </div>
+        
+        {/* Área do input - sem listeners de drag */}
+        {isInVendaFeita && onUpdateSaleValue && (
+          <div 
+            className="pt-2 border-t" 
+            onClick={(e) => e.stopPropagation()} 
+            onPointerDown={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            <label className="text-xs text-muted-foreground block mb-1">
+              Valor da venda (R$)
+            </label>
+            <input
+              type="number"
+              value={saleValue}
+              onChange={(e) => {
+                e.stopPropagation();
+                handleSaleValueChange(e.target.value);
+                setIsEditing(true);
+              }}
+              onBlur={(e) => {
+                e.stopPropagation();
+                handleSaleValueBlur();
+              }}
+              onFocus={(e) => {
+                e.stopPropagation();
+                setIsEditing(true);
+              }}
+              onPointerDown={handleInputPointerDown}
+              onMouseDown={handleInputMouseDown}
+              onClick={(e) => e.stopPropagation()}
+              placeholder="0,00"
+              className="w-full px-2 py-1 text-xs border rounded bg-background focus:outline-none focus:ring-1 focus:ring-primary"
+              min="0"
+              step="0.01"
+            />
+          </div>
+        )}
       </Card>
     </div>
   );
@@ -144,11 +192,13 @@ function DraggableContactCard({
 function KanbanColumn({ 
   status, 
   contacts,
-  onUpdateSaleValue
+  onUpdateSaleValue,
+  onDeleteContact
 }: { 
   status: typeof STATUSES[0]; 
   contacts: EnzoContact[];
   onUpdateSaleValue?: (id: string, saleValue: number | null) => void;
+  onDeleteContact?: (id: string) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ 
     id: status.id,
@@ -176,6 +226,7 @@ function KanbanColumn({
                 key={contact.id} 
                 contact={contact}
                 onUpdateSaleValue={onUpdateSaleValue}
+                onDelete={onDeleteContact}
               />
             ))}
             {contacts.length === 0 && (
@@ -190,10 +241,18 @@ function KanbanColumn({
   );
 }
 
-export function EnzoKanban({ contacts, onUpdateContactStatus, onUpdateContactSaleValue }: EnzoKanbanProps) {
+export function EnzoKanban({ contacts, onUpdateContactStatus, onUpdateContactSaleValue, onDeleteContact }: EnzoKanbanProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+        // Não ativar drag se o evento vem de um input, textarea ou botão
+        tolerance: 5,
+        delay: 0,
+        interval: 0,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -319,6 +378,7 @@ export function EnzoKanban({ contacts, onUpdateContactStatus, onUpdateContactSal
               status={status}
               contacts={contactsByStatus[status.id] || []}
               onUpdateSaleValue={onUpdateContactSaleValue}
+              onDeleteContact={onDeleteContact}
             />
           ))}
         </div>

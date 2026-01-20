@@ -21,7 +21,11 @@ export async function countEnzoContactsByStatus(): Promise<Record<string, number
     };
 
     contacts.forEach(contact => {
-      const status = contact.Status || 'Contato Ativado';
+      let status = contact.Status || 'Contato Ativado';
+      // Tratar status vazio, null, undefined, ou "Sem status" como "Contato Ativado"
+      if (!status || status === '' || status === 'Sem status' || status === 'None' || status === 'null') {
+        status = 'Contato Ativado';
+      }
       // Migrar status antigos para novos
       const normalizedStatus = status === 'Proposta Enviada' || status === 'Venda Fechada' ? 'Venda Feita' : status;
       if (counts.hasOwnProperty(normalizedStatus)) {
@@ -92,7 +96,11 @@ export async function getSumOfSaleValues(): Promise<number> {
     let sum = 0;
 
     contacts.forEach(contact => {
-      const status = contact.Status || 'Contato Ativado';
+      let status = contact.Status || 'Contato Ativado';
+      // Tratar status vazio, null, undefined, ou "Sem status" como "Contato Ativado"
+      if (!status || status === '' || status === 'Sem status' || status === 'None' || status === 'null') {
+        status = 'Contato Ativado';
+      }
       const normalizedStatus = status === 'Proposta Enviada' || status === 'Venda Fechada' ? 'Venda Feita' : status;
       
       if (normalizedStatus === 'Venda Feita') {
@@ -126,6 +134,9 @@ export async function getCountForKPI(kpiName: string): Promise<number> {
     const contacts = await getContactsEnzo();
     const name = kpiName.toLowerCase();
     
+    console.log(`🔍 getCountForKPI: "${kpiName}" -> "${name}"`);
+    console.log(`📊 Contatos disponíveis: ${contacts.length}`);
+    
     // Usar Set para garantir que cada lead é contado apenas uma vez
     const uniqueIds = new Set<string>();
     let count = 0;
@@ -133,7 +144,11 @@ export async function getCountForKPI(kpiName: string): Promise<number> {
     // KPI1: Convites/Áudios enviados - conta TODOS os leads que estão em qualquer estágio do funil (>= estágio 1)
     if (name.includes('convites') || name.includes('áudios') || name.includes('audios') || name.includes('contato ativado')) {
       contacts.forEach(contact => {
-        const status = contact.Status || 'Contato Ativado';
+        let status = contact.Status || 'Contato Ativado';
+        // Tratar status vazio, null, undefined, ou "Sem status" como "Contato Ativado"
+        if (!status || status === '' || status === 'Sem status' || status === 'None' || status === 'null') {
+          status = 'Contato Ativado';
+        }
         const normalizedStatus = status === 'Proposta Enviada' || status === 'Venda Fechada' ? 'Venda Feita' : status;
         
         // Conta todos que estão em qualquer estágio (Contato Ativado, Café Agendado, Café Executado, ou Venda Feita)
@@ -151,7 +166,11 @@ export async function getCountForKPI(kpiName: string): Promise<number> {
     // KPI2: Reuniões 1:1 feitas - conta TODOS os leads que chegaram ao estágio 3 (Café Executado) OU 4 (Venda Feita)
     if (name.includes('reunião') || name.includes('reuniões') || name.includes('1:1')) {
       contacts.forEach(contact => {
-        const status = contact.Status || 'Contato Ativado';
+        let status = contact.Status || 'Contato Ativado';
+        // Tratar status vazio, null, undefined, ou "Sem status" como "Contato Ativado"
+        if (!status || status === '' || status === 'Sem status' || status === 'None' || status === 'null') {
+          status = 'Contato Ativado';
+        }
         const normalizedStatus = status === 'Proposta Enviada' || status === 'Venda Fechada' ? 'Venda Feita' : status;
         
         // Conta todos que estão em Café Executado OU Venda Feita
@@ -166,9 +185,20 @@ export async function getCountForKPI(kpiName: string): Promise<number> {
     }
 
     // KPI3: Vendas feitas (5K+) - conta leads no estágio 4 (Venda Feita) COM valor >= 5000
-    if (name.includes('venda') || name.includes('vendas')) {
+    // Verificar se é o KPI 3 (vendas 5K+). Não confundir com KPI 4 (meta semanal - que usa IsFinancial)
+    // Se inclui "venda" mas NÃO inclui "meta" ou "semanal", e inclui "5k" ou "5000", é o KPI 3
+    const isVenda5K = (name.includes('venda') || name.includes('vendas')) && 
+                      !name.includes('meta') && 
+                      !name.includes('semanal') &&
+                      (name.includes('5k') || name.includes('5k+') || name.includes('5000') || name.includes('feitas') || name.includes('(5k') || name.includes('(5 k'));
+    
+    if (isVenda5K) {
       contacts.forEach(contact => {
-        const status = contact.Status || 'Contato Ativado';
+        let status = contact.Status || 'Contato Ativado';
+        // Tratar status vazio, null, undefined, ou "Sem status" como "Contato Ativado"
+        if (!status || status === '' || status === 'Sem status' || status === 'None' || status === 'null') {
+          status = 'Contato Ativado';
+        }
         const normalizedStatus = status === 'Proposta Enviada' || status === 'Venda Fechada' ? 'Venda Feita' : status;
         
         if (normalizedStatus === 'Venda Feita') {

@@ -14,7 +14,7 @@ export function EnzoLayout({ children }: EnzoLayoutProps) {
       {/* Header simples sem menu */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-card border-b border-border px-4 py-3 safe-area-inset-top" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top) + 0.75rem)' }}>
         <div className="flex items-center justify-center">
-          <h1 className="text-lg font-bold text-foreground">Dashboard Enzo Canei</h1>
+          <h1 className="text-lg font-bold text-foreground">Mapa de metas comerciais semanais AXIS</h1>
         </div>
       </header>
       

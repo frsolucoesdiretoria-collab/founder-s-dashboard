@@ -189,9 +189,10 @@ export async function createEnzoContact(name: string, whatsapp?: string): Promis
  */
 export async function updateEnzoContact(id: string, updates: { name?: string; whatsapp?: string; status?: string; saleValue?: number | null }): Promise<EnzoContact> {
   try {
-    // Usar URL relativa em produção, absoluta apenas em desenvolvimento
-    const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
-    const apiUrl = API_BASE ? `${API_BASE}/api/enzo/contacts/${id}` : `/api/enzo/contacts/${id}`;
+    // Usar URL relativa sempre para passar pelo proxy do Vite em dev
+    const apiUrl = `/api/enzo/contacts/${id}`;
+    
+    console.log('🔍 Updating Enzo contact:', { id, updates, apiUrl });
     
     const response = await fetch(apiUrl, {
       method: 'PATCH',
@@ -201,14 +202,25 @@ export async function updateEnzoContact(id: string, updates: { name?: string; wh
       body: JSON.stringify(updates)
     });
 
+    console.log('📡 Update contact response status:', response.status);
+
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || error.error || 'Failed to update Enzo contact');
+      const error = await response.json().catch(() => ({}));
+      console.error('❌ Error updating contact:', error);
+      
+      // Preservar mensagem de erro específica do backend
+      const errorMessage = error.message || error.error || `Failed to update Enzo contact: ${response.statusText}`;
+      const errorObj: any = new Error(errorMessage);
+      errorObj.details = error.details;
+      errorObj.error = error.error;
+      throw errorObj;
     }
 
-    return response.json();
+    const updated = await response.json();
+    console.log('✅ Contact updated successfully:', updated);
+    return updated;
   } catch (error: any) {
-    console.error('Error updating Enzo contact:', error);
+    console.error('❌ Error updating Enzo contact:', error);
     throw error;
   }
 }

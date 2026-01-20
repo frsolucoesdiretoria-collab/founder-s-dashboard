@@ -44,38 +44,44 @@ async function migrateContactsStatus(client: any, dbId: string): Promise<void> {
 
 /**
  * Ensure ValorVenda field exists
+ * Esta função cria o campo ValorVenda na database Contacts_Enzo se ele não existir
  */
-async function ensureValorVendaField(client: any, dbId: string): Promise<{ success: boolean; message: string }> {
+export async function ensureValorVendaField(client: any, dbId: string): Promise<{ success: boolean; message: string }> {
   try {
     const database = await client.databases.retrieve({ database_id: dbId });
     const hasValorVendaField = database.properties.ValorVenda?.type === 'number';
     
     if (hasValorVendaField) {
+      console.log('✅ Campo ValorVenda já existe na database Contacts_Enzo');
       return {
         success: true,
-        message: 'Campo ValorVenda já existe.'
+        message: 'Campo ValorVenda já existe na database Contacts_Enzo.'
       };
     }
 
+    console.log('🔧 Criando campo ValorVenda na database Contacts_Enzo...');
+    
     // Create ValorVenda field
+    // Formato 'real' é para Real brasileiro (BRL)
     await client.databases.update({
       database_id: dbId,
       properties: {
         ValorVenda: {
           number: {
-            format: 'currency',
-            currency_code: 'BRL'
+            format: 'real'
           }
         }
       }
     });
 
+    console.log('✅ Campo ValorVenda criado com sucesso na database Contacts_Enzo!');
+    
     return {
       success: true,
-      message: 'Campo ValorVenda criado com sucesso.'
+      message: 'Campo ValorVenda criado com sucesso na database Contacts_Enzo!'
     };
   } catch (error: any) {
-    console.warn('⚠️  Could not create ValorVenda field:', error.message);
+    console.error('❌ Erro ao criar campo ValorVenda:', error);
     return {
       success: false,
       message: `Erro ao criar campo ValorVenda: ${error.message || 'Erro desconhecido'}`
@@ -113,10 +119,12 @@ export async function ensureEnzoContactsStatusField(): Promise<{ success: boolea
     // Migrar contatos com status antigo antes de atualizar opções
     await migrateContactsStatus(client, dbId);
     
-    // Ensure ValorVenda field exists
+    // Ensure ValorVenda field exists - SEMPRE criar se não existir
     const valorVendaResult = await ensureValorVendaField(client, dbId);
     if (valorVendaResult.success) {
       console.log('✅', valorVendaResult.message);
+    } else {
+      console.warn('⚠️', valorVendaResult.message);
     }
     
     const hasStatusField = database.properties.Status?.type === 'select';

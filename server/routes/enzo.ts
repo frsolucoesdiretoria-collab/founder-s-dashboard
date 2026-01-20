@@ -2,19 +2,34 @@
 // Dashboard de vendas separado da Axis
 
 import { Router } from 'express';
-import { getKPIsEnzo, getGoalsEnzo, getActionsEnzo, ensureActionHasGoalEnzo, toggleActionDoneEnzo, getContactsEnzo, createContactEnzo, updateContactEnzo, deleteContactEnzo, getAllKPIsIncludingInactive } from '../lib/notionDataLayer';
+import { getKPIsEnzo, getGoalsEnzo, getActionsEnzo, ensureActionHasGoalEnzo, toggleActionDoneEnzo, getContactsEnzo, createContactEnzo, updateContactEnzo, deleteContactEnzo, initNotionClient } from '../lib/notionDataLayer';
 import { countEnzoContactsByStatus, getStatusesForKPI, getCountForKPI, getSumOfSaleValues } from '../lib/enzoContactsCounter';
-import { ensureEnzoContactsStatusField } from '../lib/setupEnzoContactsStatus';
+import { ensureEnzoContactsStatusField, ensureValorVendaField } from '../lib/setupEnzoContactsStatus';
+import { getDatabaseId } from '../../src/lib/notion/schema';
 
 export const enzoRouter = Router();
 
 /**
  * POST /api/enzo/setup-status-field
  * Setup Status field in Contacts_Enzo database
+ * Também cria o campo ValorVenda se não existir
  */
 enzoRouter.post('/setup-status-field', async (req, res) => {
   try {
     const result = await ensureEnzoContactsStatusField();
+    
+    // Também garantir que ValorVenda existe
+    const dbId = getDatabaseId('Contacts_Enzo');
+    if (dbId) {
+      const client = initNotionClient();
+      const valorVendaResult = await ensureValorVendaField(client, dbId);
+      if (valorVendaResult.success) {
+        console.log('✅ Campo ValorVenda configurado:', valorVendaResult.message);
+      } else {
+        console.warn('⚠️ Campo ValorVenda:', valorVendaResult.message);
+      }
+    }
+    
     if (result.success) {
       res.json({ success: true, message: result.message });
     } else {
@@ -25,6 +40,38 @@ enzoRouter.post('/setup-status-field', async (req, res) => {
     res.status(500).json({ 
       success: false,
       error: 'Failed to setup Status field',
+      message: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+/**
+ * POST /api/enzo/setup-valor-venda-field
+ * Força a criação do campo ValorVenda na database Contacts_Enzo
+ */
+enzoRouter.post('/setup-valor-venda-field', async (req, res) => {
+  try {
+    const dbId = getDatabaseId('Contacts_Enzo');
+    if (!dbId) {
+      return res.status(400).json({
+        success: false,
+        error: 'NOTION_DB_CONTACTS_ENZO not configured'
+      });
+    }
+
+    const client = initNotionClient();
+    const result = await ensureValorVendaField(client, dbId);
+    
+    if (result.success) {
+      res.json({ success: true, message: result.message });
+    } else {
+      res.status(400).json({ success: false, message: result.message });
+    }
+  } catch (error: any) {
+    console.error('Error setting up ValorVenda field:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Failed to setup ValorVenda field',
       message: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
@@ -75,7 +122,7 @@ enzoRouter.get('/goals', async (req, res) => {
 
     const [goals, kpis, statusCounts] = await Promise.all([
       getGoalsEnzo(range),
-      getAllKPIsIncludingInactive(),
+      getKPIsEnzo(), // Usar getKPIsEnzo() em vez de getAllKPIsIncludingInactive() para buscar da database correta
       countEnzoContactsByStatus()
     ]);
 
@@ -94,19 +141,28 @@ enzoRouter.get('/goals', async (req, res) => {
       const kpiName = kpi.Name || '';
       const kpiNameLower = kpiName.toLowerCase();
       
-      // Se é Meta Semanal de Vendas (KPI financeiro), usar soma dos valores de venda
-      if (kpi.IsFinancial && (kpiNameLower.includes('meta') || kpiNameLower.includes('semanal') || kpiNameLower.includes('vendas') || kpiNameLower.includes('venda'))) {
+      console.log(`🔍 Processando Goal "${goal.Name}" -> KPI: "${kpiName}"`);
+      
+      // Identificar KPI 4 (Meta Semanal de Vendas) pelo nome
+      // Usar soma dos valores de venda para este KPI específico
+      const isMetaSemanalVendas = kpiNameLower.includes('meta') && 
+                                  (kpiNameLower.includes('semanal') || kpiNameLower.includes('vendas') || kpiNameLower.includes('venda'));
+      
+      if (isMetaSemanalVendas) {
         const sumOfSales = await getSumOfSaleValues();
-        console.log(`✅ Goal "${goal.Name}" (KPI: "${kpiName}"): soma de vendas = R$ ${sumOfSales}`);
+        console.log(`✅ Goal "${goal.Name}" (KPI: "${kpiName}" - Meta Semanal de Vendas): soma de vendas = R$ ${sumOfSales}`);
         return { ...goal, Actual: sumOfSales };
       }
 
       // Usar nova lógica acumulativa para contagem de leads
+      // SEMPRE usar getCountForKPI para KPIs do Enzo, mesmo que retorne 0
       const count = await getCountForKPI(kpiName);
       if (count > 0 || kpiNameLower.includes('convites') || kpiNameLower.includes('áudios') || kpiNameLower.includes('audios') || kpiNameLower.includes('reunião') || kpiNameLower.includes('reuniões') || kpiNameLower.includes('1:1') || kpiNameLower.includes('venda') || kpiNameLower.includes('vendas')) {
         console.log(`✅ Goal "${goal.Name}" (KPI: "${kpiName}"): contagem acumulativa = ${count}`);
         return { ...goal, Actual: count };
       }
+      
+      console.log(`⚠️  Goal "${goal.Name}" não correspondeu a nenhuma lógica específica, usando fallback`);
 
       // Fallback para lógica antiga se não for KPI específico do Enzo
       const statuses = getStatusesForKPI(kpiName);
@@ -285,25 +341,56 @@ enzoRouter.patch('/contacts/:id', async (req, res) => {
       if (typeof saleValue !== 'number' && saleValue !== null) {
         return res.status(400).json({ error: 'saleValue must be a number or null' });
       }
-      updates.saleValue = saleValue === null ? undefined : saleValue;
+      // Passar o valor exatamente como recebido (number ou null)
+      updates.saleValue = saleValue; // null é válido, não converter para undefined
+      console.log(`💰 Updating saleValue for contact ${id}: ${saleValue}`);
     }
 
     const contact = await updateContactEnzo(id, updates);
+    console.log(`✅ Contact updated. ValorVenda: ${(contact as any).ValorVenda}`);
     res.json(contact);
   } catch (error: any) {
     console.error('Error updating Enzo contact:', error);
+    console.error('Error details:', {
+      message: error.message,
+      code: error.code,
+      status: error.status,
+      body: error.body
+    });
     
     // Mensagem específica se o campo Status não existe
-    if (error.message?.includes('Status is not a property') || error.message?.includes('property that exists')) {
+    if (error.message?.includes('Status is not a property') || error.message?.includes('property that exists') || error.message?.includes('Status')) {
       return res.status(400).json({ 
         error: 'Campo Status não existe',
         message: 'Adicione um campo Select chamado "Status" na database Contacts_Enzo do Notion com as opções: Contato Ativado, Café Agendado, Café Executado, Venda Feita'
       });
     }
     
+    // Mensagem específica se o campo ValorVenda não existe
+    if (error.message?.includes('ValorVenda') || error.message?.includes('Valor Venda') || 
+        error.code === 'validation_error' && error.body?.message?.includes('ValorVenda')) {
+      console.log('⚠️ Campo ValorVenda não existe. Tentando criar automaticamente...');
+      try {
+        // Tentar criar o campo automaticamente
+        await ensureEnzoContactsStatusField();
+        // Tentar atualizar novamente após criar o campo
+        const contact = await updateContactEnzo(id, updates);
+        console.log(`✅ Contact updated after creating ValorVenda field. ValorVenda: ${(contact as any).ValorVenda}`);
+        return res.json(contact);
+      } catch (retryError: any) {
+        console.error('❌ Error creating ValorVenda field or retrying update:', retryError);
+        return res.status(400).json({ 
+          error: 'Campo ValorVenda não existe',
+          message: 'Não foi possível criar o campo automaticamente. Adicione um campo Number chamado "ValorVenda" na database Contacts_Enzo do Notion com formato Currency (BRL).',
+          details: process.env.NODE_ENV === 'development' ? retryError.message : undefined
+        });
+      }
+    }
+    
     res.status(500).json({ 
       error: 'Failed to update contact',
-      message: process.env.NODE_ENV === 'development' ? error.message : undefined
+      message: process.env.NODE_ENV === 'development' ? error.message : 'Erro ao atualizar contato. Verifique os logs do servidor.',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });

@@ -6,7 +6,7 @@ import { ContactsToActivate } from '@/components/ContactsToActivate';
 import { EnzoKanban } from '@/components/EnzoKanban';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Loader2, RefreshCw } from 'lucide-react';
-import { getEnzoKPIs, getEnzoGoals, getEnzoDailyActions, updateEnzoActionDone, getEnzoContacts, createEnzoContact, updateEnzoContact } from '@/services';
+import { getEnzoKPIs, getEnzoGoals, getEnzoDailyActions, updateEnzoActionDone, getEnzoContacts, createEnzoContact, updateEnzoContact, deleteEnzoContact } from '@/services';
 import type { KPI } from '@/types/kpi';
 import type { Goal } from '@/types/goal';
 import type { Action } from '@/types/action';
@@ -34,24 +34,38 @@ export default function DashboardEnzo() {
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    // Setup Status field automatically on mount
-    const setupStatusField = async () => {
+    // Setup Status field and ValorVenda field automatically on mount
+    const setupFields = async () => {
       try {
+        // Criar campo Status e ValorVenda
         const response = await fetch('/api/enzo/setup-status-field', {
           method: 'POST'
         });
         const result = await response.json();
         if (result.success) {
-          console.log('✅ Status field configured:', result.message);
+          console.log('✅ Campos Status e ValorVenda configurados:', result.message);
         } else {
-          console.warn('⚠️ Status field setup:', result.message);
+          console.warn('⚠️ Setup de campos:', result.message);
+        }
+        
+        // Garantir que ValorVenda existe (chamada adicional para segurança)
+        try {
+          const valorVendaResponse = await fetch('/api/enzo/setup-valor-venda-field', {
+            method: 'POST'
+          });
+          const valorVendaResult = await valorVendaResponse.json();
+          if (valorVendaResult.success) {
+            console.log('✅ Campo ValorVenda verificado:', valorVendaResult.message);
+          }
+        } catch (err) {
+          console.warn('⚠️ Erro ao verificar campo ValorVenda:', err);
         }
       } catch (err) {
-        console.warn('⚠️ Could not setup Status field automatically:', err);
+        console.warn('⚠️ Could not setup fields automatically:', err);
       }
     };
     
-    setupStatusField();
+    setupFields();
     loadData();
     // Retry após 2 segundos se não houver KPIs
     const retryTimer = setTimeout(() => {
@@ -158,13 +172,20 @@ export default function DashboardEnzo() {
   async function loadContacts(): Promise<Contact[]> {
     try {
       const contactsData = await getEnzoContacts();
-      return contactsData.map(c => ({
-        id: c.id,
-        name: c.Name,
-        whatsapp: c.WhatsApp,
-        status: c.Status || 'Contato Ativado',
-        saleValue: (c as any).ValorVenda || undefined
-      }));
+      return contactsData.map(c => {
+        // Normalizar status: se for null, undefined, vazio, ou "Sem status", usar "Contato Ativado"
+        let status = c.Status || 'Contato Ativado';
+        if (!status || status === '' || status === 'Sem status' || status === 'None' || status === 'null') {
+          status = 'Contato Ativado';
+        }
+        return {
+          id: c.id,
+          name: c.Name,
+          whatsapp: c.WhatsApp,
+          status: status,
+          saleValue: (c as any).ValorVenda || undefined
+        };
+      });
     } catch (err: any) {
       // Se database não está configurada, retornar array vazio
       if (err.message?.includes('not configured')) {
@@ -263,6 +284,9 @@ export default function DashboardEnzo() {
       const updated = await updateEnzoContact(id, notionUpdates);
       
       // Atualiza com os dados reais do servidor após sucesso
+      const updatedSaleValue = (updated as any).ValorVenda;
+      console.log('✅ Contact updated. ValorVenda recebido:', updatedSaleValue);
+      
       setContacts(prev => prev.map(c => 
         c.id === id 
           ? { 
@@ -270,28 +294,89 @@ export default function DashboardEnzo() {
               name: updated.Name, 
               whatsapp: updated.WhatsApp, 
               status: updated.Status || 'Contato Ativado',
-              saleValue: (updated as any).ValorVenda || undefined
+              saleValue: updatedSaleValue !== undefined && updatedSaleValue !== null ? updatedSaleValue : undefined
             }
           : c
       ));
       
       // Recarregar Goals para atualizar KPIs (especialmente Meta Semanal de Vendas)
-      const updatedGoals = await getEnzoGoals();
+      console.log('🔄 Reloading goals to update KPIs...');
+      const [updatedGoals, updatedKpis] = await Promise.all([
+        getEnzoGoals(),
+        getEnzoKPIs()
+      ]);
       setGoals(updatedGoals);
+      const sortedKpis = updatedKpis.sort((a, b) => (a.SortOrder || 0) - (b.SortOrder || 0));
+      setKpis(sortedKpis);
+      console.log('✅ Goals and KPIs reloaded. KPI 4 (Meta Semanal) should be updated.');
+      
+      // Mostrar toast de sucesso específico se atualizou valor de venda
+      if (updates.saleValue !== undefined) {
+        toast.success(`Valor de venda salvo! Meta Semanal atualizada.`);
+      }
     } catch (err: any) {
       console.error('Error updating contact:', err);
+      console.error('Error details:', {
+        message: err.message,
+        response: err
+      });
+      
       // Reverte para o estado anterior em caso de erro
       if (previousContact) {
         setContacts(prev => prev.map(c => 
           c.id === id ? previousContact : c
         ));
       }
-      toast.error('Erro ao atualizar contato. Tente novamente.');
+      
+      // Mostrar mensagem de erro específica
+      let errorMessage = 'Erro ao atualizar contato. Tente novamente.';
+      if (err.message) {
+        if (err.message.includes('ValorVenda') || err.message.includes('Valor Venda')) {
+          errorMessage = 'Erro ao salvar valor de venda. O campo ValorVenda pode não existir no Notion. Verifique os logs do servidor.';
+        } else if (err.message.includes('Status')) {
+          errorMessage = 'Erro ao atualizar status. O campo Status pode não existir no Notion.';
+        } else {
+          errorMessage = err.message;
+        }
+      }
+      
+      toast.error(errorMessage);
     }
   };
 
   const handleUpdateContactSaleValue = async (id: string, saleValue: number | null) => {
     await handleUpdateContact(id, { saleValue });
+  };
+
+  const handleDeleteContact = async (id: string) => {
+    try {
+      const contactToDelete = contacts.find(c => c.id === id);
+      const contactName = contactToDelete?.name || 'Contato';
+      
+      // Remover do estado local imediatamente (optimistic update)
+      setContacts(prev => prev.filter(c => c.id !== id));
+      
+      // Chamar API para deletar no backend
+      await deleteEnzoContact(id);
+      
+      toast.success(`Contato "${contactName}" excluído com sucesso`);
+      
+      // Recarregar Goals para atualizar métricas
+      const updatedGoals = await getEnzoGoals();
+      setGoals(updatedGoals);
+      
+      // Recarregar KPIs também
+      const updatedKpis = await getEnzoKPIs();
+      setKpis(updatedKpis.sort((a, b) => (a.SortOrder || 0) - (b.SortOrder || 0)));
+    } catch (err: any) {
+      console.error('Error deleting contact:', err);
+      
+      // Recarregar contatos para reverter estado local em caso de erro
+      const updatedContacts = await loadContacts();
+      setContacts(updatedContacts);
+      
+      toast.error(`Erro ao excluir contato: ${err?.message || 'Erro desconhecido'}`);
+    }
   };
 
   const handleAddContact = async () => {
@@ -409,30 +494,34 @@ export default function DashboardEnzo() {
               )}
             </div>
           ) : (
-            !loading && (
-              <Alert>
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription className="text-xs md:text-sm">
-                  {error ? (
-                    <>
-                      {error}
-                      <br />
-                      <br />
-                      <strong>Verifique:</strong>
-                      <ul className="list-disc list-inside mt-2 space-y-1">
-                        <li>Se NOTION_DB_KPIS_ENZO está configurado no .env.local</li>
-                        <li>Se o servidor foi reiniciado após configurar as variáveis</li>
-                        <li>Se os KPIs estão marcados como "Active" na database do Notion</li>
-                      </ul>
-                    </>
-                  ) : (
-                    <>
-                      Carregando KPIs... Se não aparecerem, verifique se os KPIs estão ativos na database do Notion.
-                    </>
-                  )}
-                </AlertDescription>
-              </Alert>
-            )
+            <Alert>
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription className="text-xs md:text-sm">
+                {loading ? (
+                  <>Carregando KPIs...</>
+                ) : error ? (
+                  <>
+                    {error}
+                    <br />
+                    <br />
+                    <strong>Verifique:</strong>
+                    <ul className="list-disc list-inside mt-2 space-y-1">
+                      <li>Se NOTION_DB_KPIS_ENZO está configurado no .env.local</li>
+                      <li>Se o servidor foi reiniciado após configurar as variáveis</li>
+                      <li>Se os KPIs estão marcados como "Active" na database do Notion</li>
+                      <li>Verifique o console do navegador para mais detalhes</li>
+                    </ul>
+                  </>
+                ) : (
+                  <>
+                    Nenhum KPI encontrado. Verifique se os KPIs estão marcados como "Active" na database do Notion.
+                    <br />
+                    <br />
+                    <strong>Debug:</strong> KPIs carregados: {kpis.length}, Input KPIs: {inputKPIs.length}, Output KPI: {outputKPI ? 'Sim' : 'Não'}
+                  </>
+                )}
+              </AlertDescription>
+            </Alert>
           )}
           <Separator className="my-3 md:my-6" />
         </div>
@@ -475,6 +564,7 @@ export default function DashboardEnzo() {
             contacts={contacts.filter(c => c.name && c.whatsapp)} // Apenas contatos completos
             onUpdateContactStatus={handleUpdateContactStatus}
             onUpdateContactSaleValue={handleUpdateContactSaleValue}
+            onDeleteContact={handleDeleteContact}
           />
         </div>
       </div>

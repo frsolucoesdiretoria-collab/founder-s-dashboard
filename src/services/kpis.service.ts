@@ -68,9 +68,9 @@ export async function getKPIById(id: string): Promise<KPI | undefined> {
  */
 export async function getEnzoKPIs(): Promise<KPI[]> {
   try {
-    // Usar URL relativa em produção, absoluta apenas em desenvolvimento
-    const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
-    const apiUrl = API_BASE ? `${API_BASE}/api/enzo/kpis` : '/api/enzo/kpis';
+    // Sempre usar URL relativa para passar pelo proxy do Vite em dev
+    // O proxy do Vite redireciona /api/* para http://localhost:3001/api/*
+    const apiUrl = '/api/enzo/kpis';
     
     console.log('🔍 Fetching Enzo KPIs from:', apiUrl);
     

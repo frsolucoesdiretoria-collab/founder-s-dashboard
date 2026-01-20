@@ -987,12 +987,19 @@ export async function createActionEnzo(
  */
 function pageToContactEnzo(page: any): { id: string; Name: string; WhatsApp?: string; Status?: string; ValorVenda?: number } {
   const props = page.properties;
+  
+  // Extrair ValorVenda corretamente (pode ser null ou número)
+  let valorVenda: number | undefined = undefined;
+  if (props.ValorVenda && props.ValorVenda.number !== null && props.ValorVenda.number !== undefined) {
+    valorVenda = props.ValorVenda.number;
+  }
+  
   return {
     id: page.id,
     Name: extractText(props.Name),
     WhatsApp: extractPhoneNumber(props.WhatsApp) || undefined,
     Status: extractSelect(props.Status) || undefined,
-    ValorVenda: extractNumber(props.ValorVenda) || undefined
+    ValorVenda: valorVenda
   };
 }
 
@@ -1099,15 +1106,44 @@ export async function updateContactEnzo(id: string, updates: { name?: string; wh
   }
 
   if (updates.saleValue !== undefined) {
+    // Verificar se o campo ValorVenda existe antes de tentar salvar
     try {
-      if (updates.saleValue !== null && updates.saleValue !== undefined) {
-        properties.ValorVenda = { number: updates.saleValue };
-      } else {
-        properties.ValorVenda = { number: null };
+      const database = await client.databases.retrieve({ database_id: dbId });
+      const hasValorVendaField = database.properties.ValorVenda?.type === 'number';
+      
+      if (!hasValorVendaField) {
+        console.warn('⚠️  Campo ValorVenda não existe. Tentando criar automaticamente...');
+        try {
+          // Criar o campo ValorVenda automaticamente
+          // Formato 'real' é para Real brasileiro (BRL)
+          await client.databases.update({
+            database_id: dbId,
+            properties: {
+              ValorVenda: {
+                number: {
+                  format: 'real'
+                }
+              }
+            }
+          });
+          console.log('✅ Campo ValorVenda criado com sucesso.');
+        } catch (createErr: any) {
+          console.error('❌ Erro ao criar campo ValorVenda automaticamente:', createErr.message);
+          throw new Error(`Campo ValorVenda não existe e não foi possível criá-lo automaticamente: ${createErr.message}`);
+        }
       }
-    } catch (err) {
-      // Se o campo ValorVenda não existe, apenas logar e continuar sem atualizar
-      console.warn('⚠️  Campo ValorVenda não existe na database Contacts_Enzo. Adicione um campo Number chamado "ValorVenda".');
+      
+      // Agora que o campo existe, definir o valor
+      if (updates.saleValue === null) {
+        properties.ValorVenda = { number: null };
+        console.log(`💰 Setting ValorVenda to null for contact ${id}`);
+      } else if (typeof updates.saleValue === 'number') {
+        properties.ValorVenda = { number: updates.saleValue };
+        console.log(`💰 Setting ValorVenda to ${updates.saleValue} for contact ${id}`);
+      }
+    } catch (err: any) {
+      console.error('❌ Erro ao preparar ValorVenda:', err.message);
+      throw err; // Re-throw para que seja tratado na rota
     }
   }
 
@@ -1142,9 +1178,18 @@ export async function updateContactEnzo(id: string, updates: { name?: string; wh
     updated.Status = normalizedStatus;
   }
   
-  // Se atualizou o valor da venda, garantir que está no retorno
+  // Se atualizou o valor da venda, usar o valor que foi salvo no Notion
+  // O valor já deve estar em updated.ValorVenda após pageToContactEnzo processar a resposta
+  // Mas vamos garantir que está correto
   if (updates.saleValue !== undefined) {
-    updated.ValorVenda = updates.saleValue;
+    // Ler o valor diretamente da resposta do Notion
+    const savedValue = response.properties.ValorVenda?.number;
+    if (savedValue !== null && savedValue !== undefined) {
+      updated.ValorVenda = savedValue;
+    } else {
+      updated.ValorVenda = undefined;
+    }
+    console.log('✅ Contact updated in Notion. ValorVenda salvo:', savedValue, 'ValorVenda no retorno:', updated.ValorVenda);
   }
   
   return updated;
