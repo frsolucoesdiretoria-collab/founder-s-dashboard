@@ -237,7 +237,8 @@ export async function getCountForKPI(kpiName: string): Promise<number> {
                       (name.includes('5k') || name.includes('5k+') || name.includes('5000') || name.includes('feitas') || name.includes('(5k') || name.includes('(5 k'));
     
     if (isVenda5K) {
-      contacts.forEach(contact => {
+      console.log(`  🎯 KPI3 detectado: "${kpiName}"`);
+      contacts.forEach((contact, index) => {
         let status = contact.Status || 'Contato Ativado';
         // Tratar status vazio, null, undefined, ou "Sem status" como "Contato Ativado"
         if (!status || status === '' || status === 'Sem status' || status === 'None' || status === 'null') {
@@ -245,23 +246,29 @@ export async function getCountForKPI(kpiName: string): Promise<number> {
         }
         const normalizedStatus = status === 'Proposta Enviada' || status === 'Venda Fechada' ? 'Venda Feita' : status;
         
+        const saleValue = (contact as any).ValorVenda;
+        console.log(`    [${index + 1}/${contacts.length}] Contato ID=${contact.id}, Nome="${contact.Name || '(vazio)'}", Status="${normalizedStatus}", ValorVenda=${saleValue !== undefined && saleValue !== null ? saleValue : '(vazio)'}`);
+        
         if (normalizedStatus === 'Venda Feita') {
           // Usar ID único do lead para evitar duplicação
           if (!uniqueIds.has(contact.id)) {
             uniqueIds.add(contact.id);
             // Verificar valor da venda (se existe e >= 5000)
-            const saleValue = (contact as any).ValorVenda;
-            console.log(`  🔍 Contato ${contact.id} (${contact.Name || 'sem nome'}) - Status: ${normalizedStatus}, ValorVenda: ${saleValue}`);
             if (saleValue !== undefined && saleValue !== null && saleValue >= 5000) {
               count++;
-              console.log(`  ✅ Contato ${contact.id} contado para KPI3 (valor >= 5000)`);
+              console.log(`      ✅ CONTADO! Valor R$ ${saleValue} >= 5000. Total agora: ${count}`);
             } else {
-              console.log(`  ⚠️  Contato ${contact.id} NÃO contado para KPI3 (valor < 5000 ou ausente)`);
+              console.log(`      ❌ NÃO contado (valor ${saleValue !== undefined && saleValue !== null ? `R$ ${saleValue}` : 'ausente'} < 5000)`);
             }
+          } else {
+            console.log(`      ⏭️  Já contado (duplicado ignorado)`);
           }
+        } else {
+          console.log(`      ❌ NÃO contado (status "${normalizedStatus}" não é "Venda Feita")`);
         }
       });
       console.log(`📊 KPI3 (Vendas 5K+): Total contado = ${count} de ${contacts.length} contatos`);
+      console.log(`🔍 ========== getCountForKPI FINALIZADO (KPI3) ==========\n`);
       return count;
     }
 
