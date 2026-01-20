@@ -9,3 +9,4 @@ pm2 logs founder-dashboard --err --lines 50 --nostream
 # Ou veja TODOS os logs:
 pm2 logs founder-dashboard --lines 100 --nostream
 
+

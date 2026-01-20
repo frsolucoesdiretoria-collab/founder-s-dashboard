@@ -10,3 +10,4 @@ cd /var/www/founder-dashboard && cp .env.local .env.local.backup3 && sed -i 's/N
 
 
 
+

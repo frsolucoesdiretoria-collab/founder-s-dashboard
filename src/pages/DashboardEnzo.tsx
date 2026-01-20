@@ -106,11 +106,26 @@ export default function DashboardEnzo() {
 
     // Log detalhado dos KPIs
     if (kpisData.length > 0) {
-      console.log('✅ KPIs carregados:', kpisData.map(k => k.Name));
+      console.log('✅ KPIs carregados:', kpisData.map(k => ({ name: k.Name, id: k.id, targetValue: k.TargetValue })));
     } else {
       console.warn('⚠️  Nenhum KPI foi carregado');
       if (results[0].status === 'rejected') {
         console.error('❌ Erro ao carregar KPIs:', results[0].reason);
+      }
+    }
+
+    // Log detalhado dos Goals
+    if (goalsData.length > 0) {
+      console.log('✅ Goals carregados:', goalsData.map(g => ({ 
+        name: g.Name, 
+        kpi: g.KPI, 
+        target: g.Target, 
+        actual: g.Actual 
+      })));
+    } else {
+      console.warn('⚠️  Nenhum Goal foi carregado');
+      if (results[1].status === 'rejected') {
+        console.error('❌ Erro ao carregar Goals:', results[1].reason);
       }
     }
 
@@ -469,6 +484,15 @@ export default function DashboardEnzo() {
               {/* Input KPIs primeiro */}
               {inputKPIs.map((kpi) => {
                 const goal = goals.find(g => g.KPI === kpi.id);
+                // Debug log
+                if (process.env.NODE_ENV === 'development') {
+                  console.log(`🔍 KPI "${kpi.Name}" (ID: ${kpi.id}):`, {
+                    hasGoal: !!goal,
+                    goalActual: goal?.Actual,
+                    goalTarget: goal?.Target,
+                    kpiTargetValue: kpi.TargetValue
+                  });
+                }
                 return (
                   <Card key={kpi.id} className="overflow-hidden">
                     <CardContent className="pt-4 md:pt-6">
@@ -482,16 +506,28 @@ export default function DashboardEnzo() {
               })}
               
               {/* Meta Semanal (output) - sempre por último */}
-              {outputKPI && (
-                <Card key={outputKPI.id} className="border-2 border-primary/50 overflow-hidden">
-                  <CardContent className="pt-4 md:pt-6">
-                    <KPICard 
-                      kpi={outputKPI as NotionKPI}
-                      goal={goals.find(g => g.KPI === outputKPI.id) as NotionGoal | undefined}
-                    />
-                  </CardContent>
-                </Card>
-              )}
+              {outputKPI && (() => {
+                const outputGoal = goals.find(g => g.KPI === outputKPI.id);
+                // Debug log
+                if (process.env.NODE_ENV === 'development') {
+                  console.log(`🔍 Output KPI "${outputKPI.Name}" (ID: ${outputKPI.id}):`, {
+                    hasGoal: !!outputGoal,
+                    goalActual: outputGoal?.Actual,
+                    goalTarget: outputGoal?.Target,
+                    kpiTargetValue: outputKPI.TargetValue
+                  });
+                }
+                return (
+                  <Card key={outputKPI.id} className="border-2 border-primary/50 overflow-hidden">
+                    <CardContent className="pt-4 md:pt-6">
+                      <KPICard 
+                        kpi={outputKPI as NotionKPI}
+                        goal={outputGoal as NotionGoal | undefined}
+                      />
+                    </CardContent>
+                  </Card>
+                );
+              })()}
             </div>
           ) : (
             <Alert>
