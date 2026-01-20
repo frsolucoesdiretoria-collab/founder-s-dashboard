@@ -157,8 +157,13 @@ enzoRouter.get('/goals', async (req, res) => {
       // Usar nova lógica acumulativa para contagem de leads
       // SEMPRE usar getCountForKPI para KPIs do Enzo, mesmo que retorne 0
       const count = await getCountForKPI(kpiName);
-      if (count > 0 || kpiNameLower.includes('convites') || kpiNameLower.includes('áudios') || kpiNameLower.includes('audios') || kpiNameLower.includes('reunião') || kpiNameLower.includes('reuniões') || kpiNameLower.includes('1:1') || kpiNameLower.includes('venda') || kpiNameLower.includes('vendas')) {
-        console.log(`✅ Goal "${goal.Name}" (KPI: "${kpiName}"): contagem acumulativa = ${count}`);
+      // SEMPRE atualizar o Actual com a contagem, mesmo se for 0 (para garantir que dados reais sejam exibidos)
+      const shouldUpdate = kpiNameLower.includes('convites') || kpiNameLower.includes('áudios') || kpiNameLower.includes('audios') || 
+                          kpiNameLower.includes('reunião') || kpiNameLower.includes('reuniões') || kpiNameLower.includes('1:1') || 
+                          kpiNameLower.includes('venda') || kpiNameLower.includes('vendas');
+      
+      if (shouldUpdate) {
+        console.log(`✅ Goal "${goal.Name}" (KPI: "${kpiName}"): contagem acumulativa = ${count} (atualizando Actual)`);
         return { ...goal, Actual: count };
       }
       
