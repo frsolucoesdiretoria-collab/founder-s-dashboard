@@ -416,8 +416,12 @@ export default function DashboardEnzo() {
     }
     
     try {
+      console.log('➕ Adicionando novo contato...');
+      
       // Criar contato com nome vazio (será preenchido depois)
       const newContact = await createEnzoContact('');
+      
+      console.log('✅ Contato criado com sucesso:', newContact);
       
       // Atualizar estado local imediatamente
       setContacts(prev => [...prev, {
@@ -429,13 +433,25 @@ export default function DashboardEnzo() {
       
       toast.success('Contato adicionado com sucesso');
     } catch (err: any) {
-      console.error('Error creating contact:', err);
-      const errorMessage = err?.message || err?.error || 'Erro desconhecido';
-      console.error('Error details:', {
-        message: errorMessage,
+      console.error('❌ Error creating contact:', err);
+      console.error('❌ Error details:', {
+        message: err?.message,
+        name: err?.name,
+        stack: err?.stack,
         status: err?.status,
         response: err
       });
+      
+      // Mensagem de erro mais detalhada
+      let errorMessage = 'Erro desconhecido';
+      if (err?.message) {
+        errorMessage = err.message;
+      } else if (err?.error) {
+        errorMessage = err.error;
+      } else if (err?.name === 'TypeError' && err?.message?.includes('Failed to fetch')) {
+        errorMessage = 'Não foi possível conectar ao servidor. Verifique se o servidor está rodando.';
+      }
+      
       toast.error(`Erro ao adicionar contato: ${errorMessage}`);
     }
   };
