@@ -104,6 +104,20 @@ export default function DashboardEnzo() {
       contacts: contactsData.length
     });
 
+    // Log erros detalhados
+    if (results[0].status === 'rejected') {
+      console.error('❌ Erro ao carregar KPIs:', results[0].reason);
+    }
+    if (results[1].status === 'rejected') {
+      console.error('❌ Erro ao carregar Goals:', results[1].reason);
+    }
+    if (results[2].status === 'rejected') {
+      console.error('❌ Erro ao carregar Actions:', results[2].reason);
+    }
+    if (results[3].status === 'rejected') {
+      console.error('❌ Erro ao carregar Contacts:', results[3].reason);
+    }
+
     // Log detalhado dos KPIs
     if (kpisData.length > 0) {
       console.log('✅ KPIs carregados:', kpisData.map(k => ({ name: k.Name, id: k.id, targetValue: k.TargetValue })));
