@@ -431,9 +431,11 @@ export default function DashboardEnzo() {
         {/* Header - Mobile Optimized */}
         <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between md:gap-4">
           <div className="flex-1 min-w-0">
-            <p className="text-xs md:text-base text-muted-foreground mt-1">
-              PDA Semana 3 | Meta: R$ 20K até 23/01
-            </p>
+            <div className="text-xs md:text-base text-muted-foreground mt-1 space-y-1">
+              <p><strong>Meta CORE Janeiro:</strong> Finalizar consultorias ativas e iniciar vendas de tecnologia para toda reunião que for executada de 20/01 até 31/01. Plante as sementes de tecnologia, colheremos 100x mais.</p>
+              <p><strong>Meta CORE Fevereiro:</strong> Finalizar consultorias, e Gastar 90% da agenda como CSO, trazendo 50 novos clientes para a base da AXIS.</p>
+              <p><strong>Meta CORE Março:</strong> 50 novos clientes e 100% da agenda como CSO, fazendo as entrevistas para a primeira contratação de vendedor para iniciar o treinamento em abril.</p>
+            </div>
           </div>
           <Button 
             onClick={handleRefresh} 
