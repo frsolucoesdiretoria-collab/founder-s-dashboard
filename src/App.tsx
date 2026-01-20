@@ -47,7 +47,7 @@ const queryClient = new QueryClient({
   },
 });
 
-const appPassword = "1234567890";
+const appPassword = "1000000000";
 const doterraPassword = "1234567890";
 const domaCondoPassword = "1234567890";
 const vendeMaisObrasPassword = "1234567890";

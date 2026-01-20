@@ -33,7 +33,7 @@ export function PasswordLogin({
   // Se não houver senha configurada via env/props, usa senha padrão
   const allowedPasswords = normalizedPasswords.length > 0
     ? normalizedPasswords
-    : ['1234567890'];
+    : ['1000000000'];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
