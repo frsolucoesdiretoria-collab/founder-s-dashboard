@@ -172,10 +172,28 @@ jobs:
                 echo "   ✅ API está respondendo!"
                 curl http://localhost:3001/api/health
                 echo ""
+                
+                # 9. Testar APIs específicas do Enzo
+                echo ""
+                echo "9️⃣  Testando APIs do Dashboard Enzo..."
+                
+                echo "   📊 Testando /api/enzo/kpis..."
+                KPIS_COUNT=$(curl -s http://localhost:3001/api/enzo/kpis | grep -o '"id"' | wc -l || echo "0")
+                echo "      KPIs encontrados: $KPIS_COUNT"
+                
+                echo "   📈 Testando /api/enzo/goals..."
+                GOALS_COUNT=$(curl -s http://localhost:3001/api/enzo/goals | grep -o '"id"' | wc -l || echo "0")
+                echo "      Goals encontrados: $GOALS_COUNT"
+                
+                echo "   👥 Testando /api/enzo/contacts..."
+                CONTACTS_COUNT=$(curl -s http://localhost:3001/api/enzo/contacts | grep -o '"id"' | wc -l || echo "0")
+                echo "      Contatos encontrados: $CONTACTS_COUNT"
+                
                 echo ""
                 echo "=========================================================="
                 echo "✅ DEPLOY CONCLUÍDO COM SUCESSO!"
                 echo "🌐 Site disponível em: https://frtechltda.com.br"
+                echo "📊 Dashboard Enzo: KPIs=$KPIS_COUNT, Goals=$GOALS_COUNT, Contatos=$CONTACTS_COUNT"
                 echo "=========================================================="
                 exit 0
               fi
