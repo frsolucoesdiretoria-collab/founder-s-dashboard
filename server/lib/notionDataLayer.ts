@@ -3952,6 +3952,76 @@ export async function deleteCliente(id: string, usuarioId: string): Promise<void
 }
 
 /**
+ * Buscar todos os clientes sem filtro de usuário (para admin ou migração)
+ */
+export async function getAllClientes(): Promise<any[]> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Clientes');
+  if (!dbId) throw new Error('NOTION_DB_CLIENTES not configured');
+
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      sorts: [{ property: 'Nome', direction: 'ascending' }]
+    })
+  );
+
+  return response.results.map(pageToCliente);
+}
+
+/**
+ * Atualizar clientes que não têm relação Usuario preenchida
+ * Útil para migrar clientes antigos
+ */
+export async function updateClientesSemUsuario(usuarioId: string): Promise<{ atualizados: number; erros: number }> {
+  const client = initNotionClient();
+  const dbId = getDatabaseId('Clientes');
+  if (!dbId) throw new Error('NOTION_DB_CLIENTES not configured');
+
+  console.log('[updateClientesSemUsuario] Buscando clientes sem relação Usuario...');
+
+  // Buscar todos os clientes
+  const response = await retryWithBackoff(() =>
+    client.databases.query({
+      database_id: dbId,
+      sorts: [{ property: 'Nome', direction: 'ascending' }]
+    })
+  );
+
+  const clientes = response.results.map(pageToCliente);
+  console.log(`[updateClientesSemUsuario] Total de clientes encontrados: ${clientes.length}`);
+
+  // Filtrar clientes sem relação Usuario
+  const clientesSemUsuario = clientes.filter(c => !c.UsuarioId || c.UsuarioId === '');
+  console.log(`[updateClientesSemUsuario] Clientes sem relação Usuario: ${clientesSemUsuario.length}`);
+
+  let atualizados = 0;
+  let erros = 0;
+
+  // Atualizar cada cliente
+  for (const cliente of clientesSemUsuario) {
+    try {
+      await retryWithBackoff(() =>
+        client.pages.update({
+          page_id: cliente.id,
+          properties: {
+            Usuario: { relation: [{ id: usuarioId }] }
+          }
+        })
+      );
+      console.log(`[updateClientesSemUsuario] Cliente ${cliente.Nome} (${cliente.id}) atualizado com sucesso`);
+      atualizados++;
+    } catch (error: any) {
+      console.error(`[updateClientesSemUsuario] Erro ao atualizar cliente ${cliente.Nome} (${cliente.id}):`, error);
+      erros++;
+    }
+  }
+
+  console.log(`[updateClientesSemUsuario] Concluído: ${atualizados} atualizados, ${erros} erros`);
+  return { atualizados, erros };
+}
+
+/**
  * ==========================================
  * LEADS
  * ==========================================

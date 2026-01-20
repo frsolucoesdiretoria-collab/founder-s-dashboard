@@ -358,6 +358,15 @@ export async function deleteCliente(id: string): Promise<void> {
   if (!res.ok) throw new Error(await parseError(res));
 }
 
+export async function fixClientesUsuarioRelation(): Promise<{ atualizados: number; erros: number; message: string }> {
+  const res = await fetchWithAuth(`${FULL_API_BASE}/clientes/fix-usuario-relation`, {
+    method: 'POST'
+  });
+  
+  if (!res.ok) throw new Error(await parseError(res));
+  return res.json();
+}
+
 // ==========================================
 // ADMIN ROUTES (requerem passcode)
 // ==========================================

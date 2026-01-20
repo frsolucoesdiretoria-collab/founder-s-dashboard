@@ -16,14 +16,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { getClientes, deleteCliente } from '@/services/vendeMaisObras.service';
+import { getClientes, deleteCliente, fixClientesUsuarioRelation } from '@/services/vendeMaisObras.service';
 import { toast } from 'sonner';
-import { Plus, Search, Edit, Trash2, Users, Loader2 } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Users, Loader2, RefreshCw } from 'lucide-react';
 
 export default function VendeMaisObrasClientes() {
   const [searchTerm, setSearchTerm] = useState('');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [clienteToDelete, setClienteToDelete] = useState<string | null>(null);
+  const [fixingRelation, setFixingRelation] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -68,6 +69,19 @@ export default function VendeMaisObrasClientes() {
     }
   };
 
+  const handleFixUsuarioRelation = async () => {
+    setFixingRelation(true);
+    try {
+      const resultado = await fixClientesUsuarioRelation();
+      queryClient.invalidateQueries({ queryKey: ['clientes'] });
+      toast.success(resultado.message || `Migração concluída: ${resultado.atualizados} clientes atualizados`);
+    } catch (error: any) {
+      toast.error(error?.message || 'Erro ao corrigir relação Usuario');
+    } finally {
+      setFixingRelation(false);
+    }
+  };
+
   return (
     <VendeMaisObrasLayout title="Clientes" subtitle="Gerencie seus clientes">
       <div className="space-y-6">
@@ -81,12 +95,32 @@ export default function VendeMaisObrasClientes() {
               className="pl-10 bg-[#1f1f1f] border-[#2a2a2a] text-white placeholder:text-gray-500"
             />
           </div>
-          <Link to="/vende-mais-obras/clientes/novo">
-            <Button className="bg-[#FFD700] text-[#0a0a0a] hover:bg-[#FFD700]/90">
-              <Plus className="mr-2 h-4 w-4" />
-              Novo Cliente
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={handleFixUsuarioRelation}
+              disabled={fixingRelation}
+              className="border-[#2a2a2a] text-gray-300 hover:bg-[#2a2a2a]"
+            >
+              {fixingRelation ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Corrigindo...
+                </>
+              ) : (
+                <>
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  Corrigir Relação Usuario
+                </>
+              )}
             </Button>
-          </Link>
+            <Link to="/vende-mais-obras/clientes/novo">
+              <Button className="bg-[#FFD700] text-[#0a0a0a] hover:bg-[#FFD700]/90">
+                <Plus className="mr-2 h-4 w-4" />
+                Novo Cliente
+              </Button>
+            </Link>
+          </div>
         </div>
 
         <Card className="bg-[#1f1f1f] border-[#2a2a2a]">

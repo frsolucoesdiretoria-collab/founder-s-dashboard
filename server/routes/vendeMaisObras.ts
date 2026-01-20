@@ -30,6 +30,7 @@ import {
   createCliente,
   updateCliente,
   deleteCliente,
+  updateClientesSemUsuario,
   getLeads,
   getAllLeads,
   createLead,
@@ -407,6 +408,31 @@ vendeMaisObrasRouter.delete('/clientes/:id', authenticateJWT, requireUsuario, as
       return;
     }
     res.status(500).json({ error: 'Failed to delete cliente', message: error.message });
+  }
+});
+
+// Atualizar clientes sem relação Usuario (para migração)
+vendeMaisObrasRouter.post('/clientes/fix-usuario-relation', authenticateJWT, requireUsuario, async (req, res) => {
+  try {
+    const usuarioId = (req as any).usuarioId;
+    
+    if (!usuarioId) {
+      res.status(401).json({ error: 'Usuário não autenticado' });
+      return;
+    }
+
+    console.log('[POST /clientes/fix-usuario-relation] Iniciando correção de relação Usuario para usuarioId:', usuarioId);
+    
+    const resultado = await updateClientesSemUsuario(usuarioId);
+    
+    res.json({
+      success: true,
+      message: `Migração concluída: ${resultado.atualizados} clientes atualizados, ${resultado.erros} erros`,
+      ...resultado
+    });
+  } catch (error: any) {
+    console.error('[POST /clientes/fix-usuario-relation] Erro:', error);
+    res.status(500).json({ error: 'Failed to fix usuario relation', message: error.message });
   }
 });
 
