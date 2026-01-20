@@ -1,0 +1,10 @@
+# 🚀 COMANDO PARA EXECUTAR NA VPS - DEPLOY DA VERSÃO ATUAL
+
+# Copie e cole este comando completo no terminal da VPS:
+
+cd /var/www/founder-dashboard && git pull origin main && npm install && npm run build && pm2 restart founder-dashboard && pm2 save && echo "✅ Deploy concluído!"
+
+# OU execute o script automatizado:
+
+cd /var/www/founder-dashboard && bash DEPLOY_AGORA.sh
+
