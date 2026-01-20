@@ -40,8 +40,19 @@ jobs:
           script: |
             set +e
             
-            PROJECT_PATH="${{ secrets.VPS_PROJECT_PATH }}"
+            # Encontrar diretório do projeto automaticamente se não estiver configurado
+            if [ -z "${{ secrets.VPS_PROJECT_PATH }}" ]; then
+              PROJECT_PATH=$(find /home /root -name "package.json" -path "*founder-s-dashboard*" 2>/dev/null | head -1 | xargs dirname 2>/dev/null || echo "")
+              if [ -z "$PROJECT_PATH" ]; then
+                echo "❌ Projeto não encontrado. Configure VPS_PROJECT_PATH no GitHub Secrets."
+                exit 1
+              fi
+            else
+              PROJECT_PATH="${{ secrets.VPS_PROJECT_PATH }}"
+            fi
+            
             cd "$PROJECT_PATH" || exit 1
+            echo "📁 Diretório do projeto: $PROJECT_PATH"
             
             echo "🚀 DEPLOY AUTOMÁTICO - TUDO SERÁ RESOLVIDO AUTOMATICAMENTE"
             echo "=========================================================="
