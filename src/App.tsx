@@ -39,6 +39,10 @@ import VendeMaisObrasNovoCliente from "./pages/VendeMaisObrasNovoCliente";
 import VendeMaisObrasNovoOrcamento from "./pages/VendeMaisObrasNovoOrcamento";
 import DashboardEnzo from "./pages/DashboardEnzo";
 import DashboardEnzoV2 from "./pages/DashboardEnzoV2";
+// AXIS V3 — Páginas
+import AxisV3Home from "./pages/AxisV3Home";
+import AxisV3Diagnostico from "./pages/AxisV3Diagnostico";
+import AxisV3Portfolio from "./pages/AxisV3Portfolio";
 // TEMPORÁRIO: Removido para reunião - import TestePage from "./pages/Teste";
 
 const queryClient = new QueryClient({
@@ -54,7 +58,7 @@ const appPassword = "1000000000";
 const doterraPassword = "1234567890";
 const domaCondoPassword = "1234567890";
 const vendeMaisObrasPassword = "1234567890";
-const enzoPassword = "100vendedores";
+const enzoPassword = "1000000000";
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -62,6 +66,11 @@ const App = () => (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+        {/* AXIS V3 — Rotas públicas */}
+        <Route path="/axis-v3" element={<AxisV3Home />} />
+        <Route path="/axis-v3/diagnostico" element={<AxisV3Diagnostico />} />
+        <Route path="/axis-v3/portfolio" element={<AxisV3Portfolio />} />
+        
         {/* Doterra: senha separada do app geral */}
         <Route
           path="/doterra"

@@ -7,3 +7,4 @@ export * from './journal';
 export * from './expansion';
 export * from './coffee';
 export * from './health';
+export * from './axis-v3';
