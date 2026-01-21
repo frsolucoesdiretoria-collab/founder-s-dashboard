@@ -1,14 +1,12 @@
-// AXIS V3 — Diagnóstico Estratégico (Dashboard + Conteúdo V3)
+// AXIS V3 — Diagnóstico Estratégico (Dashboard + UX Premium)
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { EnzoLayout } from '@/components/EnzoLayout';
-import { AxisV3DashboardSection } from '@/components/axis-v3/AxisV3DashboardSection';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { 
@@ -31,7 +29,6 @@ const AxisV3Diagnostico: React.FC = () => {
   const questions = getDiagnosticoV3Questions();
   const produtos = getAllProdutosTechV3();
   
-  // Estado do diagnóstico
   const [clientInfo, setClientInfo] = useState({
     nome: '',
     empresa: '',
@@ -43,7 +40,6 @@ const AxisV3Diagnostico: React.FC = () => {
   const [showResult, setShowResult] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Handlers
   const handleOptionToggle = (questionId: string, option: string, isMultiple: boolean) => {
     const current = respostas[questionId] || { questionId, opcoesSelecionadas: [], respostaAberta: '' };
     
@@ -73,10 +69,8 @@ const AxisV3Diagnostico: React.FC = () => {
   };
 
   const isAllFieldsValid = (): boolean => {
-    // Validar info do cliente
     if (!clientInfo.nome || !clientInfo.empresa || !clientInfo.telefone) return false;
     
-    // Validar todas as perguntas
     for (const q of questions) {
       const resp = respostas[q.id];
       if (!resp) return false;
@@ -93,23 +87,17 @@ const AxisV3Diagnostico: React.FC = () => {
     }
 
     setIsSubmitting(true);
-    
-    // Simular salvamento
     await new Promise(resolve => setTimeout(resolve, 1500));
-    
     setIsSubmitting(false);
     setShowResult(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Progresso
   const totalQuestions = questions.length;
   const answeredQuestions = Object.values(respostas).filter(r => r.respostaAberta?.trim()).length;
   const progress = (answeredQuestions / totalQuestions) * 100;
 
-  // Gerar recomendações (simplified)
   const getRecommendations = () => {
-    // Pegar 3 produtos aleatórios para demonstração
     return produtos.slice(0, 3).map(p => ({
       nome: p.produto,
       dor: p.dorEstrategica,
@@ -125,13 +113,8 @@ const AxisV3Diagnostico: React.FC = () => {
     return (
       <EnzoLayout>
         <div className="space-y-8 md:space-y-12 pb-8">
-          {/* Dashboard Section (Topo) */}
-          <AxisV3DashboardSection />
-
-          {/* Resultado do Diagnóstico */}
           <Card className="overflow-hidden border-0 shadow-[0_10px_50px_0_rgba(0,0,0,0.08),0_1px_3px_0_rgba(0,0,0,0.1)] bg-white rounded-3xl">
             <CardContent className="p-8 md:p-12">
-              {/* Header */}
               <div className="flex items-start justify-between mb-10">
                 <div className="space-y-2">
                   <div className="flex items-center gap-3">
@@ -148,7 +131,6 @@ const AxisV3Diagnostico: React.FC = () => {
                 </div>
               </div>
 
-              {/* Leitura do Cenário */}
               <div className="mb-10 space-y-6">
                 <div className="flex items-center gap-3 mb-4">
                   <Target className="h-5 w-5 text-blue-600" />
@@ -190,7 +172,6 @@ const AxisV3Diagnostico: React.FC = () => {
                 </div>
               </div>
 
-              {/* Produtos Recomendados */}
               <div className="mb-10 space-y-6">
                 <div className="flex items-center gap-3 mb-4">
                   <Sparkles className="h-5 w-5 text-blue-600" />
@@ -245,7 +226,6 @@ const AxisV3Diagnostico: React.FC = () => {
                 </div>
               </div>
 
-              {/* Próximo Passo */}
               <div className="mb-8">
                 <div className="relative p-8 md:p-10 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 rounded-3xl shadow-2xl border border-blue-600/20 overflow-hidden">
                   <div className="absolute inset-0 opacity-10">
@@ -269,7 +249,6 @@ const AxisV3Diagnostico: React.FC = () => {
                 </div>
               </div>
 
-              {/* Botões */}
               <div className="flex flex-col md:flex-row gap-4 justify-center pt-4 border-t border-gray-100">
                 <Button 
                   onClick={() => window.location.href = '/axis-v3/portfolio'}
@@ -300,9 +279,6 @@ const AxisV3Diagnostico: React.FC = () => {
   return (
     <EnzoLayout>
       <div className="space-y-8 md:space-y-12 pb-8">
-        {/* Dashboard Section (Topo) */}
-        <AxisV3DashboardSection />
-
         {/* Header */}
         <Card className="overflow-hidden border-0 shadow-[0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_0_rgba(0,0,0,0.06)] bg-white rounded-3xl">
           <CardContent className="p-8 md:p-12">
@@ -321,7 +297,6 @@ const AxisV3Diagnostico: React.FC = () => {
                 </div>
               </div>
 
-              {/* Progress Bar */}
               <div className="relative">
                 <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
                   <div 
@@ -422,7 +397,7 @@ const AxisV3Diagnostico: React.FC = () => {
 
         <Separator />
 
-        {/* Perguntas do Diagnóstico */}
+        {/* Perguntas do Diagnóstico - UX Premium */}
         <Card className="overflow-hidden border-0 shadow-[0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_0_rgba(0,0,0,0.06)] bg-white rounded-3xl">
           <CardContent className="p-8 md:p-12">
             <div className="space-y-6">
@@ -436,7 +411,6 @@ const AxisV3Diagnostico: React.FC = () => {
                   >
                     <CardContent className="p-6 md:p-8">
                       <div className="space-y-6">
-                        {/* Header da Pergunta */}
                         <div className="flex items-start gap-3">
                           <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-sm font-semibold">
                             {index + 1}
@@ -451,72 +425,55 @@ const AxisV3Diagnostico: React.FC = () => {
                           </div>
                         </div>
 
-                        {/* Opções */}
+                        {/* Opções - Multi-select com linha clicável */}
                         <div className="space-y-2">
-                          {question.permitirMultiplo ? (
-                            // Checkbox
-                            question.opcoes.map((opcao) => {
-                              const checked = resposta?.opcoesSelecionadas.includes(opcao) || false;
-                              return (
-                                <div 
-                                  key={opcao}
-                                  className={`flex items-center space-x-4 group cursor-pointer p-4 rounded-xl border transition-all duration-200 ${
-                                    checked 
-                                      ? 'border-blue-300 bg-blue-50/50' 
-                                      : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50/30'
-                                  }`}
-                                >
-                                  <Checkbox
-                                    id={`${question.id}-${opcao}`}
-                                    checked={checked}
-                                    onCheckedChange={(checked) =>
-                                      handleOptionToggle(question.id, opcao, true)
-                                    }
-                                    className="border-gray-300 transition-all duration-200 group-hover:border-blue-500 data-[state=checked]:border-blue-500 data-[state=checked]:bg-blue-500 w-5 h-5"
-                                  />
-                                  <Label
-                                    htmlFor={`${question.id}-${opcao}`}
-                                    className="text-base font-normal text-gray-700 cursor-pointer flex-1 transition-colors group-hover:text-gray-900"
-                                  >
-                                    {opcao}
-                                  </Label>
+                          {question.opcoes.map((opcao) => {
+                            const isSelected = resposta?.opcoesSelecionadas.includes(opcao) || false;
+                            
+                            return (
+                              <div
+                                key={opcao}
+                                onClick={() => handleOptionToggle(question.id, opcao, question.permitirMultiplo)}
+                                className={`
+                                  flex items-center space-x-4 cursor-pointer p-4 rounded-xl border 
+                                  transition-all duration-150 ease-out
+                                  ${isSelected 
+                                    ? 'border-blue-300 bg-blue-50/50 shadow-sm' 
+                                    : 'border-gray-200 hover:border-blue-200 hover:bg-blue-50/20'
+                                  }
+                                `}
+                              >
+                                <div className={`
+                                  w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0
+                                  transition-all duration-150
+                                  ${isSelected 
+                                    ? 'bg-blue-600 border-blue-600' 
+                                    : 'bg-white border-gray-300'
+                                  }
+                                `}>
+                                  {isSelected && (
+                                    <CheckCircle2 className="w-3 h-3 text-white" />
+                                  )}
                                 </div>
-                              );
-                            })
-                          ) : (
-                            // Radio
-                            <RadioGroup
-                              value={resposta?.opcoesSelecionadas[0] || ''}
-                              onValueChange={(value) => handleOptionToggle(question.id, value, false)}
-                              className="space-y-2"
-                            >
-                              {question.opcoes.map((opcao) => (
-                                <div 
-                                  key={opcao}
-                                  className="flex items-center space-x-4 group cursor-pointer p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50/30 transition-all duration-200"
+                                <Label
+                                  className={`
+                                    text-base font-normal cursor-pointer flex-1 leading-relaxed
+                                    transition-colors duration-150
+                                    ${isSelected ? 'text-gray-900 font-medium' : 'text-gray-700'}
+                                  `}
                                 >
-                                  <RadioGroupItem 
-                                    value={opcao} 
-                                    id={`${question.id}-${opcao}`}
-                                    className="border-gray-300 transition-all duration-200 group-hover:border-blue-500 data-[state=checked]:border-blue-500 data-[state=checked]:bg-blue-500 w-5 h-5"
-                                  />
-                                  <Label
-                                    htmlFor={`${question.id}-${opcao}`}
-                                    className="text-base font-normal text-gray-700 cursor-pointer flex-1 transition-colors group-hover:text-gray-900"
-                                  >
-                                    {opcao}
-                                  </Label>
-                                </div>
-                              ))}
-                            </RadioGroup>
-                          )}
+                                  {opcao}
+                                </Label>
+                              </div>
+                            );
+                          })}
                         </div>
 
-                        {/* Campo de Texto Aberto */}
+                        {/* Campo de Texto Aberto - Sempre Visível */}
                         <div className="space-y-2 pt-4 border-t border-gray-100">
-                          <Label htmlFor={`${question.id}-texto`} className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <Label htmlFor={`${question.id}-texto`} className="text-xs font-medium text-gray-600 uppercase tracking-wider">
                             <span className="text-red-500">* </span>
-                            Conte mais sobre sua situação:
+                            Conte mais sobre sua situação (obrigatório):
                           </Label>
                           <Textarea
                             id={`${question.id}-texto`}
@@ -533,7 +490,6 @@ const AxisV3Diagnostico: React.FC = () => {
               })}
             </div>
 
-            {/* Botão Finalizar */}
             <div className="pt-8 mt-8 border-t border-gray-100">
               <Button 
                 onClick={handleSubmit}

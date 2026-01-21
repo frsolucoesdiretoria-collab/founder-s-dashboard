@@ -4,7 +4,6 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { EnzoLayout } from '@/components/EnzoLayout';
-import { AxisV3DashboardSection } from '@/components/axis-v3/AxisV3DashboardSection';
 import { 
   ArrowRight, 
   Target, 
@@ -54,9 +53,6 @@ const AxisV3Home: React.FC = () => {
   return (
     <EnzoLayout>
       <div className="space-y-8 md:space-y-12 pb-8">
-        {/* Dashboard Section (Topo) */}
-        <AxisV3DashboardSection />
-
         {/* Hero Section */}
         <Card className="overflow-hidden border-0 shadow-[0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_0_rgba(0,0,0,0.06)] bg-white rounded-3xl">
           <CardContent className="p-8 md:p-12">
