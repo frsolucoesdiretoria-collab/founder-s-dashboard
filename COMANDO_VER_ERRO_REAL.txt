@@ -8,3 +8,4 @@ cd /var/www/founder-dashboard && pm2 delete founder-dashboard 2>/dev/null || tru
 # Me diga o que apareceu e eu corrijo!
 
 
+

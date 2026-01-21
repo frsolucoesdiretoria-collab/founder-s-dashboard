@@ -122,3 +122,4 @@ Diga ao agente: "Execute o prompt do arquivo PROMPT_OTIMIZACAO_MOBILE.md para ot
 
 
 
+

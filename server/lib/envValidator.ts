@@ -42,7 +42,7 @@ export function validateEnvVars(): EnvValidationResult {
     'Contacts', 'Clients', 'GrowthProposals', 'CoffeeDiagnostics',
     'ExpansionOpportunities', 'CustomerWins', 'FinanceMetrics',
     'Partners', 'Referrals', 'CommissionLedger', 'PartnerNudges',
-    'KPIs_Enzo', 'Goals_Enzo', 'Actions_Enzo', 'Contacts_Enzo'
+    'KPIs_Enzo', 'Goals_Enzo', 'Actions_Enzo', 'Contacts_Enzo', 'Diagnosticos_Enzo_V2', 'Diagnosticos_Enzo'
   ];
   for (const dbName of optionalDbs) {
     const schema = NOTION_SCHEMA[dbName];

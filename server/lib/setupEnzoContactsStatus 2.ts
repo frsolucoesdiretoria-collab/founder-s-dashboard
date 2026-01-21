@@ -2,7 +2,8 @@
  * Setup Status property for Contacts_Enzo database
  * This function adds the Status field if it doesn't exist
  */
-import { initNotionClient, getDatabaseId } from './notionDataLayer';
+import { initNotionClient } from './notionDataLayer';
+import { getDatabaseId } from '../../src/lib/notion/schema';
 
 export async function ensureEnzoContactsStatusField(): Promise<{ success: boolean; message: string }> {
   try {

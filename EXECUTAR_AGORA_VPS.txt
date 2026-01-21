@@ -49,3 +49,4 @@ Agora com `--cwd "/var/www/founder-dashboard"` ele vai executar no lugar certo!
 
 
 
+

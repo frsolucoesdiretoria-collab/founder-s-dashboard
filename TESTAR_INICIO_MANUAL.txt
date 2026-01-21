@@ -7,3 +7,4 @@ cd /var/www/founder-dashboard && pm2 delete founder-dashboard 2>/dev/null || tru
 # Pressione Ctrl+C para parar após ver o erro
 
 
+

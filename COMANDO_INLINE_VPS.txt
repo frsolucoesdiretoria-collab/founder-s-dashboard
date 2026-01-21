@@ -45,3 +45,4 @@ curl -s http://localhost:3001/api/enzo/kpis | grep -o '"id"' | wc -l | xargs ech
 
 
 
+

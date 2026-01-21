@@ -4,3 +4,4 @@ cd /var/www/founder-dashboard && [ -z "$(grep "^NOTION_DB_KPIS=" .env.local)" ] 
 
 
 
+

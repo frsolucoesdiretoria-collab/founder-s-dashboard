@@ -93,3 +93,4 @@ echo "📋 Logs finais:"
 pm2 logs "$PM2_NAME" --lines 30 --nostream
 
 
+

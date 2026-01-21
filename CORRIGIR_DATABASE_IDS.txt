@@ -4,3 +4,4 @@ cd /var/www/founder-dashboard && echo "=== 1. Verificando Database IDs ===" && g
 
 
 
+

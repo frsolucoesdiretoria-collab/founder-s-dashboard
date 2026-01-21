@@ -97,3 +97,4 @@ echo "   4. Iniciar com PM2: pm2 start npm --name 'founder-dashboard' -- start"
 
 
 
+

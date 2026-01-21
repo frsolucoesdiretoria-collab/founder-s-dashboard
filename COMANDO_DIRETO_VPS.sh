@@ -8,3 +8,4 @@ cd /caminho/do/projeto && git pull origin staging && bash scripts/fix-vps-enzo-a
 
 
 
+

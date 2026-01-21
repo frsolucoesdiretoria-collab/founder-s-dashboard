@@ -7,3 +7,4 @@ cd /var/www/founder-dashboard && git fetch origin main && git reset --hard origi
 # OU execute o script:
 # bash deploy.sh
 
+

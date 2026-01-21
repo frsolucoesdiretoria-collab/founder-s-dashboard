@@ -256,3 +256,55 @@ export async function deleteEnzoContact(id: string): Promise<void> {
     throw error;
   }
 }
+
+/**
+ * Interface for Enzo V2 Diagnostic data
+ */
+export interface EnzoDiagnosticoV2Data {
+  nome: string;
+  empresa?: string;
+  cnpj?: string;
+  whatsapp: string;
+  respostas: Record<string, any>;
+  observacoes?: string;
+  produtosRecomendados?: string[];
+  proximoPasso?: string;
+  score?: number;
+}
+
+/**
+ * Create Enzo V2 diagnostic
+ * This will:
+ * 1. Find or create contact by WhatsApp
+ * 2. Update contact only if fields are empty (never overwrite)
+ * 3. Create diagnostic linked to contact
+ */
+export async function createEnzoDiagnosticoV2(data: EnzoDiagnosticoV2Data): Promise<{ contactId: string; diagnosticId: string }> {
+  try {
+    const apiUrl = '/api/enzo/diagnosticos';
+    
+    console.log('🔍 Creating Enzo V2 diagnostic:', { data, apiUrl });
+    
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      const errorMessage = error.message || error.error || `HTTP ${response.status}: ${response.statusText}`;
+      console.error('❌ Error creating diagnostic:', error);
+      throw new Error(errorMessage);
+    }
+
+    const result = await response.json();
+    console.log('✅ Diagnostic created successfully:', result);
+    return result;
+  } catch (error: any) {
+    console.error('❌ Error creating Enzo V2 diagnostic:', error);
+    throw error;
+  }
+}

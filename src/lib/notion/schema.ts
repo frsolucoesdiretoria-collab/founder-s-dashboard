@@ -481,7 +481,55 @@ export const NOTION_SCHEMA: Record<string, DatabaseSchema> = {
       { name: 'DateCreated', type: 'date', required: false, description: 'Data de criação' },
       { name: 'Complete', type: 'checkbox', required: false, description: 'Contato completo (nome e WhatsApp preenchidos)' },
       { name: 'Status', type: 'select', required: false, description: 'Status do funil: Contato Ativado, Café Agendado, Café Executado, Venda Feita' },
-      { name: 'ValorVenda', type: 'number', required: false, description: 'Valor da venda (R$) - preenchido quando Status = Venda Feita' }
+      { name: 'ValorVenda', type: 'number', required: false, description: 'Valor da venda (R$) - preenchido quando Status = Venda Feita' },
+      { name: 'Company', type: 'rich_text', required: false, description: 'Empresa' },
+      { name: 'CNPJ', type: 'rich_text', required: false, description: 'CNPJ' }
+    ]
+  },
+  Diagnosticos_Enzo_V2: {
+    name: 'Diagnosticos_Enzo_V2',
+    envVar: 'NOTION_DB_DIAGNOSTICOS_ENZO_V2',
+    required: false,
+    properties: [
+      { name: 'Nome', type: 'title', required: true, description: 'Nome do diagnóstico' },
+      { name: 'Data do Diagnóstico', type: 'date', required: true, description: 'Data do diagnóstico' },
+      { name: 'Contato', type: 'relation', required: true, description: 'Relacionamento com Contacts_Enzo' },
+      { name: 'Empresa', type: 'rich_text', required: true, description: 'Empresa' },
+      { name: 'CNPJ', type: 'rich_text', required: true, description: 'CNPJ' },
+      { name: 'WhatsApp', type: 'phone_number', required: true, description: 'WhatsApp' },
+      { name: 'Pergunta_01', type: 'rich_text', required: true, description: 'Pergunta 01' },
+      { name: 'Pergunta_02', type: 'rich_text', required: true, description: 'Pergunta 02' },
+      { name: 'Pergunta_03', type: 'rich_text', required: true, description: 'Pergunta 03' },
+      { name: 'Pergunta_04', type: 'rich_text', required: true, description: 'Pergunta 04' },
+      { name: 'Pergunta_05', type: 'rich_text', required: true, description: 'Pergunta 05' },
+      { name: 'Pergunta_06', type: 'rich_text', required: true, description: 'Pergunta 06' },
+      { name: 'Pergunta_07', type: 'rich_text', required: true, description: 'Pergunta 07' },
+      { name: 'Pergunta_08', type: 'rich_text', required: true, description: 'Pergunta 08' },
+      { name: 'Pergunta_09', type: 'rich_text', required: true, description: 'Pergunta 09' },
+      { name: 'Pergunta_10', type: 'rich_text', required: true, description: 'Pergunta 10' }
+    ]
+  },
+  Diagnosticos_Enzo: {
+    name: 'Diagnosticos_Enzo',
+    envVar: 'NOTION_DB_DIAGNOSTICOS_ENZO',
+    required: false,
+    properties: [
+      { name: 'Nome', type: 'title', required: true, description: 'Nome do diagnóstico' },
+      { name: 'Data do Diagnóstico', type: 'date', required: true, description: 'Data do diagnóstico' },
+      { name: 'Contato', type: 'relation', required: true, description: 'Relacionamento com Contacts_Enzo' },
+      { name: 'Empresa', type: 'rich_text', required: false, description: 'Empresa' },
+      { name: 'CNPJ', type: 'rich_text', required: false, description: 'CNPJ' },
+      { name: 'WhatsApp', type: 'phone_number', required: false, description: 'WhatsApp' },
+      { name: 'Pergunta_01', type: 'rich_text', required: false, description: 'Pergunta 01' },
+      { name: 'Pergunta_02', type: 'rich_text', required: false, description: 'Pergunta 02' },
+      { name: 'Pergunta_03', type: 'rich_text', required: false, description: 'Pergunta 03' },
+      { name: 'Pergunta_04', type: 'rich_text', required: false, description: 'Pergunta 04' },
+      { name: 'Pergunta_05', type: 'rich_text', required: false, description: 'Pergunta 05' },
+      { name: 'Pergunta_06', type: 'rich_text', required: false, description: 'Pergunta 06' },
+      { name: 'Pergunta_07', type: 'rich_text', required: false, description: 'Pergunta 07' },
+      { name: 'Pergunta_08', type: 'rich_text', required: false, description: 'Pergunta 08' },
+      { name: 'Pergunta_09', type: 'rich_text', required: false, description: 'Pergunta 09' },
+      { name: 'Pergunta_10', type: 'rich_text', required: false, description: 'Pergunta 10' }
     ]
   }
 };

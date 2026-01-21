@@ -4,3 +4,4 @@ cd /var/www/founder-dashboard && echo "=== DATABASE IDs CONFIGURADOS ===" && gre
 
 
 
+

@@ -87,3 +87,4 @@ echo ""
 echo "💡 Para ver logs em tempo real: pm2 logs $PM2_NAME"
 echo "💡 Para ver status: pm2 status"
 
+

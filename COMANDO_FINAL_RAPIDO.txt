@@ -14,3 +14,4 @@ cd /var/www/founder-dashboard && cp .env.local .env.local.backup && sed -i 's/^N
 
 
 
+

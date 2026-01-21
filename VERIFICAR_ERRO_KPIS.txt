@@ -7,3 +7,4 @@ cd /var/www/founder-dashboard && echo "=== LOGS COMPLETOS (últimas 50 linhas) =
 
 
 
+

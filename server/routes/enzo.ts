@@ -2,7 +2,7 @@
 // Dashboard de vendas separado da Axis
 
 import { Router } from 'express';
-import { getKPIsEnzo, getGoalsEnzo, getActionsEnzo, ensureActionHasGoalEnzo, toggleActionDoneEnzo, getContactsEnzo, createContactEnzo, updateContactEnzo, deleteContactEnzo, initNotionClient } from '../lib/notionDataLayer';
+import { getKPIsEnzo, getGoalsEnzo, getActionsEnzo, ensureActionHasGoalEnzo, toggleActionDoneEnzo, getContactsEnzo, createContactEnzo, updateContactEnzo, deleteContactEnzo, initNotionClient, findOrCreateContactEnzoByWhatsApp, createDiagnosticoEnzoV2, createDiagnosticoEnzo, createDiagnosticosEnzoDatabase, getDatabaseParentPageId } from '../lib/notionDataLayer';
 import { countEnzoContactsByStatus, getStatusesForKPI, getCountForKPI, getSumOfSaleValues } from '../lib/enzoContactsCounter';
 import { ensureEnzoContactsStatusField, ensureValorVendaField } from '../lib/setupEnzoContactsStatus';
 import { getDatabaseId } from '../../src/lib/notion/schema';
@@ -435,6 +435,269 @@ enzoRouter.delete('/contacts/:id', async (req, res) => {
     res.status(500).json({ 
       error: 'Failed to delete contact',
       message: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+/**
+ * POST /api/enzo/create-database-diagnosticos
+ * Create Diagnosticos_Enzo database with all required properties
+ */
+enzoRouter.post('/create-database-diagnosticos', async (req, res) => {
+  try {
+    const CONTACTS_ENZO_DB_ID = '2ed84566a5fa813593bf000c71a5fd2d';
+    
+    // Get parent page ID - use KPIs database as primary source since it's always accessible
+    let parentPageId: string;
+    
+    try {
+      const client = initNotionClient();
+      // Use KPIs database ID directly (hardcoded) - this database should always be accessible
+      const kpisDbId = getDatabaseId('KPIs') || '2d984566a5fa800bb45dd3d53bdadfa3';
+      console.log(`📦 Buscando parent page ID da database KPIs: ${kpisDbId}`);
+      const kpisDb = await client.databases.retrieve({ database_id: kpisDbId }) as any;
+      if (kpisDb.parent?.type === 'page_id') {
+        parentPageId = kpisDb.parent.page_id;
+        console.log(`✅ Usando parent page ID da database KPIs: ${parentPageId}`);
+      } else {
+        throw new Error(`Database KPIs não tem page parent válido (type: ${kpisDb.parent?.type})`);
+      }
+    } catch (kpisError: any) {
+      console.error(`❌ Erro ao buscar parent page ID da database KPIs: ${kpisError.message}`);
+      // Last resort: search for any accessible database
+      try {
+        const client = initNotionClient();
+        console.log(`📦 Buscando databases acessíveis via search API...`);
+        const searchResults = await client.search({
+          filter: { property: 'object', value: 'database' },
+          page_size: 10
+        });
+        
+        if (searchResults.results && searchResults.results.length > 0) {
+          for (const result of searchResults.results) {
+            const db = result as any;
+            if (db.parent?.type === 'page_id') {
+              parentPageId = db.parent.page_id;
+              console.log(`✅ Usando parent page ID encontrado via busca (database: ${db.title?.[0]?.plain_text || 'unknown'}): ${parentPageId}`);
+              break;
+            }
+          }
+          if (!parentPageId) {
+            throw new Error(`Nenhuma database encontrada tem page parent válido`);
+          }
+        } else {
+          throw new Error(`Não foi possível encontrar nenhuma database acessível. Erro KPIs: ${kpisError.message}`);
+        }
+      } catch (searchError: any) {
+        throw new Error(`Não foi possível encontrar o parent page. KPIs: ${kpisError.message}. Search: ${searchError.message}`);
+      }
+    }
+    
+    console.log(`📦 Criando database Diagnosticos_Enzo no parent page: ${parentPageId}`);
+    
+    // Create the database
+    const database = await createDiagnosticosEnzoDatabase(parentPageId);
+    
+    console.log(`✅ Database Diagnosticos_Enzo criada com sucesso!`);
+    console.log(`   - ID: ${database.id}`);
+    console.log(`   - URL: ${database.url}`);
+    
+    res.json({
+      success: true,
+      message: 'Database Diagnosticos_Enzo criada com sucesso',
+      databaseId: database.id,
+      databaseUrl: database.url,
+      nextStep: `Adicione NOTION_DB_DIAGNOSTICOS_ENZO=${database.id} ao arquivo .env.local`
+    });
+  } catch (error: any) {
+    console.error('❌ Error creating Diagnosticos_Enzo database:', error);
+    res.status(500).json({
+      error: 'Failed to create database',
+      message: process.env.NODE_ENV === 'development' ? error.message : 'Erro ao criar database. Verifique os logs do servidor.',
+      details: process.env.NODE_ENV === 'development' ? {
+        code: error.code,
+        status: error.status
+      } : undefined
+    });
+  }
+});
+
+/**
+ * POST /api/enzo/diagnosticos
+ * Create a new Enzo diagnostic (using Diagnosticos_Enzo database)
+ * Flow:
+ * 1. Find or create contact by WhatsApp
+ * 2. Update contact only if fields are empty (never overwrite)
+ * 3. Create diagnostic linked to contact
+ */
+enzoRouter.post('/diagnosticos', async (req, res) => {
+  try {
+    const {
+      nome,
+      empresa,
+      cnpj,
+      whatsapp,
+      pergunta_01,
+      pergunta_02,
+      pergunta_03,
+      pergunta_04,
+      pergunta_05,
+      pergunta_06,
+      pergunta_07,
+      pergunta_08,
+      pergunta_09,
+      pergunta_10
+    } = req.body;
+
+    // VALIDAÇÃO COMPLETA DO PAYLOAD DO FRONTEND - TODOS OS CAMPOS OBRIGATÓRIOS
+    const errors: string[] = [];
+
+    // Campos obrigatórios básicos
+    if (!nome || typeof nome !== 'string' || !nome.trim()) {
+      errors.push('Nome é obrigatório');
+    }
+    if (!empresa || typeof empresa !== 'string' || !empresa.trim()) {
+      errors.push('Empresa é obrigatória');
+    }
+    if (!cnpj || typeof cnpj !== 'string' || !cnpj.trim()) {
+      errors.push('CNPJ é obrigatório');
+    }
+    if (!whatsapp || typeof whatsapp !== 'string' || !whatsapp.trim()) {
+      errors.push('WhatsApp é obrigatório');
+    }
+
+    // Validar todas as perguntas (Pergunta_01 até Pergunta_10) - todas obrigatórias
+    // Aceita string, array de strings, ou objeto (convertido para string)
+    const perguntas = [
+      { key: 'pergunta_01', value: pergunta_01, label: 'Pergunta 01' },
+      { key: 'pergunta_02', value: pergunta_02, label: 'Pergunta 02' },
+      { key: 'pergunta_03', value: pergunta_03, label: 'Pergunta 03' },
+      { key: 'pergunta_04', value: pergunta_04, label: 'Pergunta 04' },
+      { key: 'pergunta_05', value: pergunta_05, label: 'Pergunta 05' },
+      { key: 'pergunta_06', value: pergunta_06, label: 'Pergunta 06' },
+      { key: 'pergunta_07', value: pergunta_07, label: 'Pergunta 07' },
+      { key: 'pergunta_08', value: pergunta_08, label: 'Pergunta 08' },
+      { key: 'pergunta_09', value: pergunta_09, label: 'Pergunta 09' },
+      { key: 'pergunta_10', value: pergunta_10, label: 'Pergunta 10' }
+    ];
+
+    perguntas.forEach(({ key, value, label }) => {
+      if (value === undefined || value === null) {
+        errors.push(`${label} é obrigatória`);
+      } else if (Array.isArray(value)) {
+        if (value.length === 0) {
+          errors.push(`${label} não pode estar vazia`);
+        }
+      } else if (typeof value === 'string' && !value.trim()) {
+        errors.push(`${label} não pode estar vazia`);
+      }
+      // Aceita string, array, ou objeto - conversão será feita depois
+    });
+
+    // Retornar erros se houver
+    if (errors.length > 0) {
+      return res.status(400).json({
+        error: 'Dados inválidos',
+        message: 'Os seguintes campos são obrigatórios ou inválidos:',
+        errors
+      });
+    }
+
+    // Step 1: Find or create contact by WhatsApp
+    const contact = await findOrCreateContactEnzoByWhatsApp(whatsapp.trim(), {
+      nome: nome.trim(),
+      empresa: empresa.trim(),
+      cnpj: cnpj.trim()
+    });
+
+    // Step 2: Create diagnostic linked to contact
+    console.log(`📋 Criando diagnóstico para contato ${contact.id} (WhatsApp: ${whatsapp.trim()})`);
+    
+    // Converter respostas das perguntas para strings simples
+    // Array deve vir como string separada por vírgula, string simples como string
+    const formatarPergunta = (valor: any): string => {
+      if (Array.isArray(valor)) {
+        return valor.filter(v => v && String(v).trim()).join(', ');
+      }
+      if (typeof valor === 'object' && valor !== null) {
+        return JSON.stringify(valor);
+      }
+      return String(valor || '').trim();
+    };
+
+    // Use the new Diagnosticos_Enzo database instead of Diagnosticos_Enzo_V2
+    const diagnostic = await createDiagnosticoEnzo(contact.id, {
+      nome: nome.trim(),
+      empresa: empresa.trim(),
+      cnpj: cnpj.trim(),
+      whatsapp: whatsapp.trim(),
+      pergunta_01: formatarPergunta(pergunta_01),
+      pergunta_02: formatarPergunta(pergunta_02),
+      pergunta_03: formatarPergunta(pergunta_03),
+      pergunta_04: formatarPergunta(pergunta_04),
+      pergunta_05: formatarPergunta(pergunta_05),
+      pergunta_06: formatarPergunta(pergunta_06),
+      pergunta_07: formatarPergunta(pergunta_07),
+      pergunta_08: formatarPergunta(pergunta_08),
+      pergunta_09: formatarPergunta(pergunta_09),
+      pergunta_10: formatarPergunta(pergunta_10)
+    });
+
+    console.log(`✅ Diagnóstico criado com sucesso: ${diagnostic.id}`);
+    console.log(`   - Contato: ${contact.id} (${contact.Name})`);
+    console.log(`   - Diagnóstico: ${diagnostic.id}`);
+
+    res.json({
+      success: true,
+      contactId: contact.id,
+      diagnosticId: diagnostic.id
+    });
+  } catch (error: any) {
+    console.error('❌ Error creating Enzo diagnostic:', error);
+    console.error('   Error details:', {
+      message: error.message,
+      code: error.code,
+      status: error.status,
+      body: error.body
+    });
+    
+    // Handle specific errors with detailed messages
+    if (error.message?.includes('not configured') || error.message?.includes('not available')) {
+      return res.status(400).json({
+        error: 'Database não configurada',
+        message: error.message
+      });
+    }
+
+    if (error.message?.includes('obrigatório')) {
+      return res.status(400).json({
+        error: 'Dados inválidos',
+        message: error.message
+      });
+    }
+
+    if (error.message?.includes('não encontrada') || error.code === 'object_not_found') {
+      return res.status(404).json({
+        error: 'Database não encontrada',
+        message: error.message || 'A database Diagnosticos_Enzo não foi encontrada. Verifique o ID da database e as permissões da integração. Use POST /api/enzo/create-database-diagnosticos para criar a database.'
+      });
+    }
+
+    if (error.status === 401) {
+      return res.status(401).json({
+        error: 'Token inválido',
+        message: 'Token do Notion inválido ou sem permissões. Verifique o NOTION_TOKEN e as permissões da integração.'
+      });
+    }
+
+    // Generic error
+    res.status(500).json({
+      error: 'Failed to create diagnostic',
+      message: process.env.NODE_ENV === 'development' ? error.message : 'Erro ao salvar diagnóstico. Verifique os logs do servidor para mais detalhes.',
+      details: process.env.NODE_ENV === 'development' ? {
+        code: error.code,
+        status: error.status
+      } : undefined
     });
   }
 });

@@ -4,3 +4,4 @@
 cd /var/www/founder-dashboard && echo "=== 1. LOGS DO PM2 ===" && pm2 logs founder-dashboard --lines 50 --nostream && echo "" && echo "=== 2. LOGS DE ERRO ===" && pm2 logs founder-dashboard --err --lines 50 --nostream && echo "" && echo "=== 3. VERIFICANDO .env ===" && cat .env | grep -E "NOTION_TOKEN|NOTION_DB_KPIS|PORT|NODE_ENV" && echo "" && echo "=== 4. TESTE MANUAL ===" && timeout 15 npm start 2>&1 | head -40 || echo "=== FIM DO TESTE ==="
 
 
+

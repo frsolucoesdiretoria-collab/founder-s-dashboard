@@ -38,6 +38,7 @@ import VendeMaisObrasClientes from "./pages/VendeMaisObrasClientes";
 import VendeMaisObrasNovoCliente from "./pages/VendeMaisObrasNovoCliente";
 import VendeMaisObrasNovoOrcamento from "./pages/VendeMaisObrasNovoOrcamento";
 import DashboardEnzo from "./pages/DashboardEnzo";
+import DashboardEnzoV2 from "./pages/DashboardEnzoV2";
 // TEMPORÁRIO: Removido para reunião - import TestePage from "./pages/Teste";
 
 const queryClient = new QueryClient({
@@ -283,6 +284,20 @@ const App = () => (
               description="Digite a senha para acessar o dashboard de vendas"
             >
               <DashboardEnzo />
+            </PasswordProtection>
+          }
+        />
+        {/* Enzo Canei - Dashboard de Vendas V2 */}
+        <Route
+          path="/dashboard-enzo-v2"
+          element={
+            <PasswordProtection
+              storageKey="enzo_authenticated"
+              correctPassword={enzoPassword}
+              title="Dashboard Enzo Canei V2"
+              description="Digite a senha para acessar o dashboard de vendas"
+            >
+              <DashboardEnzoV2 />
             </PasswordProtection>
           }
         />
