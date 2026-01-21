@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Coffee, TrendingUp, DollarSign, CheckSquare, Menu, X, Presentation, FileText, Users, Package, Contact, BookOpen, FlaskConical, Hammer, Building2 } from 'lucide-react';
+import { LayoutDashboard, Coffee, TrendingUp, DollarSign, CheckSquare, Menu, X, Presentation, FileText, Users, Package, Contact, BookOpen, FlaskConical, Hammer, Building2, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { path: '/dashboard', label: 'Mapa de metas e métricas', icon: LayoutDashboard },
+  { path: '/axis-v3', label: 'AXIS V3', icon: Layers },
   { path: '/dashboard-enzo', label: 'Dashboard Enzo Canei', icon: TrendingUp },
   { path: '/dashboard-enzo-v2', label: 'Dashboard Enzo Canei V2', icon: TrendingUp },
   // TEMPORÁRIO: Removido para reunião - { path: '/coffee', label: 'Café', icon: Coffee },

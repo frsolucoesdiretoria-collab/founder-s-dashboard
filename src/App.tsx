@@ -54,11 +54,11 @@ const queryClient = new QueryClient({
   },
 });
 
-const appPassword = "1000000000";
-const doterraPassword = "1234567890";
-const domaCondoPassword = "1234567890";
-const vendeMaisObrasPassword = "1234567890";
-const enzoPassword = "1000000000";
+const appPassword = "100vendedores";
+const doterraPassword = "100vendedores";
+const domaCondoPassword = "100vendedores";
+const vendeMaisObrasPassword = "100vendedores";
+const enzoPassword = "100vendedores";
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
