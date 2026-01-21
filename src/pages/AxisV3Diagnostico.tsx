@@ -19,11 +19,14 @@ import {
   Target,
   TrendingUp,
   CheckCircle2,
-  Loader2
+  Loader2,
+  AlertCircle,
+  Zap
 } from 'lucide-react';
 import { getDiagnosticoV3Questions } from '@/mocks/axis-v3-diagnostico.mock';
 import { getAllProdutosTechV3 } from '@/mocks/axis-v3-produtos.mock';
 import type { DiagnosticoV3Response } from '@/types/axis-v3';
+import { analyzeDiagnostic, type DiagnosticInsight } from '@/lib/axis-v3-intelligence';
 
 const AxisV3Diagnostico: React.FC = () => {
   const questions = getDiagnosticoV3Questions();
@@ -39,6 +42,7 @@ const AxisV3Diagnostico: React.FC = () => {
   const [respostas, setRespostas] = useState<Record<string, DiagnosticoV3Response>>({});
   const [showResult, setShowResult] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [diagnosticInsight, setDiagnosticInsight] = useState<DiagnosticInsight | null>(null);
 
   const handleOptionToggle = (questionId: string, option: string, isMultiple: boolean) => {
     const current = respostas[questionId] || { questionId, opcoesSelecionadas: [], respostaAberta: '' };
@@ -87,7 +91,14 @@ const AxisV3Diagnostico: React.FC = () => {
     }
 
     setIsSubmitting(true);
+    
+    // Simula processamento
     await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // Analisa o diagnóstico com a Sales Intelligence Engine
+    const insight = analyzeDiagnostic(respostas, clientInfo.empresa);
+    setDiagnosticInsight(insight);
+    
     setIsSubmitting(false);
     setShowResult(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -97,18 +108,7 @@ const AxisV3Diagnostico: React.FC = () => {
   const answeredQuestions = Object.values(respostas).filter(r => r.respostaAberta?.trim()).length;
   const progress = (answeredQuestions / totalQuestions) * 100;
 
-  const getRecommendations = () => {
-    return produtos.slice(0, 3).map(p => ({
-      nome: p.produto,
-      dor: p.dorEstrategica,
-      como: p.comoSoluciona,
-      investimento: p.investimentoMedio,
-      impacto: p.impactoEsperado
-    }));
-  };
-
-  if (showResult) {
-    const recommended = getRecommendations();
+  if (showResult && diagnosticInsight) {
 
     return (
       <EnzoLayout>
@@ -131,100 +131,170 @@ const AxisV3Diagnostico: React.FC = () => {
                 </div>
               </div>
 
-              <div className="mb-12 space-y-8">
+              {/* Resumo Executivo */}
+              <div className="mb-12 space-y-6">
                 <div className="flex items-center gap-3 mb-6">
                   <Target className="h-5 w-5 text-slate-700" />
                   <h3 className="text-xl font-medium text-slate-900 tracking-tight">
-                    Leitura do Cenário Atual
+                    Resumo Executivo
                   </h3>
                 </div>
                 
-                <div className="grid md:grid-cols-3 gap-6">
-                  <div className="space-y-3 p-7 bg-gradient-to-br from-blue-50/50 to-slate-50/30 rounded-2xl border border-blue-100/30">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-blue-600"></div>
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Situação Atual</span>
-                    </div>
-                    <p className="text-sm text-slate-700 leading-relaxed font-light">
-                      A empresa possui oportunidades claras de estruturação e ganho de eficiência com tecnologia.
-                    </p>
-                  </div>
-
-                  <div className="space-y-3 p-7 bg-gradient-to-br from-orange-50/50 to-slate-50/30 rounded-2xl border border-orange-100/30">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-orange-600"></div>
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Maior Gargalo</span>
-                    </div>
-                    <p className="text-sm text-slate-700 leading-relaxed font-light">
-                      Processos comerciais e operacionais podem ser otimizados para ganhar previsibilidade e escala.
-                    </p>
-                  </div>
-
-                  <div className="space-y-3 p-7 bg-gradient-to-br from-green-50/50 to-slate-50/30 rounded-2xl border border-green-100/30">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-green-600"></div>
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Oportunidade Rápida</span>
-                    </div>
-                    <p className="text-sm text-slate-700 leading-relaxed font-light">
-                      Implementar tecnologia estratégica pode gerar impacto imediato nos resultados.
-                    </p>
-                  </div>
+                <div className="p-8 bg-gradient-to-br from-slate-50 to-white rounded-2xl border border-slate-200/50">
+                  <p className="text-base text-slate-700 leading-relaxed font-light">
+                    {diagnosticInsight.executiveSummary}
+                  </p>
                 </div>
               </div>
 
+              {/* Principais Gargalos */}
+              {diagnosticInsight.mainBottlenecks.length > 0 && (
+                <div className="mb-12 space-y-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <AlertCircle className="h-5 w-5 text-orange-600" />
+                    <h3 className="text-xl font-medium text-slate-900 tracking-tight">
+                      Principais Gargalos Identificados
+                    </h3>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    {diagnosticInsight.mainBottlenecks.map((bottleneck, index) => (
+                      <div
+                        key={index}
+                        className="flex gap-4 p-5 bg-orange-50/30 rounded-xl border border-orange-100/50"
+                      >
+                        <div className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center text-xs font-medium">
+                          {index + 1}
+                        </div>
+                        <p className="text-sm text-slate-700 leading-relaxed font-light flex-1">
+                          {bottleneck}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Soluções Tecnológicas Recomendadas */}
               <div className="mb-12 space-y-8">
                 <div className="flex items-center gap-3 mb-6">
                   <Sparkles className="h-5 w-5 text-slate-700" />
                   <h3 className="text-xl font-medium text-slate-900 tracking-tight">
-                    Oportunidades Prioritárias
+                    Soluções Tecnológicas Recomendadas
                   </h3>
                 </div>
                 
                 <div className="grid gap-5">
-                  {recommended.map((produto, index) => (
-                    <Card 
-                      key={index}
-                      className={`border-0 shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] bg-white rounded-2xl transition-all duration-200 hover:shadow-[0_8px_30px_0_rgba(0,0,0,0.08)] overflow-hidden ${
-                        index === 0 ? 'ring-2 ring-slate-900/10 border-l-[3px] border-l-slate-900' : ''
-                      }`}
-                    >
-                      <CardContent className="p-8 md:p-10">
-                        <div className="space-y-5">
-                          <div className="flex items-center gap-3">
-                            {index === 0 && (
-                              <span className="px-3 py-1 text-xs font-medium text-slate-700 bg-slate-100 rounded-full">
-                                Recomendação Principal
-                              </span>
-                            )}
-                            <h4 className="text-lg font-medium text-slate-900 tracking-tight">
-                              {produto.nome}
-                            </h4>
+                  {diagnosticInsight.recommendedProducts.map((recommendation, index) => {
+                    const isPrincipal = recommendation.priority === 1 && index === 0;
+                    
+                    return (
+                      <Card 
+                        key={recommendation.produto.id}
+                        className={`border-0 shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] bg-white rounded-2xl transition-all duration-200 hover:shadow-[0_8px_30px_0_rgba(0,0,0,0.08)] overflow-hidden ${
+                          isPrincipal ? 'ring-2 ring-slate-900/10 border-l-[3px] border-l-slate-900' : ''
+                        }`}
+                      >
+                        <CardContent className="p-8 md:p-10">
+                          <div className="space-y-5">
+                            <div className="flex items-start justify-between gap-4">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-3 mb-2">
+                                  {isPrincipal && (
+                                    <span className="px-3 py-1 text-xs font-medium text-slate-700 bg-slate-100 rounded-full">
+                                      Recomendação Principal
+                                    </span>
+                                  )}
+                                  <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                                    recommendation.priority === 1 
+                                      ? 'bg-orange-100 text-orange-700'
+                                      : recommendation.priority === 2
+                                      ? 'bg-blue-100 text-blue-700'
+                                      : 'bg-green-100 text-green-700'
+                                  }`}>
+                                    Relevância: {recommendation.relevanceScore}%
+                                  </span>
+                                </div>
+                                <h4 className="text-lg font-medium text-slate-900 tracking-tight">
+                                  {recommendation.produto.produto}
+                                </h4>
+                              </div>
+                            </div>
+                            
+                            <div className="space-y-4 text-sm">
+                              <div className="p-4 bg-orange-50/50 rounded-xl">
+                                <span className="font-medium text-orange-900 block mb-1">Por que recomendamos:</span>
+                                <span className="text-orange-800 font-light">{recommendation.reason}</span>
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <div className="flex gap-3">
+                                  <span className="font-medium text-slate-700 min-w-[120px]">Dor Resolvida:</span>
+                                  <span className="text-slate-600 font-light">{recommendation.produto.dorEstrategica}</span>
+                                </div>
+                                <div className="flex gap-3">
+                                  <span className="font-medium text-slate-700 min-w-[120px]">Como Soluciona:</span>
+                                  <span className="text-slate-600 font-light">{recommendation.produto.comoSoluciona}</span>
+                                </div>
+                                <div className="flex gap-3">
+                                  <span className="font-medium text-slate-700 min-w-[120px]">Impacto Esperado:</span>
+                                  <span className="text-green-700 font-medium">{recommendation.produto.impactoEsperado}</span>
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                          
-                          <div className="space-y-3 text-sm">
-                            <div className="flex gap-3">
-                              <span className="font-medium text-slate-700 min-w-[100px]">Dor:</span>
-                              <span className="text-slate-600 font-light">{produto.dor}</span>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Caminho Estratégico Recomendado */}
+              {diagnosticInsight.strategicPath.length > 0 && (
+                <div className="mb-12 space-y-8">
+                  <div className="flex items-center gap-3 mb-6">
+                    <Zap className="h-5 w-5 text-slate-700" />
+                    <h3 className="text-xl font-medium text-slate-900 tracking-tight">
+                      Caminho Estratégico Recomendado
+                    </h3>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    {diagnosticInsight.strategicPath.map((step, index) => (
+                      <div
+                        key={step.order}
+                        className="relative p-7 bg-gradient-to-br from-slate-50 to-white rounded-2xl border border-slate-200/50"
+                      >
+                        <div className="flex gap-5">
+                          <div className="flex-shrink-0">
+                            <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center text-sm font-medium">
+                              {step.order}
                             </div>
-                            <div className="flex gap-3">
-                              <span className="font-medium text-slate-700 min-w-[100px]">Como:</span>
-                              <span className="text-slate-600 font-light">{produto.como}</span>
-                            </div>
-                            <div className="flex gap-3">
-                              <span className="font-medium text-slate-700 min-w-[100px]">Investimento:</span>
-                              <span className="text-slate-900 font-medium">{produto.investimento}</span>
-                            </div>
-                            <div className="flex gap-3">
-                              <span className="font-medium text-slate-700 min-w-[100px]">Impacto:</span>
-                              <span className="text-green-700 font-medium">{produto.impacto}</span>
+                          </div>
+                          <div className="flex-1 space-y-3">
+                            <h4 className="text-lg font-medium text-slate-900 tracking-tight">
+                              {step.title}
+                            </h4>
+                            <p className="text-sm text-slate-600 leading-relaxed font-light">
+                              {step.description}
+                            </p>
+                            <div className="flex items-center gap-2 text-xs text-slate-500">
+                              <span className="font-medium">Produtos incluídos:</span>
+                              <span>{step.productsIncluded.length} solução(ões)</span>
                             </div>
                           </div>
                         </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                        
+                        {/* Linha conectora */}
+                        {index < diagnosticInsight.strategicPath.length - 1 && (
+                          <div className="absolute left-[34px] top-full w-0.5 h-4 bg-slate-200"></div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div className="mb-10">
                 <div className="relative p-10 md:p-12 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl shadow-lg border border-slate-700/20 overflow-hidden">
