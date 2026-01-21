@@ -1230,6 +1230,561 @@ export async function deleteContactEnzo(id: string): Promise<void> {
 }
 
 /**
+ * Find or create Enzo contact by WhatsApp
+ * If contact exists, update only empty fields (never overwrite existing data)
+ */
+export async function findOrCreateContactEnzoByWhatsApp(
+  whatsapp: string,
+  data: { nome?: string; empresa?: string; cnpj?: string }
+): Promise<{ id: string; Name: string; WhatsApp?: string; Status?: string; ValorVenda?: number }> {
+  const client = initNotionClient();
+  // ID fixo da database Contacts_Enzo: 2ed84566a5fa813593bf000c71a5fd2d
+  const dbId = getDatabaseId('Contacts_Enzo') || '2ed84566a5fa813593bf000c71a5fd2d';
+  if (!dbId) {
+    throw new Error('Contacts_Enzo database ID not available. Use NOTION_DB_CONTACTS_ENZO env var or ensure database exists.');
+  }
+
+  // Normalize WhatsApp for search
+  const normalizedWhatsapp = whatsapp.trim();
+
+  console.log(`🔍 Buscando contato por WhatsApp: ${normalizedWhatsapp} em Contacts_Enzo (${dbId})`);
+
+  // Try to find existing contact by WhatsApp
+  try {
+    const response = await retryWithBackoff(() =>
+      client.databases.query({
+        database_id: dbId,
+        filter: {
+          property: 'WhatsApp',
+          phone_number: { equals: normalizedWhatsapp }
+        }
+      })
+    );
+
+    if (response.results.length > 0) {
+      console.log(`✅ Contato encontrado: ${response.results[0].id}`);
+      // Contact exists - update only empty fields
+      const existingPage = response.results[0];
+      const existingContact = pageToContactEnzo(existingPage);
+      const updates: { name?: string; empresa?: string; cnpj?: string } = {};
+
+      // Only update if current value is empty and new value is provided
+      if (data.nome && (!existingContact.Name || existingContact.Name.trim() === '')) {
+        updates.name = data.nome;
+      }
+      
+      // Note: Company and CNPJ are NOT stored in Contacts_Enzo database
+      // They are stored only in Diagnosticos_Enzo
+
+      if (Object.keys(updates).length > 0) {
+        // Update contact with only empty fields
+        console.log(`📝 Atualizando contato ${existingContact.id} (apenas campos vazios)`);
+        console.log(`   - Campos a atualizar: ${Object.keys(updates).join(', ')}`);
+        
+        const updateProps: any = {};
+        if (updates.name) {
+          updateProps.Name = { title: [{ text: { content: updates.name } }] };
+        }
+        
+        // Note: Company and CNPJ are NOT stored in Contacts_Enzo database
+
+        // Update Complete checkbox if needed
+        const newName = updates.name || existingContact.Name;
+        const newWhatsApp = existingContact.WhatsApp || normalizedWhatsapp;
+        updateProps.Complete = { checkbox: !!(newName && newWhatsApp) };
+
+        const updated = await retryWithBackoff(() =>
+          client.pages.update({
+            page_id: existingContact.id,
+            properties: updateProps
+          })
+        );
+
+        const updatedContact = pageToContactEnzo(updated);
+        console.log(`✅ Contato atualizado: ${updatedContact.id} (${updatedContact.Name})`);
+        return updatedContact;
+      }
+
+      // No updates needed
+      console.log(`   - Nenhuma atualização necessária (todos os campos já preenchidos)`);
+      return existingContact;
+    }
+  } catch (error: any) {
+    // If property doesn't exist or query fails, we'll create a new contact
+    console.warn('⚠️ Error searching contact by WhatsApp, will create new:', error.message);
+  }
+
+  // Contact doesn't exist - create new
+  console.log(`📝 Criando novo contato para WhatsApp: ${normalizedWhatsapp}`);
+  const today = new Date().toISOString().split('T')[0];
+  const properties: any = {};
+  
+  if (data.nome && data.nome.trim()) {
+    properties.Name = { title: [{ text: { content: data.nome.trim() } }] };
+  }
+  
+  properties.WhatsApp = { phone_number: normalizedWhatsapp };
+  properties.DateCreated = { date: { start: today } };
+  properties.Complete = { checkbox: !!(data.nome && normalizedWhatsapp) };
+
+  // Note: Company and CNPJ are NOT stored in Contacts_Enzo database
+  // They are stored only in Diagnosticos_Enzo
+
+  // Try to add Status default
+  try {
+    properties.Status = { select: { name: 'Contato Ativado' } };
+  } catch (err) {
+    // Status field doesn't exist, ignore
+  }
+
+  const response = await retryWithBackoff(() =>
+    client.pages.create({
+      parent: { database_id: dbId },
+      properties
+    })
+  );
+
+  const newContact = pageToContactEnzo(response);
+  console.log(`✅ Novo contato criado: ${newContact.id} (${newContact.Name})`);
+  return newContact;
+}
+
+/**
+ * Create Enzo V2 diagnostic
+ * ID fixo da database: 2ef84566a5fa80868eaa000ce719be55
+ */
+export async function createDiagnosticoEnzoV2(
+  contactId: string,
+  data: {
+    nome: string;
+    empresa: string;
+    cnpj: string;
+    whatsapp: string;
+    pergunta_01?: string;
+    pergunta_02?: string;
+    pergunta_03?: string;
+    pergunta_04?: string;
+    pergunta_05?: string;
+    pergunta_06?: string;
+    pergunta_07?: string;
+    pergunta_08?: string;
+    pergunta_09?: string;
+    pergunta_10?: string;
+  }
+): Promise<{ id: string }> {
+  const client = initNotionClient();
+  // ID fixo da database Diagnosticos_Enzo_V2: 2ef84566a5fa80868eaa000ce719be55
+  const dbId = getDatabaseId('Diagnosticos_Enzo_V2') || '2ef84566a5fa80868eaa000ce719be55';
+  if (!dbId) {
+    throw new Error('Diagnosticos_Enzo_V2 database ID not available. Use NOTION_DB_DIAGNOSTICOS_ENZO_V2 env var or ensure database exists.');
+  }
+
+  // Validate contactId is provided (required for relation)
+  if (!contactId || !contactId.trim()) {
+    throw new Error('contactId é obrigatório para criar diagnóstico. O diagnóstico deve ser vinculado a um contato.');
+  }
+
+  // Validate all required fields
+  if (!data.nome || !data.nome.trim()) {
+    throw new Error('Nome é obrigatório');
+  }
+  if (!data.empresa || !data.empresa.trim()) {
+    throw new Error('Empresa é obrigatória');
+  }
+  if (!data.cnpj || !data.cnpj.trim()) {
+    throw new Error('CNPJ é obrigatório');
+  }
+  if (!data.whatsapp || !data.whatsapp.trim()) {
+    throw new Error('WhatsApp é obrigatório');
+  }
+
+  const today = new Date().toISOString().split('T')[0];
+
+  // Converter valores simples para formato Notion - TODOS OS CAMPOS OBRIGATÓRIOS
+  const properties: any = {
+    // Nome (title) - obrigatório
+    Nome: {
+      title: [{ text: { content: data.nome.trim() } }]
+    },
+    
+    // Data do Diagnóstico (date) - obrigatório
+    'Data do Diagnóstico': {
+      date: { start: today }
+    },
+    
+    // Contato (relation) - OBRIGATÓRIO
+    Contato: {
+      relation: [{ id: contactId }]
+    },
+    
+    // Empresa (rich_text) - obrigatório
+    Empresa: toRichTextArray(data.empresa.trim()),
+    
+    // CNPJ (rich_text) - obrigatório
+    CNPJ: toRichTextArray(data.cnpj.trim()),
+    
+    // WhatsApp (phone_number) - obrigatório
+    WhatsApp: {
+      phone_number: data.whatsapp.trim()
+    },
+    
+    // Pergunta_01 até Pergunta_10 (rich_text) - todas obrigatórias
+    Pergunta_01: toRichTextArray((data.pergunta_01 || '').trim()),
+    Pergunta_02: toRichTextArray((data.pergunta_02 || '').trim()),
+    Pergunta_03: toRichTextArray((data.pergunta_03 || '').trim()),
+    Pergunta_04: toRichTextArray((data.pergunta_04 || '').trim()),
+    Pergunta_05: toRichTextArray((data.pergunta_05 || '').trim()),
+    Pergunta_06: toRichTextArray((data.pergunta_06 || '').trim()),
+    Pergunta_07: toRichTextArray((data.pergunta_07 || '').trim()),
+    Pergunta_08: toRichTextArray((data.pergunta_08 || '').trim()),
+    Pergunta_09: toRichTextArray((data.pergunta_09 || '').trim()),
+    Pergunta_10: toRichTextArray((data.pergunta_10 || '').trim())
+  };
+
+  console.log(`📝 Criando diagnóstico em Diagnosticos_Enzo_V2 (${dbId})`);
+  console.log(`   - Contato relacionado: ${contactId}`);
+  console.log(`   - Nome: ${data.nome}`);
+  console.log(`   - Empresa: ${data.empresa}`);
+  console.log(`   - Data: ${today}`);
+
+  try {
+    const response = await retryWithBackoff(() =>
+      client.pages.create({
+        parent: { database_id: dbId },
+        properties
+      })
+    );
+
+    console.log(`✅ Diagnóstico criado com sucesso: ${response.id}`);
+    return { id: response.id };
+  } catch (error: any) {
+    console.error('❌ Erro ao criar diagnóstico no Notion:', error);
+    if (error.code === 'object_not_found') {
+      throw new Error(`Database Diagnosticos_Enzo_V2 não encontrada. Verifique se o ID ${dbId} está correto e se a integração tem acesso à database.`);
+    }
+    if (error.status === 401) {
+      throw new Error(`Token do Notion inválido ou sem permissões. Verifique o NOTION_TOKEN e se a integração tem acesso à database Diagnosticos_Enzo_V2.`);
+    }
+    if (error.code === 'validation_error') {
+      throw new Error(`Erro de validação ao criar diagnóstico: ${error.message || 'Verifique se todas as propriedades estão corretas na database Diagnosticos_Enzo_V2.'}`);
+    }
+    throw new Error(`Erro ao criar diagnóstico: ${error.message || 'Erro desconhecido do Notion API'}`);
+  }
+}
+
+/**
+ * Create Diagnosticos_Enzo database with all required properties
+ */
+export async function createDiagnosticosEnzoDatabase(parentPageId: string): Promise<{ id: string; url: string }> {
+  const client = initNotionClient();
+  // Try to find Contacts_Enzo database via search - we'll add relation after creating the database
+  // Format ID without dashes (Notion accepts both formats)
+  const CONTACTS_ENZO_DB_ID_RAW = '2ed84566a5fa813593bf000c71a5fd2d'.replace(/-/g, '');
+  
+  // Try to find Contacts_Enzo via search
+  let contactsEnzoDbId: string | null = null;
+  try {
+    const searchResults = await client.search({
+      query: 'Contacts_Enzo',
+      filter: { property: 'object', value: 'database' },
+      page_size: 5
+    });
+    
+    for (const result of searchResults.results) {
+      const db = result as any;
+      const dbTitle = db.title?.[0]?.plain_text || '';
+      if (dbTitle.includes('Contacts_Enzo') || dbTitle.includes('Contacts Enzo')) {
+        contactsEnzoDbId = db.id.replace(/-/g, '');
+        console.log(`✅ Encontrado Contacts_Enzo via busca: ${contactsEnzoDbId}`);
+        break;
+      }
+    }
+  } catch (searchError: any) {
+    console.warn(`⚠️ Não foi possível buscar Contacts_Enzo: ${searchError.message}`);
+  }
+  
+  // If not found via search, try the hardcoded ID
+  if (!contactsEnzoDbId) {
+    contactsEnzoDbId = CONTACTS_ENZO_DB_ID_RAW;
+  }
+
+  const properties: Record<string, {
+    type: 'title' | 'rich_text' | 'date' | 'phone_number' | 'relation';
+    name: string;
+    relation?: { database_id: string; type?: 'single_property' | 'dual_property' };
+  }> = {
+    Nome: {
+      type: 'title',
+      name: 'Nome'
+    },
+    'Data do Diagnóstico': {
+      type: 'date',
+      name: 'Data do Diagnóstico'
+    },
+    Empresa: {
+      type: 'rich_text',
+      name: 'Empresa'
+    },
+    CNPJ: {
+      type: 'rich_text',
+      name: 'CNPJ'
+    },
+    WhatsApp: {
+      type: 'phone_number',
+      name: 'WhatsApp'
+    },
+    Pergunta_01: {
+      type: 'rich_text',
+      name: 'Pergunta_01'
+    },
+    Pergunta_02: {
+      type: 'rich_text',
+      name: 'Pergunta_02'
+    },
+    Pergunta_03: {
+      type: 'rich_text',
+      name: 'Pergunta_03'
+    },
+    Pergunta_04: {
+      type: 'rich_text',
+      name: 'Pergunta_04'
+    },
+    Pergunta_05: {
+      type: 'rich_text',
+      name: 'Pergunta_05'
+    },
+    Pergunta_06: {
+      type: 'rich_text',
+      name: 'Pergunta_06'
+    },
+    Pergunta_07: {
+      type: 'rich_text',
+      name: 'Pergunta_07'
+    },
+    Pergunta_08: {
+      type: 'rich_text',
+      name: 'Pergunta_08'
+    },
+    Pergunta_09: {
+      type: 'rich_text',
+      name: 'Pergunta_09'
+    },
+    Pergunta_10: {
+      type: 'rich_text',
+      name: 'Pergunta_10'
+    }
+  };
+
+  // Try to create database with relation first
+  let database: any;
+  try {
+    // Add Contato relation if we have Contacts_Enzo ID
+    if (contactsEnzoDbId) {
+      properties.Contato = {
+        type: 'relation',
+        name: 'Contato',
+        relation: {
+          database_id: contactsEnzoDbId,
+          type: 'single_property'
+        }
+      };
+    }
+    
+    database = await createDatabase(parentPageId, 'Diagnosticos_Enzo', properties);
+    console.log(`✅ Database Diagnosticos_Enzo criada com relation Contato!`);
+  } catch (error: any) {
+    // If fails with relation, try without relation first
+    if (error.message?.includes('object_not_found') || error.code === 'object_not_found' || error.status === 404) {
+      console.warn(`⚠️ Não foi possível criar database com relation para Contacts_Enzo. Criando sem relation primeiro...`);
+      // Remove relation from properties
+      const propertiesWithoutRelation = { ...properties };
+      delete propertiesWithoutRelation.Contato;
+      
+      database = await createDatabase(parentPageId, 'Diagnosticos_Enzo', propertiesWithoutRelation);
+      console.log(`✅ Database Diagnosticos_Enzo criada sem relation Contato!`);
+      
+      // Try to add relation after creating database (if Contacts_Enzo becomes accessible later)
+      if (contactsEnzoDbId) {
+        try {
+          console.log(`📝 Tentando adicionar relation Contato após criar database...`);
+          await client.databases.update({
+            database_id: database.id,
+            properties: {
+              Contato: {
+                relation: {
+                  database_id: contactsEnzoDbId,
+                  single_property: {}
+                }
+              }
+            }
+          });
+          console.log(`✅ Relation Contato adicionada com sucesso!`);
+        } catch (relationError: any) {
+          console.warn(`⚠️ Não foi possível adicionar relation Contato: ${relationError.message}`);
+          console.warn(`   A database foi criada, mas sem relation com Contacts_Enzo.`);
+          console.warn(`   Você pode adicionar manualmente a relation no Notion.`);
+        }
+      }
+    } else {
+      throw error;
+    }
+  }
+  
+  return {
+    id: database.id,
+    url: database.url
+  };
+}
+
+/**
+ * Create diagnostic in Diagnosticos_Enzo database
+ */
+export async function createDiagnosticoEnzo(
+  contactId: string,
+  data: {
+    nome: string;
+    empresa?: string;
+    cnpj?: string;
+    whatsapp?: string;
+    pergunta_01?: string;
+    pergunta_02?: string;
+    pergunta_03?: string;
+    pergunta_04?: string;
+    pergunta_05?: string;
+    pergunta_06?: string;
+    pergunta_07?: string;
+    pergunta_08?: string;
+    pergunta_09?: string;
+    pergunta_10?: string;
+  }
+): Promise<{ id: string }> {
+  const client = initNotionClient();
+  // Fixed database ID - use with dashes (Notion accepts both formats but with dashes is standard)
+  const dbId = getDatabaseId('Diagnosticos_Enzo') || '2ef84566a5fa81b2b315dde273b86d89';
+
+  // Validate contactId is provided (required for relation)
+  if (!contactId || !contactId.trim()) {
+    throw new Error('contactId é obrigatório para criar diagnóstico. O diagnóstico deve ser vinculado a um contato.');
+  }
+
+  // Título fixo - não depende de dados do formulário
+  // IMPORTANTE: Notion API sempre usa "Name" para o campo title, independente do nome visual
+  const pageTitle = `Diagnóstico - ${new Date().toISOString()}`;
+
+  const today = new Date().toISOString().split('T')[0];
+
+  // Build properties object - ALL fields must be converted properly
+  // IMPORTANTE: Notion API SEMPRE usa "Name" para title, independente do nome visual
+  const properties: any = {
+    // Name (title) - OBRIGATÓRIO - Notion API sempre usa "Name" para title
+    Name: {
+      title: [
+        {
+          text: {
+            content: pageTitle
+          }
+        }
+      ]
+    },
+    
+    // Data do Diagnóstico (date) - obrigatório
+    'Data do Diagnóstico': {
+      date: { start: today }
+    },
+    
+    // Contato (relation) - OBRIGATÓRIO
+    Contato: {
+      relation: [{ id: contactId }]
+    }
+  };
+
+  // Add optional fields - FORMATO NOTION API: rich_text precisa ser objeto {rich_text: array}
+  // toRichTextArray retorna apenas o array, precisamos envolver em objeto rich_text
+  if (data.empresa !== undefined && data.empresa !== null) {
+    const empresaText = String(data.empresa || '').trim();
+    if (empresaText) {
+      const richTextArray = toRichTextArray(empresaText);
+      if (richTextArray.length > 0) {
+        properties.Empresa = { rich_text: richTextArray };
+      }
+    }
+  }
+  if (data.cnpj !== undefined && data.cnpj !== null) {
+    const cnpjText = String(data.cnpj || '').trim();
+    if (cnpjText) {
+      const richTextArray = toRichTextArray(cnpjText);
+      if (richTextArray.length > 0) {
+        properties.CNPJ = { rich_text: richTextArray };
+      }
+    }
+  }
+  if (data.whatsapp !== undefined && data.whatsapp !== null) {
+    const whatsappText = String(data.whatsapp || '').trim();
+    if (whatsappText) {
+      properties.WhatsApp = {
+        phone_number: whatsappText
+      };
+    }
+  }
+
+  // Add all pergunta fields (Pergunta_01 to Pergunta_10) - FORMATO NOTION API
+  for (let i = 1; i <= 10; i++) {
+    const key = `pergunta_${String(i).padStart(2, '0')}` as keyof typeof data;
+    const propName = `Pergunta_${String(i).padStart(2, '0')}`;
+    const value = data[key];
+    
+    if (value !== undefined && value !== null) {
+      // Convert arrays and objects to strings - sempre retornar string válida
+      let stringValue: string;
+      if (Array.isArray(value)) {
+        stringValue = value.filter(v => v != null && String(v).trim()).map(v => String(v).trim()).join(', ');
+      } else if (typeof value === 'object') {
+        stringValue = JSON.stringify(value);
+      } else {
+        stringValue = String(value || '').trim();
+      }
+      
+      // FORMATO NOTION API: rich_text precisa ser objeto {rich_text: array}
+      if (stringValue) {
+        const richTextArray = toRichTextArray(stringValue);
+        if (richTextArray.length > 0) {
+          properties[propName] = { rich_text: richTextArray };
+        }
+      }
+    }
+  }
+
+  console.log(`📝 Criando diagnóstico em Diagnosticos_Enzo (${dbId})`);
+  console.log(`   - Contato relacionado: ${contactId}`);
+  console.log(`   - Título: ${pageTitle}`);
+  console.log(`   - Properties keys: ${Object.keys(properties).join(', ')}`);
+
+  try {
+    const response = await retryWithBackoff(() =>
+      client.pages.create({
+        parent: { database_id: dbId },
+        properties
+      })
+    );
+
+    console.log(`✅ Diagnóstico criado com sucesso: ${response.id}`);
+    return { id: response.id };
+  } catch (error: any) {
+    console.error('❌ Erro ao criar diagnóstico no Notion:', error);
+    if (error.code === 'object_not_found') {
+      throw new Error(`Database Diagnosticos_Enzo não encontrada. Verifique se o ID ${dbId} está correto e se a integração tem acesso à database.`);
+    }
+    if (error.status === 401) {
+      throw new Error(`Token do Notion inválido ou sem permissões. Verifique o NOTION_TOKEN e se a integração tem acesso à database Diagnosticos_Enzo.`);
+    }
+    if (error.code === 'validation_error') {
+      throw new Error(`Erro de validação ao criar diagnóstico: ${error.message || 'Verifique se todas as propriedades estão corretas na database Diagnosticos_Enzo.'}`);
+    }
+    throw new Error(`Erro ao criar diagnóstico: ${error.message || 'Erro desconhecido do Notion API'}`);
+  }
+}
+
+/**
  * Toggle action done status
  */
 export async function toggleActionDone(actionId: string, done: boolean): Promise<boolean> {
@@ -2094,6 +2649,23 @@ export async function getDatabaseInfo(databaseId: string): Promise<any> {
     created_time: database.created_time,
     last_edited_time: database.last_edited_time
   };
+}
+
+/**
+ * Get parent page ID from an existing database
+ */
+export async function getDatabaseParentPageId(databaseId: string): Promise<string> {
+  const client = initNotionClient();
+  
+  const database = await retryWithBackoff(() =>
+    client.databases.retrieve({ database_id: databaseId })
+  ) as any;
+
+  if (database.parent?.type === 'page_id') {
+    return database.parent.page_id;
+  }
+  
+  throw new Error(`Database ${databaseId} does not have a page parent (parent type: ${database.parent?.type})`);
 }
 
 /**
