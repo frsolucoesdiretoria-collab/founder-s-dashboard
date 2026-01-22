@@ -46,6 +46,7 @@ import AxisV3Portfolio from "./pages/AxisV3Portfolio";
 import PropostaMarcelaBueno from "./pages/PropostaMarcelaBueno";
 import PropostaMarcelaBuenoV2 from "./pages/PropostaMarcelaBuenoV2";
 import PropostaMarcelaBuenoV3 from "./pages/PropostaMarcelaBuenoV3";
+import PropostaMarcelaBuenoVersaoFinal from "./pages/PropostaMarcelaBuenoVersaoFinal";
 // TEMPORÁRIO: Removido para reunião - import TestePage from "./pages/Teste";
 
 const queryClient = new QueryClient({
@@ -82,8 +83,11 @@ const App = () => (
         <Route path="/proposta/marcela-bueno/v2" element={<PropostaMarcelaBuenoV2 />} />
         <Route path="/proposta2/marcela-bueno" element={<PropostaMarcelaBuenoV2 />} />
         
-        {/* Proposta Marcela Bueno V3 — Rota pública (CRO Premium) */}
-        <Route path="/proposta/marcela-bueno-v3" element={<PropostaMarcelaBuenoV3 />} />
+          {/* Proposta Marcela Bueno V3 — Rota pública (CRO Premium) */}
+          <Route path="/proposta/marcela-bueno-v3" element={<PropostaMarcelaBuenoV3 />} />
+          
+          {/* Proposta Marcela Bueno Versão Final — Rota pública (Limpa e objetiva) */}
+          <Route path="/proposta/marcela-bueno/versao-final" element={<PropostaMarcelaBuenoVersaoFinal />} />
         
         {/* Doterra: senha separada do app geral */}
         <Route
