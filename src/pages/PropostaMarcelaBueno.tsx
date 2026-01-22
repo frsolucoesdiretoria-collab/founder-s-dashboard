@@ -6,20 +6,18 @@ import {
   Sparkles, 
   ChevronRight,
   Clock,
-  DollarSign,
   Users,
-  TrendingUp,
   Heart,
   Star,
   Zap,
-  Target
+  Target,
+  TrendingUp
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 
 const PropostaMarcelaBueno = () => {
@@ -116,7 +114,7 @@ const PropostaMarcelaBueno = () => {
 
   const implementations = [
     {
-      title: "1) Convite VIP + Indicações Ativas",
+      title: "Convite VIP + Indicações Ativas",
       icon: <Star className="w-5 h-5" />,
       content: `**O que você vai sentir na prática:** uma página linda, um convite exclusivo, e pacientes felizes por "pertencer".
 
@@ -144,7 +142,7 @@ const PropostaMarcelaBueno = () => {
 **Por que isso é tão forte:** porque nasce dentro do momento de confiança máxima — a experiência premium da clínica — e vira crescimento com elegância.`
     },
     {
-      title: "2) Planejamento VIPs Ativos (reserva anual de agenda)",
+      title: "Planejamento VIPs Ativos (reserva anual de agenda)",
       icon: <Target className="w-5 h-5" />,
       content: `**O que você vai sentir:** previsibilidade, agenda com "espinha dorsal", e paz.
 
@@ -165,7 +163,7 @@ const PropostaMarcelaBueno = () => {
 * Você enxerga o futuro: quantas datas já estão "garantidas"`
     },
     {
-      title: "3) Conversão para Protocolos (follow-up inteligente)",
+      title: "Conversão para Protocolos (follow-up inteligente)",
       icon: <TrendingUp className="w-5 h-5" />,
       content: `**O que você vai sentir:** menos "consulta solta" e mais pacientes prontos para decisão.
 
@@ -186,7 +184,7 @@ const PropostaMarcelaBueno = () => {
 * O que está convertendo, o que está travando, e como melhorar`
     },
     {
-      title: "4) Pós-Consulta Humanizado (alto padrão)",
+      title: "Pós-Consulta Humanizado (alto padrão)",
       icon: <Heart className="w-5 h-5" />,
       content: `**O que você vai sentir:** seu WhatsApp "respira". Você volta a ser médica — e não suporte.
 
@@ -207,7 +205,7 @@ const PropostaMarcelaBueno = () => {
 * Ajustes controlados (sem prometer "sou você" — prometendo excelência)`
     },
     {
-      title: "5) Motor de Promotores (NPS → indicação premium)",
+      title: "Motor de Promotores (NPS → indicação premium)",
       icon: <Users className="w-5 h-5" />,
       content: `**O que você vai sentir:** crescimento orgânico com método — sem "pedir favor".
 
@@ -228,7 +226,7 @@ const PropostaMarcelaBueno = () => {
 * Refinar mensalmente e escalar com qualidade`
     },
     {
-      title: "6) Reativação Premium da Base Inativa (UPSELL opcional)",
+      title: "Reativação Premium da Base Inativa (UPSELL opcional)",
       icon: <Zap className="w-5 h-5" />,
       content: `**O que você vai sentir:** consultas voltando da base "adormecida", com mensagens bonitas e humanas.
 
@@ -489,7 +487,7 @@ const PropostaMarcelaBueno = () => {
         >
           <Card className="border-slate-200 shadow-sm hover:shadow-lg transition-shadow duration-300">
             <CardHeader>
-              <CardTitle className="text-4xl font-bold">1) Diagnóstico objetivo do cenário (do jeito que importa)</CardTitle>
+              <CardTitle className="text-4xl font-bold">Diagnóstico objetivo do cenário (do jeito que importa)</CardTitle>
             </CardHeader>
             <CardContent className="p-12 pt-0">
               <div className="prose prose-lg max-w-none">
@@ -527,7 +525,7 @@ const PropostaMarcelaBueno = () => {
         >
           <Card className="border-slate-200 shadow-sm hover:shadow-lg transition-shadow duration-300">
             <CardHeader>
-              <CardTitle className="text-4xl font-bold">2) O que muda na prática (sem prometer milagres)</CardTitle>
+              <CardTitle className="text-4xl font-bold">O que muda na prática (sem prometer milagres)</CardTitle>
             </CardHeader>
             <CardContent className="p-12 pt-0">
               <div className="prose prose-lg max-w-none">
@@ -577,7 +575,7 @@ const PropostaMarcelaBueno = () => {
           <Card className="border-slate-200 shadow-sm hover:shadow-lg transition-shadow duration-300">
             <CardHeader>
               <CardTitle className="text-4xl font-bold mb-4">
-                3) As 6 soluções Axis para a Clínica (você escolhe o que faz sentido agora)
+                As 6 soluções Axis para a Clínica (você escolhe o que faz sentido agora)
               </CardTitle>
               <p className="text-slate-600 text-lg">
                 A ideia não é "fazer tudo".<br />
@@ -600,7 +598,7 @@ const PropostaMarcelaBueno = () => {
                       <tr key={solution.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                         <td className="p-4">
                           <div className="flex items-center gap-3">
-                            <strong className="text-slate-900">{idx + 1}) {solution.name}</strong>
+                            <strong className="text-slate-900">{solution.name}</strong>
                             {solution.badge && (
                               <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300">
                                 {solution.badge}
@@ -622,7 +620,7 @@ const PropostaMarcelaBueno = () => {
                   <Card key={solution.id} className="border-slate-200 hover:shadow-md transition-shadow">
                     <CardHeader>
                       <div className="flex items-center gap-3 mb-2">
-                        <CardTitle className="text-lg">{idx + 1}) {solution.name}</CardTitle>
+                        <CardTitle className="text-lg">{solution.name}</CardTitle>
                         {solution.badge && (
                           <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300 text-xs">
                             {solution.badge}
@@ -661,7 +659,7 @@ const PropostaMarcelaBueno = () => {
         >
           <Card className="border-slate-200 shadow-sm hover:shadow-lg transition-shadow duration-300">
             <CardHeader>
-              <CardTitle className="text-4xl font-bold mb-4">4) Como é a implementação</CardTitle>
+              <CardTitle className="text-4xl font-bold mb-4">Como é a implementação</CardTitle>
               <p className="text-slate-600 text-lg">
                 A Axis não entra para "dar trabalho".<br />
                 A Axis entra para <strong>tirar trabalho</strong>, criar clareza e colocar a clínica num fluxo bonito de crescimento.
@@ -731,7 +729,7 @@ const PropostaMarcelaBueno = () => {
           <Card className="border-slate-200 shadow-sm hover:shadow-lg transition-shadow duration-300">
             <CardHeader>
               <CardTitle className="text-4xl font-bold mb-4">
-                5) Escolha suas 3 prioridades (para sua proposta personalizada)
+                Escolha suas 3 prioridades (para sua proposta personalizada)
               </CardTitle>
               <p className="text-slate-600 text-lg">
                 Dra. Marcela, marque abaixo as <strong>3 soluções</strong> que mais fazem sentido agora — e nós montamos sua proposta final com as melhores condições.
@@ -757,7 +755,7 @@ const PropostaMarcelaBueno = () => {
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <p className="font-semibold text-slate-900">
-                          {idx + 1}) {solution.name}
+                          {solution.name}
                         </p>
                         {solution.badge && (
                           <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300 text-xs">
@@ -799,7 +797,7 @@ const PropostaMarcelaBueno = () => {
           <Card className="border-slate-200 shadow-sm hover:shadow-lg transition-shadow duration-300">
             <CardHeader>
               <CardTitle className="text-4xl font-bold mb-4">
-                6) O que NÃO está incluso (para garantir excelência e evitar projeto infinito)
+                O que NÃO está incluso
               </CardTitle>
               <p className="text-slate-600 text-lg">
                 Para manter o padrão Axis (prazo curto + execução impecável), <strong>não está incluso</strong>:
@@ -843,9 +841,9 @@ const PropostaMarcelaBueno = () => {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
         >
-          <Card className="border-slate-200 shadow-sm hover:shadow-lg transition-shadow duration-300 bg-gradient-to-br from-green-50 to-emerald-50">
+          <Card className="border-slate-200 shadow-sm hover:shadow-lg transition-shadow duration-300">
             <CardHeader>
-              <CardTitle className="text-4xl font-bold mb-4">7) Garantia Axis (segurança total na decisão)</CardTitle>
+              <CardTitle className="text-4xl font-bold mb-4">Garantia Axis (segurança total na decisão)</CardTitle>
             </CardHeader>
             <CardContent className="p-12 pt-0">
               <div className="prose prose-lg max-w-none">
@@ -885,9 +883,9 @@ const PropostaMarcelaBueno = () => {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
         >
-          <Card className="border-slate-200 shadow-sm hover:shadow-lg transition-shadow duration-300 bg-gradient-to-br from-amber-50 to-orange-50">
+          <Card className="border-slate-200 shadow-sm hover:shadow-lg transition-shadow duration-300">
             <CardHeader>
-              <CardTitle className="text-4xl font-bold mb-4">8) Por que começar agora (urgência real, sem drama)</CardTitle>
+              <CardTitle className="text-4xl font-bold mb-4">Por que começar agora (urgência real, sem drama)</CardTitle>
             </CardHeader>
             <CardContent className="p-12 pt-0">
               <div className="prose prose-lg max-w-none">
@@ -928,7 +926,7 @@ const PropostaMarcelaBueno = () => {
         >
           <Card className="border-slate-200 shadow-sm hover:shadow-lg transition-shadow duration-300">
             <CardHeader>
-              <CardTitle className="text-4xl font-bold mb-4">9) O que você ganha ao aprovar (benefícios claros)</CardTitle>
+              <CardTitle className="text-4xl font-bold mb-4">O que você ganha ao aprovar (benefícios claros)</CardTitle>
             </CardHeader>
             <CardContent className="p-12 pt-0">
               <div className="prose prose-lg max-w-none">
@@ -976,9 +974,53 @@ const PropostaMarcelaBueno = () => {
         >
           <Card className="border-slate-200 shadow-sm hover:shadow-lg transition-shadow duration-300 bg-gradient-to-br from-slate-50 to-slate-100">
             <CardHeader>
-              <CardTitle className="text-4xl font-bold mb-4">10) Investimento (setup + mensalidade + tempo)</CardTitle>
+              <CardTitle className="text-4xl font-bold mb-4">Investimento (setup + mensalidade + tempo)</CardTitle>
             </CardHeader>
             <CardContent className="p-12 pt-0">
+              {/* Resumo das 3 escolhas */}
+              {selectedSolutions.length === 3 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-slate-900 text-white p-8 rounded-lg mb-12"
+                >
+                  <h3 className="text-2xl font-bold mb-6">Resumo das suas 3 escolhas</h3>
+                  <div className="space-y-4">
+                    {selectedSolutionsData.map((solution, idx) => (
+                      <div key={solution.id} className="flex items-center gap-4">
+                        <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-semibold">
+                          {idx + 1}
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-medium">{solution.name}</p>
+                          <p className="text-sm text-white/70">{solution.time} • Setup R$ {solution.setup.toLocaleString('pt-BR')}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <Separator className="my-6 bg-white/20" />
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-lg">
+                      <span>Setup total:</span>
+                      <span className="font-semibold">R$ {totalSetup.toLocaleString('pt-BR')}</span>
+                    </div>
+                    <div className="flex justify-between text-lg text-green-300">
+                      <span>Desconto (7%):</span>
+                      <span className="font-semibold">- R$ {(totalSetup * discount).toLocaleString('pt-BR')}</span>
+                    </div>
+                    <div className="flex justify-between text-2xl font-bold">
+                      <span>Total final:</span>
+                      <span>R$ {finalSetup.toLocaleString('pt-BR')}</span>
+                    </div>
+                    <div className="flex justify-between text-lg pt-4 border-t border-white/20">
+                      <span>Mensalidade total:</span>
+                      <span className="font-semibold">R$ {totalMonthly.toLocaleString('pt-BR')}/mês</span>
+                    </div>
+                    <p className="text-sm text-white/70 pt-4">+ 1 mês de mensalidade grátis</p>
+                  </div>
+                </motion.div>
+              )}
+
               <h3 className="text-2xl font-bold mb-6 text-slate-900">10.1 — Contratação individual (por solução)</h3>
               
               {/* Desktop Table */}
@@ -997,7 +1039,7 @@ const PropostaMarcelaBueno = () => {
                       <tr key={solution.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
                         <td className="p-4">
                           <div className="flex items-center gap-3">
-                            <strong className="text-slate-900">{idx + 1}) {solution.name}</strong>
+                            <strong className="text-slate-900">{solution.name}</strong>
                             {solution.badge && (
                               <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300">
                                 {solution.badge}
@@ -1020,7 +1062,7 @@ const PropostaMarcelaBueno = () => {
                   <Card key={solution.id} className="border-slate-200 bg-white">
                     <CardHeader>
                       <div className="flex items-center gap-3">
-                        <CardTitle className="text-base">{idx + 1}) {solution.name}</CardTitle>
+                        <CardTitle className="text-base">{solution.name}</CardTitle>
                         {solution.badge && (
                           <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300 text-xs">
                             {solution.badge}
@@ -1044,103 +1086,6 @@ const PropostaMarcelaBueno = () => {
                     </CardContent>
                   </Card>
                 ))}
-              </div>
-
-              <Separator className="my-12" />
-
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 p-8 rounded-lg mb-12">
-                <h3 className="text-2xl font-bold mb-4 text-slate-900">10.2 — Pacote "Top 3" (as 3 opções marcadas na Seção 5)</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start">
-                    <CheckCircle2 className="w-5 h-5 text-green-600 mr-3 mt-1 flex-shrink-0" />
-                    <span className="text-slate-700"><strong>7% de desconto no setup total</strong> + <strong>1 mês de mensalidade grátis</strong></span>
-                  </li>
-                  <li className="flex items-start">
-                    <Clock className="w-5 h-5 text-amber-600 mr-3 mt-1 flex-shrink-0" />
-                    <span className="text-slate-700">Condição especial válida até <strong>23/01/2026</strong></span>
-                  </li>
-                </ul>
-              </div>
-
-              <Separator className="my-12" />
-
-              <h3 className="text-2xl font-bold mb-6 text-slate-900">10.3 — Como iniciar hoje (PIX)</h3>
-              <p className="text-slate-700 text-lg mb-8">Para iniciar agora, você escolhe:</p>
-
-              <div className="grid md:grid-cols-2 gap-6 mb-12">
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Card className="border-2 border-slate-900 hover:shadow-xl transition-all cursor-pointer group">
-                      <CardContent className="p-8">
-                        <div className="flex items-center gap-4 mb-4">
-                          <div className="w-16 h-16 rounded-full bg-slate-900 flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <DollarSign className="w-8 h-8 text-white" />
-                          </div>
-                          <div>
-                            <h4 className="text-xl font-bold text-slate-900">Opção A</h4>
-                            <p className="text-slate-600">À vista (PIX hoje)</p>
-                          </div>
-                        </div>
-                        <p className="text-slate-700">
-                          Pagamento integral com <strong>prioridade máxima de agenda</strong>
-                        </p>
-                      </CardContent>
-                    </Card>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-md">
-                    <DialogHeader>
-                      <DialogTitle className="text-2xl">Opção A — À vista (PIX hoje)</DialogTitle>
-                      <DialogDescription className="text-lg pt-4">
-                        <strong>Próximo passo:</strong> confirmar opção e agendar kickoff.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="space-y-4 pt-4">
-                      <p className="text-slate-700">
-                        Entre em contato para receber os dados bancários e iniciar imediatamente com prioridade máxima na agenda.
-                      </p>
-                      <Button className="w-full bg-slate-900 hover:bg-slate-800" size="lg">
-                        Confirmar pagamento à vista
-                      </Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Card className="border-2 border-slate-300 hover:border-slate-900 hover:shadow-xl transition-all cursor-pointer group">
-                      <CardContent className="p-8">
-                        <div className="flex items-center gap-4 mb-4">
-                          <div className="w-16 h-16 rounded-full bg-slate-100 group-hover:bg-slate-900 flex items-center justify-center group-hover:scale-110 transition-all">
-                            <TrendingUp className="w-8 h-8 text-slate-900 group-hover:text-white transition-colors" />
-                          </div>
-                          <div>
-                            <h4 className="text-xl font-bold text-slate-900">Opção B</h4>
-                            <p className="text-slate-600">Entrada + fluxo</p>
-                          </div>
-                        </div>
-                        <p className="text-slate-700">
-                          <strong>PIX de R$ 10.000 hoje</strong> para travar agenda + restante parcelado
-                        </p>
-                      </CardContent>
-                    </Card>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-md">
-                    <DialogHeader>
-                      <DialogTitle className="text-2xl">Opção B — Entrada + fluxo</DialogTitle>
-                      <DialogDescription className="text-lg pt-4">
-                        <strong>Próximo passo:</strong> confirmar entrada de R$ 10.000 e agendar kickoff.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="space-y-4 pt-4">
-                      <p className="text-slate-700">
-                        PIX de <strong>R$ 10.000 hoje</strong> para travar a agenda e iniciar. O restante será parcelado em fluxo combinado.
-                      </p>
-                      <Button className="w-full bg-slate-900 hover:bg-slate-800" size="lg">
-                        Confirmar entrada
-                      </Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
               </div>
 
               <div className="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-8 rounded-lg mb-8">
