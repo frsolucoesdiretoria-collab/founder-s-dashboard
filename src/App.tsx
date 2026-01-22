@@ -44,6 +44,7 @@ import AxisV3Home from "./pages/AxisV3Home";
 import AxisV3Diagnostico from "./pages/AxisV3Diagnostico";
 import AxisV3Portfolio from "./pages/AxisV3Portfolio";
 import PropostaMarcelaBueno from "./pages/PropostaMarcelaBueno";
+import PropostaMarcelaBuenoV2 from "./pages/PropostaMarcelaBuenoV2";
 import PropostaMarcelaBuenoV3 from "./pages/PropostaMarcelaBuenoV3";
 // TEMPORÁRIO: Removido para reunião - import TestePage from "./pages/Teste";
 
@@ -73,8 +74,13 @@ const App = () => (
         <Route path="/axis-v3/diagnostico" element={<AxisV3Diagnostico />} />
         <Route path="/axis-v3/portfolio" element={<AxisV3Portfolio />} />
         
-        {/* Proposta Marcela Bueno V1 — Rota pública */}
+        {/* Proposta Marcela Bueno V1 — Rota pública (versão original) */}
+        <Route path="/proposta/marcela-bueno" element={<PropostaMarcelaBueno />} />
         <Route path="/proposta/marcela-bueno/v1" element={<PropostaMarcelaBueno />} />
+        
+        {/* Proposta Marcela Bueno V2 — Rota pública (versão simplificada) */}
+        <Route path="/proposta/marcela-bueno/v2" element={<PropostaMarcelaBuenoV2 />} />
+        <Route path="/proposta2/marcela-bueno" element={<PropostaMarcelaBuenoV2 />} />
         
         {/* Proposta Marcela Bueno V3 — Rota pública (CRO Premium) */}
         <Route path="/proposta/marcela-bueno-v3" element={<PropostaMarcelaBuenoV3 />} />

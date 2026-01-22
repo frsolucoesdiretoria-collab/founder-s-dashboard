@@ -492,51 +492,6 @@ const PropostaMarcelaBuenoV3 = () => {
             </motion.div>
           )}
 
-          {selectedSolutions.length === 3 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-black text-white p-10 mb-10"
-            >
-              <h3 className="text-3xl font-bold mb-8">Suas 3 escolhas</h3>
-              <div className="space-y-4 mb-8">
-                {selectedSolutionsData.map((solution, idx) => (
-                  <div key={solution.id} className="flex items-start gap-4 pb-4 border-b border-white/20 last:border-0">
-                    <div className="flex-shrink-0 w-10 h-10 bg-white/20 flex items-center justify-center font-bold text-lg">
-                      {idx + 1}
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-xl font-semibold">{solution.name}</p>
-                      <p className="text-sm text-white/70 mt-1">
-                        {solution.time} • Setup R$ {solution.setup.toLocaleString('pt-BR')} • Mensalidade R$ {solution.monthly.toLocaleString('pt-BR')}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <Separator className="my-8 bg-white/20" />
-              <div className="space-y-3">
-                <div className="flex justify-between text-xl">
-                  <span>Setup total:</span>
-                  <span className="font-semibold">R$ {totalSetup.toLocaleString('pt-BR')}</span>
-                </div>
-                <div className="flex justify-between text-xl text-green-400">
-                  <span>Desconto (7%):</span>
-                  <span className="font-semibold">- R$ {(totalSetup * discount).toLocaleString('pt-BR')}</span>
-                </div>
-                <div className="flex justify-between text-3xl font-bold pt-4 border-t border-white/20">
-                  <span>Total final:</span>
-                  <span>R$ {finalSetup.toLocaleString('pt-BR')}</span>
-                </div>
-                <div className="flex justify-between text-xl pt-6 border-t border-white/20 mt-6">
-                  <span>Mensalidade total:</span>
-                  <span className="font-semibold">R$ {totalMonthly.toLocaleString('pt-BR')}/mês</span>
-                </div>
-                <p className="text-sm text-white/70 pt-2">+ 1 mês de mensalidade grátis</p>
-              </div>
-            </motion.div>
-          )}
-
           <div className="text-center">
             <Button 
               onClick={() => scrollToSection("investimento")}
@@ -841,6 +796,54 @@ const PropostaMarcelaBuenoV3 = () => {
             ))}
           </div>
         </motion.section>
+
+        {/* Resumo das 3 Escolhas */}
+        {selectedSolutions.length === 3 && (
+          <motion.section
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <div className="bg-black text-white p-10 md:p-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-10">Suas 3 escolhas</h2>
+              <div className="space-y-4 mb-10">
+                {selectedSolutionsData.map((solution, idx) => (
+                  <div key={solution.id} className="flex items-start gap-4 pb-4 border-b border-white/20 last:border-0">
+                    <div className="flex-shrink-0 w-12 h-12 bg-white/20 flex items-center justify-center font-bold text-xl">
+                      {idx + 1}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-2xl font-semibold">{solution.name}</p>
+                      <p className="text-base text-white/70 mt-2">
+                        {solution.time} • Setup R$ {solution.setup.toLocaleString('pt-BR')} • Mensalidade R$ {solution.monthly.toLocaleString('pt-BR')}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <Separator className="my-10 bg-white/20" />
+              <div className="space-y-4">
+                <div className="flex justify-between text-2xl">
+                  <span>Setup total:</span>
+                  <span className="font-semibold">R$ {totalSetup.toLocaleString('pt-BR')}</span>
+                </div>
+                <div className="flex justify-between text-2xl text-green-400">
+                  <span>Desconto (7%):</span>
+                  <span className="font-semibold">- R$ {(totalSetup * discount).toLocaleString('pt-BR')}</span>
+                </div>
+                <div className="flex justify-between text-4xl font-bold pt-6 border-t border-white/20">
+                  <span>Total final:</span>
+                  <span>R$ {finalSetup.toLocaleString('pt-BR')}</span>
+                </div>
+                <div className="flex justify-between text-2xl pt-8 border-t border-white/20 mt-8">
+                  <span>Mensalidade total:</span>
+                  <span className="font-semibold">R$ {totalMonthly.toLocaleString('pt-BR')}/mês</span>
+                </div>
+                <p className="text-base text-white/70 pt-3">+ 1 mês de mensalidade grátis</p>
+              </div>
+            </div>
+          </motion.section>
+        )}
 
         {/* Fechamento */}
         <motion.section
