@@ -47,6 +47,7 @@ import PropostaMarcelaBueno from "./pages/PropostaMarcelaBueno";
 import PropostaMarcelaBuenoV2 from "./pages/PropostaMarcelaBuenoV2";
 import PropostaMarcelaBuenoV3 from "./pages/PropostaMarcelaBuenoV3";
 import PropostaMarcelaBuenoVersaoFinal from "./pages/PropostaMarcelaBuenoVersaoFinal";
+import FinanceFloraV2 from "./pages/FinanceFloraV2";
 // TEMPORÁRIO: Removido para reunião - import TestePage from "./pages/Teste";
 
 const queryClient = new QueryClient({
@@ -230,6 +231,8 @@ const App = () => (
         {/* TEMPORÁRIO: Removido para reunião - <Route path="/expansion" element={<ExpansionPage />} /> */}
         {/* 🔥 Finance Flora - Acesso direto sem senha, fora do menu lateral */}
         <Route path="/finance/flora" element={<FinancePage />} />
+        {/* 🔥 Finance Flora V2 - Sistema completo PF + PJ */}
+        <Route path="/finance/flora-v2" element={<FinanceFloraV2 />} />
         <Route
           path="/tasks"
           element={
