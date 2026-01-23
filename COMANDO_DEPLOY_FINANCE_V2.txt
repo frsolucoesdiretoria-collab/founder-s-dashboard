@@ -1,0 +1,32 @@
+═══════════════════════════════════════════════════════════
+   🚀 DEPLOY FINANCE V2 - COMANDO ÚNICO
+═══════════════════════════════════════════════════════════
+
+Execute este comando na VPS (via SSH):
+
+────────────────────────────────────────────────────────────
+
+cd /var/www/founder-dashboard && git fetch origin main && git reset --hard origin/main && npm install && npm run build && pm2 restart founder-dashboard && pm2 save && sleep 5 && curl -s http://localhost:3001/api/health && echo "" && echo "✅ Finance V2 deployado!" && echo "🌐 https://frtechltda.com.br/finance/flora-v2" && pm2 logs founder-dashboard --lines 10 --nostream
+
+────────────────────────────────────────────────────────────
+
+OU use o script:
+
+bash DEPLOY_FINANCE_V2_VPS.sh
+
+────────────────────────────────────────────────────────────
+
+ACESSO APÓS DEPLOY:
+   https://frtechltda.com.br/finance/flora-v2
+
+O QUE O COMANDO FAZ:
+   ✅ Atualiza código do GitHub
+   ✅ Instala dependências
+   ✅ Faz build (com Finance V2)
+   ✅ Reinicia servidor
+   ✅ Testa se está funcionando
+   ✅ Mostra logs
+
+TEMPO ESTIMADO: ~2 minutos
+
+═══════════════════════════════════════════════════════════
