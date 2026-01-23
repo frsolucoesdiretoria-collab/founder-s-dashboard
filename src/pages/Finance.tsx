@@ -1,608 +1,628 @@
-import { useState, useEffect, useRef } from 'react';
+// FR Tech OS - Finance Page (Personal Finance Dashboard)
+// Premium financial decision panel - consumes ONLY backend endpoints
+
+import { useState, useEffect } from 'react';
 import { AppLayout } from '@/components/AppLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { KPICard } from '@/components/KPICard';
-import { DollarSign, Lock, ArrowLeft, Loader2, AlertCircle, Upload, FileText, TrendingUp, TrendingDown, X } from 'lucide-react';
+import { FinanceKPICard } from '@/components/FinanceKPICard';
+import { 
+  DollarSign, 
+  ArrowLeft, 
+  Loader2, 
+  AlertCircle,
+  Wallet,
+  PiggyBank,
+  CreditCard
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
-import { getFinancialKPIs, getFinanceMetrics, getTransactions, importTransactionsFromCSV } from '@/services';
-import { validateAdminPasscode } from '@/services/health.service';
-import type { KPI } from '@/types/kpi';
-import type { NotionKPI, NotionGoal, NotionTransaction } from '@/lib/notion/types';
-import { getAllGoals } from '@/services';
+import {
+  getFinancialSummary,
+  getFinancialHistory,
+  getAccountBalances,
+  getExpenseAnalysis,
+  getDecisionsBaseData,
+  type FinancialSummary,
+  type FinancialHistory,
+  type AccountBalance,
+  type ExpenseAnalysis,
+  type DecisionsBaseData
+} from '@/services/finance.service';
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from 'recharts';
 
 type UserRole = 'admin' | 'flora';
 
+const NUBANK_PF_ACCOUNT = 'Nubank - Pessoa Física';
+
+// Chart colors
+const COLORS = {
+  income: '#10b981',
+  expenses: '#ef4444',
+  balance: '#3b82f6',
+  essential: '#f59e0b',
+  variable: '#8b5cf6',
+  debt: '#ef4444'
+};
+
 export default function FinancePage() {
-  const [passcode, setPasscode] = useState('');
-  const [authenticated, setAuthenticated] = useState(false);
-  const [userRole, setUserRole] = useState<UserRole | null>(null);
-  const [financialKPIs, setFinancialKPIs] = useState<KPI[]>([]);
-  const [financeMetrics, setFinanceMetrics] = useState<any[]>([]);
-  const [goals, setGoals] = useState<NotionGoal[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [authError, setAuthError] = useState<string | null>(null);
-  const [transactions, setTransactions] = useState<NotionTransaction[]>([]);
-  const [loadingTransactions, setLoadingTransactions] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [showUpload, setShowUpload] = useState(false);
-  const [selectedAccount, setSelectedAccount] = useState<string>('');
-  const [filterType, setFilterType] = useState<string>('all');
-  const [filterAccount, setFilterAccount] = useState<string>('all');
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // 🔥 DEBUG MODE: NO AUTHENTICATION - DIRECT ACCESS
+  // Hardcoded passcode for API calls
+  const passcode = '06092021'; // Valid finance passcode
+  const userRole: UserRole = 'admin'; // Always admin for now
 
-  const FINANCE_PASSCODE = '06092021';
-  const FLORA_PASSCODE = 'flora123';
+  // Data state
+  const [summary, setSummary] = useState<FinancialSummary | null>(null);
+  const [history, setHistory] = useState<FinancialHistory[]>([]);
+  const [accounts, setAccounts] = useState<AccountBalance[]>([]);
+  const [expenseAnalysis, setExpenseAnalysis] = useState<ExpenseAnalysis | null>(null);
+  const [decisionsData, setDecisionsData] = useState<DecisionsBaseData | null>(null);
 
-  const handleAuth = async () => {
-    if (!passcode.trim()) {
-      setAuthError('Digite a senha');
-      return;
-    }
+  // Loading states
+  const [loadingSummary, setLoadingSummary] = useState(false);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+  const [loadingAccounts, setLoadingAccounts] = useState(false);
+  const [loadingExpenses, setLoadingExpenses] = useState(false);
 
-    setLoading(true);
-    setAuthError(null);
+  // Selected account filter (for Flora)
+  const account = undefined; // No account filter in debug mode
 
-    try {
-      // Check if it's Flora's passcode
-      if (passcode.trim() === FLORA_PASSCODE) {
-        // Flora access - only Nubank/personal finance data
-        setUserRole('flora');
-        setAuthenticated(true);
-        
-        // Load data in background (don't block authentication)
-        Promise.all([
-          // Load goals
-          getAllGoals().then(goalsData => {
-            setGoals(goalsData);
-          }).catch(err => {
-            console.warn('Could not load goals:', err);
-          }),
-          
-          // Load financial KPIs - Flora vê apenas pessoais, admin vê todos
-          getFinancialKPIs(passcode).then(allKPIs => {
-            // Para Flora, filtrar apenas KPIs pessoais/Nubank
-            // Para admin, mostrar todos os KPIs financeiros
-            if (userRole === 'flora') {
-              const filteredKPIs = allKPIs.filter(kpi => 
-                kpi.Name.toLowerCase().includes('nubank') || 
-                kpi.Name.toLowerCase().includes('pessoa física') ||
-                kpi.Name.toLowerCase().includes('pessoal') ||
-                kpi.Category?.toLowerCase().includes('pessoal')
-              );
-              setFinancialKPIs(filteredKPIs);
-            } else {
-              // Admin vê todos os KPIs financeiros
-              setFinancialKPIs(allKPIs);
-            }
-          }).catch(err => {
-            console.warn('Could not load financial KPIs:', err);
-            // Não bloquear acesso se KPIs não carregarem
-          }),
-          
-          // Load transactions
-          getTransactions(passcode, {}).then(transactions => {
-            setTransactions(transactions);
-          }).catch(err => {
-            console.warn('Could not load transactions:', err);
-            // Não bloquear acesso se transações não carregarem
-          })
-        ]).catch(err => {
-          console.warn('Error loading data:', err);
-          // Não bloquear acesso
-        });
-        
-        toast.success('Acesso autorizado - Visualização limitada');
-      } else if (passcode.trim() === FINANCE_PASSCODE) {
-        // Finance access with new passcode
-        setUserRole('admin');
-        setAuthenticated(true);
-        
-        // Load data in background (don't block authentication)
-        // Admin vê TODOS os KPIs financeiros
-        Promise.all([
-          // Load goals to match with KPIs
-          getAllGoals().then(goalsData => {
-            setGoals(goalsData);
-          }).catch(err => {
-            console.warn('Could not load goals:', err);
-          }),
-          
-          // Load financial KPIs - Admin vê TODOS os KPIs financeiros (sem filtro)
-          getFinancialKPIs(passcode).then(kpis => {
-            // Admin não tem filtro - mostra todos os KPIs financeiros
-            setFinancialKPIs(kpis);
-          }).catch(err => {
-            console.warn('Could not load financial KPIs:', err);
-            console.error('Erro detalhado ao carregar KPIs:', err);
-          }),
-          
-          // Load finance metrics from DB11
-          getFinanceMetrics(passcode).then(metrics => {
-            setFinanceMetrics(metrics);
-          }).catch(err => {
-            console.warn('Could not load finance metrics:', err);
-          }),
-          
-          // Load transactions
-          getTransactions(passcode, {}).then(transactions => {
-            setTransactions(transactions);
-          }).catch(err => {
-            console.warn('Could not load transactions:', err);
-          })
-        ]).catch(err => {
-          console.warn('Error loading data:', err);
-          // Não bloquear acesso
-        });
-        
-        toast.success('Acesso autorizado como administrador');
-      } else {
-        // Senha inválida
-        setAuthError('Senha incorreta. Tente novamente.');
-        toast.error('Senha incorreta');
-      }
-    } catch (err: any) {
-      console.error('Error during authentication:', err);
-      setAuthError(err.message || 'Erro ao autenticar. Tente novamente.');
-      toast.error('Erro ao autenticar');
-    } finally {
-      setLoading(false);
-    }
-  };
+  // ========================================
+  // DATA LOADING - AUTO-LOAD ON MOUNT
+  // ========================================
 
-  // Load transactions after authentication
   useEffect(() => {
-    if (authenticated && passcode) {
-      loadTransactions();
-    }
-  }, [authenticated, passcode, filterType, filterAccount]);
+    loadAllData();
+  }, []);
 
-  const loadTransactions = async () => {
-    if (!passcode) return;
-    
-    setLoadingTransactions(true);
+  const loadAllData = async () => {
+    await Promise.all([
+      loadSummary(),
+      loadHistory(),
+      loadAccounts(),
+      loadExpenseAnalysis(),
+      loadDecisionsData()
+    ]);
+  };
+
+  const loadSummary = async () => {
+    setLoadingSummary(true);
     try {
-      const filters: any = {};
-      if (filterType !== 'all') {
-        filters.type = filterType as 'Entrada' | 'Saída';
-      }
-      if (filterAccount !== 'all') {
-        filters.account = filterAccount;
-      }
-      
-      const data = await getTransactions(passcode, filters);
-      setTransactions(data);
+      const data = await getFinancialSummary(passcode, account);
+      setSummary(data);
     } catch (err: any) {
-      console.error('Error loading transactions:', err);
-      // Don't show error if database is not configured
-      if (!err.message?.includes('not configured')) {
-        toast.error('Erro ao carregar transações');
-      }
+      console.error('Error loading summary:', err);
+      toast.error('Erro ao carregar resumo financeiro');
     } finally {
-      setLoadingTransactions(false);
+      setLoadingSummary(false);
     }
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    if (!selectedAccount) {
-      toast.error('Selecione uma conta antes de importar');
-      return;
-    }
-
-    setUploading(true);
+  const loadHistory = async () => {
+    setLoadingHistory(true);
     try {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const csv = e.target?.result as string;
-        if (!csv) {
-          toast.error('Erro ao ler arquivo');
-          return;
-        }
-
-        try {
-          const result = await importTransactionsFromCSV(passcode, csv, file.name, selectedAccount);
-          toast.success(`Importação concluída: ${result.created} transações criadas, ${result.skipped} ignoradas`);
-          
-          // Reload transactions
-          await loadTransactions();
-          
-          // Reset form
-          setShowUpload(false);
-          setSelectedAccount('');
-          if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-          }
-        } catch (err: any) {
-          toast.error(err.message || 'Erro ao importar transações');
-        } finally {
-          setUploading(false);
-        }
-      };
-      reader.readAsText(file, 'UTF-8');
+      const data = await getFinancialHistory(passcode, account);
+      setHistory(data);
     } catch (err: any) {
-      toast.error('Erro ao processar arquivo');
-      setUploading(false);
+      console.error('Error loading history:', err);
+      toast.error('Erro ao carregar histórico');
+    } finally {
+      setLoadingHistory(false);
     }
   };
 
-  // Get unique accounts from transactions
-  const accounts = Array.from(new Set(transactions.map(t => t.Account).filter(Boolean)));
+  const loadAccounts = async () => {
+    if (userRole === 'flora') return; // Flora doesn't need accounts view
+    
+    setLoadingAccounts(true);
+    try {
+      const data = await getAccountBalances(passcode);
+      setAccounts(data);
+    } catch (err: any) {
+      console.error('Error loading accounts:', err);
+      // Don't show error toast - not critical
+    } finally {
+      setLoadingAccounts(false);
+    }
+  };
 
-  // Calculate totals
-  const totalEntradas = transactions
-    .filter(t => t.Type === 'Entrada')
-    .reduce((sum, t) => sum + Math.abs(t.Amount), 0);
-  const totalSaidas = transactions
-    .filter(t => t.Type === 'Saída')
-    .reduce((sum, t) => sum + Math.abs(t.Amount), 0);
-  const saldo = totalEntradas - totalSaidas;
+  const loadExpenseAnalysis = async () => {
+    setLoadingExpenses(true);
+    try {
+      const data = await getExpenseAnalysis(passcode, account);
+      setExpenseAnalysis(data);
+    } catch (err: any) {
+      console.error('Error loading expense analysis:', err);
+      toast.error('Erro ao carregar análise de despesas');
+    } finally {
+      setLoadingExpenses(false);
+    }
+  };
 
-  if (!authenticated) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <Card className="w-full max-w-sm">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Lock className="h-5 w-5" />
-              Dashboard Financeiro
-            </CardTitle>
-            <CardDescription>
-              Entre com a senha para acessar os dados financeiros
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {authError && (
-              <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{authError}</AlertDescription>
-              </Alert>
-            )}
-            <Input
-              type="password"
-              placeholder="Senha"
-              value={passcode}
-              onChange={(e) => setPasscode(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleAuth()}
-              disabled={loading}
-            />
-            <Button className="w-full" onClick={handleAuth} disabled={loading}>
-              {loading ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Verificando...
-                </>
-              ) : (
-                'Entrar'
-              )}
-            </Button>
-            <Link to="/dashboard" className="block">
-              <Button variant="ghost" className="w-full">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Voltar ao Dashboard
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  const loadDecisionsData = async () => {
+    try {
+      const data = await getDecisionsBaseData(passcode, account);
+      setDecisionsData(data);
+    } catch (err: any) {
+      console.error('Error loading decisions data:', err);
+      // Don't show error toast - used for trends only
+    }
+  };
+
+  // ========================================
+  // HELPERS
+  // ========================================
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(value);
+  };
+
+  const formatMonth = (monthStr: string) => {
+    const [year, month] = monthStr.split('-');
+    const date = new Date(parseInt(year), parseInt(month) - 1);
+    return new Intl.DateTimeFormat('pt-BR', { month: 'short', year: 'numeric' })
+      .format(date)
+      .replace('.', '');
+  };
+
+  const getTrendDirection = (change: number): 'up' | 'down' | 'neutral' => {
+    if (change > 1) return 'up';
+    if (change < -1) return 'down';
+    return 'neutral';
+  };
+
+  const getBalanceVariant = (balance: number) => {
+    if (balance > 0) return 'success';
+    if (balance < 0) return 'danger';
+    return 'default';
+  };
+
+  const getSavingsRateVariant = (rate: number) => {
+    if (rate >= 20) return 'success';
+    if (rate >= 10) return 'warning';
+    return 'danger';
+  };
+
+  // ========================================
+  // MAIN DASHBOARD (Direct Access - No Auth Screen)
+  // ========================================
 
   return (
     <AppLayout>
-      <div className="space-y-6 pb-6">
-        {/* Header with quote */}
-        <div className="px-1">
-          <div className="mb-4">
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground flex items-center gap-2 mb-2">
-              <DollarSign className="h-6 w-6 md:h-8 w-8 text-primary" />
-              Dashboard Financeiro
-            </h1>
-            <p className="text-lg md:text-xl font-semibold text-primary italic">
-              O QUE IMPORTA É O SEU RESULTADO
-            </p>
-          </div>
-          <p className="text-sm md:text-base text-muted-foreground">
-            Métricas financeiras em tempo real
-          </p>
-        </div>
-
-        {/* Error Alert */}
-        {error && (
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-
-        {/* User Role Info */}
-        {userRole === 'flora' && (
-          <Alert>
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              Visualização limitada: Apenas dados da conta Nubank (Pessoa Física)
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {/* Financial KPIs Grid */}
-        {financialKPIs.length === 0 ? (
-          <Alert>
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              {userRole === 'flora' 
-                ? 'Nenhum KPI financeiro encontrado para a conta Nubank.'
-                : 'Nenhum KPI financeiro configurado.'}
-            </AlertDescription>
-          </Alert>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-            {financialKPIs.map((kpi) => {
-              const goal = goals.find(g => g.KPI === kpi.id);
-              return <KPICard key={kpi.id} kpi={kpi as NotionKPI} goal={goal} />;
-            })}
-          </div>
-        )}
-
-        {/* Finance Metrics from DB11 - Only for admin */}
-        {userRole === 'admin' && financeMetrics.length > 0 && (
-          <div className="space-y-4">
-            <h2 className="text-xl font-bold text-foreground">Métricas Financeiras (DB11)</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-              {financeMetrics.map((metric) => (
-                <Card key={metric.id}>
-                  <CardHeader>
-                    <CardTitle className="text-base">{metric.Name || 'Métrica'}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-2xl font-bold text-foreground">
-                      {metric.Value || '—'}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Transactions Section */}
-        <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="space-y-8 pb-8">
+        {/* Header */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                Transações Financeiras
-              </h2>
-              <p className="text-sm text-muted-foreground mt-1">
-                Gerencie seus extratos e transações bancárias
+              <h1 className="text-3xl font-bold tracking-tight">
+                Finanças Pessoais
+              </h1>
+              <p className="text-muted-foreground">
+                {userRole === 'flora' 
+                  ? 'Visualização: Nubank - Pessoa Física' 
+                  : 'Painel de decisão financeira'}
               </p>
             </div>
-            <Button onClick={() => setShowUpload(!showUpload)}>
-              <Upload className="h-4 w-4 mr-2" />
-              Importar Extrato
-            </Button>
+            <Link to="/dashboard">
+              <Button variant="outline">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Voltar
+              </Button>
+            </Link>
           </div>
+          {summary && (
+            <p className="text-sm text-muted-foreground">
+              Período: {new Date(summary.period.startDate).toLocaleDateString('pt-BR')} até{' '}
+              {new Date(summary.period.endDate).toLocaleDateString('pt-BR')}
+            </p>
+          )}
+        </div>
 
-          {/* Upload Section */}
-          {showUpload && (
+        {/* 1️⃣ PAINEL DE REALIDADE - KPIs */}
+        <section>
+          <h2 className="text-lg font-semibold mb-4">Visão Geral</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <FinanceKPICard
+              label="Saldo do Mês"
+              value={summary ? formatCurrency(summary.balance) : '—'}
+              icon={<DollarSign className="h-5 w-5" />}
+              variant={summary ? getBalanceVariant(summary.balance) : 'default'}
+              trend={
+                decisionsData
+                  ? {
+                      value: decisionsData.trends.incomeChange - decisionsData.trends.expenseChange,
+                      direction: getTrendDirection(
+                        decisionsData.trends.incomeChange - decisionsData.trends.expenseChange
+                      )
+                    }
+                  : undefined
+              }
+              loading={loadingSummary}
+            />
+            
+            <FinanceKPICard
+              label="Custo de Vida"
+              value={summary ? formatCurrency(summary.costOfLiving) : '—'}
+              icon={<Wallet className="h-5 w-5" />}
+              subtitle={
+                summary && summary.totalIncome > 0
+                  ? `${((summary.costOfLiving / summary.totalIncome) * 100).toFixed(0)}% da receita`
+                  : undefined
+              }
+              loading={loadingSummary}
+            />
+
+            <FinanceKPICard
+              label="Taxa de Poupança"
+              value={summary ? `${summary.savingsRate.toFixed(1)}%` : '—'}
+              icon={<PiggyBank className="h-5 w-5" />}
+              variant={summary ? getSavingsRateVariant(summary.savingsRate) : 'default'}
+              trend={
+                decisionsData
+                  ? {
+                      value: decisionsData.trends.savingsRateChange,
+                      direction: getTrendDirection(decisionsData.trends.savingsRateChange)
+                    }
+                  : undefined
+              }
+              loading={loadingSummary}
+            />
+
+            <FinanceKPICard
+              label="Dívidas"
+              value={summary ? formatCurrency(summary.totalDebts) : '—'}
+              icon={<CreditCard className="h-5 w-5" />}
+              variant={summary && summary.totalDebts > 0 ? 'warning' : 'success'}
+              subtitle={
+                summary && summary.totalIncome > 0 && summary.totalDebts > 0
+                  ? `${((summary.totalDebts / summary.totalIncome) * 100).toFixed(0)}% da receita`
+                  : undefined
+              }
+              loading={loadingSummary}
+            />
+          </div>
+        </section>
+
+        {/* 2️⃣ FLUXO MENSAL - Receitas vs Despesas */}
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base font-semibold">Fluxo do Mês</CardTitle>
+              <CardDescription>Receitas vs Despesas</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {loadingSummary ? (
+                <div className="flex items-center justify-center h-64">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : summary ? (
+                <ResponsiveContainer width="100%" height={250}>
+                  <BarChart
+                    data={[
+                      {
+                        name: 'Receitas',
+                        value: summary.totalIncome,
+                        fill: COLORS.income
+                      },
+                      {
+                        name: 'Despesas',
+                        value: summary.totalExpenses,
+                        fill: COLORS.expenses
+                      }
+                    ]}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip
+                      formatter={(value: number) => formatCurrency(value)}
+                      contentStyle={{
+                        backgroundColor: 'hsl(var(--card))',
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '8px'
+                      }}
+                    />
+                    <Bar dataKey="value" radius={[8, 8, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-64 text-muted-foreground">
+                  Sem dados disponíveis
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* 3️⃣ DESPESAS POR CATEGORIA */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base font-semibold">Composição de Despesas</CardTitle>
+              <CardDescription>Essenciais, Variáveis e Dívidas</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {loadingExpenses ? (
+                <div className="flex items-center justify-center h-64">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : expenseAnalysis && expenseAnalysis.totalExpenses > 0 ? (
+                <>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <PieChart>
+                      <Pie
+                        data={[
+                          {
+                            name: 'Essenciais',
+                            value: expenseAnalysis.essentialExpenses,
+                            fill: COLORS.essential
+                          },
+                          {
+                            name: 'Variáveis',
+                            value: expenseAnalysis.variableExpenses,
+                            fill: COLORS.variable
+                          },
+                          {
+                            name: 'Dívidas',
+                            value: expenseAnalysis.debtPayments,
+                            fill: COLORS.debt
+                          }
+                        ].filter(item => item.value > 0)}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={80}
+                        paddingAngle={2}
+                        dataKey="value"
+                      >
+                        {[
+                          { fill: COLORS.essential },
+                          { fill: COLORS.variable },
+                          { fill: COLORS.debt }
+                        ].map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.fill} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        formatter={(value: number) => formatCurrency(value)}
+                        contentStyle={{
+                          backgroundColor: 'hsl(var(--card))',
+                          border: '1px solid hsl(var(--border))',
+                          borderRadius: '8px'
+                        }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="mt-4 space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="h-3 w-3 rounded-full" style={{ backgroundColor: COLORS.essential }} />
+                        <span>Essenciais</span>
+                      </div>
+                      <span className="font-medium">
+                        {formatCurrency(expenseAnalysis.essentialExpenses)}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="h-3 w-3 rounded-full" style={{ backgroundColor: COLORS.variable }} />
+                        <span>Variáveis</span>
+                      </div>
+                      <span className="font-medium">
+                        {formatCurrency(expenseAnalysis.variableExpenses)}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="h-3 w-3 rounded-full" style={{ backgroundColor: COLORS.debt }} />
+                        <span>Dívidas</span>
+                      </div>
+                      <span className="font-medium">
+                        {formatCurrency(expenseAnalysis.debtPayments)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Alerts */}
+                  {summary && summary.totalIncome > 0 && (
+                    <div className="mt-4 space-y-2">
+                      {(expenseAnalysis.essentialExpenses / summary.totalIncome) * 100 > 60 && (
+                        <Alert variant="destructive">
+                          <AlertCircle className="h-4 w-4" />
+                          <AlertDescription className="text-xs">
+                            Despesas essenciais acima de 60% da receita
+                          </AlertDescription>
+                        </Alert>
+                      )}
+                      {(expenseAnalysis.debtPayments / summary.totalIncome) * 100 > 30 && (
+                        <Alert variant="destructive">
+                          <AlertCircle className="h-4 w-4" />
+                          <AlertDescription className="text-xs">
+                            Dívidas acima de 30% da receita
+                          </AlertDescription>
+                        </Alert>
+                      )}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="flex items-center justify-center h-64 text-muted-foreground">
+                  Sem despesas no período
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* 4️⃣ EVOLUÇÃO NO TEMPO */}
+        <section>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base font-semibold">Evolução (Últimos 6 Meses)</CardTitle>
+              <CardDescription>Histórico de receitas, despesas e saldo</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {loadingHistory ? (
+                <div className="flex items-center justify-center h-80">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : history.length > 0 ? (
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={history}>
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <XAxis 
+                      dataKey="month" 
+                      tickFormatter={formatMonth}
+                      tick={{ fontSize: 12 }}
+                    />
+                    <YAxis tickFormatter={(value) => `R$ ${(value / 1000).toFixed(0)}k`} />
+                    <Tooltip
+                      formatter={(value: number) => formatCurrency(value)}
+                      labelFormatter={formatMonth}
+                      contentStyle={{
+                        backgroundColor: 'hsl(var(--card))',
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '8px'
+                      }}
+                    />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="income"
+                      stroke={COLORS.income}
+                      strokeWidth={2}
+                      name="Receitas"
+                      dot={{ r: 4 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="expenses"
+                      stroke={COLORS.expenses}
+                      strokeWidth={2}
+                      name="Despesas"
+                      dot={{ r: 4 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="balance"
+                      stroke={COLORS.balance}
+                      strokeWidth={2}
+                      name="Saldo"
+                      dot={{ r: 4 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-80 text-muted-foreground">
+                  Sem histórico disponível
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* 5️⃣ CONTAS (Only for Admin) */}
+        {userRole === 'admin' && accounts.length > 0 && (
+          <section>
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span>Importar Extrato CSV</span>
-                  <Button variant="ghost" size="sm" onClick={() => setShowUpload(false)}>
-                    <X className="h-4 w-4" />
-                  </Button>
-                </CardTitle>
-                <CardDescription>
-                  Selecione o arquivo CSV do extrato bancário para importar as transações
-                </CardDescription>
+                <CardTitle className="text-base font-semibold">Saldos por Conta</CardTitle>
+                <CardDescription>Saldo acumulado de cada conta bancária</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="account-select">Conta Bancária *</Label>
-                  <Select value={selectedAccount} onValueChange={setSelectedAccount}>
-                    <SelectTrigger id="account-select">
-                      <SelectValue placeholder="Selecione a conta" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Nubank - Pessoa Física">Nubank - Pessoa Física</SelectItem>
-                      <SelectItem value="Nubank - Empresa">Nubank - Empresa</SelectItem>
-                      <SelectItem value="Banco do Brasil">Banco do Brasil</SelectItem>
-                      <SelectItem value="Itaú">Itaú</SelectItem>
-                      <SelectItem value="Outros">Outros</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="file-upload">Arquivo CSV *</Label>
-                  <Input
-                    id="file-upload"
-                    type="file"
-                    accept=".csv"
-                    ref={fileInputRef}
-                    onChange={handleFileUpload}
-                    disabled={uploading || !selectedAccount}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Formatos suportados: CSV do Nubank ou outros bancos (Data, Descrição, Valor)
-                  </p>
-                </div>
-                {uploading && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Importando transações...
+              <CardContent>
+                {loadingAccounts ? (
+                  <div className="flex items-center justify-center h-40">
+                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {accounts.map((acc) => (
+                      <div
+                        key={acc.account}
+                        className="flex items-center justify-between p-4 rounded-lg border bg-card"
+                      >
+                        <div>
+                          <p className="font-medium">{acc.account}</p>
+                          <p className="text-sm text-muted-foreground">
+                            Atualizado em {new Date(acc.lastUpdate).toLocaleDateString('pt-BR')}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className={`text-2xl font-bold ${
+                            acc.balance >= 0 ? 'text-green-600' : 'text-red-600'
+                          }`}>
+                            {formatCurrency(acc.balance)}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
               </CardContent>
             </Card>
-          )}
+          </section>
+        )}
 
-          {/* Summary Cards */}
-          {transactions.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-2 text-muted-foreground text-sm mb-1">
-                    <TrendingUp className="h-4 w-4 text-primary" />
-                    Total Entradas
-                  </div>
-                  <p className="text-2xl font-bold text-primary">
-                    R$ {totalEntradas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-2 text-muted-foreground text-sm mb-1">
-                    <TrendingDown className="h-4 w-4 text-destructive" />
-                    Total Saídas
-                  </div>
-                  <p className="text-2xl font-bold text-destructive">
-                    R$ {totalSaidas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-2 text-muted-foreground text-sm mb-1">
-                    <DollarSign className="h-4 w-4" />
-                    Saldo
-                  </div>
-                  <p className={`text-2xl font-bold ${saldo >= 0 ? 'text-primary' : 'text-destructive'}`}>
-                    R$ {saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-
-          {/* Filters */}
-          {transactions.length > 0 && (
+        {/* Detailed Breakdown */}
+        {expenseAnalysis && expenseAnalysis.breakdown.length > 0 && (
+          <section>
             <Card>
-              <CardContent className="pt-6">
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <div className="flex-1 space-y-2">
-                    <Label htmlFor="filter-type">Tipo</Label>
-                    <Select value={filterType} onValueChange={setFilterType}>
-                      <SelectTrigger id="filter-type">
-                        <SelectValue placeholder="Todos" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Todos</SelectItem>
-                        <SelectItem value="Entrada">Entradas</SelectItem>
-                        <SelectItem value="Saída">Saídas</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  {accounts.length > 0 && (
-                    <div className="flex-1 space-y-2">
-                      <Label htmlFor="filter-account">Conta</Label>
-                      <Select value={filterAccount} onValueChange={setFilterAccount}>
-                        <SelectTrigger id="filter-account">
-                          <SelectValue placeholder="Todas" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">Todas</SelectItem>
-                          {accounts.map(account => (
-                            <SelectItem key={account} value={account}>{account}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+              <CardHeader>
+                <CardTitle className="text-base font-semibold">Detalhamento por Categoria</CardTitle>
+                <CardDescription>Breakdown completo das despesas</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {expenseAnalysis.breakdown.map((item) => (
+                    <div
+                      key={item.category}
+                      className="flex items-center justify-between py-2 border-b last:border-b-0"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="h-2 w-2 rounded-full"
+                          style={{
+                            backgroundColor:
+                              item.type === 'essential'
+                                ? COLORS.essential
+                                : item.type === 'debt'
+                                ? COLORS.debt
+                                : COLORS.variable
+                          }}
+                        />
+                        <div>
+                          <p className="text-sm font-medium">{item.category}</p>
+                          <p className="text-xs text-muted-foreground capitalize">{item.type}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-semibold">{formatCurrency(item.amount)}</p>
+                        <p className="text-xs text-muted-foreground">{item.percentage.toFixed(1)}%</p>
+                      </div>
                     </div>
-                  )}
+                  ))}
                 </div>
               </CardContent>
             </Card>
-          )}
-
-          {/* Transactions Table */}
-          {loadingTransactions ? (
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Carregando transações...
-                </div>
-              </CardContent>
-            </Card>
-          ) : transactions.length === 0 ? (
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-center text-muted-foreground">
-                  <FileText className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                  <p>Nenhuma transação encontrada.</p>
-                  <p className="text-sm mt-1">Importe um extrato CSV para começar.</p>
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            <Card>
-              <CardContent className="pt-6 p-0">
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Data</TableHead>
-                        <TableHead>Descrição</TableHead>
-                        <TableHead>Tipo</TableHead>
-                        <TableHead>Conta</TableHead>
-                        <TableHead>Categoria</TableHead>
-                        <TableHead className="text-right">Valor</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {transactions.map((transaction) => (
-                        <TableRow key={transaction.id}>
-                          <TableCell>
-                            {new Date(transaction.Date).toLocaleDateString('pt-BR')}
-                          </TableCell>
-                          <TableCell className="max-w-[200px] truncate">
-                            {transaction.Name}
-                          </TableCell>
-                          <TableCell>
-                            <span className={`px-2 py-1 rounded text-xs font-medium ${
-                              transaction.Type === 'Entrada' 
-                                ? 'bg-primary/10 text-primary' 
-                                : 'bg-destructive/10 text-destructive'
-                            }`}>
-                              {transaction.Type}
-                            </span>
-                          </TableCell>
-                          <TableCell>{transaction.Account}</TableCell>
-                          <TableCell>{transaction.Category || '—'}</TableCell>
-                          <TableCell className={`text-right font-medium ${
-                            transaction.Type === 'Entrada' ? 'text-primary' : 'text-destructive'
-                          }`}>
-                            {transaction.Type === 'Entrada' ? '+' : '-'} R$ {Math.abs(transaction.Amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </div>
-
-        {/* Back Button */}
-        <Link to="/dashboard">
-          <Button variant="outline">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Voltar ao Dashboard
-          </Button>
-        </Link>
+          </section>
+        )}
       </div>
     </AppLayout>
   );
 }
-

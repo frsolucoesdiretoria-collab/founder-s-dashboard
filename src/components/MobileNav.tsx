@@ -11,7 +11,7 @@ const navItems = [
   { path: '/dashboard-enzo-v2', label: 'Dashboard Enzo Canei V2', icon: TrendingUp },
   // TEMPORÁRIO: Removido para reunião - { path: '/coffee', label: 'Café', icon: Coffee },
   // TEMPORÁRIO: Removido para reunião - { path: '/expansion', label: 'Expansão', icon: TrendingUp },
-  { path: '/finance', label: 'Financeiro', icon: DollarSign },
+  // Financeiro movido para /finance/flora (acesso direto, sem menu)
   { path: '/tasks', label: 'Tarefas', icon: CheckSquare },
   { path: '/crm', label: 'CRM', icon: Users },
   { path: '/doterra', label: 'CRM Doterra', icon: Users },

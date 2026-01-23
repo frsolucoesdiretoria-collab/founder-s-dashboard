@@ -67,7 +67,12 @@ const enzoPassword = "100vendedores";
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <Toaster richColors position="top-right" />
-    <BrowserRouter>
+    <BrowserRouter 
+      future={{ 
+        v7_startTransition: true,
+        v7_relativeSplatPath: true
+      }}
+    >
       <AuthProvider>
         <Routes>
         {/* AXIS V3 — Rotas públicas */}
@@ -223,14 +228,8 @@ const App = () => (
         />
         {/* TEMPORÁRIO: Removido para reunião - <Route path="/coffee" element={<CoffeePage />} /> */}
         {/* TEMPORÁRIO: Removido para reunião - <Route path="/expansion" element={<ExpansionPage />} /> */}
-        <Route
-          path="/finance"
-          element={
-            <PasswordProtection storageKey="app_authenticated" correctPassword={appPassword || ''}>
-              <FinancePage />
-            </PasswordProtection>
-          }
-        />
+        {/* 🔥 Finance Flora - Acesso direto sem senha, fora do menu lateral */}
+        <Route path="/finance/flora" element={<FinancePage />} />
         <Route
           path="/tasks"
           element={
