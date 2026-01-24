@@ -46,6 +46,7 @@ import AxisV3Portfolio from "./pages/AxisV3Portfolio";
 import AxisTempoRealV1 from "./pages/AxisTempoRealV1";
 import AxisTempoRealV1_2 from "./pages/AxisTempoRealV1_2";
 import AxisTempoRealV1_3 from "./pages/AxisTempoRealV1_3";
+import AxisTempoRealV1_4 from "./pages/AxisTempoRealV1_4";
 import AxisTempoRealV2 from "./pages/AxisTempoRealV2";
 import PropostaMarcelaBueno from "./pages/PropostaMarcelaBueno";
 import PropostaMarcelaBuenoV2 from "./pages/PropostaMarcelaBuenoV2";
@@ -96,6 +97,9 @@ const App = () => (
         
         {/* AXIS TEMPO REAL V1.3 — With SVG Illustrations */}
         <Route path="/axis/tempo-real/v1-3" element={<AxisTempoRealV1_3 />} />
+        
+        {/* AXIS TEMPO REAL V1.4 — Scroll Storytelling */}
+        <Route path="/axis/tempo-real/v1-4" element={<AxisTempoRealV1_4 />} />
         
         {/* Proposta Marcela Bueno V1 — Rota pública (versão original) */}
         <Route path="/proposta/marcela-bueno" element={<PropostaMarcelaBueno />} />
