@@ -48,6 +48,7 @@ import AxisTempoRealV1_2 from "./pages/AxisTempoRealV1_2";
 import AxisTempoRealV1_3 from "./pages/AxisTempoRealV1_3";
 import AxisTempoRealV1_4 from "./pages/AxisTempoRealV1_4";
 import AxisTempoRealV2 from "./pages/AxisTempoRealV2";
+import AxisTempoRealV2_2 from "./pages/AxisTempoRealV2_2";
 import PropostaMarcelaBueno from "./pages/PropostaMarcelaBueno";
 import PropostaMarcelaBuenoV2 from "./pages/PropostaMarcelaBuenoV2";
 import PropostaMarcelaBuenoV3 from "./pages/PropostaMarcelaBuenoV3";
@@ -91,6 +92,12 @@ const App = () => (
         
         {/* AXIS TEMPO REAL V2 — Landing Page V2 (Isolated) */}
         <Route path="/axis/tempo-real/v2" element={<AxisTempoRealV2 />} />
+        
+        {/* AXIS TEMPO REAL V2.2 — Editorial Premium Layout */}
+        <Route path="/axis/tempo-real/v2.2" element={<AxisTempoRealV2_2 />} />
+        
+        {/* AXIS TEMPO REAL V2.2 — Editorial Premium Layout */}
+        <Route path="/axis/tempo-real/v2.2" element={<AxisTempoRealV2_2 />} />
         
         {/* AXIS TEMPO REAL V1.2 — Premium Design System */}
         <Route path="/axis/tempo-real/v1-2" element={<AxisTempoRealV1_2 />} />
