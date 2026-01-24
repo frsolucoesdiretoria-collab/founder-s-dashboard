@@ -47,6 +47,7 @@ import AxisTempoRealV1 from "./pages/AxisTempoRealV1";
 import AxisTempoRealV1_2 from "./pages/AxisTempoRealV1_2";
 import AxisTempoRealV1_3 from "./pages/AxisTempoRealV1_3";
 import AxisTempoRealV1_4 from "./pages/AxisTempoRealV1_4";
+import AxisTempoRealV1_5 from "./pages/AxisTempoRealV1_5";
 import AxisTempoRealV2 from "./pages/AxisTempoRealV2";
 import AxisTempoRealV2_2 from "./pages/AxisTempoRealV2_2";
 import PropostaMarcelaBueno from "./pages/PropostaMarcelaBueno";
@@ -107,6 +108,9 @@ const App = () => (
         
         {/* AXIS TEMPO REAL V1.4 — Scroll Storytelling */}
         <Route path="/axis/tempo-real/v1-4" element={<AxisTempoRealV1_4 />} />
+        
+        {/* AXIS TEMPO REAL V1.5 — PRODUCTION POLISH */}
+        <Route path="/axis/tempo-real/v1-5" element={<AxisTempoRealV1_5 />} />
         
         {/* Proposta Marcela Bueno V1 — Rota pública (versão original) */}
         <Route path="/proposta/marcela-bueno" element={<PropostaMarcelaBueno />} />
