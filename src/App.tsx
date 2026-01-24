@@ -44,6 +44,8 @@ import AxisV3Home from "./pages/AxisV3Home";
 import AxisV3Diagnostico from "./pages/AxisV3Diagnostico";
 import AxisV3Portfolio from "./pages/AxisV3Portfolio";
 import AxisTempoRealV1 from "./pages/AxisTempoRealV1";
+import AxisTempoRealV1_2 from "./pages/AxisTempoRealV1_2";
+import AxisTempoRealV2 from "./pages/AxisTempoRealV2";
 import PropostaMarcelaBueno from "./pages/PropostaMarcelaBueno";
 import PropostaMarcelaBuenoV2 from "./pages/PropostaMarcelaBuenoV2";
 import PropostaMarcelaBuenoV3 from "./pages/PropostaMarcelaBuenoV3";
@@ -84,6 +86,12 @@ const App = () => (
         
         {/* AXIS TEMPO REAL V1 — Landing Page Premium */}
         <Route path="/axis/tempo-real/v1" element={<AxisTempoRealV1 />} />
+        
+        {/* AXIS TEMPO REAL V2 — Landing Page V2 (Isolated) */}
+        <Route path="/axis/tempo-real/v2" element={<AxisTempoRealV2 />} />
+        
+        {/* AXIS TEMPO REAL V1.2 — Premium Design System */}
+        <Route path="/axis/tempo-real/v1-2" element={<AxisTempoRealV1_2 />} />
         
         {/* Proposta Marcela Bueno V1 — Rota pública (versão original) */}
         <Route path="/proposta/marcela-bueno" element={<PropostaMarcelaBueno />} />
