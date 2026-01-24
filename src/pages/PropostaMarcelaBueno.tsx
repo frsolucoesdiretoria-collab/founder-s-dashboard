@@ -62,7 +62,7 @@ const PropostaMarcelaBueno = () => {
       problem: "falta de canal novo qualificado + pouca captura durante a experiência premium",
       value: "transforma momentos de alto valor (soro/injetáveis) em novas indicações qualificadas + cria comunidade VIP com pertencimento",
       setup: 20000,
-      monthly: 760,
+      monthly: 532,
       time: "10–14 dias"
     },
     {
@@ -71,7 +71,7 @@ const PropostaMarcelaBueno = () => {
       problem: "falta de previsibilidade + pacientes VIP \"soltos\"",
       value: "garante fluxo futuro de consultas e protocolos com pacientes que já confiam em você",
       setup: 6000,
-      monthly: 480,
+      monthly: 336,
       time: "7–10 dias"
     },
     {
@@ -80,7 +80,7 @@ const PropostaMarcelaBueno = () => {
       problem: "consulta avulsa que não vira protocolo",
       value: "aumenta a taxa de conversão para protocolos com pontos de contato planejados e abordagem cuidadosa",
       setup: 16000,
-      monthly: 600,
+      monthly: 420,
       time: "10–14 dias"
     },
     {
@@ -89,7 +89,7 @@ const PropostaMarcelaBueno = () => {
       problem: "pós-consulta drena energia e tira você do local de potência",
       value: "reduz mensagens para você e melhora experiência do paciente com acompanhamento humano, elegante e seguro",
       setup: 35000,
-      monthly: 1160,
+      monthly: 700,
       time: "14–21 dias"
     },
     {
@@ -98,7 +98,7 @@ const PropostaMarcelaBueno = () => {
       problem: "indicação \"ao acaso\" + crescimento lento",
       value: "transforma satisfação real em crescimento estruturado, com script premium e rastreio",
       setup: 30000,
-      monthly: 960,
+      monthly: 672,
       time: "14–21 dias"
     },
     {
@@ -107,7 +107,7 @@ const PropostaMarcelaBueno = () => {
       problem: "pacientes \"sumidos\" + agenda abaixo do potencial",
       value: "recupera receita escondida reativando quem já conhece seu valor",
       setup: 14000,
-      monthly: 760,
+      monthly: 532,
       time: "10–14 dias"
     }
   ];

@@ -701,4 +701,3 @@ enzoRouter.post('/diagnosticos', async (req, res) => {
     });
   }
 });
-
