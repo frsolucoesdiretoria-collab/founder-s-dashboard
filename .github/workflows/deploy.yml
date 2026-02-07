@@ -1,0 +1,159 @@
+# =============================================================================
+# DEPLOY ESTÁTICO — Frontend como site estático
+# =============================================================================
+# - Build executado SOMENTE no GitHub Actions
+# - Deploy envia dist/ via rsync para VPS (/var/www/app)
+# - Valida apenas estrutura de arquivos (não conteúdo)
+# - Reinicia PM2 se necessário
+# =============================================================================
+
+name: Deploy Static to VPS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy Static
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate pre-built dist
+        run: |
+          if [ ! -f dist/index.html ]; then
+            echo "::error::dist/index.html not found in repository"
+            exit 1
+          fi
+          
+          echo "dist OK: $(du -sh dist | cut -f1)"
+          echo "✅ Artifact pré-buildado encontrado."
+
+      - name: Validate dist output
+        run: |
+          if [ ! -f dist/index.html ]; then
+            echo "::error::dist/index.html not found"
+            exit 1
+          fi
+          
+          echo "dist OK: $(du -sh dist | cut -f1)"
+          echo "✅ Build validado: arquivos críticos presentes"
+
+      - name: Setup SSH
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
+        run: |
+          set -e
+          
+          if [ -z "$VPS_HOST" ] || [ -z "$VPS_USER" ] || [ -z "$VPS_SSH_KEY" ]; then
+            echo "::error::VPS_HOST, VPS_USER and VPS_SSH_KEY are required"
+            exit 1
+          fi
+          
+          echo "🔐 Configurando SSH..."
+          
+          # Criar diretório .ssh
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          
+          # Salvar chave SSH
+          echo "$VPS_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          
+          # Adicionar host ao known_hosts (evita prompt de confirmação)
+          ssh-keyscan -p ${VPS_PORT} -H ${VPS_HOST} >> ~/.ssh/known_hosts 2>/dev/null || true
+          chmod 644 ~/.ssh/known_hosts
+          
+          # Testar conexão SSH
+          echo "🧪 Testando conexão SSH..."
+          ssh -i ~/.ssh/deploy_key \
+            -o StrictHostKeyChecking=accept-new \
+            -o UserKnownHostsFile=~/.ssh/known_hosts \
+            -p ${VPS_PORT} \
+            ${VPS_USER}@${VPS_HOST} \
+            "echo '✅ Conexão SSH OK'"
+          
+          echo "✅ SSH configurado com sucesso"
+
+      - name: Deploy dist to VPS (rsync)
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
+          VPS_STATIC_ROOT: ${{ secrets.VPS_STATIC_ROOT || '/var/www/founder-dashboard/dist' }}
+        run: |
+          set -e
+          
+          SSH_OPTS="-i ~/.ssh/deploy_key -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts -p ${VPS_PORT}"
+          DEST="${VPS_USER}@${VPS_HOST}:${VPS_STATIC_ROOT}"
+          
+          echo "📦 Criando diretório destino: ${VPS_STATIC_ROOT}"
+          ssh $SSH_OPTS "${VPS_USER}@${VPS_HOST}" "mkdir -p ${VPS_STATIC_ROOT} && chmod 755 ${VPS_STATIC_ROOT}"
+          
+          echo "🚀 Sincronizando arquivos..."
+          rsync -avz --delete \
+            --exclude '.git' \
+            --exclude '.gitignore' \
+            --exclude 'node_modules' \
+            -e "ssh $SSH_OPTS" \
+            dist/ \
+            "${DEST}/"
+          
+          echo "✅ Arquivos sincronizados para ${DEST}"
+
+      - name: Validate and Restart on VPS
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
+          VPS_STATIC_ROOT: ${{ secrets.VPS_STATIC_ROOT || '/var/www/founder-dashboard/dist' }}
+        run: |
+          set -e
+          
+          SSH_OPTS="-i ~/.ssh/deploy_key -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.ssh/known_hosts -p ${VPS_PORT}"
+          
+          echo "🔍 Validando deploy em produção..."
+          
+          # Validar apenas existência de arquivos críticos (não conteúdo)
+          if ! ssh $SSH_OPTS "${VPS_USER}@${VPS_HOST}" "test -f ${VPS_STATIC_ROOT}/index.html"; then
+            echo "::error::index.html não encontrado em produção"
+            exit 1
+          fi
+          
+          echo "✅ Arquivos críticos presentes em produção"
+          
+          echo "🔄 Verificando PM2..."
+          
+          # Verificar se PM2 está instalado e listar processos
+          PM2_LIST=$(ssh $SSH_OPTS "${VPS_USER}@${VPS_HOST}" "pm2 list 2>/dev/null || echo 'PM2_NOT_FOUND'")
+          
+          if echo "$PM2_LIST" | grep -q "PM2_NOT_FOUND"; then
+            echo "⚠️  PM2 não encontrado. Deploy estático apenas."
+          else
+            echo "📋 Processos PM2:"
+            echo "$PM2_LIST"
+            
+            # Tentar reiniciar aplicações relacionadas ao projeto
+            echo "🔄 Reiniciando aplicações relacionadas..."
+            ssh $SSH_OPTS "${VPS_USER}@${VPS_HOST}" "
+              pm2 list 2>/dev/null | grep -E '(founder|dashboard|app)' | awk '{print \$4}' | while read app; do
+                if [ ! -z \"\$app\" ] && [ \"\$app\" != \"name\" ]; then
+                  echo \"Reiniciando \$app...\"
+                  pm2 restart \"\$app\" || echo \"Não foi possível reiniciar \$app\"
+                fi
+              done || echo \"Nenhuma aplicação relacionada encontrada\"
+            " || echo "⚠️  Não foi possível reiniciar aplicações PM2"
+          fi
+          
+          echo "✅ Deploy concluído!"

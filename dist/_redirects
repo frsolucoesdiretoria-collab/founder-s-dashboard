@@ -1,0 +1,13 @@
+# Netlify/SPA redirect rules
+# This ensures all routes are handled by React Router
+# Versioned landing pages (force their own index.html)
+/v4-7/*    /v4-7/index.html    200
+/v4-6-3/*  /v4-6-3/index.html  200
+/v4-3/*    /v4-3/index.html    200
+/v4-1/*    /v4-1/index.html    200
+
+# Global SPA fallback
+/*         /index.html         200
+
+
+/* /index.html 200
