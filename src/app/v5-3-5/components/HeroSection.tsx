@@ -1,0 +1,94 @@
+import React from 'react';
+
+const ASSET_PREFIX = '/v5-3';
+
+export default function HeroSection() {
+    return (
+        <div className="container white-text" style={{ minHeight: '100vh', position: 'relative' }}>
+            <div className="section" style={{ paddingTop: '15vh', paddingBottom: '30px' }}>
+                <div className="row">
+                    <div className="col s12 m7">
+                        <div style={{ marginLeft: 'auto', minWidth: '50%', maxWidth: '600px' }}>
+
+                            {/* MOBILE: Hero Image appears first on mobile - Controlled by CSS classes */}
+                            <picture className="axis-hero-image-mobile" style={{ display: 'none' }}>
+                                <source
+                                    type="image/webp"
+                                    srcSet={`
+                                        ${ASSET_PREFIX}/images/imagens%20v5-3-4/hero-small.webp 400w,
+                                        ${ASSET_PREFIX}/images/imagens%20v5-3-4/hero-medium.webp 800w,
+                                        ${ASSET_PREFIX}/images/imagens%20v5-3-4/hero.webp 1024w
+                                    `}
+                                    sizes="(max-width: 600px) 400px, (max-width: 1200px) 800px, 1024px"
+                                />
+                                <img
+                                    src={`${ASSET_PREFIX}/images/imagens%20v5-3-4/hero.webp`}
+                                    alt="Médica profissional"
+                                    width={1024}
+                                    height={1024}
+                                    // @ts-ignore - fetchpriority is valid HTML but not in React types
+                                    fetchpriority="high"
+                                    loading="eager"
+                                    decoding="async"
+                                />
+                            </picture>
+
+                            <h1 className="axis-hero-title" style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: 'clamp(2.5rem, 8vw, 5rem)', lineHeight: 1.1, fontWeight: 800, textTransform: 'uppercase' }}>
+                                VocÊ nÃo estudou <br />
+                                15 anos para ficar <br />
+                                esperando na sala de consulta.
+                            </h1>
+                            <p className="axis-hero-subtitle" style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: '1.2rem', color: 'rgba(255,255,255,0.6)', marginTop: '30px', lineHeight: 1.6 }}>
+                                O Axis Protocol detecta cancelamentos e imediatamente antecipa pacientes da sua fila de espera — ou de agendamentos futuros — para preencher a lacuna agora. Transforme ociosidade em faturamento antecipado, sem intervenção manual.
+                            </p>
+                            <ul className="axis-hero-list" style={{ marginTop: '30px', marginBottom: '50px', textAlign: 'left', maxWidth: '600px', display: 'inline-block', paddingLeft: 0 }}>
+                                <li style={{ marginBottom: '12px', fontFamily: "'Futura Md BT', sans-serif", fontSize: '1.1rem', color: 'rgba(255,255,255,0.9)', display: 'flex', alignItems: 'start' }}>
+                                    <i className="material-icons-round" style={{ marginRight: '12px', color: '#fff', transform: 'translateY(2px)' }}>check_circle</i>
+                                    <span>Sua agenda, blindada contra imprevistos.</span>
+                                </li>
+                                <li style={{ marginBottom: '12px', fontFamily: "'Futura Md BT', sans-serif", fontSize: '1.1rem', color: 'rgba(255,255,255,0.9)', display: 'flex', alignItems: 'start' }}>
+                                    <i className="material-icons-round" style={{ marginRight: '12px', color: '#fff', transform: 'translateY(2px)' }}>check_circle</i>
+                                    <span>Faturamento preservado minuto a minuto.</span>
+                                </li>
+                                <li style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: '1.1rem', color: 'rgba(255,255,255,0.9)', display: 'flex', alignItems: 'start' }}>
+                                    <i className="material-icons-round" style={{ marginRight: '12px', color: '#fff', transform: 'translateY(2px)' }}>check_circle</i>
+                                    <span>Otimização silenciosa, impacto imediato.</span>
+                                </li>
+                            </ul>
+                            <div style={{ position: 'relative', zIndex: 10 }}>
+                                <a href="https://wa.me/5511999999999?text=Quero%20ativar%20o%20Axis" target="_blank" className="btn btn-large white black-text font-bold axis-btn-cta" style={{ borderRadius: '50px', fontWeight: 'bold', padding: '0 40px' }}>
+                                    ATIVAR PROTOCOLO
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {/* DESKTOP: Hero Image on right side */}
+                    <div className="col s12 m5 hide-on-small-only" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                        <picture>
+                            <source
+                                type="image/webp"
+                                srcSet={`
+                                    ${ASSET_PREFIX}/images/imagens%20v5-3-4/hero-small.webp 400w,
+                                    ${ASSET_PREFIX}/images/imagens%20v5-3-4/hero-medium.webp 800w,
+                                    ${ASSET_PREFIX}/images/imagens%20v5-3-4/hero.webp 1024w
+                                `}
+                                sizes="(max-width: 900px) 400px, (max-width: 1400px) 800px, 1024px"
+                            />
+                            <img
+                                src={`${ASSET_PREFIX}/images/imagens%20v5-3-4/hero.webp`}
+                                alt="Médica profissional"
+                                style={{ maxWidth: '100%', height: 'auto', maxHeight: '500px', borderRadius: '16px', boxShadow: '0 25px 80px rgba(0,0,0,0.6)', objectFit: 'cover' }}
+                                width={1024}
+                                height={1024}
+                                // @ts-ignore - fetchpriority is valid HTML but not in React types
+                                fetchpriority="high"
+                                loading="eager"
+                                decoding="async"
+                            />
+                        </picture>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
