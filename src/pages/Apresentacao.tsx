@@ -23,7 +23,7 @@ export default function ApresentacaoPage() {
   };
 
   const handleScheduleDiagnostic = () => {
-    const whatsappNumber = "5511999999999"; // TODO: mover para env
+    const whatsappNumber = "5547996475947"; // TODO: mover para env
     const message = encodeURIComponent("Olá! Gostaria de agendar um diagnóstico rápido de 30 minutos.");
     window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
   };

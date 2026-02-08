@@ -9,8 +9,6 @@ lerna-debug.log*
 
 node_modules
 dist
-# dist (removido para permitir deploy via rsync do repositório)
-# dist
 dist-ssr
 
 # Environment variables

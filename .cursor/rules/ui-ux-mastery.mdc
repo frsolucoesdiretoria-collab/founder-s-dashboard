@@ -1,0 +1,98 @@
+---
+description: Padrão OBRIGATÓRIO de excelência para UI, UX e Frontend Design (Silicon Valley / Awwwards Style).
+globs: ["**/*.html", "**/*.css", "**/*.tsx", "**/*.jsx", "src/components/**"]
+---
+
+# 🎨 UI/UX MASTERY — O Padrão Phenomenon
+
+Esta regra define o padrão **OBRIGATÓRIO** de qualidade estética e técnica para qualquer interface gerada neste projeto.
+Não aceite o medíocre. Não aceite o "padrão Bootstrap". Busque o nível **Awwwards**.
+
+## 🧠 Mindset do Designer (CTO Silicon Valley)
+1.  **Anti-Amadorismo:** Se parece um template pronto, está errado.
+2.  **Radical Reduction:** Remova tudo que não é essencial. O que sobrar deve brilhar.
+3.  **Physics & Motion:** Nada aparece do nada. Tudo tem inércia, peso e fluxo.
+4.  **Typography is Interface:** A tipografia não é apenas texto, é a estrutura visual principal.
+
+---
+
+## 💎 Diretrizes Visuais (O "Look & Feel")
+
+### 1. Paleta de Cores (Deep & Neon)
+Evite brancos puros (`#FFFFFF`) ou pretos puros (`#000000`) como base.
+Use a base "Deep Space" e acentos vibrantes para criar contraste cinematográfico.
+
+*   **Base (Backgrounds):** `Deep Space Blue` (#012a4a), `Yale Dark` (#013a63).
+*   **Acentos (Glows/CTAs):** `Sky Blue` (#89c2d9), `Neon Cyan`, `Spring Green`.
+*   **Texto:** Nunca use cinza chapado. Use tons de azul-claro/branco-gelo (`#a9d6e5`) para legibilidade sobre fundos escuros.
+
+### 2. Tipografia (Hierarquia Agressiva)
+*   **Display (Títulos):** Use fontes com personalidade técnica ou grotesca (ex: *Space Grotesk*, *Syne*, *Clash Display*).
+    *   Tamanhos massivos para Hero Sections (ex: `text-[10vw]`).
+    *   `tracking-tighter` para densidade visual.
+    *   `leading-[0.85]` para compactação vertical.
+*   **Body (Leitura):** Fontes limpas e geométricas (ex: *Manrope*, *Inter*).
+    *   Espaçamento generoso entre linhas (`leading-relaxed`).
+
+### 3. Glassmorphism & Depth
+Nunca use cards sólidos se puder usar vidro.
+*   **Glass:** `bg-opacity-10` + `backdrop-blur-xl` + `border-white/10`.
+*   **Glows:** Use `gradients` radiais ou cônicos com `blur-[100px]` atrás de elementos para criar atmosfera.
+*   **Noise:** Adicione texturas de granulação (noise) sutis (`opacity-[0.03]`) para evitar o aspecto "plástico".
+
+---
+
+## ⚡ Interatividade e Movimento (A "Alma")
+
+### 1. Scroll Suave (OBRIGATÓRIO)
+Nenhuma página premium usa o scroll padrão do navegador.
+*   **Ferramenta:** Use **Lenis** (Studio Freight) para inércia suave.
+*   **Config:** `duration: 1.2`, `smooth: true`.
+
+### 2. Entradas Dramáticas (GSAP)
+Elementos não devem estar estáticos esperando o usuário.
+*   **Text Reveal:** Use máscaras (`clip-path`) para revelar textos de baixo para cima.
+*   **Stagger:** Listas e grids devem aparecer em cascata (um após o outro), nunca todos de uma vez.
+*   **ScrollTrigger:** Elementos reagem à posição do scroll (fade-up, parallax).
+
+### 3. Micro-interações
+*   **Cursor:** Se possível, use cursores personalizados (`custom cursor`) com `mix-blend-mode: difference`.
+*   **Hover:** Botões devem reagir magneticamente ou com preenchimento fluido.
+*   **Inputs:** Devem parecer táteis. Bordas inferiores que acendem ao foco (`border-b`, `transition-all`).
+
+---
+
+## 🛠️ Stack Técnica Preferencial
+
+1.  **Tailwind CSS:** Para estilização rápida e consistente. Use valores arbitrários (`w-[120%]`) quando o design exigir quebra de grade.
+2.  **GSAP (GreenSock):** Para animações complexas (`Timeline`, `ScrollTrigger`).
+3.  **HTML Semântico:** A estrutura deve ser limpa (`section`, `article`, `nav`), mesmo com visual complexo.
+
+---
+
+## 🚫 O Que NÃO Fazer (Lista de Banimento)
+
+1.  **Ícones Genéricos:** Não use ícones de "foguete", "aperto de mão" ou "lâmpada" estilo vetor gratuito. Use tipografia, formas abstratas ou ícones minimalistas (ex: *Phosphor*, *Remix*).
+2.  **Sombras Sujas:** Evite `box-shadow` preto e pesado. Use sombras coloridas e difusas (`shadow-cyan-500/20`).
+3.  **Layouts Rígidos:** Quebre a grade. Use sobreposições (`-mt-20`, `z-10`).
+4.  **Bordas Padrão:** Evite bordas cinzas sólidas. Use bordas com baixa opacidade (`border-white/10`).
+
+---
+
+## 📝 Exemplo de Estrutura de Código (Referência V4.5)
+
+```html
+<!-- Exemplo de Título com Reveal -->
+<div class="overflow-hidden">
+  <h1 class="text-[12vw] font-display font-bold leading-none gs-reveal">
+    IMPACTO
+  </h1>
+</div>
+
+<!-- Exemplo de Glass Panel -->
+<div class="glass-panel p-8 rounded-3xl border border-white/10 bg-deep-space/40 backdrop-blur-md">
+  Conteúdo Premium
+</div>
+```
+
+Se o usuário pedir "Melhore a UI", aplique estas regras imediatamente.

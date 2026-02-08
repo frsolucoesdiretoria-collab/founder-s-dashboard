@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reservar Implementação — Axis Antivacância</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets-v2/css/style.css">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JYTV1WNRWS"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-JYTV1WNRWS');
+    gtag('config', 'AW-16460564445');
+  </script>
+</head>
+<body>
+
+<div class="capture-page">
+  <div class="capture-card fade-in">
+    <h2>Reserve Sua Implementação</h2>
+    <p class="subtitle">Entrada de <strong>R$1.000</strong> agora + R$1.500 após a entrega + 12 mensalidades de R$99</p>
+    
+    <form id="form-entrada" action="#" method="POST">
+      <input type="hidden" name="tipo" value="entrada">
+      <input type="hidden" name="valor" value="1000">
+      
+      <div class="form-group">
+        <label for="nome">Seu Nome Completo *</label>
+        <input type="text" id="nome" name="nome" placeholder="Ex: Dr. João Silva" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="email">E-mail Profissional *</label>
+        <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="whatsapp">WhatsApp (com DDD) *</label>
+        <input type="tel" id="whatsapp" name="whatsapp" placeholder="(47) 99999-9999" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="clinica">Nome da Clínica *</label>
+        <input type="text" id="clinica" name="clinica" placeholder="Ex: Clínica Vida Nova" required>
+      </div>
+      
+      <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 10px;">
+        Pagar Entrada de R$1.000 →
+      </button>
+      <p style="text-align: center; font-size: 0.85rem; color: var(--gray-600); margin-top: 12px;">
+        O pagamento será emitido em nome de <strong>FR Soluções LTDA</strong>.
+      </p>
+      <p style="text-align: center; font-size: 0.8rem; color: var(--gray-500); margin-top: 15px;">
+        🔒 Seus dados estão seguros e não serão compartilhados
+      </p>
+    </form>
+    
+    <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--gray-200); text-align: center;">
+      <p style="font-size: 0.85rem; color: var(--gray-600); margin-bottom: 10px;">
+        <strong>Como funciona:</strong>
+      </p>
+      <p style="font-size: 0.8rem; color: var(--gray-500);">
+        1. Pague R$1.000 agora para reservar<br>
+        2. Fazemos o diagnóstico + implementação<br>
+        3. Pague R$1.500 quando o sistema estiver funcionando<br>
+        4. As 12 mensalidades de R$99 acompanham o suporte contínuo após a entrega
+      </p>
+    </div>
+    
+    <div style="margin-top: 20px; text-align: center;">
+      <a href="avista.html" style="font-size: 0.85rem; color: var(--primary);">
+        Prefiro pagar R$1.997 à vista (melhor preço) →
+      </a>
+    </div>
+  </div>
+</div>
+
+<script src="/assets-v2/js/main.js"></script>
+<script>
+  // Checkout URL - ENTRADA R$1.000 (entrada + plano)
+  // ⚠️ CRIAR NOVO LINK NO MERCADO PAGO PARA R$1.000
+  const CHECKOUT_URL = 'https://mpago.la/29M9mhq'; // Link atual de R$1.000
+  
+  document.getElementById('form-entrada').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = {
+      tipo: 'entrada',
+      valor: 1000,
+      nome: document.getElementById('nome').value,
+      email: document.getElementById('email').value,
+      whatsapp: document.getElementById('whatsapp').value,
+      clinica: document.getElementById('clinica').value,
+      timestamp: new Date().toISOString(),
+      page: 'captura-entrada'
+    };
+    
+    // Salva no localStorage como backup
+    saveLeadLocal(formData);
+    
+    // Envia para webhook (configurar URL real)
+    sendToWebhook(formData);
+    if(typeof gtag === 'function'){
+      gtag('event','conversion',{ send_to:'AW-16460564445/Z7cbCKmjuu0bEN2Pgak9', value:1000, currency:'BRL' });
+      gtag('event','lead_submission',{ event_category:'Captura Axis', event_label:'Entrada + Plano' });
+    }
+    
+    // Redireciona para checkout
+    window.location.href = CHECKOUT_URL;
+  });
+</script>
+
+</body>
+</html>

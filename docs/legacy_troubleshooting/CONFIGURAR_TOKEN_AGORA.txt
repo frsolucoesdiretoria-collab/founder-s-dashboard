@@ -1,0 +1,10 @@
+# 🚀 COMANDO PARA CONFIGURAR O TOKEN AGORA
+# Copie e cole este comando COMPLETO na VPS:
+
+cd /var/www/founder-dashboard && cp .env.local .env.local.backup && sed -i 's/NOTION_TOKEN=SET_NOTION_TOKEN_AXIS_HERE/NOTION_TOKEN=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/' .env.local && echo "✅ Token configurado!" && echo "" && echo "Verificando..." && grep "^NOTION_TOKEN=" .env.local | head -c 60 && echo "..." && echo "" && echo "Reiniciando servidor..." && pm2 restart founder-dashboard && sleep 8 && echo "" && echo "========================================" && echo "=== TESTE API KPIs ===" && curl -s http://localhost:3001/api/kpis/public | head -c 500 && echo "" && echo "" && echo "=== QUANTIDADE DE KPIs ===" && curl -s http://localhost:3001/api/kpis/public | grep -o '"id"' | wc -l && echo "" && echo "=== LOGS (últimas 10 linhas) ===" && pm2 logs founder-dashboard --lines 10 --nostream
+
+
+
+
+
+

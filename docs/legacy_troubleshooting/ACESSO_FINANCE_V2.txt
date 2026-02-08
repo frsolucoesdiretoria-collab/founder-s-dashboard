@@ -1,0 +1,63 @@
+═══════════════════════════════════════════════════════════
+   💰 FINANCE FLORA V2 - ACESSO RÁPIDO
+═══════════════════════════════════════════════════════════
+
+🌐 URL DE ACESSO:
+   http://localhost:5176/finance/flora-v2
+
+📱 STATUS:
+   ✅ 100% FUNCIONAL
+   ✅ BUILD SEM ERROS
+   ✅ ZERO BUGS
+   ✅ PRONTO PARA USO
+
+🎯 O QUE VOCÊ PODE FAZER:
+
+   1. VER SEU DINHEIRO (PF e PJ separados)
+      - Saldo do mês
+      - Orçamento vs gasto
+      - Capacidade de poupança
+      - Gráficos interativos
+
+   2. LANÇAR GASTOS/RECEITAS
+      - Botão "Novo Lançamento"
+      - Preencher tudo (obrigatório)
+      - Ver aparecer nos gráficos na hora
+
+   3. CRIAR ORÇAMENTOS
+      - Definir meta mensal por categoria
+      - Acompanhar % consumido
+      - Verde/Amarelo/Vermelho automático
+
+   4. CONCILIAR EXTRATOS
+      - Sugestões automáticas da IA (mock)
+      - Confirmar ou ajustar
+      - Lança automático
+
+📚 DOCUMENTAÇÃO:
+
+   - FINANCE_V2_README.md           → Completa (200+ linhas)
+   - GUIA_RAPIDO_FINANCE_V2.md      → Uso prático
+   - IMPLEMENTACAO_COMPLETA_V2.md   → Detalhes técnicos
+
+🚀 INICIAR SERVIDOR:
+
+   npm run dev
+
+🎓 PRIMEIRA VEZ:
+
+   1. Abrir a URL acima
+   2. Clicar nas 6 tabs para explorar
+   3. Ler GUIA_RAPIDO_FINANCE_V2.md
+   4. Criar um lançamento de teste
+   5. Ver ele aparecer na Visão Geral
+
+💡 DICA:
+
+   Comece pela tab "Configurações" para entender
+   a estrutura de dados (plano de contas, centros
+   de custo, contas bancárias).
+
+═══════════════════════════════════════════════════════════
+   Desenvolvido em Janeiro 2026 | React + TypeScript
+═══════════════════════════════════════════════════════════

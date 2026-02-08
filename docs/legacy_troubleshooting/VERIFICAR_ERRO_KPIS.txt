@@ -1,0 +1,10 @@
+# 🔍 VERIFICAR ERRO ESPECÍFICO DOS KPIs
+# Execute este comando na VPS para ver o erro exato:
+
+cd /var/www/founder-dashboard && echo "=== LOGS COMPLETOS (últimas 50 linhas) ===" && pm2 logs founder-dashboard --lines 50 --nostream && echo "" && echo "=== TESTE COM VERBOSE ===" && curl -v http://localhost:3001/api/kpis/public 2>&1 && echo "" && echo "=== VERIFICAR TOKEN ===" && grep "^NOTION_TOKEN=" .env.local | head -c 60 && echo "..." && echo "" && echo "=== VERIFICAR DATABASE IDs ===" && grep "^NOTION_DB_KPIS=" .env.local && grep "^NOTION_DB_GOALS=" .env.local
+
+
+
+
+
+

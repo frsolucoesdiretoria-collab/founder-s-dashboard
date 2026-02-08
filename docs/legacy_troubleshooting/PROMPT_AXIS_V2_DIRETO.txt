@@ -1,0 +1,89 @@
+═══════════════════════════════════════════════════════════════════
+  PROMPT PARA AGENTE: Integrar Axis Antivacância V2
+═══════════════════════════════════════════════════════════════════
+
+TAREFA: Clonar pasta "V2 Axis anti vacancia" e criar rotas /V2.1, /V2.2, /V2.3
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📍 PASTA ORIGINAL (NÃO EDITAR):
+   /Users/fabricio/Documents/Tech /Anti vacância/V2 Axis anti vacancia
+
+📍 PASTA DE DESTINO:
+   founder-s-dashboard/axis-antivacancia-v2/
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ PASSOS OBRIGATÓRIOS:
+
+1. COPIAR PASTA
+   mkdir -p "founder-s-dashboard/axis-antivacancia-v2"
+   cp -r "/Users/fabricio/Documents/Tech /Anti vacância/V2 Axis anti vacancia"/* \
+        "founder-s-dashboard/axis-antivacancia-v2/"
+
+2. CRIAR ARQUIVO DE ROTAS
+   Arquivo: server/routes/axisAntivacanciaV2.ts
+   
+   Usar como base: server/routes/axisAntivacancia.ts
+   
+   Criar rotas:
+   - /V2.1 → lp/index.html
+   - /V2.2 → lp/v2-curta.html
+   - /V2.3 → lp/v3-urgencia.html
+   - /captura-v2/*.html → captura/*.html
+   - /obrigado-v2/*.html → obrigado/*.html
+   - /assets-v2/* → assets/*
+
+3. ATUALIZAR LINKS NOS HTMLs (apenas na pasta copiada)
+   Trocar em TODOS os HTMLs:
+   - ../assets/ → /assets-v2/
+   - ../captura/ → /captura-v2/
+   - ../obrigado/ → /obrigado-v2/
+
+4. ATUALIZAR main.js
+   Arquivo: axis-antivacancia-v2/assets/js/main.js
+   
+   Mudar:
+   webhookUrl: window.location.origin + '/api/axis-v2/lead'
+   notifyUrl: window.location.origin + '/api/axis-v2/notify'
+
+5. REGISTRAR NO SERVIDOR
+   Arquivo: server/index.ts
+   
+   Adicionar import:
+   import { axisV2Router } from './routes/axisAntivacanciaV2';
+   
+   Registrar ANTES do catch-all:
+   app.use(axisV2Router);
+   
+   Atualizar catch-all para ignorar:
+   - /V2
+   - /captura-v2
+   - /obrigado-v2
+   - /assets-v2
+
+6. TESTAR
+   npm run dev
+   curl http://localhost:3001/V2.1 (deve retornar 200)
+   curl http://localhost:3001/V2.2 (deve retornar 200)
+   curl http://localhost:3001/V2.3 (deve retornar 200)
+
+7. COMMIT E PUSH
+   git add axis-antivacancia-v2/ server/routes/axisAntivacanciaV2.ts server/index.ts
+   git commit -m "feat: Integração Axis V2 com rotas /V2.1, /V2.2, /V2.3"
+   git push origin main
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ REGRAS:
+   - NUNCA edite a pasta original
+   - Use caminhos absolutos (/assets-v2/ não ../assets/)
+   - Rotas devem vir ANTES do catch-all do SPA
+   - Teste antes de commitar
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 REFERÊNCIA:
+   Ver arquivo PROMPT_INTEGRAR_AXIS_V2.md para detalhes completos
+
+═══════════════════════════════════════════════════════════════════

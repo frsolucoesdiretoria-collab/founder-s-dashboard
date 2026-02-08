@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Axis Antivacância | Calcule o impacto do cancelamento</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JYTV1WNRWS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-JYTV1WNRWS');
+  gtag('config', 'AW-16460564445');
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap');
+:root { font-family: 'Manrope', 'Inter', system-ui, sans-serif; font-weight: 400; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #eceff8; color: #0f172a; position:relative; overflow-x:hidden; }
+body::after { content:''; position:fixed; inset:0; background:radial-gradient(circle at 20% 20%, rgba(15,98,255,.18), transparent 30%), radial-gradient(circle at 80% 8%, rgba(37,211,102,.2), transparent 25%); animation:ambientGlow 14s ease-in-out infinite; pointer-events:none; z-index:-1; }
+@keyframes ambientGlow { 0% { transform:scale(1); opacity:.65; } 50% { transform:scale(1.08); opacity:.9; } 100% { transform:scale(1); opacity:.65; } }
+@keyframes floatUp { 0% { transform: translateY(0); } 50% { transform: translateY(-7px); } 100% { transform: translateY(0); } }
+@keyframes textPulse { 0% { transform: translateY(0); opacity:1; } 50% { transform: translateY(-6px); opacity:.8; } 100% { transform: translateY(0); opacity:1; } }
+@keyframes slideInLeft { 0% { opacity:0; transform: translateX(-40px); } 60% { opacity:1; transform: translateX(5px); } 100% { opacity:1; transform: translateX(0); } }
+@keyframes summaryFloat { 0% { transform: var(--parallax-transform, translate(0,0)) translateY(0); } 50% { transform: var(--parallax-transform, translate(0,0)) translateY(-10px); } 100% { transform: var(--parallax-transform, translate(0,0)) translateY(0); } }
+.hero { background: #fff; border-radius: 30px; padding: 60px 40px; margin-top: 40px; box-shadow: 0 40px 60px rgba(15,23,42,.12); text-align: center; transition:transform .4s ease; }
+.hero:hover { transform:translateY(-6px); }
+.hero h1 { font-size: clamp(2.6rem,5vw,3.3rem); margin-bottom: 18px; line-height: 1.2; }
+.hero p { font-size: 1.1rem; color: #475467; margin-bottom: 18px; }
+.hero .cta-group { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+.btn { border:none; border-radius:14px; padding:16px 32px; font-size:1rem; font-weight:700; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; transition: transform .2s ease, box-shadow .3s ease; }
+.btn-primary { background:#0f62ff; color:#fff; box-shadow:0 12px 30px rgba(15,98,255,.35); }
+.btn-secondary { border:2px solid #0f62ff; color:#0f62ff; background:#fff; }
+.btn-whatsapp { background:#25d366; color:#0f172a; box-shadow:0 12px 30px rgba(37,211,102,.35); }
+.btn:hover { transform: translateY(-3px) scale(1.01); box-shadow:0 20px 40px rgba(15,23,42,.3); }
+.progress-tracker { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:18px; }
+.progress-tracker span { font-size:0.9rem; padding:6px 12px; border-radius:12px; border:1px solid #cbd5f5; font-weight:600; transition:border-color .2s ease, color .2s ease; background:#fff; }
+.progress-tracker span.active { border-color:#0f62ff; color:#0f62ff; }
+.summary-panel { margin-top:18px; background:#f8fafc; border-radius:18px; padding:18px 22px; border:1px solid #d9e2ff; text-align:center; transition: transform .3s ease, box-shadow .3s ease; animation:summaryFloat 12s ease-in-out infinite alternate; box-shadow:0 20px 35px rgba(15,23,42,.15); width: min(460px, 90%); position:sticky; top:16px; transform: var(--parallax-transform, translate(0,0)); }
+.summary-panel strong { font-size:1.3rem; display:block; }
+.animate-number { transition:transform .2s ease; }
+.animate-number.pulse { transform:scale(1.12); }
+.block { background:#fff; border-radius:24px; padding:32px 34px; box-shadow:0 25px 50px rgba(15,23,42,.1); animation:floatUp 12s ease-in-out infinite; display:flex; flex-direction:column; align-items:center; gap:18px; }
+.block h2 { margin-top:0; }
+.axis-fit-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; margin-top:18px; width:100%; }
+.axis-fit-item { background:#f8fafc; border-radius:18px; padding:24px; border:1px solid #e2e8f0; text-align:left; display:flex; flex-direction:column; gap:12px; min-height:220px; transition: transform .2s ease, box-shadow .3s ease; font-size:1rem; }
+.axis-fit-item h3 { margin:0; font-size:1.25rem; font-weight:600; }
+.axis-fit-item:hover { transform: translateY(-8px) scale(1.03); box-shadow:0 25px 40px rgba(15,23,42,.18); }
+.axis-fit-proof { font-size:0.95rem; color:#475467; }
+.axis-fit-cta { margin-top:12px; width:100%; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+.axis-fit-cta span { color:#475467; font-size:0.95rem; }
+.axis-fit-cta a { margin-left:auto; }
+.gain-sense-content { text-align:center; width:100%; display:flex; flex-direction:column; gap:14px; align-items:center; }
+.gain-badge { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:999px; background:#e0ecff; color:#0f62ff; font-weight:600; font-size:0.95rem; }
+.gain-sense-cta { display:flex; gap:12px; flex-wrap:wrap; }
+.timeline-grid { width:100%; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; margin-top:18px; }
+.timeline-card { background:#f8fafc; border-radius:18px; border:1px solid #e2e8f0; padding:22px; display:flex; flex-direction:column; gap:10px; min-height:200px; transition:transform .2s ease, box-shadow .3s ease; font-size:1rem; box-shadow:0 12px 25px rgba(15,23,42,.1); }
+.timeline-card:hover { transform: translateY(-8px) scale(1.02); box-shadow:0 25px 40px rgba(15,23,42,.18); }
+.timeline-card h3 { margin:0; font-size:1.25rem; font-weight:600; }
+.timeline-card span { font-weight:600; color:#0f62ff; }
+.before-after-grid { width:100%; display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px; margin-top:18px; }
+.before-after-column { border-radius:18px; border:1px solid #e2e8f0; padding:24px; background:#f8fafc; display:flex; flex-direction:column; gap:14px; min-height:220px; transition: transform .2s ease, box-shadow .3s ease; font-size:1rem; box-shadow:0 12px 25px rgba(15,23,42,.1); }
+.before-after-column:hover { transform: translateY(-8px) scale(1.02); box-shadow:0 25px 40px rgba(15,23,42,.18); }
+.before-after-column h3 { margin:0; font-size:1.25rem; font-weight:600; }
+.before-metric { font-weight:700; color:#0f172a; font-size:1rem; }
+.authority-grid { width:100%; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-top:18px; }
+.authority-card { border-radius:18px; border:1px solid #e2e8f0; padding:22px; background:#fff; display:flex; flex-direction:column; gap:10px; transition: transform .2s ease, box-shadow .3s ease; font-size:1rem; box-shadow:0 12px 25px rgba(15,23,42,.1); }
+.authority-card:hover { transform: translateY(-8px) scale(1.02); box-shadow:0 25px 40px rgba(15,23,42,.18); }
+.authority-card span { font-size:0.95rem; color:#475467; }
+.authority-badge { font-weight:700; color:#0f62ff; }
+.authority-note { font-size:0.9rem; color:#334155; }
+.proof-grid { width:100%; display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-top:12px; }
+.table-extended { margin-top:18px; width:100%; border-collapse:collapse; }
+.table-extended td, .table-extended th { border:1px solid #e2e8f0; padding:12px; }
+.table-extended th { background:#f1f5f9; }
+.table-highlight { background:#e0e7ff; font-weight:700; }
+.table-loss td { background:#fee2e2; color:#991b1b; font-weight:600; }
+.table-axis td { background:#ecfdf5; color:#115e59; font-weight:600; }
+.footer-head { width:100%; display:flex; flex-direction:column; gap:8px; }
+.footer-cta-grid { width:100%; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin-top:14px; }
+.footer-cta-block { border-radius:18px; border:1px solid #cbd5f5; padding:18px; background:#fff; display:flex; flex-direction:column; gap:10px; }
+.footer-urgency { margin-top:18px; padding:16px; border-radius:18px; border:1px dashed #0f62ff; background:#f0f5ff; color:#0f172a; }
+.footer-urgency-loss { font-weight:700; color:#dc2626; margin-top:6px; }
+.footer-guarantee { margin-top:12px; padding:16px; border-radius:16px; background:#0f62ff; color:#fff; font-weight:600; }
+.footer-faq { margin-top:16px; width:100%; }
+.footer-faq ul { margin:8px 0 0; padding-left:18px; color:#0f172a; }
+.footer-faq li { margin-bottom:6px; }
+.footer-cta-buttons { margin-top:16px; display:flex; flex-wrap:wrap; gap:12px; }
+
+#post-calc .block { opacity:0; transform:translateX(-40px); transition: opacity .6s ease, transform .6s ease; }
+#post-calc .block.visible { opacity:1; transform:translateX(0); animation:slideInLeft .7s ease forwards; }
+.locked { opacity:0; pointer-events:none; transform:translateY(25px); transition:opacity .5s ease, transform .5s ease; }
+.locked.revealed { opacity:1; pointer-events:auto; transform:translateY(0); }
+.subtext { color:#64748b; margin-top:6px; }
+.form-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; margin-top:24px; width:100%; }
+.input { width:100%; padding:14px 16px; border-radius:12px; border:1px solid #cbd5f5; font-size:1rem; }
+.microcopy { margin-top:6px; color:#64748b; font-size:0.85rem; }
+.calc-grid { display:grid; grid-template-columns:repeat(3,minmax(190px,1fr)); gap:18px; margin-top:24px; width:100%; max-width:820px; margin-left:auto; margin-right:auto; }
+.calc-card { border-radius:16px; background:#f8fafc; padding:22px; text-align:center; font-weight:700; font-size:1.2rem; transition:transform .2s ease, box-shadow .2s ease; }
+.calc-card:hover { transform:translateY(-8px) scale(1.03); box-shadow:0 25px 40px rgba(15,23,42,.25); }
+.calc-card span { display:block; font-size:0.9rem; color:#475467; margin-top:8px; }
+.emphasis { margin-top:18px; font-weight:700; color:#0f172a; text-align:center; }
+.calc-actions { margin-top:18px; display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+.timeline { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; margin-top:24px; animation:textPulse 12s ease-in-out infinite; }
+.timeline div { border-radius:16px; border:1px solid #e2e8f0; padding:18px; background:#fff; }
+.timeline strong { display:block; margin-bottom:6px; }
+.before-after { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px; margin-top:24px; animation:textPulse 10s ease-in-out infinite; }
+.column { border-radius:18px; padding:24px; background:#fff; border:1px solid #e2e8f0; min-height:220px; animation:floatUp 14s ease-in-out infinite; }
+.column h3 { margin-top:0; margin-bottom:12px; }
+.column ul { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px; align-items:center; text-align:center; }
+.column li { font-weight:600; color:#0f172a; }
+.proof { margin-top:24px; display:flex; gap:12px; align-items:center; animation:textPulse 16s ease-in-out infinite; }
+.proof span { font-size:1.4rem; font-weight:700; color:#0f62ff; }
+.footer-cta { text-align:center; margin-top:40px; }
+.bottom-cta { text-align:center; margin-top:40px; animation:summaryFloat 14s ease-in-out infinite alternate; transform: var(--parallax-transform, translate(0,0)); }
+.small { color:#94a3b8; font-size:0.85rem; margin-top:10px; }
+.table { width:100%; border-collapse:collapse; margin-top:24px; }
+.table td, .table th { border:1px solid #e2e8f0; padding:12px; }
+.table th { background:#f8fafc; }
+.locked-message { background:#fff; border:1px solid #cbd5f5; border-radius:20px; padding:18px 22px; text-align:center; font-weight:600; margin:24px 0 12px; }
+.mobile-bottom-bar { display:none; }
+@media (prefers-reduced-motion: reduce) {
+  .hero, .block, .calc-card, .summary-panel, .bottom-cta, .timeline-card, .before-after-column, .authority-card { animation: none !important; }
+  body::after { animation: none !important; }
+}
+@media (max-width: 768px) {
+  .hero { padding:30px 24px; }
+  .hero h1 { font-size:2rem; }
+  .hero .cta-group { flex-direction:column; gap:12px; }
+  .btn { min-height:52px; }
+  .calc-grid { grid-template-columns:1fr; }
+  .calc-actions { flex-direction:column; width:100%; }
+  .calc-actions a { width:100%; }
+  .axis-fit-grid, .timeline-grid, .before-after-grid, .authority-grid, .proof-grid, .footer-cta-grid { grid-template-columns:1fr; }
+  .axis-fit-cta { flex-direction:column; align-items:flex-start; }
+  .before-after-column, .timeline-card, .authority-card, .footer-cta-block { width:100%; }
+  .footer-urgency, .footer-guarantee { text-align:left; }
+  .mobile-bottom-bar { display:flex; position:sticky; bottom:0; background:#0f172a; padding:12px; gap:8px; border-radius:12px 12px 0 0; box-shadow:0 -12px 25px rgba(15,23,42,.35); z-index:10; }
+  .mobile-bottom-bar a { flex:1; font-weight:700; }
+  .small { font-size:0.75rem; }
+  body { overflow-x:hidden; }
+}
+</style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <p class="subtext">Cada horário reenquadrado é tempo livre para crescer e dinheiro voltando para o caixa.</p>
+      <h1>Com o Axis, cada cancelamento vira agenda preenchida em minutos e receita recorrente no caixa. Ganhe tempo e dinheiro de verdade.</h1>
+      <p>Uma automação inteligente que garante novas confirmações em segundos e te entrega tempo para vender mais.</p>
+      <div class="cta-group">
+        <a class="btn btn-primary" href="#calculo">Calcular quanto estou perdendo</a>
+      </div>
+    </section>
+
+    <section id="calculo" class="block">
+      <h2>Descubra quanto tempo e receita você pode recuperar agora mesmo</h2>
+      <p>Use dados reais. O que aparecer aqui já está pronto para virar lucro.</p>
+      <div class="form-grid">
+        <div>
+          <label for="valor">Valor médio da consulta (R$)</label>
+          <input id="valor" class="input" type="tel" inputmode="decimal" pattern="[0-9]*" placeholder="R$ 400,00" autocomplete="off" />
+          <p class="microcopy">Use o valor médio real (ex: R$400).</p>
+        </div>
+        <div>
+          <label for="week">Consultas desmarcadas na última semana</label>
+          <input id="week" class="input" type="number" min="0" inputmode="numeric" pattern="[0-9]*" placeholder="ex: 3" autocomplete="off" />
+          <p class="microcopy">Considere apenas cancelamentos de última hora.</p>
+        </div>
+        <div>
+          <label for="month">Consultas desmarcadas no último mês</label>
+          <input id="month" class="input" type="number" min="0" inputmode="numeric" pattern="[0-9]*" placeholder="ex: 12" autocomplete="off" />
+          <p class="microcopy">Estimativa aproximada já é suficiente.</p>
+        </div>
+      </div>
+      <div class="progress-tracker">
+        <span data-field="valor">Valor médio preenchido</span>
+        <span data-field="week">Última semana preenchida</span>
+        <span data-field="month">Último mês preenchido</span>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-card">R$<span id="loss-month" class="animate-number">0</span><span>Perda mensal invisível</span></div>
+        <div class="calc-card">R$<span id="loss-year" class="animate-number">0</span><span>Perda anual que ninguém contabiliza</span></div>
+        <div class="calc-card">R$<span id="loss-decade" class="animate-number">0</span><span>Projeção de 12 meses com o vazamento ativo</span></div>
+      </div>
+      <div class="summary-panel">
+        <strong>Você recupera R$<span id="summary-month">0</span>/mês</strong>
+        <p>Axis vira lucro imediato em <span id='summary-payback'>0</span> dias.</p>
+      </div>
+      <p class="emphasis">Você recupera R$<span id="em-month">0</span> por mês. Isso representa R$<span id="em-year">0</span> por ano. O Axis custa R$1.997 uma única vez e se paga em menos de <span id="payback-days">0</span> dias.</p>
+    </section>
+
+    <div id="locked-message" class="locked-message">
+      <p>Preencha todos os campos para continuar lendo a página.</p>
+      <p id="unlock-feedback" class="small">Faltam 3 campos para liberar o restante do conteúdo.</p>
+    </div>
+    <div id="post-calc" class="locked">
+      <section class="block">
+        <div class="calc-actions">
+          <a class="btn btn-primary" href="/captura-v2/avista.html">Comprar Axis à vista — R$1.997,00</a>
+          <a class="btn btn-secondary" href="/captura-v2/entrada.html">Reservar com entrada — R$1.000</a>
+          <a class="btn btn-whatsapp" href="https://wa.me/5547996475947">Falar no WhatsApp agora</a>
+        </div>
+        <p class="small">Entrada de R$1.000 agora + R$1.500 na entrega + 12x R$99 mensais de manutenção.</p>
+      </section>
+
+      <section class="block axis-fit">
+        <h2>O Axis é para clínicas que:</h2>
+        <div class="axis-fit-grid">
+          <article class="axis-fit-item">
+            <h3>São clínicas com fila de espera ativa</h3>
+            <p>O Axis transforma cancelamentos em confirmações instantâneas, mantendo horários vendidos e gerando receita sem esforço.</p>
+            <p class="axis-fit-proof">+150 clínicas já usam o Axis para ganhar tempo e multiplicar faturamento sem aumentar equipe.</p>
+          </article>
+          <article class="axis-fit-item">
+            <h3>Precisam de previsibilidade no faturamento</h3>
+            <p>Você sabe o quanto perde todo mês — o Axis converte esses vazamentos em receita previsível e tranquilo.</p>
+            <p class="axis-fit-proof">Payback médio: 21 dias para clínicas que deixam o Axis tirar o trabalho da agenda.</p>
+          </article>
+          <article class="axis-fit-item">
+            <h3>Estão cansadas de mensagens manuais</h3>
+            <p>A equipe foca no atendimento enquanto o Axis confirma horários via WhatsApp em 3 minutos e gera lucro instantâneo.</p>
+            <p class="axis-fit-proof">Escalável: serve tanto para filas internas quanto para automações prontas que enchem a agenda.</p>
+          </article>
+        </div>
+        <div class="axis-fit-cta">
+          <span>Satisfação média: 4,9/5 entre pilotos.</span>
+        </div>
+        <p class="axis-fit-proof">Não é indicado para clínicas com fluxo esporádico ou sem WhatsApp/contatos ativos.</p>
+      </section>
+
+      <section class="block gain-sense">
+        <h2>Depois do cálculo</h2>
+        <div class="gain-sense-content">
+          <p>Os números mostram o ganho: Axis enche a agenda enquanto você foca em entregar atendimento premium e conquistar receita previsível.</p>
+          <p class="gain-badge">Payback comprovado em menos de <span id="payback-highlight">0</span> dias</p>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>Quando um paciente cancela</h2>
+        <div class="timeline-grid">
+          <article class="timeline-card">
+            <h3>1. Cancelamento acontece</h3>
+            <p>O horário some mas o Axis converge a perda em lucro com preenchimento instantâneo.</p>
+            <span>Perda invisível já está na tela acima.</span>
+          </article>
+          <article class="timeline-card">
+            <h3>2. Axis age</h3>
+            <p>Notifica a fila de espera automaticamente, transforma o cancelamento em confirmação em 3 minutos e enche o caixa.</p>
+            <span>Mensagens aprovadas pelo CFM e protocolo de LGPD ativados.</span>
+          </article>
+          <article class="timeline-card">
+            <h3>3. Agenda continua faturando</h3>
+            <p>O horário permanece vendido e cada confirmação vira ganho sem esforço da equipe.</p>
+            <span>Relatório diário mostra slots recuperados com um clique.</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>Antes x depois</h2>
+        <div class="before-after-grid">
+          <article class="before-after-column">
+            <h3>Antes</h3>
+            <p>Recepção ganhando tempo, pacientes pagos e mensagens automatizadas.</p>
+            <ul>
+              <li>+1h/dia preenchendo vagas manualmente.</li>
+              <li>Filas esquecidas e tickets que desaparecem.</li>
+              <li>Equipe refazendo agendas e perdendo foco no atendimento.</li>
+            </ul>
+            <p class="before-metric">-80% do tempo de preenchimento manual.</p>
+          </article>
+          <article class="before-after-column">
+            <h3>Depois</h3>
+            <p>Alertas automáticos, Whatsapp em massa e agenda cheia com lucro previsível.</p>
+            <ul>
+              <li>Horários confirmados sem esforço humano.</li>
+              <li>Faturamento previsível com base em dados reais e relatórios.</li>
+              <li>Equipe concentrada no paciente, não na agenda.</li>
+            </ul>
+            <p class="before-metric">+R$4.200/mês recuperados em média para clínicas com 10 cancelamentos.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>Autoridade e proteção</h2>
+        <div class="authority-grid">
+          <article class="authority-card">
+            <span class="authority-badge">LGPD pronta</span>
+            <span>Consentimentos digitais registrados, textos aprovados e dados criptografados.</span>
+          </article>
+          <article class="authority-card">
+            <span class="authority-badge">CFM & protocolo ético</span>
+            <span>Mensagens revisadas por médicos, parametrizáveis pelas secretárias.</span>
+          </article>
+          <article class="authority-card">
+            <span class="authority-badge">Auditoria</span>
+            <span>Logs imutáveis de notificações e respostas para compliance e contabilidade.</span>
+          </article>
+        </div>
+        <div class="proof-grid">
+          <article class="authority-card">
+            <span class="authority-badge">Beta: Clínica VivaMed (Ortopedia)</span>
+            <span class="authority-note">Recuperou 92% dos slots cancelados em 6 dias com Axis + WhatsApp.</span>
+          </article>
+          <article class="authority-card">
+            <span class="authority-badge">Case: Espaço Sorriso (Odontologia)</span>
+            <span class="authority-note">Agenda estabilizada, +R$5,2K/mês recuperados e equipe com mais tempo para atendimento.</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>Tabela de valor</h2>
+        <table class="table-extended">
+          <tr><th>Perda recorrente mensal</th><th>Perda projetada anual</th><th>Horas desperdiçadas em 10 anos</th></tr>
+          <tr>
+            <td>R$<span id="loss-month-table">0</span></td>
+            <td>R$<span id="loss-diff">0</span></td>
+            <td><span id="loss-hours-decade">0</span>h</td>
+          </tr>
+          <tr class="table-highlight">
+            <td>Payback estimado</td>
+            <td><span id="loss-payback">0</span> dias</td>
+            <td>Axis se paga em <span id="summary-payback">0</span> dias</td>
+          </tr>
+          <tr class="table-loss">
+            <td colspan="3">Perda projetada sem Axis (12 meses): R$<span id="loss-decade-table">0</span></td>
+          </tr>
+          <tr class="table-axis">
+            <td>Axis protege o equivalente a R$1.997</td>
+            <td>Implementação em 15 dias</td>
+            <td><span id="axis-hours-recovered">0</span>h recuperadas</td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="bottom-cta">
+        <div class="footer-head">
+          <h2>Oferta de fechamento</h2>
+          <p>Você já viu o tamanho do vazamento. O Axis atua como proteção financeira imediata, colocando esses horários ocupados de volta no caixa.</p>
+        </div>
+        <div class="footer-cta-grid">
+          <div class="footer-cta-block">
+            <strong>Comprar Axis à vista — R$1.997</strong>
+            <p>Implementação guiada, templates de mensagens e suporte nos primeiros 15 dias.</p>
+            <a class="btn btn-primary" href="/captura-v2/avista.html">Comprar Axis à vista — R$1.997,00</a>
+          </div>
+          <div class="footer-cta-block">
+            <strong>Reservar com entrada — R$1.000</strong>
+            <p>+ R$1.500 na entrega + 12x R$99 mensais para manter o suporte e monitoramento.</p>
+            <a class="btn btn-secondary" href="/captura-v2/entrada.html">Reservar com entrada de R$1.000,00</a>
+          </div>
+          <div class="footer-cta-block">
+            <strong>Quer validar antes?</strong>
+            <p>Fale com o especialista, tire dúvidas e receba projeção personalizada via WhatsApp.</p>
+            <a class="btn btn-whatsapp" href="https://wa.me/5547996475947">Falar no WhatsApp agora</a>
+          </div>
+        </div>
+        <div class="footer-urgency">
+          <p>Últimas 3 vagas de execução para janeiro — 1 vaga já confirmada.</p>
+          <p class="footer-urgency-loss">Continuar assim = perder R$<span id="loss-reminder">0</span> nos próximos 12 meses.</p>
+        </div>
+        <div class="footer-guarantee">
+          Garantia: Axis implementado em até 15 dias ou seu investimento ressarcido + R$500 pelo tempo perdido.
+        </div>
+        <div class="footer-faq">
+          <strong>Perguntas rápidas</strong>
+          <ul>
+            <li>Quanto tempo para começar? Em média a configuração leva 7 dias com apoio do nosso time.</li>
+            <li>Posso cancelar? Sim, 100% + R$500 se não entregar no prazo combinado.</li>
+            <li>Preciso de equipe extra? Não, tudo roda com sua recepção atual e o Axis automatizado.</li>
+          </ul>
+        </div>
+        <div class="mobile-bottom-bar">
+          <a class="btn btn-whatsapp" href="https://wa.me/5547996475947">WhatsApp</a>
+          <a class="btn btn-primary" href="/captura-v2/avista.html">Comprar Axis</a>
+        </div>
+      </section>
+    </div>
+  </div>
+  <script>
+    const valor=document.getElementById('valor');
+    const week=document.getElementById('week');
+    const month=document.getElementById('month');
+    const losses=[document.getElementById('loss-month'),document.getElementById('loss-year'),document.getElementById('loss-decade')];
+    const emMonth=document.getElementById('em-month');
+    const emYear=document.getElementById('em-year');
+    const payback=document.getElementById('payback-days');
+    const reminder=document.getElementById('loss-reminder');
+    const diff=document.getElementById('loss-diff');
+    const monthTable=document.getElementById('loss-month-table');
+    const summaryMonth=document.getElementById('summary-month');
+    const summaryPayback=document.getElementById('summary-payback');
+    const paybackHighlight=document.getElementById('payback-highlight');
+    const lossPayback=document.getElementById('loss-payback');
+    const decadeTable=document.getElementById('loss-decade-table');
+    const lossHoursDecade=document.getElementById('loss-hours-decade');
+    const axisHoursRecoveredEl=document.getElementById('axis-hours-recovered');
+    const unlockFeedback=document.getElementById('unlock-feedback');
+    const trackerSpans=document.querySelectorAll('.progress-tracker span');
+    const postCalc=document.getElementById('post-calc');
+    const lockedMessage=document.getElementById('locked-message');
+    const summaryPanel=document.querySelector('.summary-panel');
+    const bottomCTA=document.querySelector('.bottom-cta');
+    const parallaxTargets=[summaryPanel,bottomCTA].filter(Boolean);
+    const revealBlocks=document.querySelectorAll('#post-calc .block');
+    const currencyFormat=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:2});
+    function animateNumber(el){
+      if(!el) return;
+      el.classList.add('pulse');
+      setTimeout(()=>el.classList.remove('pulse'),220);
+    }
+    function updateNumber(el,value){
+      if(!el) return;
+      const formatted=value.toLocaleString('pt-BR');
+      if(el.textContent!==formatted){
+        el.textContent=formatted;
+        animateNumber(el);
+      }
+    }
+    function updatePlainNumber(el,value){
+      if(!el) return;
+      const formatted=Math.round(value).toLocaleString('pt-BR');
+      if(el.textContent!==formatted){
+        el.textContent=formatted;
+      }
+    }
+    function formatCurrencyInput(el){
+      if(!el) return;
+      const digits=el.value.replace(/\D/g,'');
+      const normalized=digits.replace(/^0+/, '');
+      el.dataset.raw=normalized;
+      if(!normalized){
+        el.value='';
+        return;
+      }
+      const numeric=Number(normalized)/100;
+      el.value=currencyFormat.format(numeric);
+    }
+    function getValorNumber(){
+      const raw=valor.dataset.raw||'';
+      if(!raw) return 0;
+      return Number(raw)/100;
+    }
+    function updateTrackers(){
+      trackerSpans.forEach(span=>{
+        const field=span.dataset.field;
+        const val=field==='valor'?getValorNumber():field==='week'?Number(week.value):Number(month.value);
+        span.classList.toggle('active', val>0);
+      });
+    }
+    function handleParallax(event){
+      const clientX=event.clientX ?? (event.touches && event.touches[0] && event.touches[0].clientX) ?? window.innerWidth/2;
+      const clientY=event.clientY ?? (event.touches && event.touches[0] && event.touches[0].clientY) ?? window.innerHeight/2;
+      parallaxTargets.forEach(el=>{
+        const rect=el.getBoundingClientRect();
+        if(rect.width===0) return;
+        const localX=(clientX-rect.left)/rect.width -0.5;
+        const localY=(clientY-rect.top)/rect.height -0.5;
+        const moveX=localX*6;
+        const moveY=localY*3;
+        el.style.setProperty('--parallax-transform', `translate(${moveX}px, ${moveY}px)`);
+      });
+    }
+    const touchOptions={passive:true};
+    const touchMoveHandler=event=>handleParallax(event);
+    const parallaxQuery=window.matchMedia('(max-width: 768px)');
+    let parallaxAttached=false;
+    function toggleParallaxListeners(){
+      if(parallaxQuery.matches){
+        if(parallaxAttached){
+          document.removeEventListener('mousemove', handleParallax);
+          document.removeEventListener('touchmove', touchMoveHandler, touchOptions);
+          parallaxAttached=false;
+          resetParallax();
+        }
+        return;
+      }
+      if(parallaxAttached) return;
+      document.addEventListener('mousemove', handleParallax);
+      document.addEventListener('touchmove', touchMoveHandler, touchOptions);
+      parallaxAttached=true;
+    }
+    function resetParallax(){
+      parallaxTargets.forEach(el=>{
+        el.style.setProperty('--parallax-transform', 'translate(0,0)');
+      });
+    }
+    function updateUnlockFeedback(){
+      if(!unlockFeedback) return false;
+      const valorFilled=valor.dataset.raw && valor.dataset.raw !== '';
+      const weekFilled=Number(week.value)>0;
+      const monthFilled=Number(month.value)>0;
+      const remaining=3 - [valorFilled, weekFilled, monthFilled].filter(Boolean).length;
+      let message;
+      if(remaining===0){
+        message='Conteúdo liberado! Continue rolando.';
+      } else if(remaining===1){
+        message='Só falta 1 campo para liberar o resto.';
+      } else {
+        message=`Faltam ${remaining} campos para liberar tudo.`;
+      }
+      unlockFeedback.textContent=message;
+      return remaining===0;
+    }
+    function checkUnlock(allFilled){
+      if(allFilled){
+        postCalc.classList.add('revealed');
+        postCalc.classList.remove('locked');
+        lockedMessage.style.display='none';
+        revealBlocks.forEach((block,index)=>{
+          setTimeout(()=>block.classList.add('visible'), index*80);
+        });
+      } else {
+        postCalc.classList.remove('revealed');
+        postCalc.classList.add('locked');
+        lockedMessage.style.display='block';
+        revealBlocks.forEach(block=>block.classList.remove('visible'));
+      }
+    }
+    function calc(){
+      const ticket=getValorNumber();
+      const weekly=Number(week.value)||0;
+      const monthlyCancels=Number(month.value)||0;
+      const cancels=monthlyCancels>0?monthlyCancels:weekly*4;
+      const monthly=ticket*cancels;
+      const annual=monthly*12;
+      const decade=annual*10;
+      const dailyLoss=monthly/30;
+      const paybackDays=dailyLoss>0?Math.max(Math.ceil(1997/dailyLoss),1):0;
+      const hoursPerCancel=1;
+      const monthlyHours=cancels*hoursPerCancel;
+      const decadeHours=monthlyHours*12*10;
+      const axisHoursRecovered=Math.max(Math.round(decadeHours*0.8),0);
+      updateNumber(losses[0], monthly);
+      updateNumber(losses[1], annual);
+      updateNumber(losses[2], decade);
+      if(decadeTable) updateNumber(decadeTable, decade);
+      updateNumber(emMonth, monthly);
+      updatePlainNumber(lossHoursDecade, decadeHours);
+      updatePlainNumber(axisHoursRecoveredEl, axisHoursRecovered);
+      updateNumber(emYear, annual);
+      if(payback) payback.textContent=paybackDays;
+      if(paybackHighlight) paybackHighlight.textContent=paybackDays;
+      if(lossPayback) lossPayback.textContent=paybackDays;
+      updateNumber(summaryMonth, monthly);
+      updateNumber(summaryPayback, paybackDays);
+      updateNumber(reminder, decade);
+      updateNumber(monthTable, monthly);
+      updateNumber(diff, Math.max(annual-1997,0));
+      updateTrackers();
+      const allFieldsFilled=updateUnlockFeedback();
+      checkUnlock(allFieldsFilled);
+    }
+    valor.addEventListener('input',event=>{ formatCurrencyInput(event.target); calc(); });
+    [week,month].forEach(el=>el.addEventListener('input',calc));
+    toggleParallaxListeners();
+    parallaxQuery.addEventListener('change', toggleParallaxListeners);
+    document.addEventListener('mouseleave', resetParallax);
+    document.addEventListener('DOMContentLoaded',calc);
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      const primaryBtn=document.querySelector('.cta-group .btn-primary');
+      if(primaryBtn){
+        primaryBtn.addEventListener('click', function(){
+          if(typeof gtag==='function'){
+            gtag('event','lead_interesse',{ event_category:'LP Axis', event_label:'Calcular perda' });
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

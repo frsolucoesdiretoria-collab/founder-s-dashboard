@@ -40,7 +40,7 @@ const AxisTempoRealV1_2: React.FC = () => {
 
   const handleUnlock = () => {
     setIsLocked(false);
-    window.open("https://wa.me/5511999999999?text=Quero%20saber%20mais%20sobre%20o%20Axis%20Tempo%20Real", '_blank');
+    window.open("https://wa.me/5547996475947?text=Quero%20saber%20mais%20sobre%20o%20Axis%20Tempo%20Real", '_blank');
   };
 
   useEffect(() => {

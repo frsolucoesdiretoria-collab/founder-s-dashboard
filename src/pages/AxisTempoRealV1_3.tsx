@@ -38,7 +38,7 @@ const AxisTempoRealV1_3: React.FC = () => {
   });
 
   // WhatsApp link
-  const whatsappLink = "https://wa.me/5511999999999?text=Quero%20saber%20mais%20sobre%20o%20Axis%20Tempo%20Real";
+  const whatsappLink = "https://wa.me/5547996475947?text=Quero%20saber%20mais%20sobre%20o%20Axis%20Tempo%20Real";
 
   const handleCTAClick = () => {
     window.open(whatsappLink, '_blank');

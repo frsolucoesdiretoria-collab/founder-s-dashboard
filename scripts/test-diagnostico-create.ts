@@ -19,7 +19,7 @@ async function testCreateDiagnostico() {
       nome: 'Teste Diagnóstico',
       empresa: 'Empresa Teste Ltda',
       cnpj: '12.345.678/0001-90',
-      whatsapp: '5511999999999',
+      whatsapp: '5547996475947',
       pergunta_01: 'Resposta teste pergunta 1',
       pergunta_02: 'CRM',
       pergunta_03: 'Sim',

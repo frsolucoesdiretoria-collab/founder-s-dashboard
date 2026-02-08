@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚠️ ÚLTIMA VAGA Janeiro — Axis Antivacância</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets-v2/css/style.css">
+  
+  <style>
+    .countdown-bar {
+      background: linear-gradient(90deg, #dc2626 0%, #991b1b 100%);
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-weight: 600;
+    }
+    .countdown-bar span { font-size: 1.3rem; font-weight: 800; }
+    .hero-urgencia { background: linear-gradient(180deg, #fef2f2 0%, white 100%); }
+    .urgency-callout {
+      background: #dc2626;
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      margin: 30px 0;
+    }
+    .urgency-callout h3 { color: white; margin-bottom: 10px; }
+    .price-strike { 
+      text-decoration: line-through; 
+      color: #9ca3af; 
+      font-size: 1.2rem;
+      display: block;
+    }
+    .price-big {
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: #059669;
+      line-height: 1;
+    }
+    .savings-badge {
+      display: inline-block;
+      background: #fef3c7;
+      color: #92400e;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
+    .fear-list {
+      background: #fef2f2;
+      border-left: 4px solid #dc2626;
+      padding: 20px 25px;
+      margin: 25px 0;
+    }
+    .fear-list h4 { color: #dc2626; margin-bottom: 10px; }
+    .fear-list li { padding: 5px 0; color: #7f1d1d; }
+    .vs-box {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 20px;
+      align-items: center;
+      margin: 30px 0;
+    }
+    .vs-box .vs { font-size: 1.5rem; font-weight: 800; color: #9ca3af; }
+    .vs-option {
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+    }
+    .vs-bad { background: #fef2f2; border: 2px dashed #fecaca; }
+    .vs-good { background: #ecfdf5; border: 2px solid #10b981; }
+    @media (max-width: 600px) {
+      .vs-box { grid-template-columns: 1fr; }
+      .vs-box .vs { padding: 10px 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- COUNTDOWN -->
+<div class="countdown-bar">
+  ⏰ Preço de R$1.997 acaba em: <span id="countdown">--:--:--</span>
+</div>
+
+<!-- HERO -->
+<section class="hero hero-urgencia">
+  <div class="container">
+    <h1>Você Vai Continuar Perdendo <span class="highlight-money">R$400 a R$3.000</span> Por Semana Com Cancelamentos?</h1>
+    
+    <p style="font-size: 1.1rem; margin-bottom: 25px;">
+      Cada horário que fica vazio é dinheiro saindo do seu bolso. <strong>Toda semana. Todo mês. Todo ano.</strong>
+    </p>
+    
+    <div class="hero-media">
+      <img src="/assets-v2/img/Axis_FR_Tech_Modern_medical_clinic_waiting_area_during_busine_40aa1938-3283-4274-b258-b11e2687d8be_0.png" alt="Agenda médica organizada">
+    </div>
+    
+    <div class="urgency-callout">
+      <h3>🚨 Última vaga de implementação em Janeiro</h3>
+      <p style="margin: 0;">Depois disso, o preço volta para R$5.000 e a próxima vaga só em Março.</p>
+    </div>
+    
+    <a href="#oferta" class="btn btn-primary btn-lg">
+      Quero Garantir Minha Vaga Agora →
+    </a>
+  </div>
+</section>
+
+<!-- A ESCOLHA -->
+<section>
+  <div class="container">
+    <h2 style="text-align: center; margin-bottom: 30px;">Você Tem Duas Opções</h2>
+    
+    <div class="vs-box">
+      <div class="vs-option vs-bad">
+        <h3 style="color: #dc2626;">❌ Não Fazer Nada</h3>
+        <ul style="text-align: left; list-style: none; padding: 0; margin: 15px 0;">
+          <li>• Continuar perdendo R$400-3000/semana</li>
+          <li>• Recepção correndo atrás de encaixe</li>
+          <li>• Pacientes esperando mais que o necessário</li>
+          <li>• Você compensando no braço</li>
+        </ul>
+        <p style="font-weight: 600; color: #dc2626;">Custo em 10 anos: até R$1.000.000</p>
+      </div>
+      
+      <div class="vs">VS</div>
+      
+      <div class="vs-option vs-good">
+        <h3 style="color: #059669;">✅ Resolver Hoje</h3>
+        <ul style="text-align: left; list-style: none; padding: 0; margin: 15px 0;">
+          <li>• Horários preenchidos automaticamente</li>
+          <li>• Recepção focada em atendimento</li>
+          <li>• Pacientes antecipando tratamentos</li>
+          <li>• Você com agenda previsível</li>
+        </ul>
+        <p style="font-weight: 600; color: #059669;">Investimento único: R$1.997</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MEDO -->
+<section style="background: #f8fafc;">
+  <div class="container">
+    <h2>O Que Acontece Se Você Não Agir?</h2>
+    
+    <div class="fear-list">
+      <h4>Nos próximos 12 meses:</h4>
+      <ul>
+        <li>→ Mais 50-150 horários vão ficar vazios</li>
+        <li>→ R$5.000 a R$50.000+ jogados no lixo</li>
+        <li>→ Sua recepção vai continuar apagando incêndios</li>
+        <li>→ Você vai continuar estendendo horário para compensar</li>
+        <li>→ Seus concorrentes vão adotar essa tecnologia antes de você</li>
+      </ul>
+    </div>
+
+    <div class="image-grid">
+      <div class="image-card">
+        <img src="/assets-v2/img/Axis_FR_Tech_Professional_healthcare_project_meeting_inside_a_16b6243b-f6d5-4ac7-840a-5c1968414074_3.png" alt="Equipe médica revisando agenda">
+        <p>Equipe alinhada com dados precisos da agenda.</p>
+      </div>
+      <div class="image-card">
+        <img src="/assets-v2/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_a_medical_rece_ae84888c-3874-4162-8c0f-05cd5ce9a8d9_0.png" alt="Recepção acolhedora em clínica premium">
+        <p>Atendimento tranquilo, pacientes em segurança.</p>
+      </div>
+    </div>
+    
+    <p style="text-align: center; font-size: 1.1rem;">
+      <strong>Quanto mais você espera, mais dinheiro você perde.</strong>
+    </p>
+  </div>
+</section>
+
+
+<!-- FLUXO INTERATIVO -->
+<section class="section-light" id="interactive">
+  <div class="container">
+    <h2 class="section-title">Descubra o valor real da sua vacância</h2>
+    <div class="interactive-wrap">
+      <div class="interactive-form" id="interactive-form">
+        <div class="interactive-step" data-step="0">
+          <h3>1. Como o Axis preenche seu calendário?</h3>
+          <p>Detectamos o cancelamento, notificamos a fila e confirmamos o paciente ideal em menos de um minuto.</p>
+          <button class="btn btn-primary btn-block" data-next="1">Entendido, me conte mais</button>
+        </div>
+        <div class="interactive-step" data-step="1" style="display:none">
+          <h3>2. Qual é o seu segmento?</h3>
+          <div class="segment-buttons">
+            <button data-step-target="2">Medicina</button>
+            <button data-step-target="2">Estética</button>
+            <button data-step-target="2">Odontologia</button>
+            <button data-step-target="2">Psicologia</button>
+            <button data-step-target="2">Outro</button>
+          </div>
+          <p class="step-hint">Essa informação ajusta a narrativa do resultado.</p>
+        </div>
+        <div class="interactive-step" data-step="2" style="display:none">
+          <h3>3. Quantos cancelamentos você teve nos últimos 30 dias?</h3>
+          <input type="number" id="input-cancel-month" placeholder="Quantos cancelamentos?">
+        </div>
+        <div class="interactive-step" data-step="3" style="display:none">
+          <h3>4. Qual o ticket médio da sua consulta?</h3>
+          <input type="number" id="input-ticket" placeholder="R$">
+        </div>
+        <div class="interactive-step" data-step="4" style="display:none">
+          <h3>Resultado — sua perda visível</h3>
+          <p class="interactive-result" id="result-month">Perda mensal: R$0</p>
+          <p class="interactive-result" id="result-year">Perda anual: R$0</p>
+          <p class="interactive-result" id="result-decade">Perda em 10 anos: R$0</p>
+        </div>
+      </div>
+      <div class="interactive-image">
+        <img src="/assets-v2/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_patients_being_w_206fe525-b4d8-4613-822f-d1110b285bf0.png" alt="Lead answering questions on tablet">
+        <p class="step-summary">Cada resposta libera o próximo bloco e aprofunda a urgência.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- GARANTIA -->
+<section>
+  <div class="container">
+    <div class="guarantee-box">
+      <div class="guarantee-icon">🛡️</div>
+      <h3>Risco ZERO Para Você</h3>
+      <p>Se não implementarmos em 15 dias, devolvemos <strong>100% do seu dinheiro + R$500 pelo seu tempo</strong>.</p>
+      <p style="font-size: 0.9rem; margin-top: 10px;">Você literalmente não tem nada a perder. Só a ganhar.</p>
+    </div>
+  </div>
+</section>
+
+<!-- OFERTA FINAL -->
+<section class="pricing-section" id="oferta">
+  <div class="container" style="text-align: center;">
+    <h2 style="color: white; margin-bottom: 30px;">Pare de Queimar Dinheiro. Decida Agora.</h2>
+    
+    <div class="pricing-card">
+      <span class="pricing-badge">⚡ ÚLTIMA VAGA DE JANEIRO</span>
+      
+      <span class="price-strike">De R$5.000</span>
+      <div class="price-big">R$1.997</div>
+      <span class="savings-badge">Você economiza R$3.003</span>
+      
+      <p style="margin: 20px 0; color: var(--gray-600);">
+        ou entrada de R$1.000 + R$1.500 na entrega + 12x R$99
+      </p>
+      
+      <div class="cta-buttons">
+        <a href="/captura-v2/avista.html" class="btn btn-secondary btn-block btn-lg" style="font-size: 1.2rem; padding: 22px;">
+          GARANTIR MINHA VAGA — R$1.997 →
+        </a>
+        
+        <a href="/captura-v2/entrada.html" class="btn btn-primary btn-block">
+          Reservar com Entrada de R$1.000
+        </a>
+        
+        <a href="https://wa.me/5547996475947?text=Quero%20garantir%20a%20%C3%BAltima%20vaga%20de%20Janeiro%20do%20Axis" target="_blank" class="btn btn-whatsapp btn-block">
+          💬 Falar no WhatsApp Antes
+        </a>
+      </div>
+      
+      <p style="margin-top: 25px; font-size: 0.85rem; color: var(--gray-500);">
+        🔒 Pagamento seguro via Mercado Pago<br>
+        Garantia de 15 dias ou dinheiro + R$500 de volta
+      </p>
+    </div>
+    
+    <p style="color: rgba(255,255,255,0.6); margin-top: 30px; font-size: 0.9rem;">
+      Depois de Janeiro, o preço volta para R$5.000 e as próximas vagas só em Março.
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p>© 2026 Axis Antivacância — Todos os direitos reservados.</p>
+  </div>
+</footer>
+
+<script src="/assets-v2/js/main.js"></script>
+<script>
+  // Countdown até fim do dia
+  function updateCountdown() {
+    const now = new Date();
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+    const diff = endOfDay - now;
+    if (diff <= 0) {
+      document.getElementById('countdown').textContent = 'ENCERRADO';
+      return;
+    }
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+    document.getElementById('countdown').textContent = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const steps = document.querySelectorAll('.interactive-step');
+    const segmentButtons = document.querySelectorAll('.segment-buttons button');
+    const nextButtons = document.querySelectorAll('.interactive-step button[data-next]');
+    const cancelMonthly = document.getElementById('input-cancel-month');
+    const ticketInput = document.getElementById('input-ticket');
+    const lossCta = document.getElementById('loss-cta');
+    const summary = document.getElementById('loss-summary');
+    function show(index) {
+      steps.forEach((step, idx) => {
+        step.style.display = idx === index ? 'block' : 'none';
+      });
+    }
+    function parseValue(el) {
+      return Number(el.value) || 0;
+    }
+    function updateCalculation() {
+      const cancel = parseValue(cancelMonthly);
+      const ticket = parseValue(ticketInput);
+      const monthly = cancel * ticket;
+      const annual = monthly * 12;
+      const decade = annual * 10;
+      document.getElementById('result-month').textContent = `Perda mensal: R$${monthly.toLocaleString('pt-BR')}`;
+      document.getElementById('result-year').textContent = `Perda anual: R$${annual.toLocaleString('pt-BR')}`;
+      document.getElementById('result-decade').textContent = `Perda em 10 anos: R$${decade.toLocaleString('pt-BR')}`;
+      if (lossCta) lossCta.textContent = `Continuar perdendo R$${decade.toLocaleString('pt-BR')} nos próximos 10 anos`;
+      if (summary) summary.textContent = `Perda anual estimada: R$${annual.toLocaleString('pt-BR')} · Próxima década: R$${decade.toLocaleString('pt-BR')}`;
+    }
+    show(0);
+    nextButtons.forEach(btn => btn.addEventListener('click', () => show(Number(btn.dataset.next))));
+    segmentButtons.forEach(btn => btn.addEventListener('click', () => show(2)));
+    cancelMonthly.addEventListener('input', () => {
+      show(3);
+      updateCalculation();
+    });
+    ticketInput.addEventListener('input', () => {
+      show(4);
+      updateCalculation();
+    });
+  });
+</script>
+</body>
+</html>

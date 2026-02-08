@@ -156,7 +156,7 @@ const AxisTempoRealV2_4: React.FC = () => {
   const heroScale = useTransform(smoothProgress, [0, 0.3], [1, 1.05]);
 
   // WhatsApp link
-  const whatsappLink = "https://wa.me/5511999999999?text=Quero%20saber%20mais%20sobre%20o%20Axis%20Tempo%20Real";
+  const whatsappLink = "https://wa.me/5547996475947?text=Quero%20saber%20mais%20sobre%20o%20Axis%20Tempo%20Real";
 
   return (
     <div className="relative w-full bg-white min-h-screen overflow-hidden">

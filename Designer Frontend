@@ -1,0 +1,45 @@
+## 💎 Diretrizes Visuais (O "Look & Feel")
+
+### 1. Paleta de Cores (Deep & Neon)
+Evite brancos puros (`#FFFFFF`) ou pretos puros (`#000000`) como base.
+Use a base "Deep Space" e acentos vibrantes para criar contraste cinematográfico.
+
+*   **Base (Backgrounds):** `Deep Space Blue` (#012a4a), `Yale Dark` (#013a63).
+*   **Acentos (Glows/CTAs):** `Sky Blue` (#89c2d9), `Neon Cyan`, `Spring Green`.
+*   **Texto:** Nunca use cinza chapado. Use tons de azul-claro/branco-gelo (`#a9d6e5`) para legibilidade sobre fundos escuros.
+
+### 2. Tipografia (Hierarquia Agressiva)
+*   **Display (Títulos):** Use fontes com personalidade técnica ou grotesca (ex: *Space Grotesk*, *Syne*, *Clash Display*).
+    *   Tamanhos massivos para Hero Sections (ex: `text-[10vw]`).
+    *   `tracking-tighter` para densidade visual.
+    *   `leading-[0.85]` para compactação vertical.
+*   **Body (Leitura):** Fontes limpas e geométricas (ex: *Manrope*, *Inter*).
+    *   Espaçamento generoso entre linhas (`leading-relaxed`).
+
+### 3. Glassmorphism & Depth
+Nunca use cards sólidos se puder usar vidro.
+*   **Glass:** `bg-opacity-10` + `backdrop-blur-xl` + `border-white/10`.
+*   **Glows:** Use `gradients` radiais ou cônicos com `blur-[100px]` atrás de elementos para criar atmosfera.
+*   **Noise:** Adicione texturas de granulação (noise) sutis (`opacity-[0.03]`) para evitar o aspecto "plástico".
+
+---
+
+## ⚡ Interatividade e Movimento (A "Alma")
+
+### 1. Scroll Suave (OBRIGATÓRIO)
+Nenhuma página premium usa o scroll padrão do navegador.
+*   **Ferramenta:** Use **Lenis** (Studio Freight) para inércia suave.
+*   **Config:** `duration: 1.2`, `smooth: true`.
+
+### 2. Entradas Dramáticas (GSAP)
+Elementos não devem estar estáticos esperando o usuário.
+*   **Text Reveal:** Use máscaras (`clip-path`) para revelar textos de baixo para cima.
+*   **Stagger:** Listas e grids devem aparecer em cascata (um após o outro), nunca todos de uma vez.
+*   **ScrollTrigger:** Elementos reagem à posição do scroll (fade-up, parallax).
+
+### 3. Micro-interações
+*   **Cursor:** Se possível, use cursores personalizados (`custom cursor`) com `mix-blend-mode: difference`.
+*   **Hover:** Botões devem reagir magneticamente ou com preenchimento fluido.
+*   **Inputs:** Devem parecer táteis. Bordas inferiores que acendem ao foco (`border-b`, `transition-all`).
+
+---
