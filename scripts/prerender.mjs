@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
  * This gets injected into dist/index.html for instant LCP
  */
 const criticalHTMLShell = `
-<div id="uw-root-container" style="all: initial; position: absolute; top: 0; left: 0; width: 100vw; min-height: 100vh; background-color: #000; overflow-x: hidden; font-family: 'Futura Md BT', sans-serif;">
+<div id="uw-root-container" style="position: relative; top: 0; left: 0; width: 100vw; min-height: 100vh; background-color: #000; overflow-x: hidden; font-family: 'Futura Md BT', sans-serif;">
   <main>
     <div class="container white-text" style="min-height: 100vh; position: relative; width: 90%; max-width: 1200px; margin: 0 auto; padding: 0 20px; color: #fff;">
       <div class="section" style="padding-top: 15vh; padding-bottom: 30px;">
@@ -141,7 +141,7 @@ html = html.replace(
 const scriptRegex = /(<script type="module" crossorigin src="[^"]+"><\/script>)/;
 const scriptMatch = html.match(scriptRegex);
 if (scriptMatch) {
-  const script = scriptMatch[1].replace('<script ', '<script defer ');
+  const script = scriptMatch[1].replace('<script ', '<script defer ').replace('src="/assets/', 'src="assets/');
   html = html.replace(scriptMatch[1], ''); // Remove from head
   html = html.replace('</body>', `  ${script}\n  </body>`); // Add before </body>
 }

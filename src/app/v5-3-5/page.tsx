@@ -157,8 +157,7 @@ export default function AxisV535Page() {
         <div
             id="uw-root-container"
             style={{
-                all: 'initial',
-                position: 'absolute',
+                position: 'relative',
                 top: 0,
                 left: 0,
                 width: '100vw',
