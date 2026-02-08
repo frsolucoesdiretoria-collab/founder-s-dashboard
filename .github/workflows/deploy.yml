@@ -27,25 +27,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate pre-built dist
-        run: |
-          if [ ! -f dist/index.html ]; then
-            echo "::error::dist/index.html not found in repository"
-            exit 1
-          fi
-          
-          echo "dist OK: $(du -sh dist | cut -f1)"
-          echo "✅ Artifact pré-buildado encontrado."
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
 
-      - name: Validate dist output
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run build
+        run: npm run build
+
+      - name: Validate build output
         run: |
           if [ ! -f dist/index.html ]; then
-            echo "::error::dist/index.html not found"
+            echo "::error::dist/index.html not found after build"
             exit 1
           fi
           
-          echo "dist OK: $(du -sh dist | cut -f1)"
-          echo "✅ Build validado: arquivos críticos presentes"
+          echo "Build OK: $(du -sh dist | cut -f1)"
+          echo "✅ Build concluído com sucesso."
 
       - name: Setup SSH
         env:

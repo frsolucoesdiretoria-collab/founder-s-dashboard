@@ -1,4 +1,0 @@
-DEPLOY VERIFICATION FILE
-Date: 2026-02-03
-Version: 4.9.2
-This file is used to verify that the rsync deployment is correctly syncing to the web server's root directory.
