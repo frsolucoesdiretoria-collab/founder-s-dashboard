@@ -141,7 +141,7 @@ html = html.replace(
 const scriptRegex = /(<script type="module" crossorigin src="[^"]+"><\/script>)/;
 const scriptMatch = html.match(scriptRegex);
 if (scriptMatch) {
-  const script = scriptMatch[1].replace('<script ', '<script defer ').replace('src="/assets/', 'src="assets/');
+  const script = scriptMatch[1].replace('<script ', '<script defer ');
   html = html.replace(scriptMatch[1], ''); // Remove from head
   html = html.replace('</body>', `  ${script}\n  </body>`); // Add before </body>
 }
