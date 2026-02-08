@@ -1,0 +1,96 @@
+"use client";
+
+import React, { useEffect, useRef } from 'react';
+import Hero from "@/components/v5-2/Hero";
+import { Navbar } from "@/components/v5-2/Navbar";
+import { SilentTaxSection } from "@/components/v5-2/SilentTaxSection";
+import { MechanismShowcase } from "@/components/v5-2/MechanismShowcase";
+import { RevenueCalculator } from "@/components/v5-2/RevenueCalculator";
+import { SocialProofSection } from "@/components/v5-2/SocialProofSection";
+import { PremiumFinalCTA } from "@/components/v5-2/PremiumFinalCTA";
+
+export default function AxisV52Page() {
+    const glowRef = useRef<HTMLDivElement>(null);
+    const colorIndexRef = useRef(0);
+
+    const colors = [
+        'rgba(0, 255, 255, 0.25)', // Ciano
+        'rgba(157, 0, 255, 0.25)', // Roxo
+        'rgba(57, 255, 20, 0.25)', // Verde Neon
+        'rgba(255, 0, 127, 0.25)', // Rosa Choque
+        'rgba(0, 102, 255, 0.25)'  // Azul Royal
+    ];
+
+    useEffect(() => {
+        const glow = glowRef.current;
+        if (!glow) return;
+
+        // Initialize with random color
+        colorIndexRef.current = Math.floor(Math.random() * colors.length);
+        const initialColor = colors[colorIndexRef.current];
+        glow.style.setProperty('--glow-color', initialColor);
+
+        const handleMouseMove = (e: MouseEvent) => {
+            const x = e.clientX;
+            const y = e.clientY;
+
+            // Update CSS variables for smooth GPU-accelerated movement
+            glow.style.setProperty('--x', `${x}px`);
+            glow.style.setProperty('--y', `${y}px`);
+        };
+
+        const handleClick = () => {
+            // Cycle color on click
+            colorIndexRef.current = (colorIndexRef.current + 1) % colors.length;
+            const nextColor = colors[colorIndexRef.current];
+            glow.style.setProperty('--glow-color', nextColor);
+
+            // Trigger a momentary burst/expansion
+            glow.style.setProperty('--size', '1000px');
+            setTimeout(() => {
+                glow.style.setProperty('--size', '800px');
+            }, 300);
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('click', handleClick);
+
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('click', handleClick);
+        };
+    }, []);
+
+    return (
+        <main className="min-h-screen bg-black text-white selection:bg-white selection:text-black relative font-['Inter'] overflow-x-hidden">
+
+            {/* FLUID INTERACTIVE GLOW LAYER */}
+            <div
+                ref={glowRef}
+                className="fixed inset-0 z-0 pointer-events-none"
+                style={{
+                    background: `radial-gradient(circle var(--size, 800px) at var(--x, 50%) var(--y, 50%), var(--glow-color, rgba(0, 255, 255, 0.2)), transparent 50%)`,
+                    transition: 'background-color 0.5s ease, --size 0.3s ease', // Smooth color and pulse
+                    mixBlendMode: 'screen',
+                    '--x': '50%',
+                    '--y': '50%',
+                    '--size': '800px'
+                } as React.CSSProperties}
+            ></div>
+
+            {/* Global Noise Overlay */}
+            <div className="bg-noise fixed inset-0 z-[5] pointer-events-none opacity-[0.07]"></div>
+
+            {/* Content Wrapper */}
+            <div className="relative z-10">
+                <Navbar />
+                <Hero />
+                <SilentTaxSection />
+                <MechanismShowcase />
+                <RevenueCalculator />
+                <SocialProofSection />
+                <PremiumFinalCTA />
+            </div>
+        </main>
+    );
+}

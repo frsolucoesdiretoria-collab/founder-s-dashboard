@@ -1,0 +1,39 @@
+Relatório de Otimização - 2026-02-06 16:37:13
+
+Economia total: -11.1KB (-3.0%)
+
+Detalhes por imagem:
+
+the_fall.webp: 47.0KB → 49.4KB (-5.1%)
+  - the_fall-small.webp: 16.3KB
+  - the_fall-medium.webp: 37.4KB
+  - the_fall-large.webp: 47.8KB
+
+radar.webp: 49.6KB → 52.8KB (-6.5%)
+  - radar-small.webp: 11.1KB
+  - radar-medium.webp: 28.9KB
+  - radar-large.webp: 46.2KB
+
+hero.webp: 32.0KB → 34.2KB (-6.9%)
+  - hero-small.webp: 11.1KB
+  - hero-medium.webp: 25.1KB
+  - hero-large.webp: 33.0KB
+
+cta.webp: 52.8KB → 54.5KB (-3.3%)
+  - cta-small.webp: 14.5KB
+  - cta-medium.webp: 37.9KB
+  - cta-large.webp: 52.5KB
+
+avatar-dr-roberto.webp: 38.9KB → 36.5KB (6.2%)
+
+avatar-dra-juliana.webp: 32.2KB → 29.7KB (7.6%)
+
+target.webp: 76.9KB → 81.2KB (-5.6%)
+  - target-small.webp: 15.8KB
+  - target-medium.webp: 42.7KB
+  - target-large.webp: 72.0KB
+
+shot.webp: 47.1KB → 49.2KB (-4.6%)
+  - shot-small.webp: 12.2KB
+  - shot-medium.webp: 27.7KB
+  - shot-large.webp: 43.8KB
