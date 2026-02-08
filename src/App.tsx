@@ -53,7 +53,7 @@ const queryClient = new QueryClient({
 
 
 const App = () => {
-  console.log("AXIS_DEPLOY_VERSION: v4.9.2");
+  console.log("AXIS_DEPLOY_VERSION: v5.3.5");
   return (
     <QueryClientProvider client={queryClient}>
       <Toaster richColors position="top-right" />
