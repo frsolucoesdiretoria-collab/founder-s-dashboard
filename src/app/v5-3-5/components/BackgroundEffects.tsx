@@ -25,9 +25,9 @@ export default function BackgroundEffects() {
             try {
                 // Ensure particles.js is loaded
                 if (!window.particlesJS) {
-                    console.log('Loading particles.min.js from CDN...');
-                    // Use CDN to ensure correct version and availability on production
-                    await loadScript('https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js');
+                    console.log('Loading local particles-v2.min.js...');
+                    // Loading from local VPS (renamed to v2 for cache busting)
+                    await loadScript(`${ASSET_PREFIX}/client/js/particles-v2.min.js`);
                 }
 
                 if (isMounted && window.particlesJS) {
