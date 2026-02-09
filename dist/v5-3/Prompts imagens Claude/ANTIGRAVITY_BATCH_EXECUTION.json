@@ -1,0 +1,484 @@
+{
+  "project": {
+    "name": "AXIS Protocol v5-3-2",
+    "client": "FR Tech - Axis Antivacância",
+    "date": "05/02/2026",
+    "status": "Ready for Batch Execution",
+    "total_images": 10,
+    "total_estimated_time": "90 minutes",
+    "primary_tool": "Imagen 3 or Nano Banana",
+    "post_processing_tool": "Lightroom or Photoshop",
+    "output_format": "WebP (85 quality) + PNG backup"
+  },
+  "global_directives": {
+    "brand_colors": {
+      "primary_green": "#00FF88",
+      "secondary_red": "#FF4444",
+      "background_black": "#121212",
+      "dark_black": "#0a0a0a"
+    },
+    "post_processing_universal": {
+      "saturation": "-25%",
+      "contrast": "+20",
+      "grain_amount": "35-50",
+      "grain_size": "25",
+      "grain_roughness": "50",
+      "vignette_amount": "-30",
+      "vignette_midpoint": "50",
+      "sharpness_amount": "1.0",
+      "sharpness_radius": "0.8",
+      "sharpness_masking": "0",
+      "color_grade_shadows": "Blue/Cyan cast (HSL: Hue -10, Sat +20, Lum -10)",
+      "color_grade_highlights": "Neutral/White",
+      "color_grade_midtones": "Slightly cool desaturated"
+    },
+    "export_settings": {
+      "format_primary": "WebP",
+      "format_backup": "PNG",
+      "quality_webp": "85",
+      "max_file_size": "300KB",
+      "optimization_tool": "TinyPNG or cwebp"
+    },
+    "validation_criteria": {
+      "image_sharpness": "Pixel-perfect for HUDs, natural for portraits, cinematic for environments",
+      "color_vibrance": "Green and red must be neon-bright in HUDs",
+      "grain_visibility": "Should be visible at 100% zoom in dark areas",
+      "file_size": "Must not exceed 300KB after optimization",
+      "avatar_quality": "Circular crop must be clean, no cutting at edges"
+    }
+  },
+  "images": [
+    {
+      "id": 1,
+      "phase": "Phase 1 - Essential",
+      "priority": "CRITICAL",
+      "name": "HERO - Female Doctor Dramatic Lighting",
+      "section": "HERO Section",
+      "dimensions": {
+        "generation": "2400x1800px",
+        "display": "1200x900px",
+        "aspect_ratio": "4:3"
+      },
+      "prompt": "Cinematic portrait of a distinguished female physician, age 38-42, dark hair pulled back in elegant bun, premium white medical coat, serious contemplative expression, side-lit with cool cyan-blue dramatic light from left side against deep dark background #1a1a1a. Looking slightly towards a subtle holographic glow (faint, not dominant). Shallow depth of field, sharp focus on face and coat, soft bokeh background. Moody editorial medical photography aesthetic, professional headshot style. Film grain texture ISO 600, high contrast, slightly desaturated tones. Cinematic lighting reminiscent of Chiaroscuro. Premium refined sophisticated mood. No smile, neutral to slightly concerned expression. Hands visible suggesting authority. Shot from shoulder up, centered composition. 4K ultra high quality.",
+      "prompt_alternative": "Silhouette of a doctor from behind looking at a large luminous holographic medical dashboard in a dark room, cold blue and cyan light illuminating the scene, dramatic cinematic atmosphere, futuristic medical technology, shallow depth of field, film grain, 4K",
+      "generation_settings": {
+        "quality": "MAXIMUM",
+        "style": "Cinematic",
+        "aspect": "4:3",
+        "seed": "RANDOM"
+      },
+      "post_processing": {
+        "global_apply": true,
+        "additional_brightness": "-0.2",
+        "additional_contrast": "+10"
+      },
+      "placement_html": "Absolute left side, width 50% desktop, hidden mobile, gradient fade-out right",
+      "placement_css": "position: absolute; left: 0; top: 0; width: 50%; height: 100%; z-index: 1; background: linear-gradient(to right, rgba(0,0,0,1) 0%, transparent 100%);",
+      "validation": {
+        "face_clarity": "sharp and defined",
+        "lighting_direction": "cool cyan from left",
+        "background_darkness": "deep black",
+        "expression": "serious, contemplative",
+        "coat_quality": "premium white, well-defined"
+      }
+    },
+    {
+      "id": 2,
+      "phase": "Phase 2 - Elevation",
+      "priority": "HIGH",
+      "name": "THE FALL - Empty Waiting Room",
+      "section": "THE FALL Section (Background)",
+      "dimensions": {
+        "generation": "2800x1200px",
+        "display": "1400x600px",
+        "aspect_ratio": "21:9"
+      },
+      "prompt": "Empty premium modern medical clinic waiting room, minimalist contemporary design with clean lines, completely devoid of people. Multiple uncomfortable empty modern chairs in muted gray/beige tones scattered in waiting area. Dark moody lighting, cool blue-tinted fluorescent ambiance #2a3a4a suggesting hospital cold fluorescence. Large wall clock showing exactly 14:45 (2:45 PM) in center of frame, clearly visible. Minimalist furniture: simple tables, abstract wall art barely visible in darkness. Wide-angle perspective with slight upward angle (subtle Dutch tilt creating tension). Deep shadows in corners suggesting desolation. No windows, stark clinical walls. Moody cinematic atmosphere, desolate abandoned feeling emphasizing waste and silence. High contrast lighting with dark shadows dominating. Film grain texture, desaturated tones with slight blue-green color cast. Sense of time passing, wasted resources, silence as absence. Medical clinic aesthetic but emphasizing emptiness. 4K ultra high quality.",
+      "generation_settings": {
+        "quality": "MAXIMUM",
+        "style": "Cinematic",
+        "aspect": "21:9",
+        "seed": "RANDOM"
+      },
+      "post_processing": {
+        "global_apply": true,
+        "additional_brightness": "-0.3",
+        "additional_saturation": "-10"
+      },
+      "placement_html": "Background image, full width, opacity 40%, overlay dark gradient",
+      "placement_css": "background-image: url(waiting-room.webp); background-size: cover; background-position: center; opacity: 0.4; position: absolute; inset: 0; z-index: 0;",
+      "placement_overlay": "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.3))",
+      "validation": {
+        "emptiness": "completely void of people",
+        "clock_visibility": "14:45 clearly visible",
+        "atmosphere": "desolate, abandoned",
+        "lighting": "cool fluorescent blue",
+        "perspective": "wide-angle with slight Dutch tilt"
+      }
+    },
+    {
+      "id": 3,
+      "phase": "Phase 3 - Polish",
+      "priority": "LOW",
+      "name": "THE FALL - Clock Motion Blur",
+      "section": "THE FALL Section (Side Element)",
+      "dimensions": {
+        "generation": "1200x1200px",
+        "display": "600x600px",
+        "aspect_ratio": "1:1"
+      },
+      "prompt": "Extreme macro close-up of premium analog wall clock, black face with Roman numerals in gold. Motion blur effect on clock hands suggesting rapid time passage (hands streaked with blur trails). Dark moody cinematic lighting (#0a0a0a background), shallow extreme depth of field, only clock face in sharp focus, background completely defocused dark void. Dramatic rim lighting on clock edges creating definition. Desaturated cool-blue tinted tones with gold accents on numerals. Film grain texture prominent ISO 800 feel. High contrast. Cinematic mood emphasizing time as enemy and passage. Abstract fine art photography style. Time as metaphor for wasted resources. Details: subtle dust particles visible in light, clock mounting hardware slightly visible suggesting fixed time. Motion blur direction: hands moving fast toward future creating urgency. 4K ultra high quality fine art photography.",
+      "generation_settings": {
+        "quality": "MAXIMUM",
+        "style": "Fine Art Photography",
+        "aspect": "1:1",
+        "seed": "RANDOM"
+      },
+      "post_processing": {
+        "global_apply": true,
+        "additional_grain": "+15"
+      },
+      "placement_html": "Float right in THE FALL section, margin-left auto, responsive full-width mobile",
+      "placement_css": "float: right; width: 600px; height: 600px; margin-left: auto; border: 1px solid #333; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.5);",
+      "validation": {
+        "clock_sharpness": "ultra-sharp focus on clock face",
+        "motion_blur": "visible blur trails on hands",
+        "depth_of_field": "extreme shallow, background dark void",
+        "gold_numerals": "vibrant gold accent",
+        "grain": "prominent cinematic grain visible"
+      }
+    },
+    {
+      "id": 4,
+      "phase": "Phase 1 - Essential",
+      "priority": "CRITICAL",
+      "name": "MECHANISM - Radar HUD (Scanning)",
+      "section": "THE MECHANISM - Step 1 Card",
+      "dimensions": {
+        "generation": "1120x800px",
+        "display": "560x400px",
+        "aspect_ratio": "1.4:1"
+      },
+      "prompt": "Military-grade digital radar display screen on dark command center monitor, black background #0a0a0a. Circular radar sweep with glowing cyan scanning line moving across screen. Multiple bright cyan and green target dots scattered across grid (5247 targets detected visible as small glowing points). Geometric grid overlay with coordinate crosshairs, tactical interface elements in sharp focus. HUD text overlays reading \"SCANNING: ACTIVE\", \"5247 TARGETS DETECTED\", tactical data readouts in military font (like Courier New style). Sharp glowing edges on all UI elements, neon cyan and electric green accents. Dark command center aesthetic, high-contrast tactical operations center. Zero-depth background, pure black. Film grain subtle. Ultra sharp, pixel-perfect UI lines. Sci-fi military drone/radar operator view. 4K quality, perfect for web display.",
+      "generation_settings": {
+        "quality": "ULTRA-MAXIMUM",
+        "style": "Digital Interface/HUD",
+        "aspect": "1.4:1",
+        "seed": "RANDOM",
+        "special_instruction": "PIXEL-PERFECT UI SHARPNESS REQUIRED"
+      },
+      "post_processing": {
+        "global_apply": true,
+        "additional_sharpness": "+0.3",
+        "additional_contrast": "+15",
+        "color_boost_green": "+20"
+      },
+      "placement_html": "Inside card border, 100% card width, height auto, 20px internal margin",
+      "placement_css": "width: 100%; height: auto; aspect-ratio: 1.4; object-fit: cover; border-radius: 4px; margin: 20px; border: 1px solid #00FF88;",
+      "card_styling": "background: rgba(18,18,18,0.8); border: 1px solid #00FF88; border-radius: 8px;",
+      "validation": {
+        "ui_sharpness": "pixel-perfect lines, no blurring",
+        "color_accuracy": "cyan #00FF88 vibrant, green electric",
+        "text_readability": "SCANNING: ACTIVE clearly visible",
+        "grid_precision": "geometric grid sharp and clean",
+        "background_black": "pure black #0a0a0a"
+      }
+    },
+    {
+      "id": 5,
+      "phase": "Phase 1 - Essential",
+      "priority": "CRITICAL",
+      "name": "MECHANISM - Target HUD (Targeting)",
+      "section": "THE MECHANISM - Step 2 Card",
+      "dimensions": {
+        "generation": "1120x800px",
+        "display": "560x400px",
+        "aspect_ratio": "1.4:1"
+      },
+      "prompt": "Digital sniper scope HUD interface locking onto a single glowing target on dark background #0a0a0a. Precision crosshair/reticle centered on screen, circular targeting framework around central bright cyan glowing point (the target). Floating data readouts in military tactical font hovering around crosshair: \"MATCH PROBABILITY: 94%\" (top), \"PATIENT TICKET: R$ 800\" (right), \"LAST VISIT: 47 DAYS\" (bottom). Additional tactical data: \"ENGAGEMENT READY\", \"LOCK STATUS: CONFIRMED\" in green text. Multiple concentric circles and geometric crosshairs, red lock-on indicator flashing at edges. HUD elements glowing cyan and red with slight glow effects. High contrast, razor-sharp lines. Film grain subtle. Heads-up display aesthetic from military fighter jet/sniper scope. Dark moody tactical mood. Zero-depth pure black background. Pixel-perfect UI precision. 4K quality.",
+      "generation_settings": {
+        "quality": "ULTRA-MAXIMUM",
+        "style": "Digital Interface/HUD",
+        "aspect": "1.4:1",
+        "seed": "RANDOM",
+        "special_instruction": "PIXEL-PERFECT UI SHARPNESS REQUIRED - RED AND CYAN NEON BRIGHT"
+      },
+      "post_processing": {
+        "global_apply": true,
+        "additional_sharpness": "+0.3",
+        "additional_contrast": "+15",
+        "color_boost_red": "+25",
+        "color_boost_cyan": "+20"
+      },
+      "placement_html": "Inside card border, 100% card width, height auto, 20px internal margin",
+      "placement_css": "width: 100%; height: auto; aspect-ratio: 1.4; object-fit: cover; border-radius: 4px; margin: 20px; border: 1px solid #FF4444;",
+      "card_styling": "background: rgba(18,18,18,0.8); border: 1px solid #FF4444; border-radius: 8px;",
+      "validation": {
+        "ui_sharpness": "pixel-perfect lines, crosshair razor-sharp",
+        "color_accuracy": "red #FF4444 neon bright, cyan glowing",
+        "data_readouts": "all text visible and readable",
+        "crosshair_precision": "centered perfectly",
+        "lock_indicator": "red flash visible at edges"
+      }
+    },
+    {
+      "id": 6,
+      "phase": "Phase 1 - Essential",
+      "priority": "CRITICAL",
+      "name": "MECHANISM - Execute HUD (Executing)",
+      "section": "THE MECHANISM - Step 3 Card",
+      "dimensions": {
+        "generation": "1120x800px",
+        "display": "560x400px",
+        "aspect_ratio": "1.4:1"
+      },
+      "prompt": "High-speed digital missile/energy pulse launch visualization on tactical HUD screen, dark background #0a0a0a. Bright cyan-electric green energy pulse traveling from center origin point toward target on right side, leaving glowing light trail behind (motion blur suggesting extreme velocity). Concentric circles expanding outward from launch origin point showing impact force. Confirmation status overlay displaying \"CONFIRMED: SLOT FILLED\" in large military font, glowing green. Particle effects: small cyan/green digital particles dissipating and fading into background, suggesting data materialization/execution. Multiple HUD elements lighting up: \"MISSION STATUS: EXECUTED\", timing readout \"0.3 seconds\". High speed dynamic mood with directional motion blur trailing toward target. Sharp neon cyan and bright green glowing elements. Film grain, high contrast tactical command interface. Tactical operations command center aesthetic. Zero-depth black background. Pixel-perfect UI. 4K quality.",
+      "generation_settings": {
+        "quality": "ULTRA-MAXIMUM",
+        "style": "Digital Interface/HUD",
+        "aspect": "1.4:1",
+        "seed": "RANDOM",
+        "special_instruction": "PIXEL-PERFECT UI SHARPNESS REQUIRED - EXTREME MOTION BLUR EFFECT"
+      },
+      "post_processing": {
+        "global_apply": true,
+        "additional_sharpness": "+0.3",
+        "additional_contrast": "+15",
+        "color_boost_green": "+25"
+      },
+      "placement_html": "Inside card border, 100% card width, height auto, 20px internal margin",
+      "placement_css": "width: 100%; height: auto; aspect-ratio: 1.4; object-fit: cover; border-radius: 4px; margin: 20px; border: 1px solid #00FF88;",
+      "card_styling": "background: rgba(18,18,18,0.8); border: 1px solid #00FF88; border-radius: 8px;",
+      "animation_css": "Add pulsing glow: @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 10px #00FF88; } 50% { box-shadow: 0 0 30px #00FF88; } }",
+      "validation": {
+        "motion_blur": "clear directional motion blur visible",
+        "particle_effects": "small particles dissipating visible",
+        "green_vibrance": "neon green glowing bright",
+        "text_readout": "\"CONFIRMED: SLOT FILLED\" clearly visible",
+        "impact_visualization": "concentric circles expanding visible"
+      }
+    },
+    {
+      "id": 7,
+      "phase": "Phase 2 - Elevation",
+      "priority": "MEDIUM",
+      "name": "CLIMAX - Data Dissolving Background",
+      "section": "THE CLIMAX Section (Background behind Calculator)",
+      "dimensions": {
+        "generation": "2800x1000px",
+        "display": "1400x500px",
+        "aspect_ratio": "2.8:1"
+      },
+      "prompt": "Abstract digital data visualization showing financial numbers and data dissolving/disintegrating into particles. Panoramic composition. Dark background #0a0a0a with red and orange accent lighting fading into cool cyan-blue in opposite corners (hot to cold color transition symbolizing change). Large financial data numbers (like \"R$ 2.4M\", \"R$ 8.2M\") appearing as glowing particles floating and falling through dark space, slowly fading and disintegrating. Scattered graph lines breaking apart and dissolving into light trails. No literal money or flames, but metaphorical \"evaporation\" of financial value through particle effects. Cinematic data visualization aesthetic. Film grain, high contrast. Motion suggestion: particles moving downward and outward. Color grading: warm orange-red in upper left fading to cool blue-cyan in lower right. Abstract financial loss visualization. 4K cinematic quality.",
+      "generation_settings": {
+        "quality": "MAXIMUM",
+        "style": "Abstract Data Visualization",
+        "aspect": "2.8:1",
+        "seed": "RANDOM"
+      },
+      "post_processing": {
+        "global_apply": true,
+        "additional_saturation": "-15"
+      },
+      "placement_html": "Absolute position behind calculator content, full width section, opacity 30-40%, z-index 0",
+      "placement_css": "position: absolute; inset: 0; z-index: 0; opacity: 0.35; background-image: url(data-dissolving.webp); background-size: cover; background-position: center;",
+      "overlay_layer": "Additional overlay: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4))",
+      "validation": {
+        "color_gradient": "warm red/orange left to cool cyan right",
+        "particle_effect": "particles visibly dissolving/fading",
+        "financial_numbers": "visible but subtle",
+        "opacity": "background, not competing with content",
+        "motion_sense": "particles moving downward visible"
+      }
+    },
+    {
+      "id": 8,
+      "phase": "Phase 1 - Essential",
+      "priority": "CRITICAL",
+      "name": "TESTIMONIALS - Avatar Dr. Roberto M.",
+      "section": "TESTIMONIALS Section - Card 1",
+      "dimensions": {
+        "generation": "1024x1024px",
+        "display": "100-120px (circular crop)",
+        "aspect_ratio": "1:1"
+      },
+      "prompt": "Professional headshot of a distinguished Brazilian male cardiovascular surgeon, age 55-62, with silver-gray hair and well-trimmed salt-and-pepper beard, wearing premium crisp white lab coat over dark shirt. Confident warm professional expression, slight confidence in eyes. Dramatic side lighting from left (Rembrandt-style three-point lighting), creating depth and character on face. Solid deep dark background #1a1a1a for clean circular crop. Centered headshot composition optimized for circular avatar (face centered, no cutting at forehead or chin). Shallow depth of field, sharp focus on face and eyes. Refined editorial portrait photography. Subtle film grain texture. High contrast warm professional mood. Sophisticated serious demeanor. Latin American facial features. Looking slightly off-camera (classical portrait angle). Gloss/sheen on white coat suggesting quality. 4K ultra high definition.",
+      "generation_settings": {
+        "quality": "MAXIMUM",
+        "style": "Editorial Portrait",
+        "aspect": "1:1",
+        "seed": "RANDOM"
+      },
+      "post_processing": {
+        "global_apply": true,
+        "additional_brightness": "+0.1",
+        "circular_crop": true,
+        "circular_crop_size": "512px"
+      },
+      "placement_html": "Circular avatar left of name/title, 100-120px display size",
+      "placement_css": "width: 100px; height: 100px; border-radius: 50%; border: 2px solid #00FF88; object-fit: cover; flex-shrink: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.5);",
+      "responsive_css": "@media (min-width: 768px) { width: 120px; height: 120px; }",
+      "validation": {
+        "face_centering": "face centered, no cutting at forehead/chin",
+        "circular_crop": "clean circular edge",
+        "green_border": "2px #00FF88 vibrant",
+        "facial_features": "sharp and detailed",
+        "lighting": "warm side-lighting visible"
+      }
+    },
+    {
+      "id": 9,
+      "phase": "Phase 1 - Essential",
+      "priority": "CRITICAL",
+      "name": "TESTIMONIALS - Avatar Dra. Juliana S.",
+      "section": "TESTIMONIALS Section - Card 2",
+      "dimensions": {
+        "generation": "1024x1024px",
+        "display": "100-120px (circular crop)",
+        "aspect_ratio": "1:1"
+      },
+      "prompt": "Professional headshot of a sophisticated Brazilian female dermatologist and clinic owner, age 42-48, with dark lustrous hair elegantly pulled back in polished bun or sleek ponytail, wearing refined premium white lab coat over elegant dark blouse (suggesting professional polish). Warm confident expression with intelligence in eyes, slight professional smile. Dramatic side lighting from left (Rembrandt three-point setup), creating depth and dimension on face. Solid deep dark background #1a1a1a for clean circular crop. Centered headshot composition optimized for circular avatar (face perfectly centered). Shallow depth of field with sharp focus on face. Refined editorial medical portrait aesthetic. Subtle film grain. High contrast refined professional mood. Elegant sophisticated demeanor. Latin American facial features, refined beauty. Looking slightly off-camera (classical portrait angle). Impeccable grooming, luxury aesthetic. Clinic owner presence. 4K ultra high definition.",
+      "generation_settings": {
+        "quality": "MAXIMUM",
+        "style": "Editorial Portrait",
+        "aspect": "1:1",
+        "seed": "RANDOM"
+      },
+      "post_processing": {
+        "global_apply": true,
+        "additional_brightness": "+0.1",
+        "circular_crop": true,
+        "circular_crop_size": "512px"
+      },
+      "placement_html": "Circular avatar left of name/title, 100-120px display size",
+      "placement_css": "width: 100px; height: 100px; border-radius: 50%; border: 2px solid #00FF88; object-fit: cover; flex-shrink: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.5);",
+      "responsive_css": "@media (min-width: 768px) { width: 120px; height: 120px; }",
+      "validation": {
+        "face_centering": "face centered, no cutting at forehead/chin",
+        "circular_crop": "clean circular edge",
+        "green_border": "2px #00FF88 vibrant",
+        "facial_features": "sharp and detailed",
+        "hair_styling": "elegant bun/ponytail visible",
+        "lighting": "warm side-lighting visible"
+      }
+    },
+    {
+      "id": 10,
+      "phase": "Phase 2 - Elevation",
+      "priority": "HIGH",
+      "name": "CTA FINAL - Corridor with Light",
+      "section": "CTA FINAL Section (Background)",
+      "dimensions": {
+        "generation": "2800x1200px",
+        "display": "1400x600px",
+        "aspect_ratio": "21:9"
+      },
+      "prompt": "Long modern luxury medical clinic corridor extending into distance, dark foreground transitioning to warm golden-amber light at far end. Polished dark floors reflecting subtle light, minimalist sleek walls in dark tones (#1a1a2a). Strong central perspective with vanishing point dead-center leading toward illuminated exit/future. Architectural lines creating sense of forward movement. Open doors at end glowing with warm golden light (#ffb84d) suggesting hope and decision point. Dramatic contrast between dark foreground (shadows dominating) and warm illuminated background. Clinical sophisticated aesthetic but cinematically dramatic. No people visible. Soft subtle lighting in mid-section transitioning to bright warm glow ahead. Cinematic photography style inspired by psychological thrillers showing crossroads moment. Film grain texture, high contrast. Mood of decision, turning point, forward momentum toward light. Premium luxury clinic aesthetic with dramatic decision-moment symbolism. 4K ultra high quality.",
+      "generation_settings": {
+        "quality": "MAXIMUM",
+        "style": "Cinematic Architecture",
+        "aspect": "21:9",
+        "seed": "RANDOM"
+      },
+      "post_processing": {
+        "global_apply": true,
+        "additional_brightness": "-0.1",
+        "additional_contrast": "+10"
+      },
+      "placement_html": "Background image, full width, opacity 30%, overlay dark gradient, CTA buttons on top",
+      "placement_css": "background-image: url(corridor-light.webp); background-size: cover; background-position: center; opacity: 0.30; position: absolute; inset: 0; z-index: 0;",
+      "placement_overlay": "linear-gradient(transparent 0%, rgba(18,18,18,0.7) 100%)",
+      "content_zindex": "z-index: 10 for CTA buttons and text",
+      "validation": {
+        "perspective": "central vanishing point visible",
+        "light_contrast": "dark foreground to bright golden light",
+        "architectural_lines": "sense of forward movement",
+        "door_glow": "warm golden light at end visible",
+        "atmosphere": "cinematic dramatic mood"
+      }
+    }
+  ],
+  "execution_workflow": {
+    "phase_1": {
+      "name": "CRITICAL PRIORITY BATCH",
+      "images": [1, 4, 5, 6, 8, 9],
+      "total_time_estimate": "45 minutes",
+      "instructions": "Generate all 6 images in parallel if possible, validate each for sharpness/color accuracy, apply post-processing, export WebP",
+      "validation_before_phase2": "All 6 images must pass validation checks before proceeding to Phase 2"
+    },
+    "phase_2": {
+      "name": "ELEVATION BATCH",
+      "images": [2, 10],
+      "total_time_estimate": "20 minutes",
+      "instructions": "Generate both images, apply post-processing, export WebP with reduced opacity readiness",
+      "validation_before_phase3": "Both background images must have correct mood/atmosphere"
+    },
+    "phase_3": {
+      "name": "POLISH BATCH",
+      "images": [3, 7],
+      "total_time_estimate": "15 minutes",
+      "instructions": "Generate final 2 images, apply post-processing, export WebP",
+      "validation_final": "All 10 images ready for web deployment"
+    }
+  },
+  "batch_processing_checklist": {
+    "pre_generation": [
+      "☐ All 10 prompts copied and verified",
+      "☐ Generation tool set to MAXIMUM quality",
+      "☐ Dimensions verified for each image",
+      "☐ Output directory prepared"
+    ],
+    "during_generation": [
+      "☐ Monitor generation progress",
+      "☐ Document generation times",
+      "☐ Verify image dimensions match specification",
+      "☐ Check file sizes don't exceed limits"
+    ],
+    "post_processing": [
+      "☐ Open each image in Lightroom/Photoshop",
+      "☐ Apply universal post-processing settings",
+      "☐ Apply image-specific adjustments",
+      "☐ Verify grain is visible at 100% zoom",
+      "☐ Check color accuracy (green/red for HUDs)",
+      "☐ Apply circular crop to avatars",
+      "☐ Add green border 2px to avatars",
+      "☐ Export as WebP (quality 85)",
+      "☐ Optimize file size to max 300KB",
+      "☐ Export backup PNG copy"
+    ],
+    "validation": [
+      "☐ All 10 images under 300KB",
+      "☐ HUDs have pixel-perfect sharpness",
+      "☐ Avatars have clean circular crop",
+      "☐ Brand colors vibrant and accurate",
+      "☐ Grain visible in dark areas",
+      "☐ No blurry text or UI elements",
+      "☐ Aspect ratios match specification",
+      "☐ Ready for web deployment"
+    ]
+  },
+  "delivery_output": {
+    "folder_structure": {
+      "public/images/": [
+        "hero-doctor.webp",
+        "waiting-room.webp",
+        "clock-motion.webp",
+        "radar-hud.webp",
+        "target-hud.webp",
+        "execute-hud.webp",
+        "data-dissolving.webp",
+        "avatar-dr-roberto.webp",
+        "avatar-dra-juliana.webp",
+        "corridor-light.webp"
+      ],
+      "backup_pngs/": "All PNG versions as backup"
+    },
+    "final_qa": {
+      "size_validation": "All images tested in actual HTML/CSS layout",
+      "responsive_testing": "Mobile (375px), tablet (768px), desktop (1920px)",
+      "browser_testing": "Chrome, Safari, Firefox",
+      "lighthouse_score": "Target > 75 for performance",
+      "color_accuracy": "Verified on calibrated monitors"
+    }
+  }
+}
