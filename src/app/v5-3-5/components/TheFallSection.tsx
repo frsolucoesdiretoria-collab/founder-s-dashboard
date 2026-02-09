@@ -12,7 +12,7 @@ export default function TheFallSection() {
                             <div className="axis-section-text" style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: '1.2rem', lineHeight: '1.8rem', color: 'rgba(255,255,255,0.8)', maxWidth: '800px', margin: '0 auto 50px auto', textAlign: 'left' }}>
                                 <p style={{ marginBottom: '20px' }}>Você conhece a sensação. São 14:45. O paciente das 14:30 não apareceu. Sua secretária está no telefone, tentando – em vão – encontrar um substituto.</p>
                                 <p style={{ marginBottom: '20px' }}>Você olha para o relógio. O ponteiro se move. Cada segundo que passa é dinheiro que evapora da sua conta e nunca mais volta.</p>
-                                <p style={{ marginBottom: '20px' }}>Nós chamamos isso de <strong style={{ color: '#fff', fontSize: '1.3rem' }}>"A Taxa Silenciosa"</strong>.</p>
+                                <p style={{ marginBottom: '20px' }}>Nós chamamos isso de <strong style={{ color: '#fff', fontSize: '1.5rem' }}>"A Taxa Silenciosa"</strong>.</p>
                                 <p>Não é apenas sobre os R$ 500,00 ou R$ 800,00 daquela consulta. É sobre o desrespeito com a sua expertise. Enquanto você espera, um médico menos qualificado está atendendo. Não porque é melhor que você, mas por quê ele tem um sistema como a Axis antivacância que preenche os cancelamentos com antecipações de outros pacientes que aguardam nos próximos 10 dias para ter um horário com você…</p>
                             </div>
                         </div>
@@ -28,7 +28,7 @@ export default function TheFallSection() {
                             </div>
                             <div style={{ marginTop: '40px' }}>
                                 <p style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: '1.2rem', color: 'rgba(255,255,255,0.7)' }}>Pare de aceitar a <strong>ineficiência</strong> como "parte do negócio".</p>
-                                <h3 style={{ fontFamily: "'Futura Md BT', sans-serif", fontWeight: 900, color: '#fff', marginTop: '10px', textTransform: 'uppercase' }}>ELA É UMA ESCOLHA.</h3>
+                                <h3 style={{ fontFamily: "'Futura Md BT', sans-serif", fontWeight: 900, color: '#fff', marginTop: '10px', textTransform: 'uppercase', fontSize: '2.0rem' }}>ELA É UMA ESCOLHA.</h3>
                             </div>
                         </div>
                     </div>

@@ -5,10 +5,10 @@ const ASSET_PREFIX = '/v5-3';
 export default function HeroSection() {
     return (
         <div className="container white-text" style={{ minHeight: '100vh', position: 'relative' }}>
-            <div className="section" style={{ paddingTop: '15vh', paddingBottom: '30px' }}>
+            <div className="section" style={{ paddingTop: '50px', paddingBottom: '30px' }}>
                 <div className="row">
                     <div className="col s12 m7">
-                        <div style={{ marginLeft: 'auto', minWidth: '50%', maxWidth: '600px' }}>
+                        <div style={{ margin: '0 auto', width: '100%', maxWidth: '600px', textAlign: 'center' }}>
 
                             {/* MOBILE: Hero Image appears first on mobile - Controlled by CSS classes */}
                             <picture className="axis-hero-image-mobile" style={{ display: 'none' }}>
@@ -30,6 +30,7 @@ export default function HeroSection() {
                                     fetchpriority="high"
                                     loading="eager"
                                     decoding="async"
+                                    style={{ margin: '0 auto' }}
                                 />
                             </picture>
 
