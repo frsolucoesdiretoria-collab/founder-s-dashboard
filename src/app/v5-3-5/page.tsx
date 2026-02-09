@@ -103,10 +103,10 @@ export default function AxisV535Page() {
         const loadScripts = () => {
             const scriptFiles = [
                 "https://code.jquery.com/jquery-3.6.3.min.js",
-                `${ASSET_PREFIX}/client/js/particles.min.js`, // Local particles.js
+                // Particles handled by BackgroundEffects.tsx (v2)
                 "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js",
                 `${ASSET_PREFIX}/client/js/uw-main%EF%B9%96v9.js`,
-                `${ASSET_PREFIX}/client/js/webgl/uw-fluid.js`,
+                `${ASSET_PREFIX}/client/js/webgl/uw-fluid-v2.js`,
             ];
 
             scriptFiles.forEach(src => {
