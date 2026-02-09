@@ -4,8 +4,8 @@ const ASSET_PREFIX = '/v5-3';
 
 export default function HeroSection() {
     return (
-        <div className="container white-text" style={{ minHeight: '100vh', position: 'relative' }}>
-            <div className="section" style={{ paddingTop: '50px', paddingBottom: '30px' }}>
+        <div className="container white-text axis-hero-section" style={{ minHeight: '100vh', position: 'relative', zIndex: 10, background: 'transparent' }}>
+            <div className="section" style={{ paddingTop: '50px', paddingBottom: '30px', background: 'transparent' }}>
                 <div className="row">
                     <div className="col s12 m7">
                         <div style={{ margin: '0 auto', width: '100%', maxWidth: '600px', textAlign: 'center' }}>
