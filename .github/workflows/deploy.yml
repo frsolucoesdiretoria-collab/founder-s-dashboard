@@ -41,8 +41,8 @@ jobs:
 
       - name: Validate build output
         run: |
-          if [ ! -f dist/index.html ]; then
-            echo "::error::dist/index.html not found after build"
+          if [ ! -f dist/v5-3-5/index.html ]; then
+            echo "::error::dist/v5-3-5/index.html not found after build"
             exit 1
           fi
           
@@ -128,8 +128,8 @@ jobs:
           echo "🔍 Validando deploy em produção..."
           
           # Validar apenas existência de arquivos críticos (não conteúdo)
-          if ! ssh $SSH_OPTS "${VPS_USER}@${VPS_HOST}" "test -f ${VPS_STATIC_ROOT}/index.html"; then
-            echo "::error::index.html não encontrado em produção"
+          if ! ssh $SSH_OPTS "${VPS_USER}@${VPS_HOST}" "test -f ${VPS_STATIC_ROOT}/v5-3-5/index.html"; then
+            echo "::error::v5-3-5/index.html não encontrado em produção"
             exit 1
           fi
           
