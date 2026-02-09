@@ -36,8 +36,8 @@ export default function CalculatorSection() {
                 <div className="section axis-section-padding" style={{ padding: '50px 0' }}>
                     <div className="row">
                         <div className="col s12 center">
-                            <h2 className="axis-section-title" style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: 'clamp(2rem, 5vw, 3.5rem)', lineHeight: 1.1, fontWeight: 800, textTransform: 'uppercase', color: '#FFFFFF' }}>Você Tem Coragem de Ver o Quanto Estávamos "Queimando"?</h2>
-                            <p className="axis-section-text" style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: '1.2rem', color: 'rgba(255,255,255,0.7)', marginTop: '10px' }}>A maioria dos médicos prefere não saber. A ignorância é uma benção... até você ver a conta.</p>
+                            <h2 className="axis-section-title" style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: 'clamp(2rem, 5vw, 3.5rem)', lineHeight: 1.1, fontWeight: 800, textTransform: 'uppercase', color: '#FFFFFF' }}>Está preparado para descobrir quanto dinheiro e horas este ralo da sua clínica está drenando?</h2>
+                            <p className="axis-section-text" style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: '1.2rem', color: 'rgba(255,255,255,0.7)', marginTop: '10px' }}>A boa notícia, é que o Axis antivacância pode recuperar tudo isso pela sua clínica nos próximos anos</p>
                         </div>
                         <div className="col s12 m10 offset-m1 l8 offset-l2" style={{ marginTop: '40px' }}>
                             <div className="card-panel grey darken-4" style={{ border: '1px solid rgba(255,255,255,0.1)', padding: '30px' }}>
@@ -64,7 +64,7 @@ export default function CalculatorSection() {
                                             onChange={(e) => setApptsDay(Number(e.target.value))}
                                             style={{ height: '3rem', fontSize: '1rem' }}
                                         />
-                                        <label htmlFor="calc-appts-day" className="active" style={{ fontSize: '0.9rem' }}>Atendimentos por dia</label>
+                                        <label htmlFor="calc-appts-day" className="active" style={{ fontSize: '0.9rem' }}>Média de consultas por dia</label>
                                     </div>
                                     <div className="input-field col s12 m6" style={{ marginBottom: '15px' }}>
                                         <input
@@ -88,7 +88,7 @@ export default function CalculatorSection() {
                                             onChange={(e) => setDaysMonth(Number(e.target.value))}
                                             style={{ height: '3rem', fontSize: '1rem' }}
                                         />
-                                        <label htmlFor="calc-days-month" className="active" style={{ fontSize: '0.9rem' }}>Dias úteis por mês</label>
+                                        <label htmlFor="calc-days-month" className="active" style={{ fontSize: '0.9rem' }}>Tempo médio por consulta</label>
                                     </div>
                                 </div>
                                 <div className="row center" style={{ marginTop: '20px', marginBottom: '20px' }}>

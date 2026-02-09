@@ -15,10 +15,10 @@ export default function FinalCTASection() {
                                 <span style={{ color: 'rgba(255,255,255,0.2)' }}>O CUSTO TAMBÉM.</span>
                             </h2>
                             <p className="axis-cta-text" style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: '1.1rem', color: 'rgba(255,255,255,0.6)', marginTop: '20px', marginBottom: '30px', lineHeight: 1.5 }}>
-                                Você chegou até aqui. Agora você sabe.<br /><br />
-                                Você sabe que existe uma maneira superior de operar.<br />
-                                Você sabe o quanto está perdendo todos os dias.<br /><br />
-                                Ou você pode decidir que a sua clínica merece operar no nível dos 1%.
+                                E você? O que você vai fazer com os cancelamentos da sua clínica em 2026? Resolve-los, ou continuar como está?<br /><br />
+                                Agora você sabe que existe uma maneira superior de operar, e despertou sua consciência para ver o quanto está perdendo todos os meses...<br /><br />
+                                Você pode fechar esta página e voltar para a sua rotina como ela está… Continuar com as falhas, as ligações manuais, a ineficiência. É o caminho confortável da mediocridade.<br /><br />
+                                Ou você pode valorizar o tempo que você investiu para ter lido até aqui, e tomar a decisão correta para o seu CNPJ: Recuperar o ativo mais valioso das nossas vidas, e retomar o faturamento dos próximos anos com o Axis antivacância.
                             </p>
                             <div style={{ marginTop: '30px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '20px', maxWidth: '400px', marginLeft: 'auto', marginRight: 'auto' }}>
                                 <p style={{ color: 'rgba(255,255,255,0.3)', letterSpacing: '0.15rem', fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '15px' }}>

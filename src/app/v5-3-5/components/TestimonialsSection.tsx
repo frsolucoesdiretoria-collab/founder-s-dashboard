@@ -19,7 +19,7 @@ export default function TestimonialsSection() {
                             />
                         </div>
                         <p className="axis-testimonial-text" style={{ fontStyle: 'italic', fontSize: '0.95rem', color: 'rgba(255,255,255,0.9)', lineHeight: 1.6 }}>
-                            "Eu achava que automação era impessoal. Eu estava errado. No primeiro mês, recuperamos <strong style={{ color: '#fff' }}>R$ 42.000,00</strong> em 'buracos' de agenda. Hoje, o Axis é o sócio mais lucrativo que eu tenho."
+                            "Todos os médicos do nosso consultório concordam que contratar o Axis antivacância foi um excelente investimento"
                         </p>
                         <div style={{ marginTop: '15px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '12px' }}>
                             <strong className="white-text" style={{ fontSize: '0.95rem' }}>Dr. Roberto M.</strong><br />
@@ -39,9 +39,9 @@ export default function TestimonialsSection() {
                                 loading="lazy"
                             />
                         </div>
-                        <p style={{ fontSize: '1.1rem', fontStyle: 'italic', color: '#fff', fontFamily: 'serif', textAlign: 'center', marginBottom: '15px' }}>"Do Caos à Calmaria"</p>
+                        {/* Title removed */}
                         <p className="axis-testimonial-text" style={{ fontStyle: 'italic', fontSize: '0.95rem', color: 'rgba(255,255,255,0.9)', lineHeight: 1.6 }}>
-                            "Minha recepção era uma zona de guerra. Instalamos o Axis numa sexta-feira. Na segunda, o silêncio era ensurdecedor. O telefone parou de tocar, mas a sala de espera estava cheia."
+                            "Minha recepção era uma zona de guerra… Instalamos o Axis antivacância no início do mês, e logo na primeira semana após a implementação percebemos as nossas secretárias mais calmas e tratando melhor os pacientes que chegavam, com certeza a qualidade do nosso atendimento subiu."
                         </p>
                         <div style={{ marginTop: '15px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '12px' }}>
                             <strong className="white-text" style={{ fontSize: '0.95rem' }}>Dra. Juliana S.</strong><br />

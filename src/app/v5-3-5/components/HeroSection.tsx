@@ -39,7 +39,7 @@ export default function HeroSection() {
                                 esperando na sala de consulta.
                             </h1>
                             <p className="axis-hero-subtitle" style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: '1.2rem', color: 'rgba(255,255,255,0.6)', marginTop: '30px', lineHeight: 1.6 }}>
-                                O Axis Protocol detecta cancelamentos e imediatamente antecipa pacientes da sua fila de espera — ou de agendamentos futuros — para preencher a lacuna agora. Transforme ociosidade em faturamento antecipado, sem intervenção manual.
+                                O Axis antivacância detecta cancelamentos e imediatamente antecipa pacientes da sua fila de espera — ou de agendamentos futuros — para preencher a lacuna agora. Transforme ociosidade em faturamento antecipado, sem intervenção manual.
                             </p>
                             <ul className="axis-hero-list" style={{ marginTop: '30px', marginBottom: '50px', textAlign: 'left', maxWidth: '600px', display: 'inline-block', paddingLeft: 0 }}>
                                 <li style={{ marginBottom: '12px', fontFamily: "'Futura Md BT', sans-serif", fontSize: '1.1rem', color: 'rgba(255,255,255,0.9)', display: 'flex', alignItems: 'start' }}>
@@ -52,7 +52,7 @@ export default function HeroSection() {
                                 </li>
                                 <li style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: '1.1rem', color: 'rgba(255,255,255,0.9)', display: 'flex', alignItems: 'start' }}>
                                     <i className="material-icons-round" style={{ marginRight: '12px', color: '#fff', transform: 'translateY(2px)' }}>check_circle</i>
-                                    <span>Otimização silenciosa, impacto imediato.</span>
+                                    <span>Pacientes em espera podendo antecipar seus horários</span>
                                 </li>
                             </ul>
                             <div style={{ position: 'relative', zIndex: 10 }}>

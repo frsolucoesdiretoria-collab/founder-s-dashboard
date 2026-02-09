@@ -10,16 +10,16 @@
 const CONFIG = {
   // Webhook URL para receber leads - integrado ao servidor
   webhookUrl: window.location.origin + '/api/axis/lead',
-  
+
   // URL para notificação de novo lead (Telegram/WhatsApp)
   notifyUrl: window.location.origin + '/api/axis/notify',
-  
+
   // Google Analytics Measurement ID (FR Tech)
-  gaId: 'G-JYTV1WNRWS',
-  
+  gaId: 'G-C3J9Z2448Q',
+
   // Google Ads Conversion ID (FR Tech)
   gadsId: 'AW-16460564445',
-  
+
   // Checkouts Mercado Pago
   checkouts: {
     avista: 'https://mpago.la/2mox6KZ',              // R$1.997 à vista
@@ -38,12 +38,12 @@ const CONFIG = {
 function saveLeadLocal(data) {
   try {
     localStorage.setItem('axis_lead', JSON.stringify(data));
-    
+
     // Também salva em array de todos os leads (para debug)
     const allLeads = JSON.parse(localStorage.getItem('axis_all_leads') || '[]');
     allLeads.push({ ...data, savedAt: new Date().toISOString() });
     localStorage.setItem('axis_all_leads', JSON.stringify(allLeads));
-    
+
     console.log('[Axis] Lead salvo localmente:', data);
     return true;
   } catch (e) {
@@ -75,7 +75,7 @@ async function sendToWebhook(data) {
     console.warn('[Axis] Webhook não configurado. Dados salvos apenas localmente.');
     return false;
   }
-  
+
   try {
     const response = await fetch(CONFIG.webhookUrl, {
       method: 'POST',
@@ -90,7 +90,7 @@ async function sendToWebhook(data) {
         url: window.location.href
       })
     });
-    
+
     if (response.ok) {
       console.log('[Axis] Lead enviado para webhook com sucesso');
       return true;
@@ -111,7 +111,7 @@ async function notifyNewLead(data) {
   if (!CONFIG.notifyUrl || CONFIG.notifyUrl.includes('SEU_WEBHOOK')) {
     return false;
   }
-  
+
   try {
     const message = `🚨 NOVO LEAD AXIS!\n\n` +
       `👤 ${data.nome}\n` +
@@ -122,13 +122,13 @@ async function notifyNewLead(data) {
       `📄 Página: ${data.page}\n\n` +
       `⏰ ${new Date().toLocaleString('pt-BR')}\n\n` +
       `👉 Chame agora: https://wa.me/55${data.whatsapp.replace(/\D/g, '')}`;
-    
+
     await fetch(CONFIG.notifyUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message, lead: data })
     });
-    
+
     return true;
   } catch (e) {
     console.error('[Axis] Erro ao notificar:', e);
@@ -173,13 +173,13 @@ function trackGAdsConversion(conversionLabel, value = 0) {
  */
 function formatPhone(phone) {
   const cleaned = phone.replace(/\D/g, '');
-  
+
   if (cleaned.length === 11) {
-    return `(${cleaned.slice(0,2)}) ${cleaned.slice(2,7)}-${cleaned.slice(7)}`;
+    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`;
   } else if (cleaned.length === 10) {
-    return `(${cleaned.slice(0,2)}) ${cleaned.slice(2,6)}-${cleaned.slice(6)}`;
+    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
   }
-  
+
   return phone;
 }
 
@@ -206,25 +206,25 @@ function isValidEmail(email) {
  * Aplica máscara de telefone em tempo real
  */
 function applyPhoneMask(input) {
-  input.addEventListener('input', function(e) {
+  input.addEventListener('input', function (e) {
     let value = e.target.value.replace(/\D/g, '');
-    
+
     if (value.length > 11) value = value.slice(0, 11);
-    
+
     if (value.length > 6) {
-      value = `(${value.slice(0,2)}) ${value.slice(2,7)}-${value.slice(7)}`;
+      value = `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`;
     } else if (value.length > 2) {
-      value = `(${value.slice(0,2)}) ${value.slice(2)}`;
+      value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
     } else if (value.length > 0) {
       value = `(${value}`;
     }
-    
+
     e.target.value = value;
   });
 }
 
 // Aplica máscara em todos os campos de WhatsApp ao carregar
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   const phoneInputs = document.querySelectorAll('input[name="whatsapp"], input[type="tel"]');
   phoneInputs.forEach(applyPhoneMask);
 });
@@ -287,14 +287,14 @@ saveUtmParams();
 let maxScroll = 0;
 let scrollMilestones = [25, 50, 75, 90, 100];
 
-window.addEventListener('scroll', function() {
+window.addEventListener('scroll', function () {
   const scrollPercent = Math.round(
     (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100
   );
-  
+
   if (scrollPercent > maxScroll) {
     maxScroll = scrollPercent;
-    
+
     scrollMilestones.forEach(milestone => {
       if (scrollPercent >= milestone && !window['scrolled_' + milestone]) {
         window['scrolled_' + milestone] = true;
@@ -310,7 +310,7 @@ window.addEventListener('scroll', function() {
 
 let pageLoadTime = Date.now();
 
-window.addEventListener('beforeunload', function() {
+window.addEventListener('beforeunload', function () {
   const timeOnPage = Math.round((Date.now() - pageLoadTime) / 1000);
   trackGA4Event('time_on_page', { seconds: timeOnPage });
 });

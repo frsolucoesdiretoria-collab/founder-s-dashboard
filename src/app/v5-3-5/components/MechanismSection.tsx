@@ -10,7 +10,7 @@ export default function MechanismSection() {
                 <div className="section" style={{ marginBottom: '80px' }}>
                     <div className="row">
                         <div className="col s12 center">
-                            <h2 style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: 'clamp(2rem, 5vw, 3.5rem)', lineHeight: 1.1, fontWeight: 800, textTransform: 'uppercase', color: '#FFFFFF' }}>Axis Não "Agenda". Ele Caça.</h2>
+                            <h2 style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: 'clamp(2rem, 5vw, 3.5rem)', lineHeight: 1.1, fontWeight: 800, textTransform: 'uppercase', color: '#FFFFFF' }}>O AXIS ANTIVACÂNCIA não é só mais um sisteminha barato de confirmação de consulta… É uma tecnologia que antecipa agendas futuras, otimiza o seu tempo, e recupera faturamento para o seu caixa.</h2>
                             <h1 className="grey-text" style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: '1.4rem', lineHeight: '1.6rem', marginTop: '1.68rem' }}>O MECANISMO AXIS</h1>
                             <span style={{ fontSize: '1.4rem', lineHeight: '1.6rem', fontFamily: "'Futura Md BT', sans-serif", color: '#FFFFFF' }}>Imagine que você tivesse um atirador de elite monitorando sua agenda 24 horas por dia.</span>
                         </div>
@@ -130,7 +130,7 @@ export default function MechanismSection() {
                 <div className="section axis-section-padding">
                     <div className="row">
                         <div className="col s12 center">
-                            <h2 className="axis-section-title" style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: '1.5rem', lineHeight: 1.2, fontWeight: 800, textTransform: 'uppercase', color: '#FFFFFF' }}>Axis Não "Agenda". Ele Caça.</h2>
+                            <h2 className="axis-section-title" style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: '1.5rem', lineHeight: 1.2, fontWeight: 800, textTransform: 'uppercase', color: '#FFFFFF' }}>O AXIS ANTIVACÂNCIA não é só mais um sisteminha barato de confirmação de consulta… É uma tecnologia que antecipa agendas futuras, otimiza o seu tempo, e recupera faturamento para o seu caixa.</h2>
                             <p className="grey-text" style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: '1rem', marginTop: '10px', marginBottom: '25px' }}>O MECANISMO AXIS</p>
                         </div>
                     </div>
