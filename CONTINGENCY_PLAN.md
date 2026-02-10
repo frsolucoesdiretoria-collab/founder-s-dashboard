@@ -1,58 +1,65 @@
-# Plano de Contingência e Post-Mortem - Axis Protocol
+# Plano de Contingência e Protocolo de Garantia de Qualidade (V2.0)
 
-Este documento analisa as falhas recorrentes no processo de desenvolvimento e define protocolos para evitar a perda de tempo e ineficiência técnica.
-
----
-
-## 1. Mapeamento de Problemas (O que deu errado)
-
-### 1.1. Inconsistência de Prefixos (404 Assets)
-- **Problema:** Componentes React buscavam imagens em `/v5-3-5`, enquanto as imagens reais estavam em `/v5-3`.
-- **Impacto:** Imagens quebradas e scripts não carregados em produção.
-- **Causa:** Falta de um padrão unificado (`ASSET_PREFIX`) respeitado por todos os agentes.
-
-### 1.2. Falha na Hidratação (JS 404)
-- **Problema:** O `index.html` em `dist` tentava carregar o bundle JS da raiz `/assets/`, mas em alguns ambientes de deploy ou configurações de Vite, o caminho estava incorreto ou o arquivo não existia.
-- **Impacto:** Site "morto" (estático) sem animações ou interatividade nas seções abaixo do Hero.
-
-### 1.3. Pré-renderização Parcial
-- **Problema:** O script `prerender.mjs` injetava apenas o Hero. Se o JS falhasse, o restante do site (Calculadora, Mecanismo) simplesmente sumia da tela.
-- **Impacto:** Experiência do usuário quebrada e perda de confiabilidade técnica.
-
-### 1.4. Caos de Versões
-- **Problema:** Criação desordenada de pastas `v4-x`, `v5-x` sem limpar o repositório ou manter uma documentação de qual versão é a vigente.
+Este documento atua como o manual de sobrevivência técnica para o **Axis Protocol**. Ele mapeia as falhas de engenharia ocorridas e define procedimentos obrigatórios de validação pós-build.
 
 ---
 
-## 2. Protocolo Anti-Ineficiência (Contingência)
+## 1. Diagnóstico de Falhas Sistêmicas (Post-Mortem)
 
-### 2.1. Regra do "Double Check" de Build
-Todo agente, antes de dizer "está pronto", **DEVE** rodar o seguinte teste de sanidade:
-1. Rodar `npm run build`.
-2. Abrir `dist/index.html` e buscar por `src="/v` ou `src="/assets`. Se encontrar caminhos relativos como `src="./assets"`, o build está **ERRADO** para deploy em raiz.
-3. Verificar se o tamanho do `dist/index.html` é maior que 10KB. Se for muito pequeno, a pré-renderização falhou e o site está vazio.
-
-### 2.2. Protocolo de Assets
-- **Sempre** usar caminhos absolutos para ativos públicos: `/v5-3/images/...`.
-- **Nunca** confiar em importações relativas de imagens dentro do CSS se o CSS for inlinado (o caminho quebra). Use caminhos absolutos `/v5-3/...` em todo lugar.
-
-### 2.3. Validação de Interatividade (Checklist Visual)
-Ao testar a versão de produção, o agente deve confirmar:
-1. [ ] As partículas de fundo estão se movendo? (Se não, o JS não carregou).
-2. [ ] A Calculadora funciona? (Se não, a hidratação React falhou).
-3. [ ] Rolei até o rodapé e tudo apareceu? (Se não, o Prerender está incompleto).
+As seguintes causas foram identificadas como geradoras de "Caos Técnico":
+1.  **Dependência Fantasma**: Uma versão nova dependendo de um script ou imagem em uma pasta de versão antiga, que foi deletada ou alterada.
+2.  **MIME Type Error (404 as HTML)**: O servidor retornando o `index.html` para uma requisição de arquivo `.js` não encontrado, causando quebra total da interatividade.
+3.  **Fragmentação de Prerender**: Injeção manual de HTML no script de pré-renderização que não correspondia à estrutura real dos componentes React, gerando "piscadas" (Flash of Unstyled Content) ou sumiço de seções.
+4.  **Cache Poluído**: Usuários vendo versões antigas devido à falta de invalidação de cache manual no deploy.
 
 ---
 
-## 3. Plano de Recuperação de Desastres
+## 2. Protocolo de Validação "Zero Erro"
 
-Se o site de produção quebrar após um deploy:
-1. **Rollback Imediato:** Use `git revert` para a última versão estável (tag ou commit anterior).
-2. **Correção de Ativos:** Verifique o `network` tab do navegador. Se houver 404 em arquivos `.js` ou `.css`, ajuste o objeto `base` no `vite.config.ts` e o script de `prerender.mjs`.
-3. **Cache Purge:** Sempre instrua o usuário a testar em **Aba Anônima** para descartar problemas de Cache de Navegador/Service Workers.
+Todo agente deve seguir este checklist **antes** de solicitar a revisão do usuário:
+
+### 2.1. Teste de Isolamento (Local)
+1.  No navegador, abra o `Inspect Element` -> `Network`.
+2.  Filtre por `v5-3-5` (ou a versão atual).
+3.  Garanta que **NENHUM** arquivo está sendo carregado de uma pasta de versão diferente.
+4.  Se houver um import de `src/app/v5-3-4/components/Header.tsx` dentro da `v5-3-5`, o agente **ERROU** e deve duplicar o componente.
+
+### 2.2. Verificação de Build (Sanity Check)
+Rode `npm run build` e analise a pasta `dist`:
+- [ ] O arquivo `dist/index.html` contém o texto completo das seções (não apenas o Hero)?
+- [ ] As tags de script em `dist/index.html` usam caminhos absolutos (ex: `/assets/index-xyz.js`)?
+- [ ] O arquivo `.js` referenciado em `dist/index.html` existe fisicamente na pasta `dist/assets/`?
+
+### 2.3. Teste de Interatividade (Pós-Deploy)
+Após o push para produção, valide:
+1.  **Renderização Estática**: O site aparece instantaneamente mesmo com o JavaScript desativado? (Teste via Inspect -> Settings -> Disable JavaScript).
+2.  **Partículas/WebGL**: Se o JavaScript for ativado, as animações de fundo funcionam? (Se não, o caminho do script está quebrado).
+3.  **Calculadora**: Os campos de input respondem? (Se não, a "Hidratação" do React falhou).
 
 ---
 
-## 4. Próximos Passos Sugeridos
-- Limpar as pastas `v4-x` antigas (arquivamento).
-- Automatizar o `Double Check` via script de teste após o build.
+## 3. Plano de Contingência (Emergência)
+
+### 3.1. O Site ficou "Branco" ou "Estático"
+- **Causa provável:** Erro de caminho de ativos no `vite.config.ts` ou script de prerender.
+- **Ação:** Reverter o `vite.config.ts` para `base: '/'` e verificar se o commit incluiu a pasta `dist/assets`.
+
+### 3.2. Seções Sumiram após o Prerender
+- **Causa provável:** O HTML injetado no `prerender.mjs` tem IDs de div diferentes do que o React espera (ex: `root` vs `uw-root-container`).
+- **Ação:** Sincronizar os IDs no `prerender.mjs` com o componente `AxisVX.Page`.
+
+### 3.3. Imagens "Quebradas" (X Vermelho)
+- **Causa provável:** `ASSET_PREFIX` incorreto.
+- **Ação:** Corrigir a constante na página e rodar o build novamente.
+
+---
+
+## 4. Auditoria de Bots (Instrução para Prox. Agentes)
+
+**VOCÊ, AGENTE, É RESPONSÁVEL POR:**
+- Não criar "Frankensteins" de código.
+- Se o usuário pedir para criar a `v5-3-6`, sua primeira ação é ler o `ARCHITECTURE.md` e garantir o isolamento total.
+- **Falhar no isolamento é falhar na tarefa.**
+
+---
+**Este plano deve ser consultado em cada iteração de publicação.**
