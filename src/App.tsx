@@ -67,6 +67,7 @@ const App = () => {
           <Routes>
             {/* ROTA ISOLADA - PERFORMANCE MÁXIMA (Sem MainLayout/Global CSS) */}
             <Route path="/v5-3-5" element={<AxisV535Page />} />
+            <Route path="/" element={<AxisV535Page />} />
 
             {/* TODAS AS OUTRAS ROTAS COMENTADAS PARA FIX BUILD */}
             {/*
@@ -100,8 +101,8 @@ const App = () => {
             <Route path="/proposta/marcela-bueno-v3" element={<PropostaMarcelaBuenoV3 />} />
             <Route path="/proposta/marcela-bueno/versao-final" element={<PropostaMarcelaBuenoVersaoFinal />} />
 
-            <Route path="/" element={<Navigate to="/v5-3-2" replace />} />
-            <Route path="/dashboard" element={<Navigate to="/v5-3-2" replace />} />
+            <Route path="/" element={<AxisV535Page />} />
+            <Route path="/dashboard" element={<Navigate to="/v5-3-5" replace />} />
             <Route path="/finance/flora" element={<FinancePage />} />
             
             <Route

@@ -106,7 +106,7 @@ export default function AxisV535Page() {
                 // Particles handled by BackgroundEffects.tsx (v2)
                 "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js",
                 `${ASSET_PREFIX}/client/js/uw-main%EF%B9%96v9.js`,
-                `${ASSET_PREFIX}/client/js/webgl/uw-fluid-v2.js`,
+                // removed uw-fluid-v2.js explicitly
             ];
 
             scriptFiles.forEach(src => {
