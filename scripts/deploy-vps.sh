@@ -58,4 +58,8 @@ fi
 echo -e "${YELLOW}📊 Últimos logs PM2:${NC}"
 pm2 logs --lines 10 --nostream || echo "Nenhum log disponível"
 
+
+echo -e "${YELLOW}🔄 Recarregando Nginx para limpar cache...${NC}"
+service nginx reload || echo -e "${RED}⚠️  Falha ao recarregar Nginx (permissão?)${NC}"
+
 echo -e "${GREEN}✅ Deploy concluído com sucesso!${NC}"
