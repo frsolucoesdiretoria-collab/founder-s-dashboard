@@ -24,7 +24,17 @@ export default function FinalCTASection() {
                                 <p style={{ color: 'rgba(255,255,255,0.3)', letterSpacing: '0.15rem', fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '15px' }}>
                                     CAPACIDADE LIMITADA // Q1 2026
                                 </p>
-                                <a href="https://api.whatsapp.com/send/?phone=5547996475947&text=Entendi%20como%20o%20Axis%20antivac%C3%A2ncia%20pode%20me%20ajudar%20a%20recuperar%20o%20dinheiro%20que%20sangra%20pelos%20cancelamentos%20da%20minha%20cl%C3%ADnica..%20E%20quero%20recuperar%20nos%20pr%C3%B3ximos%20meses!%20Mas%20eu%20ainda%20tenho%20uma%20outra%20d%C3%BAvida,%20que%20vou%20escrever%20abaixo:&type=phone_number&app_absent=0" target="_blank" className="btn btn-large white black-text font-bold pulse-custom axis-btn-cta" style={{ borderRadius: '50px', fontWeight: 'bold', padding: '16px 40px', fontSize: '0.85rem', height: 'auto', lineHeight: 1.3, whiteSpace: 'normal', display: 'inline-block' }}>
+                                <a
+                                    href="https://api.whatsapp.com/send/?phone=5547996475947&text=Entendi%20como%20o%20Axis%20antivac%C3%A2ncia%20pode%20me%20ajudar%20a%20recuperar%20o%20dinheiro%20que%20sangra%20pelos%20cancelamentos%20da%20minha%20cl%C3%ADnica..%20E%20quero%20recuperar%20nos%20pr%C3%B3ximos%20meses!%20Mas%20eu%20ainda%20tenho%20uma%20outra%20d%C3%BAvida,%20que%20vou%20escrever%20abaixo:&type=phone_number&app_absent=0"
+                                    target="_blank"
+                                    onClick={() => {
+                                        if (typeof window !== 'undefined' && window.dataLayer) {
+                                            window.dataLayer.push({ event: 'whatsapp_cta_click', location: 'final_cta' });
+                                        }
+                                    }}
+                                    className="btn btn-large white black-text font-bold pulse-custom axis-btn-cta"
+                                    style={{ backgroundColor: '#FFFFFF', color: '#000000', borderRadius: '50px', fontWeight: 'bold', padding: '16px 40px', fontSize: '0.85rem', height: 'auto', lineHeight: 1.3, whiteSpace: 'normal', display: 'inline-block', border: 'none' }}
+                                >
                                     Quero contratar o Axis antivacância
                                 </a>
                                 <p style={{ color: 'rgba(255,255,255,0.4)', marginTop: '15px', fontSize: '0.75rem', lineHeight: 1.4 }}>

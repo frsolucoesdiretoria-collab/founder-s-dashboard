@@ -43,7 +43,6 @@ export default function AxisV535Page() {
             { href: 'https://fonts.googleapis.com', crossOrigin: false },
             { href: 'https://fonts.gstatic.com', crossOrigin: true },
             { href: 'https://cdnjs.cloudflare.com', crossOrigin: false },
-            { href: 'https://quasisolutions.com', crossOrigin: false },
         ];
 
         preconnects.forEach(({ href, crossOrigin }) => {
@@ -56,8 +55,7 @@ export default function AxisV535Page() {
 
         // DNS-prefetch para domínios secundários
         const dnsPrefetch = [
-            'https://code.jquery.com',
-            'https://quasisolutions.com'
+            'https://code.jquery.com'
         ];
         dnsPrefetch.forEach(href => {
             const link = document.createElement('link');
@@ -184,6 +182,11 @@ export default function AxisV535Page() {
                 <a
                     href="https://api.whatsapp.com/send/?phone=5547996475947&text=Entendi%20como%20o%20Axis%20antivac%C3%A2ncia%20pode%20me%20ajudar%20a%20recuperar%20o%20dinheiro%20que%20sangra%20pelos%20cancelamentos%20da%20minha%20cl%C3%ADnica..%20E%20quero%20recuperar%20nos%20pr%C3%B3ximos%20meses!%20Mas%20eu%20ainda%20tenho%20uma%20outra%20d%C3%BAvida,%20que%20vou%20escrever%20abaixo:&type=phone_number&app_absent=0"
                     target="_blank"
+                    onClick={() => {
+                        if (typeof window !== 'undefined' && window.dataLayer) {
+                            window.dataLayer.push({ event: 'whatsapp_floating_click' });
+                        }
+                    }}
                     id="scrollup"
                     className="z-depth-0 show-on-medium-and-down btn-floating btn-large waves-effect white black-text z-depth-s"
                     style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}

@@ -41,11 +41,16 @@ export default function CalculatorSection() {
     const monthlyLoss = ticketVal * cancellationsVal;
     const semesterLoss = monthlyLoss * 6;
     const threeYearLoss = monthlyLoss * 12 * 3;
+    const tenYearLoss = monthlyLoss * 120; // 10 anos = 120 meses
     const annualHoursLost = (cancellationsVal * timeVal * 12) / 60;
 
     const handleCalculateClick = () => {
         if (!ticket || !cancellationsPerMonth || !timePerConsult) return;
-        pushEvent("lead_gate_view");
+        pushEvent("calc_form_submit", {
+            ticketMedio: ticketVal,
+            cancelamentos: cancellationsVal,
+            perdaMensal: monthlyLoss
+        });
         setIsModalOpen(true);
     };
 
@@ -62,7 +67,14 @@ export default function CalculatorSection() {
                     body: JSON.stringify({
                         name: leadName,
                         phone: leadPhone,
-                        estimatedLoss: semesterLoss,
+                        ticketMedio: ticketVal,
+                        consultasPorDia: Number(consultsPerDay) || 0,
+                        cancelamentosPorMes: cancellationsVal,
+                        minutosPorConsulta: timeVal,
+                        semesterLoss: semesterLoss,
+                        threeYearLoss: threeYearLoss,
+                        tenYearLoss: tenYearLoss,
+                        annualHoursLost: annualHoursLost,
                     }),
                 });
             } catch (err) {
@@ -70,6 +82,11 @@ export default function CalculatorSection() {
             }
 
             pushEvent("lead_captured", { value: semesterLoss });
+            pushEvent("calc_diagnostic_liberated", {
+                leadName,
+                leadPhone,
+                tenYearValue: tenYearLoss
+            });
             setIsModalOpen(false);
             setShowResult(true);
 
@@ -109,7 +126,12 @@ export default function CalculatorSection() {
                                     <input
                                         type="number"
                                         value={ticket}
-                                        onChange={(e) => setTicket(e.target.value)}
+                                        onChange={(e) => {
+                                            setTicket(e.target.value);
+                                            if (e.target.value && !ticket) {
+                                                pushEvent("calc_start");
+                                            }
+                                        }}
                                         className="browser-default"
                                         style={{ width: '100%', backgroundColor: 'rgba(0,0,0,0.5)', border: 'none', borderBottom: '1px solid #374151', color: 'white', fontSize: '1.5rem', fontFamily: "'Futura Md BT', sans-serif", WebkitAppearance: 'none', appearance: 'none', outline: 'none', padding: '0.75rem 0' }}
                                         placeholder="250"
@@ -131,7 +153,7 @@ export default function CalculatorSection() {
                             </div>
                             <div className="col s12 m6 l3" style={{ padding: '0 10px', marginBottom: '20px' }}>
                                 <div className="space-y-2">
-                                    <label style={{ fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#6b7280', fontWeight: 'bold', display: 'block', marginBottom: '0.5rem' }}>Falhas / Mês</label>
+                                    <label style={{ fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#6b7280', fontWeight: 'bold', display: 'block', marginBottom: '0.5rem' }}>Cancelamentos / Mês</label>
                                     <input
                                         type="number"
                                         value={cancellationsPerMonth}
@@ -161,6 +183,8 @@ export default function CalculatorSection() {
                                     onClick={handleCalculateClick}
                                     className="btn btn-large white black-text font-bold pulse-custom axis-btn-cta"
                                     style={{
+                                        backgroundColor: '#FFFFFF',
+                                        color: '#000000',
                                         borderRadius: '50px',
                                         fontWeight: 'bold',
                                         padding: '16px 40px',
@@ -174,7 +198,7 @@ export default function CalculatorSection() {
                                         cursor: 'pointer',
                                         textTransform: 'uppercase',
                                         border: 'none',
-                                        boxShadow: '0 0 30px rgba(212,175,55,0.2)'
+                                        boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
                                     }}
                                 >
                                     CALCULAR MEU POTENCIAL OCULTO
@@ -222,8 +246,9 @@ export default function CalculatorSection() {
 
                             <div style={{ padding: '1.5rem', backgroundColor: 'rgba(127, 29, 29, 0.1)', border: '1px solid rgba(127, 29, 29, 0.3)', borderRadius: '0.5rem', maxWidth: '42rem', margin: '0 auto 2.5rem auto', textAlign: 'left' }}>
                                 <p style={{ color: '#d1d5db', fontSize: '1.125rem', lineHeight: '1.625', fontFamily: "'Futura Md BT', sans-serif" }}>
-                                    O que {formatCurrency(semesterLoss)} semestrais significam para você? <br />
-                                    Não é apenas um número. <br />
+                                    Em dez anos, são {formatCurrency(tenYearLoss)}. <br />
+                                    O que estes {formatCurrency(tenYearLoss)} que o Axis antivacância pode recuperar a partir de hoje, significam para você? <br /><br />
+                                    Não é apenas dinheiro. <br />
                                     É a sua aposentadoria chegando 7 anos mais cedo. <br />
                                     É a casa de veraneio que você prometeu para sua família. <br />
                                     É a liberdade de tirar 3 meses de férias e saber que a clínica continua faturando. <br />
@@ -276,9 +301,9 @@ export default function CalculatorSection() {
                                         ✕
                                     </button>
 
-                                    <h3 style={{ fontSize: '1.5rem', fontFamily: "'Futura Md BT', sans-serif", fontWeight: 'bold', marginBottom: '0.5rem', color: 'white' }}>Antes de revelar o número...</h3>
+                                    <h3 style={{ fontSize: '1.5rem', fontFamily: "'Futura Md BT', sans-serif", fontWeight: 'bold', marginBottom: '0.5rem', color: 'white' }}>Antes de mostrar quanto tempo e dinheiro pode ser recuperado...</h3>
                                     <p style={{ color: '#9ca3af', marginBottom: '1.5rem', fontFamily: "'Futura Md BT', sans-serif" }}>
-                                        Precisamos saber quem está recebendo esta inteligência financeira.
+                                        Preencha abaixo
                                     </p>
 
                                     <form onSubmit={handleSubmitCta} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -309,7 +334,7 @@ export default function CalculatorSection() {
                                             disabled={loading}
                                             style={{ width: '100%', backgroundColor: 'white', color: 'black', fontWeight: 'bold', padding: '1rem', borderRadius: '0.25rem', border: 'none', cursor: 'pointer', marginTop: '1rem', textTransform: 'uppercase' }}
                                         >
-                                            {loading ? "Processando..." : "LIBERAR MEU RELATÓRIO"}
+                                            {loading ? "Processando..." : "QUERO RECUPERAR MEU TEMPO E DINHEIRO"}
                                         </button>
                                     </form>
                                 </motion.div>

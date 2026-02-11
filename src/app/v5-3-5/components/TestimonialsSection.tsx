@@ -6,7 +6,7 @@ export default function TestimonialsSection() {
     return (
         <div className="container white-text" style={{ paddingBottom: '50px' }}>
             <div className="row">
-                <div className="col s12 m6">
+                <div className="col s12 l6">
                     <div className="card-panel grey darken-4" style={{ border: '1px solid rgba(255,255,255,0.1)', padding: '20px' }}>
                         <div id="avatar-dr-roberto" style={{ width: '60px', height: '60px', borderRadius: '50%', margin: '0 auto 15px auto', overflow: 'hidden' }}>
                             <img
@@ -27,7 +27,7 @@ export default function TestimonialsSection() {
                         </div>
                     </div>
                 </div>
-                <div className="col s12 m6">
+                <div className="col s12 l6">
                     <div className="card-panel grey darken-4" style={{ border: '1px solid rgba(255,255,255,0.1)', padding: '20px' }}>
                         <div id="avatar-dra-juliana" style={{ width: '60px', height: '60px', borderRadius: '50%', margin: '0 auto 15px auto', overflow: 'hidden' }}>
                             <img
