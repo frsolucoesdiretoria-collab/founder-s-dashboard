@@ -35,7 +35,7 @@ export default function HeroSection() {
                             </picture>
 
                             <h1 className="axis-hero-title" style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: 'clamp(2.5rem, 8vw, 5rem)', lineHeight: 1.1, fontWeight: 800, textTransform: 'uppercase' }}>
-                                VocÊ nÃo estudou <br />
+                                Você não estudou <br />
                                 15 anos para ficar <br />
                                 esperando na sala de consulta.
                             </h1>
