@@ -8,7 +8,7 @@ export default function TestimonialsSection() {
             <div className="row">
                 <div className="col s12 m6">
                     <div className="card-panel grey darken-4" style={{ border: '1px solid rgba(255,255,255,0.1)', padding: '20px' }}>
-                        <div id="avatar-dr-roberto" style={{ width: '60px', height: '60px', borderRadius: '50%', marginBottom: '15px', overflow: 'hidden' }}>
+                        <div id="avatar-dr-roberto" style={{ width: '60px', height: '60px', borderRadius: '50%', margin: '0 auto 15px auto', overflow: 'hidden' }}>
                             <img
                                 src={`${ASSET_PREFIX}/images/imagens%20v5-3-4/avatar-dr-roberto.webp`}
                                 alt="Dr. Roberto M."

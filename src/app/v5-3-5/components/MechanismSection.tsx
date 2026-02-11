@@ -122,6 +122,27 @@ export default function MechanismSection() {
                             </div>
                         </div>
                     </div>
+
+                    {/* Step 4: O Resultado */}
+                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: '100px' }}>
+                        <div style={{ width: '40%', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                            <div style={{ textAlign: 'right' }}>
+                                <h2 style={{ fontFamily: "'Futura Md BT', sans-serif", marginTop: 0, color: '#FFFFFF' }}>O Resultado</h2>
+                                <span style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: '1.2rem', lineHeight: '1.8rem', color: 'rgba(255,255,255,0.7)' }}>Agenda lotada, faturamento previsível e zero ociosidade.</span>
+                            </div>
+                        </div>
+                        <div style={{ width: '14%', margin: '0 3%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <div className="grey darken-3 pulse center font-futura" style={{ borderRadius: '50%', width: '80px', height: '80px', lineHeight: '80px', fontSize: '2rem' }}>4</div>
+                        </div>
+                        <div style={{ width: '40%' }}>
+                            <div className="valign-wrapper center-align grey darken-4" style={{ width: '100%', height: '300px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }}>
+                                <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    {/* Placeholder for Result Image */}
+                                    <span style={{ fontSize: '4rem' }}>🏆</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -150,7 +171,7 @@ export default function MechanismSection() {
                                     sizes="(max-width: 600px) 300px, 600px"
                                     alt="O Radar"
                                     className="axis-mechanism-img"
-                                    style={{ width: '100%', maxHeight: '180px', objectFit: 'contain', marginBottom: '15px', borderRadius: '8px' }}
+                                    style={{ width: '100%', height: 'auto', objectFit: 'contain', marginBottom: '15px', borderRadius: '8px' }}
                                     width={1024}
                                     height={1024}
                                     loading="lazy"
@@ -176,7 +197,7 @@ export default function MechanismSection() {
                                     sizes="(max-width: 600px) 300px, 600px"
                                     alt="O Alvo"
                                     className="axis-mechanism-img"
-                                    style={{ width: '100%', maxHeight: '180px', objectFit: 'contain', marginBottom: '15px', borderRadius: '8px' }}
+                                    style={{ width: '100%', height: 'auto', objectFit: 'contain', marginBottom: '15px', borderRadius: '8px' }}
                                     width={1024}
                                     height={1024}
                                     loading="lazy"
@@ -202,13 +223,30 @@ export default function MechanismSection() {
                                     sizes="(max-width: 600px) 300px, 600px"
                                     alt="O Disparo"
                                     className="axis-mechanism-img"
-                                    style={{ width: '100%', maxHeight: '180px', objectFit: 'contain', marginBottom: '15px', borderRadius: '8px' }}
+                                    style={{ width: '100%', height: 'auto', objectFit: 'contain', marginBottom: '15px', borderRadius: '8px' }}
                                     width={1024}
                                     height={1024}
                                     loading="lazy"
                                 />
                                 <h3 style={{ fontFamily: "'Futura Md BT', sans-serif", color: '#FFFFFF', fontSize: '1.3rem', margin: '10px 0' }}>O Disparo</h3>
                                 <p style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: '0.95rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.5 }}>Oferta irresistível e personalizada. Vaga preenchida instantaneamente.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Card 4: O Resultado */}
+                    <div className="row">
+                        <div className="col s12">
+                            <div className="card-panel grey darken-4 axis-mechanism-card" style={{ border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', textAlign: 'center' }}>
+                                <div className="grey darken-3 axis-mechanism-number" style={{ borderRadius: '50%', width: '50px', height: '50px', margin: '0 auto 15px auto', lineHeight: '50px', fontSize: '1.3rem', fontWeight: 'bold', color: '#fff' }}>4</div>
+                                <div className="axis-mechanism-img-container" style={{ width: '100%', marginBottom: '15px' }}>
+                                    {/* Placeholder for Mobile Result */}
+                                    <div style={{ width: '100%', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', borderRadius: '8px' }}>
+                                        <span style={{ fontSize: '3rem' }}>🏆</span>
+                                    </div>
+                                </div>
+                                <h3 style={{ fontFamily: "'Futura Md BT', sans-serif", color: '#FFFFFF', fontSize: '1.3rem', margin: '10px 0' }}>O Resultado</h3>
+                                <p style={{ fontFamily: "'Futura Md BT', sans-serif", fontSize: '0.95rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.5 }}>Agenda lotada, faturamento previsível e zero ociosidade.</p>
                             </div>
                         </div>
                     </div>

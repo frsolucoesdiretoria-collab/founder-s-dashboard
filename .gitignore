@@ -13,8 +13,9 @@ node_modules
 # Environment variables
 .env
 .env.*.local
-!.env.local
-# Note: .env.local is now committed for automatic VPS deployment
+# Note: .env.local is now ignored to prevent secret leakage
+# !.env.local
+
 
 # Editor directories and files
 .vscode/*
@@ -30,3 +31,9 @@ node_modules
 tsconfig.next.tsbuildinfo
 *.tsbuildinfo
 .agent/
+
+# Internal Backups / Reference Sites (Excluded for fast push)
+axis-landing-page/
+Site de REFERENCIA 1 UNITE/
+Backup Imagens Claude v5-3-2/
+google-credentials.json

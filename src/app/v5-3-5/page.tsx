@@ -5,7 +5,15 @@ import './mobile.css'; // CSS mobile com media queries para responsividade
 import HeroSection from './components/HeroSection';
 
 // Componentes Eager (Restaurando visualização completa - Emergência)
-import BackgroundEffects from './components/BackgroundEffects';
+import dynamic from 'next/dynamic';
+
+// Componentes Eager (Restaurando visualização completa - Emergência)
+// Otimização Mobile: Carregamento dinâmico para evitar bloqueio do LCP
+const BackgroundEffects = dynamic(() => import('./components/BackgroundEffects'), {
+    ssr: false,
+    loading: () => <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }} />
+});
+
 import TheFallSection from './components/TheFallSection';
 import MechanismSection from './components/MechanismSection';
 import CalculatorSection from './components/CalculatorSection';
