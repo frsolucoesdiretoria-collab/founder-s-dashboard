@@ -1,0 +1,108 @@
+/* ========== MOBILE OPTIMIZATION v5-3-5 ========== */
+
+/* Hero Title - Mobile */
+@media (max-width: 600px) {
+    .axis-hero-title {
+        font-size: 1.8rem !important;
+        line-height: 1.2 !important;
+    }
+
+    .axis-hero-subtitle {
+        font-size: 1rem !important;
+        line-height: 1.5 !important;
+    }
+
+    .axis-hero-list li {
+        font-size: 0.95rem !important;
+    }
+
+    .axis-hero-image-mobile {
+        display: block !important;
+        width: 100% !important;
+        max-height: 250px !important;
+        object-fit: cover !important;
+        border-radius: 12px !important;
+        margin-bottom: 20px !important;
+    }
+
+    .axis-section-title {
+        font-size: 1.5rem !important;
+        line-height: 1.2 !important;
+    }
+
+    .axis-section-text {
+        font-size: 1rem !important;
+        line-height: 1.6 !important;
+    }
+
+    .axis-cta-title {
+        font-size: 1.8rem !important;
+        line-height: 1.1 !important;
+    }
+
+    .axis-cta-text {
+        font-size: 1rem !important;
+        line-height: 1.5 !important;
+    }
+
+    .axis-testimonial-text {
+        font-size: 0.95rem !important;
+        min-height: auto !important;
+    }
+
+    .axis-mobile-mechanism {
+        display: block !important;
+    }
+
+    .axis-desktop-mechanism {
+        display: none !important;
+    }
+
+    .axis-mechanism-card {
+        margin-bottom: 30px !important;
+        padding: 20px !important;
+    }
+
+    .axis-mechanism-img {
+        max-height: 180px !important;
+        margin-bottom: 15px !important;
+    }
+
+    .axis-mechanism-number {
+        width: 50px !important;
+        height: 50px !important;
+        line-height: 50px !important;
+        font-size: 1.3rem !important;
+    }
+
+    .axis-calc-result {
+        margin-bottom: 15px !important;
+    }
+
+    .axis-calc-result h5 {
+        font-size: 1.2rem !important;
+    }
+
+    .axis-section-padding {
+        padding: 30px 0 !important;
+    }
+
+    .axis-btn-cta {
+        font-size: 0.75rem !important;
+        padding: 12px 20px !important;
+    }
+}
+
+@media (min-width: 601px) {
+    .axis-hero-image-mobile {
+        display: none !important;
+    }
+
+    .axis-mobile-mechanism {
+        display: none !important;
+    }
+
+    .axis-desktop-mechanism {
+        display: block !important;
+    }
+}
