@@ -1,0 +1,770 @@
+commit 08c5c46497bfea7a8982bd95e01ad51cb0baf17d
+Author: Antigravity Bot <bot@frtech.com.br>
+Date:   Tue Feb 10 22:13:55 2026 -0300
+
+    fix: ensure dist assets are deployed
+
+ delete mode 100644 dist/assets/cta 2.png
+ delete mode 100644 dist/assets/cta 2.webp
+ delete mode 100644 dist/assets/hero 2.png
+ delete mode 100644 dist/assets/hero 2.webp
+ delete mode 100644 dist/assets/index-C8rPiz0v 2.js
+ delete mode 100644 dist/assets/index-CIQvxW6W 2.js
+ delete mode 100644 dist/assets/index-CIQvxW6W.js
+ delete mode 100644 dist/assets/index-QGevfWwQ 2.css
+ delete mode 100644 dist/assets/mechanism 2/radar.png
+ delete mode 100644 dist/assets/mechanism 2/shot.png
+ delete mode 100644 dist/assets/mechanism 2/target.png
+ delete mode 100644 dist/assets/radar 2.webp
+ delete mode 100644 dist/assets/shot 2.webp
+ delete mode 100644 dist/assets/target 2.webp
+ delete mode 100644 dist/assets/the_fall 2.png
+ delete mode 100644 dist/assets/the_fall 2.webp
+ delete mode 100644 dist/axis-antivacancia-v4/README 2.md
+ delete mode 100755 dist/axis-antivacancia-v4/start-server 2.sh
+ delete mode 100644 dist/deploy-verify 2.txt
+ delete mode 100644 dist/favicon 2.ico
+ delete mode 100644 dist/index 2.html
+ delete mode 100644 dist/placeholder 2.svg
+ delete mode 100644 dist/robots 2.txt
+
+commit e4394473d7dca5b1af1a02571b9a288b5ab60bab
+Author: Antigravity Bot <bot@frtech.com.br>
+Date:   Tue Feb 10 21:53:35 2026 -0300
+
+    fix: standardization of hero text casing
+
+ delete mode 100644 .env.local
+
+commit e1c08f8312261c8f126833024afc4631797826ff
+Author: Antigravity Bot <bot@frtech.com.br>
+Date:   Tue Feb 10 21:48:33 2026 -0300
+
+    fix: deployment v5-3-5 gold standard (removed secrets)
+
+ delete mode 100644 ARCHITECTURE.md
+ delete mode 100644 dist/assets/index-FcZ46NaS.js
+ delete mode 100644 dist/images/v4-9/video-hero.mp4
+ delete mode 100644 dist/v5-3/uploads/104-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/11-our-bird-ai.png
+ delete mode 100644 dist/v5-3/uploads/122-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/131-UnitedFirstPage.png
+ delete mode 100644 dist/v5-3/uploads/133-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/139-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/14-our-hawk-ai.png
+ delete mode 100644 dist/v5-3/uploads/140-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/141-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/143-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/145-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/147-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/15-nyartai_medium.png
+ delete mode 100644 dist/v5-3/uploads/150-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/151-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/152-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/153-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/16-bg-main.png
+ delete mode 100644 dist/v5-3/uploads/22-slickmovingcom1_medium.png
+ delete mode 100644 dist/v5-3/uploads/51-akullaco0_medium.png
+ delete mode 100644 dist/v5-3/uploads/54-uwtextwhite2.svg
+ delete mode 100644 dist/v5-3/uploads/55-logotextwhite.svg
+ delete mode 100644 dist/v5-3/uploads/6-our-plane-ai.png
+ delete mode 100644 dist/v5-3/uploads/60-logo.svg
+ delete mode 100644 dist/v5-3/uploads/7-our-bear-ai.png
+ delete mode 100644 dist/v5-3/uploads/73-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/75-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/79-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/81-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/83-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/98-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/portfolio/177-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/portfolio/179-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/portfolio/187-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/portfolio/hoopsklub/196-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/portfolio/rmov/207-image_medium.png
+
+commit 09d44735041686be25ad431953bee7b2a121c562
+Author: Antigravity Bot <bot@frtech.com.br>
+Date:   Mon Feb 9 21:56:48 2026 -0300
+
+    feat: publish v5-3-5 as root landing page with pre-rendering
+
+ delete mode 100644 axis-antivacancia/LEIA-ME.md
+ delete mode 100644 axis-antivacancia/TESTES_REALIZADOS.md
+ delete mode 100644 axis-antivacancia/assets/js/main.js
+ delete mode 100644 axis-antivacancia/captura/avista.html
+ delete mode 100644 axis-antivacancia/captura/entrada.html
+ delete mode 100644 axis-antivacancia/captura/voucher.html
+ delete mode 100644 axis-antivacancia/lp/axis-conversion.html
+ delete mode 100644 axis-antivacancia/lp/index.html
+ delete mode 100644 axis-antivacancia/lp/v1-benefits.html
+ delete mode 100644 axis-antivacancia/lp/v10-ads.html
+ delete mode 100644 axis-antivacancia/lp/v2-curta.html
+ delete mode 100644 axis-antivacancia/lp/v2-story.html
+ delete mode 100644 axis-antivacancia/lp/v3-interactive.html
+ delete mode 100644 axis-antivacancia/lp/v3-urgencia.html
+ delete mode 100644 axis-antivacancia/lp/v4-ceo.html
+ delete mode 100644 axis-antivacancia/lp/v5-heart.html
+ delete mode 100644 axis-antivacancia/lp/v6-roi.html
+ delete mode 100644 axis-antivacancia/lp/v7-authority.html
+ delete mode 100644 axis-antivacancia/lp/v8-featureflow.html
+ delete mode 100644 axis-antivacancia/lp/v9-analytics.html
+ delete mode 100644 axis-antivacancia/obrigado/avista.html
+ delete mode 100644 axis-antivacancia/obrigado/entrada.html
+ delete mode 100644 axis-antivacancia/obrigado/voucher.html
+ delete mode 100644 content/AXIS_TEMPO_REAL_V1.2_VALIDATION.md
+ delete mode 100644 content/AXIS_TEMPO_REAL_V1.3_VALIDATION.md
+ delete mode 100644 content/AXIS_TEMPO_REAL_V1.4_VALIDATION.md
+ delete mode 100644 content/AXIS_TEMPO_REAL_V1.5_VALIDATION.md
+ delete mode 100644 content/AXIS_TEMPO_REAL_V1_README.md
+ delete mode 100644 content/AXIS_TEMPO_REAL_V1_STRUCTURE.md
+ delete mode 100644 content/AXIS_TEMPO_REAL_V1_VALIDATION.md
+ delete mode 100644 content/axis-tempo-real.v1.md
+ delete mode 100644 content/axis-tempo-real.v2.md
+ delete mode 100644 "dist/V4 antivac\303\242ncia/README.md"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/assets/css/style.css"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/assets/img/Axis_FR_Tech_A_modern_medical_clinic_waiting_room_completely__af44a68c-789e-4261-92c7-62f567333141_3.png"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/assets/img/Axis_FR_Tech_Cinematic_realistic_photo_of_a_busy_clinic_recep_fbf7d416-a2b3-48f7-8b24-8293da32888a_1.png"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/assets/img/Axis_FR_Tech_Cinematic_realistic_photo_of_a_clinic_owner_alon_2e930706-4dd2-4e22-8fe0-c66b74f3ddcc_0.png"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/assets/img/Axis_FR_Tech_Cinematic_realistic_photo_of_a_clinic_owner_alon_2e930706-4dd2-4e22-8fe0-c66b74f3ddcc_1.png"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/assets/img/Axis_FR_Tech_Cinematic_realistic_photo_of_a_clinic_where_a_ca_0a478f12-27c9-4e86-a4aa-7b5c21c65598_1.png"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/assets/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_a_medical_rece_ae84888c-3874-4162-8c0f-05cd5ce9a8d9_0.png"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/assets/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_a_medical_rece_ae84888c-3874-4162-8c0f-05cd5ce9a8d9_1.png"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/assets/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_patients_being_11c6681c-7a4d-43e2-aa4c-0ec141b6f479_2.png"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/assets/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_patients_being_w_206fe525-b4d8-4613-822f-d1110b285bf0.png"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/assets/img/Axis_FR_Tech_Medical_clinic_reception_desk_under_stress_recep_139366ba-33e2-4001-8ecd-8a7bb8e1fc99_2.png"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/assets/img/Axis_FR_Tech_Modern_medical_clinic_waiting_area_during_busine_40aa1938-3283-4274-b258-b11e2687d8be_0.png"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/assets/img/Axis_FR_Tech_Professional_healthcare_photography_showing_a_cl_eb930064-261b-4156-8230-baaa0af26a64_0.png"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/assets/img/Axis_FR_Tech_Professional_healthcare_project_meeting_inside_a_16b6243b-f6d5-4ac7-840a-5c1968414074_3.png"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/assets/img/Axis_FR_Tech_Realistic_photography_of_a_modern_medical_clinic_222b4f18-9b2b-4373-b152-18e20b3c3059_2.png"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/assets/img/Axis_FR_Tech_Realistic_premium_healthcare_photography_of_a_fu_55754a4a-2c79-4d49-beae-76a5609c8863_2.png"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/assets/img/Axis_FR_Tech_Ultra_realistic_cinematic_photograph_of_a_medica_5cf09ed2-1775-48c7-b2a5-b71e0bc44bd0_2.png"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/assets/img/Axis_FR_Tech_Ultra_realistic_cinematic_photograph_of_a_medica_ef723b55-560b-49c5-a9a3-a1b5d2754ac0_2.png"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/captura/avista 2.html"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/captura/entrada 2.html"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/captura/voucher 2.html"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/lp/axis-conversion 2.html"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/lp/axis-conversion-v2 2.html"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/lp/axis-conversion-v2.1 2.html"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/lp/index 2.html"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/obrigado/avista 2.html"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/obrigado/entrada 2.html"
+ delete mode 100644 "dist/V4 antivac\303\242ncia/obrigado/voucher 2.html"
+ delete mode 100755 "dist/V4 antivac\303\242ncia/start-server.sh"
+ delete mode 100644 dist/v5-3-5/client/css/uw-extended-colors.css
+ delete mode 100644 "dist/v5-3-5/client/css/uw-extended-colors\357\271\226v1770228129.css"
+ delete mode 100644 "dist/v5-3-5/client/css/uw-extended-colors\357\271\226v1770228130.css"
+ delete mode 100644 dist/v5-3-5/client/images/LDR_LLL1_0.png
+ delete mode 100644 dist/v5-3-5/client/images/data-dissolving.webp
+ delete mode 100644 dist/v5-3-5/client/images/logo/svg/logo.svg
+ delete mode 100644 dist/v5-3-5/client/images/logo/svg/logo_text_white.svg
+ delete mode 100644 dist/v5-3-5/client/images/logo/svg/logo_white.svg
+ delete mode 100644 dist/v5-3-5/client/js/particles-v2.min.js
+ delete mode 100644 "dist/v5-3-5/client/js/uw-main\357\271\226v9.js"
+ delete mode 100644 dist/v5-3-5/client/js/webgl/uw-fluid-v2.js
+ delete mode 100644 dist/v5-3-5/client/js/webgl/uw-fluid.js
+ delete mode 100644 dist/v5-3-5/src/app/components/BackgroundEffects.tsx
+ delete mode 100644 dist/v5-3-5/src/app/components/CalculatorSection.tsx
+ delete mode 100644 dist/v5-3-5/src/app/components/DebugOverlay.tsx
+ delete mode 100644 dist/v5-3-5/src/app/components/FinalCTASection.tsx
+ delete mode 100644 dist/v5-3-5/src/app/components/FooterSection.tsx
+ delete mode 100644 dist/v5-3-5/src/app/components/HeroSection.tsx
+ delete mode 100644 dist/v5-3-5/src/app/components/HeroSection.tsx.bak
+ delete mode 100644 dist/v5-3-5/src/app/components/MechanismSection.tsx
+ delete mode 100644 dist/v5-3-5/src/app/components/OptimizedHead.tsx
+ delete mode 100644 dist/v5-3-5/src/app/components/Preloader.tsx
+ delete mode 100644 dist/v5-3-5/src/app/components/TestimonialsSection.tsx
+ delete mode 100644 dist/v5-3-5/src/app/components/TheFallSection.tsx
+ delete mode 100644 dist/v5-3-5/src/app/critical.css
+ delete mode 100644 dist/v5-3-5/src/app/mobile.css
+ delete mode 100644 dist/v5-3-5/src/app/page.tsx
+ delete mode 100644 dist/v5-3/v5-3-5/index.html
+ delete mode 100644 dist/v5-3/v5-3/client/css/uw-extended-colors.css
+ delete mode 100644 "dist/v5-3/v5-3/client/css/uw-extended-colors\357\271\226v1770228129.css"
+ delete mode 100644 "dist/v5-3/v5-3/client/css/uw-extended-colors\357\271\226v1770228130.css"
+ delete mode 100644 dist/v5-3/v5-3/client/images/LDR_LLL1_0.png
+ delete mode 100644 dist/v5-3/v5-3/client/images/data-dissolving.webp
+ delete mode 100644 dist/v5-3/v5-3/client/images/logo/svg/logo.svg
+ delete mode 100644 dist/v5-3/v5-3/client/images/logo/svg/logo_text_white.svg
+ delete mode 100644 dist/v5-3/v5-3/client/images/logo/svg/logo_white.svg
+ delete mode 100644 dist/v5-3/v5-3/client/js/particles-v2.min.js
+ delete mode 100644 "dist/v5-3/v5-3/client/js/uw-main\357\271\226v9.js"
+ delete mode 100644 dist/v5-3/v5-3/client/js/webgl/uw-fluid-v2.js
+ delete mode 100644 dist/v5-3/v5-3/client/js/webgl/uw-fluid.js
+ delete mode 100644 dist/v5-3/v5-3/images/Imagens v5-3-2/avatar-dr-roberto.webp
+ delete mode 100644 dist/v5-3/v5-3/images/Imagens v5-3-2/avatar-dra-juliana.webp
+ delete mode 100644 dist/v5-3/v5-3/images/Imagens v5-3-2/clock-motion.webp
+ delete mode 100644 dist/v5-3/v5-3/images/Imagens v5-3-2/corridor-light.webp
+ delete mode 100644 dist/v5-3/v5-3/images/Imagens v5-3-2/data-dissolving.webp
+ delete mode 100644 dist/v5-3/v5-3/images/Imagens v5-3-2/execute-hud.webp
+ delete mode 100644 dist/v5-3/v5-3/images/Imagens v5-3-2/hero-doctor.webp
+ delete mode 100644 dist/v5-3/v5-3/images/Imagens v5-3-2/radar-hud.webp
+ delete mode 100644 dist/v5-3/v5-3/images/Imagens v5-3-2/target-hud.webp
+ delete mode 100644 dist/v5-3/v5-3/images/Imagens v5-3-2/waiting-room.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup-phase2/avatar-dr-roberto.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup-phase2/avatar-dra-juliana.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup-phase2/cta-medium.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup-phase2/cta-small.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup-phase2/cta.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup-phase2/hero-medium.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup-phase2/hero-small.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup-phase2/hero.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup-phase2/radar-medium.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup-phase2/radar-small.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup-phase2/radar.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup-phase2/shot-medium.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup-phase2/shot-small.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup-phase2/shot.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup-phase2/target-medium.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup-phase2/target-small.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup-phase2/target.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup-phase2/the_fall-medium.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup-phase2/the_fall-small.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup-phase2/the_fall.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup/avatar-dr-roberto.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup/avatar-dra-juliana.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup/cta.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup/hero.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup/radar.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup/shot.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup/target.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4-backup/the_fall.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/avatar-dr-roberto.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/avatar-dra-juliana.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/cta-large.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/cta-medium.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/cta-small.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/cta.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/hero-large.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/hero-medium.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/hero-small.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/hero.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/radar-large.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/radar-medium.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/radar-small.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/radar.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/shot-large.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/shot-medium.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/shot-small.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/shot.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/target-large.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/target-medium.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/target-small.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/target.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/the_fall-large.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/the_fall-medium.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/the_fall-small.webp
+ delete mode 100644 dist/v5-3/v5-3/images/imagens v5-3-4/the_fall.webp
+ delete mode 100644 dist/v5-3/v5-3/uploads/104-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/11-our-bird-ai.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/122-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/131-UnitedFirstPage.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/133-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/139-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/14-our-hawk-ai.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/140-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/141-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/143-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/145-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/147-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/15-nyartai_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/150-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/151-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/152-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/153-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/16-bg-main.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/22-slickmovingcom1_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/51-akullaco0_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/54-uwtextwhite2.svg
+ delete mode 100644 dist/v5-3/v5-3/uploads/55-logotextwhite.svg
+ delete mode 100644 dist/v5-3/v5-3/uploads/6-our-plane-ai.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/60-logo.svg
+ delete mode 100644 dist/v5-3/v5-3/uploads/7-our-bear-ai.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/73-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/75-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/79-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/81-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/83-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/98-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/portfolio/177-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/portfolio/179-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/portfolio/187-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/portfolio/hoopsklub/196-image_medium.png
+ delete mode 100644 dist/v5-3/v5-3/uploads/portfolio/rmov/207-image_medium.png
+
+commit 732b4d65c6bc2efa6b354ad47d263079a49f0205
+Author: Antigravity Bot <bot@frtech.com.br>
+Date:   Mon Feb 9 18:37:22 2026 -0300
+
+    Fix v5-3-5 deployment: consolidate assets and fix paths
+
+ delete mode 100644 dist/index.html
+ delete mode 100644 dist/v5-3/Prompts imagens Claude/ANTIGRAVITY_BATCH_EXECUTION.json
+ delete mode 100644 dist/v5-3/Prompts imagens Claude/ANTIGRAVITY_EXECUTION_BRIEF.md
+ delete mode 100644 dist/v5-3/Prompts imagens Claude/ANTIGRAVITY_EXECUTION_SCRIPT.md
+ delete mode 100644 dist/v5-3/Prompts imagens Claude/HOW_TO_INSTRUCT_ANTIGRAVITY.md
+ delete mode 100644 dist/v5-3/Prompts imagens Claude/README_COMPLETO.md
+ delete mode 100644 dist/v5-3/_downloads.html
+ delete mode 100644 dist/v5-3/about-us.html
+ delete mode 100644 dist/v5-3/cms.html
+ delete mode 100644 dist/v5-3/contact-us.html
+ delete mode 100644 dist/v5-3/files.zip
+ delete mode 100644 dist/v5-3/index.html
+ delete mode 100644 dist/v5-3/manifest.json
+ delete mode 100644 dist/v5-3/portfolio.html
+ delete mode 100644 dist/v5-3/portfolio/akulla.html
+ delete mode 100644 dist/v5-3/portfolio/appi-custom-studio.html
+ delete mode 100644 dist/v5-3/portfolio/appi-roleplay.html
+ delete mode 100644 dist/v5-3/portfolio/beauty-store.html
+ delete mode 100644 dist/v5-3/portfolio/car-service.html
+ delete mode 100644 dist/v5-3/portfolio/cvmr.html
+ delete mode 100644 dist/v5-3/portfolio/diamond-hands-moving.html
+ delete mode 100644 dist/v5-3/portfolio/dnl-power.html
+ delete mode 100644 dist/v5-3/portfolio/eezeewrap.html
+ delete mode 100644 dist/v5-3/portfolio/esmerelda-quest.html
+ delete mode 100644 dist/v5-3/portfolio/fastfood-burger.html
+ delete mode 100644 dist/v5-3/portfolio/gempix-photo.html
+ delete mode 100644 dist/v5-3/portfolio/help-compliance.html
+ delete mode 100644 dist/v5-3/portfolio/hoops-for-everyone.html
+ delete mode 100644 dist/v5-3/portfolio/hoops-klub.html
+ delete mode 100644 dist/v5-3/portfolio/iris-k.html
+ delete mode 100644 dist/v5-3/portfolio/moving-company.html
+ delete mode 100644 dist/v5-3/portfolio/new-york-hoops-academy.html
+ delete mode 100644 dist/v5-3/portfolio/nurlasha.html
+ delete mode 100644 dist/v5-3/portfolio/owl-point-capital.html
+ delete mode 100644 dist/v5-3/portfolio/restorify-moving.html
+ delete mode 100644 dist/v5-3/portfolio/retelling.html
+ delete mode 100644 dist/v5-3/portfolio/slafy-crm.html
+ delete mode 100644 dist/v5-3/portfolio/slick-moving.html
+ delete mode 100644 dist/v5-3/portfolio/stalker-dayz.html
+ delete mode 100644 dist/v5-3/portfolio/tattoo-studio.html
+ delete mode 100644 dist/v5-3/portfolio/united-of-transit.html
+ delete mode 100644 dist/v5-3/privacy.html
+ delete mode 100644 dist/v5-3/services.html
+ delete mode 100644 dist/v5-3/services/nyc-seo-services-elevating-your-online-business.html
+ delete mode 100644 "dist/v5-3/template/default/client/css/loading\357\271\226v10.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-animate\357\271\226v1770228129.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-animate\357\271\226v1770228129\357\271\226v1770228129.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-animate\357\271\226v1770228130.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-animate\357\271\226v1770228130\357\271\226v1770228130.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-dark-theme\357\271\226v1770228129.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-dark-theme\357\271\226v1770228129\357\271\226v1770228129.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-dark-theme\357\271\226v1770228130.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-dark-theme\357\271\226v1770228130\357\271\226v1770228130.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-extended\357\271\226v1770228129.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-extended\357\271\226v1770228129\357\271\226v1770228129.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-extended\357\271\226v1770228130.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-extended\357\271\226v1770228130\357\271\226v1770228130.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-main\357\271\226v1\357\271\226v1770228129.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-main\357\271\226v1\357\271\226v1770228129\357\271\226v1770228129.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-main\357\271\226v1\357\271\226v1770228130.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-main\357\271\226v1\357\271\226v1770228130\357\271\226v1770228130.css"
+ delete mode 100644 "dist/v5-3/template/default/client/js/loading\357\271\226v13.js"
+ delete mode 100644 "dist/v5-3/template/default/client/js/uw-template\357\271\226v12\357\271\226v1770228129.js"
+ delete mode 100644 "dist/v5-3/template/default/client/js/webgl/dat.gui.min\357\271\226v1770228129.js"
+ delete mode 100644 "dist/v5-3/template/default/client/js/webgl/script.min\357\271\226v1770228129.js"
+
+commit b1bdbaa37590b691f71cb1d7f14a36842380a3ba
+Author: Antigravity Bot <bot@frtech.com.br>
+Date:   Mon Feb 9 10:03:03 2026 -0300
+
+    fix(prod): manually patch dist with effects scripts and structure
+
+ delete mode 100644 dist/axis-tempo-real/v2/.gitkeep
+ delete mode 100644 dist/deploy-verify.txt
+ delete mode 100644 dist/images/v4-9/imagem-agente-ia.png
+ delete mode 100644 dist/images/v4-9/imagem-problema.png
+ delete mode 100644 dist/images/v4-9/imagem-resultado.png
+ delete mode 100644 dist/images/v4-9/imagem-seguranca.png
+ delete mode 100644 dist/images/v4-9/imagem-solucao.png
+ delete mode 100644 dist/images/v4-9/video-hero.mp4
+ delete mode 100644 dist/v4-7/index.html
+
+commit ffe3e38fd130a2b1127916aadd1cd4e78d739e84
+Author: Antigravity Bot <bot@frtech.com.br>
+Date:   Sun Feb 8 21:01:46 2026 -0300
+
+    feat: implement v5-3-5 file organization and text replacements
+
+ delete mode 100644 axis-antivacancia-v2/README.md
+ delete mode 100644 axis-antivacancia-v2/assets/css/style.css
+ delete mode 100644 axis-antivacancia-v2/assets/img/Axis_FR_Tech_A_modern_medical_clinic_waiting_room_completely__af44a68c-789e-4261-92c7-62f567333141_3.png
+ delete mode 100644 axis-antivacancia-v2/assets/img/Axis_FR_Tech_Cinematic_realistic_photo_of_a_busy_clinic_recep_fbf7d416-a2b3-48f7-8b24-8293da32888a_1.png
+ delete mode 100644 axis-antivacancia-v2/assets/img/Axis_FR_Tech_Cinematic_realistic_photo_of_a_clinic_owner_alon_2e930706-4dd2-4e22-8fe0-c66b74f3ddcc_0.png
+ delete mode 100644 axis-antivacancia-v2/assets/img/Axis_FR_Tech_Cinematic_realistic_photo_of_a_clinic_owner_alon_2e930706-4dd2-4e22-8fe0-c66b74f3ddcc_1.png
+ delete mode 100644 axis-antivacancia-v2/assets/img/Axis_FR_Tech_Cinematic_realistic_photo_of_a_clinic_where_a_ca_0a478f12-27c9-4e86-a4aa-7b5c21c65598_1.png
+ delete mode 100644 axis-antivacancia-v2/assets/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_a_medical_rece_ae84888c-3874-4162-8c0f-05cd5ce9a8d9_0.png
+ delete mode 100644 axis-antivacancia-v2/assets/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_a_medical_rece_ae84888c-3874-4162-8c0f-05cd5ce9a8d9_1.png
+ delete mode 100644 axis-antivacancia-v2/assets/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_patients_being_11c6681c-7a4d-43e2-aa4c-0ec141b6f479_2.png
+ delete mode 100644 axis-antivacancia-v2/assets/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_patients_being_w_206fe525-b4d8-4613-822f-d1110b285bf0.png
+ delete mode 100644 axis-antivacancia-v2/assets/img/Axis_FR_Tech_Medical_clinic_reception_desk_under_stress_recep_139366ba-33e2-4001-8ecd-8a7bb8e1fc99_2.png
+ delete mode 100644 axis-antivacancia-v2/assets/img/Axis_FR_Tech_Modern_medical_clinic_waiting_area_during_busine_40aa1938-3283-4274-b258-b11e2687d8be_0.png
+ delete mode 100644 axis-antivacancia-v2/assets/img/Axis_FR_Tech_Professional_healthcare_photography_showing_a_cl_eb930064-261b-4156-8230-baaa0af26a64_0.png
+ delete mode 100644 axis-antivacancia-v2/assets/img/Axis_FR_Tech_Professional_healthcare_project_meeting_inside_a_16b6243b-f6d5-4ac7-840a-5c1968414074_3.png
+ delete mode 100644 axis-antivacancia-v2/assets/img/Axis_FR_Tech_Realistic_photography_of_a_modern_medical_clinic_222b4f18-9b2b-4373-b152-18e20b3c3059_2.png
+ delete mode 100644 axis-antivacancia-v2/assets/img/Axis_FR_Tech_Realistic_premium_healthcare_photography_of_a_fu_55754a4a-2c79-4d49-beae-76a5609c8863_2.png
+ delete mode 100644 axis-antivacancia-v2/assets/img/Axis_FR_Tech_Ultra_realistic_cinematic_photograph_of_a_medica_5cf09ed2-1775-48c7-b2a5-b71e0bc44bd0_2.png
+ delete mode 100644 axis-antivacancia-v2/assets/img/Axis_FR_Tech_Ultra_realistic_cinematic_photograph_of_a_medica_ef723b55-560b-49c5-a9a3-a1b5d2754ac0_2.png
+ delete mode 100644 axis-antivacancia-v2/assets/js/main.js
+ delete mode 100644 axis-antivacancia-v2/captura/avista.html
+ delete mode 100644 axis-antivacancia-v2/captura/entrada.html
+ delete mode 100644 axis-antivacancia-v2/captura/voucher.html
+ delete mode 100644 axis-antivacancia-v2/lp/axis-conversion-v2.1.html
+ delete mode 100644 axis-antivacancia-v2/lp/axis-conversion-v2.html
+ delete mode 100644 axis-antivacancia-v2/lp/axis-conversion.html
+ delete mode 100644 axis-antivacancia-v2/lp/index.html
+ delete mode 100644 axis-antivacancia-v2/lp/v1-benefits.html
+ delete mode 100644 axis-antivacancia-v2/lp/v10-ads.html
+ delete mode 100644 axis-antivacancia-v2/lp/v2-curta.html
+ delete mode 100644 axis-antivacancia-v2/lp/v2-story.html
+ delete mode 100644 axis-antivacancia-v2/lp/v3-interactive.html
+ delete mode 100644 axis-antivacancia-v2/lp/v3-urgencia.html
+ delete mode 100644 axis-antivacancia-v2/lp/v4-ceo.html
+ delete mode 100644 axis-antivacancia-v2/lp/v5-heart.html
+ delete mode 100644 axis-antivacancia-v2/lp/v6-roi.html
+ delete mode 100644 axis-antivacancia-v2/lp/v7-authority.html
+ delete mode 100644 axis-antivacancia-v2/lp/v8-featureflow.html
+ delete mode 100644 axis-antivacancia-v2/lp/v9-analytics.html
+ delete mode 100644 axis-antivacancia-v2/obrigado/avista.html
+ delete mode 100644 axis-antivacancia-v2/obrigado/entrada.html
+ delete mode 100644 axis-antivacancia-v2/obrigado/voucher.html
+ delete mode 100755 axis-antivacancia-v2/start-server.sh
+ delete mode 100644 axis-antivacancia-v3/README.md
+ delete mode 100644 axis-antivacancia-v3/assets/css/style.css
+ delete mode 100644 axis-antivacancia-v3/assets/img/Axis_FR_Tech_A_modern_medical_clinic_waiting_room_completely__af44a68c-789e-4261-92c7-62f567333141_3.png
+ delete mode 100644 axis-antivacancia-v3/assets/img/Axis_FR_Tech_Cinematic_realistic_photo_of_a_busy_clinic_recep_fbf7d416-a2b3-48f7-8b24-8293da32888a_1.png
+ delete mode 100644 axis-antivacancia-v3/assets/img/Axis_FR_Tech_Cinematic_realistic_photo_of_a_clinic_owner_alon_2e930706-4dd2-4e22-8fe0-c66b74f3ddcc_0.png
+ delete mode 100644 axis-antivacancia-v3/assets/img/Axis_FR_Tech_Cinematic_realistic_photo_of_a_clinic_owner_alon_2e930706-4dd2-4e22-8fe0-c66b74f3ddcc_1.png
+ delete mode 100644 axis-antivacancia-v3/assets/img/Axis_FR_Tech_Cinematic_realistic_photo_of_a_clinic_where_a_ca_0a478f12-27c9-4e86-a4aa-7b5c21c65598_1.png
+ delete mode 100644 axis-antivacancia-v3/assets/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_a_medical_rece_ae84888c-3874-4162-8c0f-05cd5ce9a8d9_0.png
+ delete mode 100644 axis-antivacancia-v3/assets/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_a_medical_rece_ae84888c-3874-4162-8c0f-05cd5ce9a8d9_1.png
+ delete mode 100644 axis-antivacancia-v3/assets/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_patients_being_11c6681c-7a4d-43e2-aa4c-0ec141b6f479_2.png
+ delete mode 100644 axis-antivacancia-v3/assets/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_patients_being_w_206fe525-b4d8-4613-822f-d1110b285bf0.png
+ delete mode 100644 axis-antivacancia-v3/assets/img/Axis_FR_Tech_Medical_clinic_reception_desk_under_stress_recep_139366ba-33e2-4001-8ecd-8a7bb8e1fc99_2.png
+ delete mode 100644 axis-antivacancia-v3/assets/img/Axis_FR_Tech_Modern_medical_clinic_waiting_area_during_busine_40aa1938-3283-4274-b258-b11e2687d8be_0.png
+ delete mode 100644 axis-antivacancia-v3/assets/img/Axis_FR_Tech_Professional_healthcare_photography_showing_a_cl_eb930064-261b-4156-8230-baaa0af26a64_0.png
+ delete mode 100644 axis-antivacancia-v3/assets/img/Axis_FR_Tech_Professional_healthcare_project_meeting_inside_a_16b6243b-f6d5-4ac7-840a-5c1968414074_3.png
+ delete mode 100644 axis-antivacancia-v3/assets/img/Axis_FR_Tech_Realistic_photography_of_a_modern_medical_clinic_222b4f18-9b2b-4373-b152-18e20b3c3059_2.png
+ delete mode 100644 axis-antivacancia-v3/assets/img/Axis_FR_Tech_Realistic_premium_healthcare_photography_of_a_fu_55754a4a-2c79-4d49-beae-76a5609c8863_2.png
+ delete mode 100644 axis-antivacancia-v3/assets/img/Axis_FR_Tech_Ultra_realistic_cinematic_photograph_of_a_medica_5cf09ed2-1775-48c7-b2a5-b71e0bc44bd0_2.png
+ delete mode 100644 axis-antivacancia-v3/assets/img/Axis_FR_Tech_Ultra_realistic_cinematic_photograph_of_a_medica_ef723b55-560b-49c5-a9a3-a1b5d2754ac0_2.png
+ delete mode 100644 axis-antivacancia-v3/assets/js/main.js
+ delete mode 100644 axis-antivacancia-v3/captura/avista.html
+ delete mode 100644 axis-antivacancia-v3/captura/entrada.html
+ delete mode 100644 axis-antivacancia-v3/captura/voucher.html
+ delete mode 100644 axis-antivacancia-v3/lp/axis-conversion-v2.1.html
+ delete mode 100644 axis-antivacancia-v3/lp/axis-conversion-v2.html
+ delete mode 100644 axis-antivacancia-v3/lp/axis-conversion.html
+ delete mode 100644 axis-antivacancia-v3/lp/index.html
+ delete mode 100644 axis-antivacancia-v3/lp/v2-curta.html
+ delete mode 100644 axis-antivacancia-v3/lp/v3-urgencia.html
+ delete mode 100644 axis-antivacancia-v3/obrigado/avista.html
+ delete mode 100644 axis-antivacancia-v3/obrigado/entrada.html
+ delete mode 100644 axis-antivacancia-v3/obrigado/voucher.html
+ delete mode 100755 axis-antivacancia-v3/start-server.sh
+
+commit 3a44a9a0891ced269ab641e139c01214a8fce2c1
+Author: Antigravity Bot <bot@frtech.com.br>
+Date:   Sun Feb 8 20:09:49 2026 -0300
+
+    chore: remove static folder overrides to enable React App routing
+
+ delete mode 100644 Regras CTO agent
+ delete mode 100644 public/v5-3-5/index.html
+ delete mode 100644 public/v5-3-6/index.html
+ delete mode 100644 public/v5-3-6/script-v5-3-6.js
+ delete mode 100644 public/v5-3-6/style-v5-3-6.css
+
+commit 04134c557e39fcedad7203133df335d97a943487
+Author: Antigravity Bot <bot@frtech.com.br>
+Date:   Sun Feb 8 18:26:34 2026 -0300
+
+    chore(deploy): build project in CI and ignore dist folder
+
+ delete mode 100644 dist/.DS_Store
+ delete mode 100644 dist/_redirects
+ delete mode 100644 dist/assets/.DS_Store
+ delete mode 100644 dist/assets/cta.png
+ delete mode 100644 dist/assets/cta.webp
+ delete mode 100644 dist/assets/hero.png
+ delete mode 100644 dist/assets/hero.webp
+ delete mode 100644 dist/assets/index-BL6nxRDT.js
+ delete mode 100644 dist/assets/index-Bu-V96nI.css
+ delete mode 100644 dist/assets/mechanism/.DS_Store
+ delete mode 100644 dist/assets/mechanism/radar.png
+ delete mode 100644 dist/assets/mechanism/shot.png
+ delete mode 100644 dist/assets/mechanism/target.png
+ delete mode 100644 dist/assets/radar.webp
+ delete mode 100644 dist/assets/shot.webp
+ delete mode 100644 dist/assets/target.webp
+ delete mode 100644 dist/assets/the_fall.png
+ delete mode 100644 dist/assets/the_fall.webp
+ delete mode 100644 dist/axis-antivacancia-v4/README.md
+ delete mode 100644 dist/axis-antivacancia-v4/assets/css/style.css
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_A_modern_medical_clinic_waiting_room_completely__af44a68c-789e-4261-92c7-62f567333141_3.png
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_A_modern_medical_clinic_waiting_room_completely__af44a68c-789e-4261-92c7-62f567333141_3.webp
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Cinematic_realistic_photo_of_a_busy_clinic_recep_fbf7d416-a2b3-48f7-8b24-8293da32888a_1.png
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Cinematic_realistic_photo_of_a_busy_clinic_recep_fbf7d416-a2b3-48f7-8b24-8293da32888a_1.webp
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Cinematic_realistic_photo_of_a_clinic_owner_alon_2e930706-4dd2-4e22-8fe0-c66b74f3ddcc_0.png
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Cinematic_realistic_photo_of_a_clinic_owner_alon_2e930706-4dd2-4e22-8fe0-c66b74f3ddcc_0.webp
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Cinematic_realistic_photo_of_a_clinic_owner_alon_2e930706-4dd2-4e22-8fe0-c66b74f3ddcc_1.png
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Cinematic_realistic_photo_of_a_clinic_owner_alon_2e930706-4dd2-4e22-8fe0-c66b74f3ddcc_1.webp
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Cinematic_realistic_photo_of_a_clinic_where_a_ca_0a478f12-27c9-4e86-a4aa-7b5c21c65598_1.png
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Cinematic_realistic_photo_of_a_clinic_where_a_ca_0a478f12-27c9-4e86-a4aa-7b5c21c65598_1.webp
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_a_medical_rece_ae84888c-3874-4162-8c0f-05cd5ce9a8d9_0.png
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_a_medical_rece_ae84888c-3874-4162-8c0f-05cd5ce9a8d9_0.webp
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_a_medical_rece_ae84888c-3874-4162-8c0f-05cd5ce9a8d9_1.png
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_a_medical_rece_ae84888c-3874-4162-8c0f-05cd5ce9a8d9_1.webp
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_patients_being_11c6681c-7a4d-43e2-aa4c-0ec141b6f479_2.png
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_patients_being_11c6681c-7a4d-43e2-aa4c-0ec141b6f479_2.webp
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_patients_being_w_206fe525-b4d8-4613-822f-d1110b285bf0.png
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Human-centered_cinematic_photo_of_patients_being_w_206fe525-b4d8-4613-822f-d1110b285bf0.webp
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Medical_clinic_reception_desk_under_stress_recep_139366ba-33e2-4001-8ecd-8a7bb8e1fc99_2.png
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Medical_clinic_reception_desk_under_stress_recep_139366ba-33e2-4001-8ecd-8a7bb8e1fc99_2.webp
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Modern_medical_clinic_waiting_area_during_busine_40aa1938-3283-4274-b258-b11e2687d8be_0.png
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Modern_medical_clinic_waiting_area_during_busine_40aa1938-3283-4274-b258-b11e2687d8be_0.webp
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Professional_healthcare_photography_showing_a_cl_eb930064-261b-4156-8230-baaa0af26a64_0.png
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Professional_healthcare_photography_showing_a_cl_eb930064-261b-4156-8230-baaa0af26a64_0.webp
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Professional_healthcare_project_meeting_inside_a_16b6243b-f6d5-4ac7-840a-5c1968414074_3.png
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Professional_healthcare_project_meeting_inside_a_16b6243b-f6d5-4ac7-840a-5c1968414074_3.webp
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Realistic_photography_of_a_modern_medical_clinic_222b4f18-9b2b-4373-b152-18e20b3c3059_2.png
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Realistic_photography_of_a_modern_medical_clinic_222b4f18-9b2b-4373-b152-18e20b3c3059_2.webp
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Realistic_premium_healthcare_photography_of_a_fu_55754a4a-2c79-4d49-beae-76a5609c8863_2.png
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Realistic_premium_healthcare_photography_of_a_fu_55754a4a-2c79-4d49-beae-76a5609c8863_2.webp
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Ultra_realistic_cinematic_photograph_of_a_medica_5cf09ed2-1775-48c7-b2a5-b71e0bc44bd0_2.png
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Ultra_realistic_cinematic_photograph_of_a_medica_5cf09ed2-1775-48c7-b2a5-b71e0bc44bd0_2.webp
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Ultra_realistic_cinematic_photograph_of_a_medica_ef723b55-560b-49c5-a9a3-a1b5d2754ac0_2.png
+ delete mode 100644 dist/axis-antivacancia-v4/assets/img/Axis_FR_Tech_Ultra_realistic_cinematic_photograph_of_a_medica_ef723b55-560b-49c5-a9a3-a1b5d2754ac0_2.webp
+ delete mode 100644 dist/axis-antivacancia-v4/assets/js/main.js
+ delete mode 100644 dist/axis-antivacancia-v4/captura/avista.html
+ delete mode 100644 dist/axis-antivacancia-v4/captura/entrada.html
+ delete mode 100644 dist/axis-antivacancia-v4/captura/voucher.html
+ delete mode 100644 dist/axis-antivacancia-v4/lp/axis-conversion-v2.1.html
+ delete mode 100644 dist/axis-antivacancia-v4/lp/axis-conversion-v2.html
+ delete mode 100644 dist/axis-antivacancia-v4/lp/axis-conversion.html
+ delete mode 100644 dist/axis-antivacancia-v4/lp/index.html
+ delete mode 100644 dist/axis-antivacancia-v4/obrigado/avista.html
+ delete mode 100644 dist/axis-antivacancia-v4/obrigado/entrada.html
+ delete mode 100644 dist/axis-antivacancia-v4/obrigado/voucher.html
+ delete mode 100755 dist/axis-antivacancia-v4/start-server.sh
+ delete mode 100644 dist/axis-tempo-real/v2/.gitkeep
+ delete mode 100644 dist/deploy-verify.txt
+ delete mode 100644 dist/favicon.ico
+ delete mode 100644 dist/images/.DS_Store
+ delete mode 100644 dist/images/v4-9/imagem-agente-ia.png
+ delete mode 100644 dist/images/v4-9/imagem-problema.png
+ delete mode 100644 dist/images/v4-9/imagem-resultado.png
+ delete mode 100644 dist/images/v4-9/imagem-seguranca.png
+ delete mode 100644 dist/images/v4-9/imagem-solucao.png
+ delete mode 100644 dist/images/v4-9/video-hero.mp4
+ delete mode 100644 dist/index.html
+ delete mode 100644 dist/placeholder.svg
+ delete mode 100644 dist/robots.txt
+ delete mode 100644 dist/v4-2/index.html
+ delete mode 100644 dist/v4-3/index.html
+ delete mode 100644 dist/v4-5/index.html
+ delete mode 100644 dist/v4-7/index.html
+ delete mode 100644 dist/v5-3-5/index.html
+ delete mode 100644 dist/v5-3/.DS_Store
+ delete mode 100644 dist/v5-3/Prompts imagens Claude/ANTIGRAVITY_BATCH_EXECUTION.json
+ delete mode 100644 dist/v5-3/Prompts imagens Claude/ANTIGRAVITY_EXECUTION_BRIEF.md
+ delete mode 100644 dist/v5-3/Prompts imagens Claude/ANTIGRAVITY_EXECUTION_SCRIPT.md
+ delete mode 100644 dist/v5-3/Prompts imagens Claude/HOW_TO_INSTRUCT_ANTIGRAVITY.md
+ delete mode 100644 dist/v5-3/Prompts imagens Claude/README_COMPLETO.md
+ delete mode 100644 dist/v5-3/_downloads.html
+ delete mode 100644 dist/v5-3/about-us.html
+ delete mode 100644 dist/v5-3/client/css/uw-extended-colors.css
+ delete mode 100644 "dist/v5-3/client/css/uw-extended-colors\357\271\226v1770228129.css"
+ delete mode 100644 "dist/v5-3/client/css/uw-extended-colors\357\271\226v1770228130.css"
+ delete mode 100644 dist/v5-3/client/images/data-dissolving.webp
+ delete mode 100644 dist/v5-3/client/images/logo/svg/logo.svg
+ delete mode 100644 dist/v5-3/client/images/logo/svg/logo_text_white.svg
+ delete mode 100644 dist/v5-3/client/images/logo/svg/logo_white.svg
+ delete mode 100644 "dist/v5-3/client/js/uw-main\357\271\226v9.js"
+ delete mode 100644 dist/v5-3/cms.html
+ delete mode 100644 dist/v5-3/contact-us.html
+ delete mode 100644 dist/v5-3/files.zip
+ delete mode 100644 dist/v5-3/images/.DS_Store
+ delete mode 100644 dist/v5-3/images/Imagens v5-3-2/avatar-dr-roberto.webp
+ delete mode 100644 dist/v5-3/images/Imagens v5-3-2/avatar-dra-juliana.webp
+ delete mode 100644 dist/v5-3/images/Imagens v5-3-2/clock-motion.webp
+ delete mode 100644 dist/v5-3/images/Imagens v5-3-2/corridor-light.webp
+ delete mode 100644 dist/v5-3/images/Imagens v5-3-2/data-dissolving.webp
+ delete mode 100644 dist/v5-3/images/Imagens v5-3-2/execute-hud.webp
+ delete mode 100644 dist/v5-3/images/Imagens v5-3-2/hero-doctor.webp
+ delete mode 100644 dist/v5-3/images/Imagens v5-3-2/radar-hud.webp
+ delete mode 100644 dist/v5-3/images/Imagens v5-3-2/target-hud.webp
+ delete mode 100644 dist/v5-3/images/Imagens v5-3-2/waiting-room.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup-phase2/avatar-dr-roberto.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup-phase2/avatar-dra-juliana.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup-phase2/cta-medium.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup-phase2/cta-small.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup-phase2/cta.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup-phase2/hero-medium.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup-phase2/hero-small.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup-phase2/hero.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup-phase2/radar-medium.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup-phase2/radar-small.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup-phase2/radar.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup-phase2/shot-medium.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup-phase2/shot-small.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup-phase2/shot.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup-phase2/target-medium.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup-phase2/target-small.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup-phase2/target.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup-phase2/the_fall-medium.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup-phase2/the_fall-small.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup-phase2/the_fall.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup/avatar-dr-roberto.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup/avatar-dra-juliana.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup/cta.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup/hero.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup/radar.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup/shot.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup/target.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4-backup/the_fall.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/avatar-dr-roberto.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/avatar-dra-juliana.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/cta-large.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/cta-medium.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/cta-small.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/cta.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/hero-large.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/hero-medium.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/hero-small.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/hero.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/radar-large.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/radar-medium.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/radar-small.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/radar.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/shot-large.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/shot-medium.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/shot-small.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/shot.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/target-large.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/target-medium.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/target-small.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/target.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/the_fall-large.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/the_fall-medium.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/the_fall-small.webp
+ delete mode 100644 dist/v5-3/images/imagens v5-3-4/the_fall.webp
+ delete mode 100644 dist/v5-3/index.html
+ delete mode 100644 dist/v5-3/manifest.json
+ delete mode 100644 dist/v5-3/portfolio.html
+ delete mode 100644 dist/v5-3/portfolio/akulla.html
+ delete mode 100644 dist/v5-3/portfolio/appi-custom-studio.html
+ delete mode 100644 dist/v5-3/portfolio/appi-roleplay.html
+ delete mode 100644 dist/v5-3/portfolio/beauty-store.html
+ delete mode 100644 dist/v5-3/portfolio/car-service.html
+ delete mode 100644 dist/v5-3/portfolio/cvmr.html
+ delete mode 100644 dist/v5-3/portfolio/diamond-hands-moving.html
+ delete mode 100644 dist/v5-3/portfolio/dnl-power.html
+ delete mode 100644 dist/v5-3/portfolio/eezeewrap.html
+ delete mode 100644 dist/v5-3/portfolio/esmerelda-quest.html
+ delete mode 100644 dist/v5-3/portfolio/fastfood-burger.html
+ delete mode 100644 dist/v5-3/portfolio/gempix-photo.html
+ delete mode 100644 dist/v5-3/portfolio/help-compliance.html
+ delete mode 100644 dist/v5-3/portfolio/hoops-for-everyone.html
+ delete mode 100644 dist/v5-3/portfolio/hoops-klub.html
+ delete mode 100644 dist/v5-3/portfolio/iris-k.html
+ delete mode 100644 dist/v5-3/portfolio/moving-company.html
+ delete mode 100644 dist/v5-3/portfolio/new-york-hoops-academy.html
+ delete mode 100644 dist/v5-3/portfolio/nurlasha.html
+ delete mode 100644 dist/v5-3/portfolio/owl-point-capital.html
+ delete mode 100644 dist/v5-3/portfolio/restorify-moving.html
+ delete mode 100644 dist/v5-3/portfolio/retelling.html
+ delete mode 100644 dist/v5-3/portfolio/slafy-crm.html
+ delete mode 100644 dist/v5-3/portfolio/slick-moving.html
+ delete mode 100644 dist/v5-3/portfolio/stalker-dayz.html
+ delete mode 100644 dist/v5-3/portfolio/tattoo-studio.html
+ delete mode 100644 dist/v5-3/portfolio/united-of-transit.html
+ delete mode 100644 dist/v5-3/privacy.html
+ delete mode 100644 dist/v5-3/services.html
+ delete mode 100644 dist/v5-3/services/nyc-seo-services-elevating-your-online-business.html
+ delete mode 100644 dist/v5-3/template/.DS_Store
+ delete mode 100644 dist/v5-3/template/default/.DS_Store
+ delete mode 100644 "dist/v5-3/template/default/client/css/loading\357\271\226v10.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-animate\357\271\226v1770228129.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-animate\357\271\226v1770228129\357\271\226v1770228129.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-animate\357\271\226v1770228130.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-animate\357\271\226v1770228130\357\271\226v1770228130.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-dark-theme\357\271\226v1770228129.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-dark-theme\357\271\226v1770228129\357\271\226v1770228129.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-dark-theme\357\271\226v1770228130.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-dark-theme\357\271\226v1770228130\357\271\226v1770228130.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-extended\357\271\226v1770228129.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-extended\357\271\226v1770228129\357\271\226v1770228129.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-extended\357\271\226v1770228130.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-extended\357\271\226v1770228130\357\271\226v1770228130.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-main\357\271\226v1\357\271\226v1770228129.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-main\357\271\226v1\357\271\226v1770228129\357\271\226v1770228129.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-main\357\271\226v1\357\271\226v1770228130.css"
+ delete mode 100644 "dist/v5-3/template/default/client/css/uw-main\357\271\226v1\357\271\226v1770228130\357\271\226v1770228130.css"
+ delete mode 100644 "dist/v5-3/template/default/client/js/loading\357\271\226v13.js"
+ delete mode 100644 "dist/v5-3/template/default/client/js/uw-template\357\271\226v12\357\271\226v1770228129.js"
+ delete mode 100644 "dist/v5-3/template/default/client/js/webgl/dat.gui.min\357\271\226v1770228129.js"
+ delete mode 100644 "dist/v5-3/template/default/client/js/webgl/script.min\357\271\226v1770228129.js"
+ delete mode 100644 dist/v5-3/uploads/104-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/11-our-bird-ai.png
+ delete mode 100644 dist/v5-3/uploads/122-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/131-UnitedFirstPage.png
+ delete mode 100644 dist/v5-3/uploads/133-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/139-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/14-our-hawk-ai.png
+ delete mode 100644 dist/v5-3/uploads/140-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/141-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/143-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/145-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/147-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/15-nyartai_medium.png
+ delete mode 100644 dist/v5-3/uploads/150-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/151-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/152-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/153-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/16-bg-main.png
+ delete mode 100644 dist/v5-3/uploads/22-slickmovingcom1_medium.png
+ delete mode 100644 dist/v5-3/uploads/51-akullaco0_medium.png
+ delete mode 100644 dist/v5-3/uploads/54-uwtextwhite2.svg
+ delete mode 100644 dist/v5-3/uploads/55-logotextwhite.svg
+ delete mode 100644 dist/v5-3/uploads/6-our-plane-ai.png
+ delete mode 100644 dist/v5-3/uploads/60-logo.svg
+ delete mode 100644 dist/v5-3/uploads/7-our-bear-ai.png
+ delete mode 100644 dist/v5-3/uploads/73-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/75-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/79-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/81-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/83-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/98-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/portfolio/177-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/portfolio/179-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/portfolio/187-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/portfolio/hoopsklub/196-image_medium.png
+ delete mode 100644 dist/v5-3/uploads/portfolio/rmov/207-image_medium.png
+
+commit b210e4ec9db38616aab3ad106b095c1ad6048285
+Author: Antigravity Bot <bot@frtech.com.br>
+Date:   Sat Feb 7 20:39:39 2026 -0300
+
+    chore: emergency deploy using pre-built dist [SKIP BUILD]
+
+ delete mode 100644 .gitignore
+ delete mode 100644 index.html
+ delete mode 100644 package.json
+ delete mode 100644 src/app/v5-3-5/components/BackgroundEffects.tsx
+ delete mode 100644 src/app/v5-3-5/components/CalculatorSection.tsx
+ delete mode 100644 src/app/v5-3-5/components/FinalCTASection.tsx
+ delete mode 100644 src/app/v5-3-5/components/FooterSection.tsx
+ delete mode 100644 src/app/v5-3-5/components/HeroSection.tsx
+ delete mode 100644 src/app/v5-3-5/components/HeroSection.tsx.bak
+ delete mode 100644 src/app/v5-3-5/components/MechanismSection.tsx
+ delete mode 100644 src/app/v5-3-5/components/OptimizedHead.tsx
+ delete mode 100644 src/app/v5-3-5/components/TestimonialsSection.tsx
+ delete mode 100644 src/app/v5-3-5/components/TheFallSection.tsx
+ delete mode 100644 src/app/v5-3-5/critical.css
+ delete mode 100644 src/app/v5-3-5/mobile.css
+ delete mode 100644 src/app/v5-3-5/page.tsx
+ delete mode 100644 src/index.css
+ delete mode 100644 tailwind.config.ts
+ delete mode 100644 tsconfig.json
+ delete mode 100644 tsconfig.node.json
+ delete mode 100644 vite.config.ts
