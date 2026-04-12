@@ -5,9 +5,8 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>DOMA CONDO - Dashboard Administrativo</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Raleway:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -32,7 +31,7 @@
                         "primary-fixed-dim": "#f0c038",
                         "surface-container": "#f0eded",
                         "tertiary": "#006492",
-                        "primary-container": "#e8b931",
+                        "primary-container": "#FAC826",
                         "on-error-container": "#93000a",
                         "inverse-on-surface": "#f3f0ef",
                         "outline": "#807662",
@@ -69,7 +68,7 @@
                         "full": "0.75rem"
                     },
                     "fontFamily": {
-                        "headline": ["Plus Jakarta Sans"],
+                        "headline": ["Raleway"],
                         "body": ["Raleway"],
                         "label": ["Raleway"]
                     }
@@ -80,7 +79,7 @@
 <style>
         body { font-family: 'Raleway', sans-serif; background-color: #fcf9f8; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .sidebar-gold-gradient { background: linear-gradient(135deg, #765b00 0%, #e8b931 100%); }
+        .sidebar-gold-gradient { background: linear-gradient(135deg, #765b00 0%, #FAC826 100%); }
         .tonal-layering { background-color: #f6f3f2; }
     </style>
 </head>
@@ -89,50 +88,51 @@
 <aside class="fixed left-0 top-0 h-screen w-64 bg-[#1A1A1A] flex flex-col justify-between py-6 z-50">
 <div>
 <div class="px-6 mb-10">
-<h1 class="text-xl font-bold tracking-tighter text-white uppercase">DOMA CONDO</h1>
+<img src="images/logo.png" alt="Doma Condo Logo" class="h-10 mb-2 object-contain"/>
+<h1 class="text-2xl font-semibold tracking-tight text-white uppercase">DOMA CONDO</h1>
 <p class="text-xs text-gray-500 font-medium tracking-widest mt-1">Assessoria e Consultoria</p>
 </div>
 <nav class="space-y-1">
 <!-- Dashboard Active -->
-<a class="text-[#e8b931] font-semibold flex items-center gap-3 px-6 py-3 bg-[#ffffff0a] transition-colors" href="dashboard.html">
+<a class="text-[#FAC826] font-semibold flex items-center gap-3 px-6 py-3 bg-[#ffffff0a] transition-colors" href="dashboard.html">
 <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm tracking-wide">Dashboard</span>
+<span class="font-['Raleway'] text-sm tracking-wide">Dashboard</span>
 </a>
 <a class="text-gray-400 flex items-center gap-3 px-6 py-3 hover:bg-[#ffffff0d] hover:text-white transition-colors" href="priorities.html">
 <span class="material-symbols-outlined" data-icon="priority_high">priority_high</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm tracking-wide">Prioridades</span>
+<span class="font-['Raleway'] text-sm tracking-wide">Prioridades</span>
 </a>
 <a class="text-gray-400 flex items-center gap-3 px-6 py-3 hover:bg-[#ffffff0d] hover:text-white transition-colors" href="team.html">
 <span class="material-symbols-outlined" data-icon="group">group</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm tracking-wide">Equipe</span>
+<span class="font-['Raleway'] text-sm tracking-wide">Equipe</span>
 </a>
 <a class="text-gray-400 flex items-center gap-3 px-6 py-3 hover:bg-[#ffffff0d] hover:text-white transition-colors" href="clients.html">
 <span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm tracking-wide">Clientes</span>
+<span class="font-['Raleway'] text-sm tracking-wide">Clientes</span>
 </a>
 <a class="text-gray-400 flex items-center gap-3 px-6 py-3 hover:bg-[#ffffff0d] hover:text-white transition-colors" href="tasks.html">
 <span class="material-symbols-outlined" data-icon="assignment">assignment</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm tracking-wide">Tarefas</span>
+<span class="font-['Raleway'] text-sm tracking-wide">Tarefas</span>
 </a>
 <a class="text-gray-400 flex items-center gap-3 px-6 py-3 hover:bg-[#ffffff0d] hover:text-white transition-colors" href="work-logs.html">
 <span class="material-symbols-outlined" data-icon="history">history</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm tracking-wide">Atividades</span>
+<span class="font-['Raleway'] text-sm tracking-wide">Atividades</span>
 </a>
 <a class="text-gray-400 flex items-center gap-3 px-6 py-3 hover:bg-[#ffffff0d] hover:text-white transition-colors" href="messages.html">
 <span class="material-symbols-outlined" data-icon="mail">mail</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm tracking-wide">Mensagens</span>
+<span class="font-['Raleway'] text-sm tracking-wide">Mensagens</span>
 </a>
 <a class="text-gray-400 flex items-center gap-3 px-6 py-3 hover:bg-[#ffffff0d] hover:text-white transition-colors" href="reports.html">
 <span class="material-symbols-outlined" data-icon="assessment">assessment</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm tracking-wide">Relatórios</span>
+<span class="font-['Raleway'] text-sm tracking-wide">Relatórios</span>
 </a>
 <a class="text-gray-400 flex items-center gap-3 px-6 py-3 hover:bg-[#ffffff0d] hover:text-white transition-colors" href="categories.html">
 <span class="material-symbols-outlined" data-icon="category">category</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm tracking-wide">Categorias</span>
+<span class="font-['Raleway'] text-sm tracking-wide">Categorias</span>
 </a>
 <a class="text-gray-400 flex items-center gap-3 px-6 py-3 hover:bg-[#ffffff0d] hover:text-white transition-colors" href="settings.html">
 <span class="material-symbols-outlined" data-icon="settings">settings</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm tracking-wide">Configurações</span>
+<span class="font-['Raleway'] text-sm tracking-wide">Configurações</span>
 </a>
 </nav>
 </div>
@@ -149,7 +149,7 @@
 <!-- TopNavBar -->
 <header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-[#fcf9f8] flex items-center justify-between px-8 z-40">
 <div>
-<h2 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#765b00]">Dashboard</h2>
+<h2 class="font-['Raleway'] text-lg font-bold text-[#765b00]">Dashboard</h2>
 </div>
 <div class="flex items-center gap-6">
 <div class="relative">
@@ -169,7 +169,7 @@
 <main class="ml-64 pt-24 px-8 pb-12 min-h-screen">
 <!-- Welcome Header -->
 <div class="mb-10">
-<h1 class="text-4xl font-extrabold text-on-surface tracking-tight mb-2">Bom dia, Jéssica</h1>
+<h1 class="text-4xl font-semibold text-on-surface tracking-tight mb-2">Bom dia, Jéssica</h1>
 <p class="text-on-surface-variant font-medium">Aqui está o resumo financeiro da Doma Condo para hoje.</p>
 </div>
 <!-- KPI Bento Grid -->
@@ -182,7 +182,7 @@
 <span class="text-[10px] font-bold text-primary uppercase tracking-wider">Hoje</span>
 </div>
 <p class="text-on-surface-variant text-xs font-semibold mb-1">Atividades Hoje</p>
-<p class="text-3xl font-extrabold text-on-surface">10</p>
+<p class="text-3xl font-bold text-on-surface">10</p>
 </div>
 <div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 shadow-sm">
 <div class="flex justify-between items-start mb-4">
@@ -192,7 +192,7 @@
 <span class="text-[10px] font-bold text-error uppercase tracking-wider">Urgente</span>
 </div>
 <p class="text-on-surface-variant text-xs font-semibold mb-1">Tarefas Pendentes</p>
-<p class="text-3xl font-extrabold text-on-surface">6</p>
+<p class="text-3xl font-bold text-on-surface">6</p>
 </div>
 <div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 shadow-sm">
 <div class="flex justify-between items-start mb-4">
@@ -202,7 +202,7 @@
 <span class="text-[10px] font-bold text-tertiary uppercase tracking-wider">Base</span>
 </div>
 <p class="text-on-surface-variant text-xs font-semibold mb-1">Clientes Ativos</p>
-<p class="text-3xl font-extrabold text-on-surface">5</p>
+<p class="text-3xl font-bold text-on-surface">5</p>
 </div>
 <div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 shadow-sm">
 <div class="flex justify-between items-start mb-4">
@@ -212,7 +212,7 @@
 <span class="text-[10px] font-bold text-secondary uppercase tracking-wider">Mensal</span>
 </div>
 <p class="text-on-surface-variant text-xs font-semibold mb-1">Relatórios Mês</p>
-<p class="text-3xl font-extrabold text-on-surface">4</p>
+<p class="text-3xl font-bold text-on-surface">4</p>
 </div>
 </div>
 <!-- Middle Section: Analytics & Activity -->
@@ -221,7 +221,7 @@
 <div class="lg:col-span-2 bg-surface-container-low rounded-2xl p-8">
 <div class="flex justify-between items-center mb-10">
 <div>
-<h3 class="text-xl font-bold text-on-surface">Desempenho Semanal</h3>
+<h3 class="text-lg font-semibold text-on-surface">Desempenho Semanal</h3>
 <p class="text-xs text-on-surface-variant">Fluxo de processamento e auditoria</p>
 </div>
 <button class="flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-widest bg-primary-container/10 px-4 py-2 rounded-lg">
@@ -270,7 +270,7 @@
 </div>
 <!-- Recent Activity -->
 <div class="bg-surface-container-lowest rounded-2xl p-8 border border-outline-variant/10 shadow-sm h-full">
-<h3 class="text-xl font-bold text-on-surface mb-6">Atividades Recentes</h3>
+<h3 class="text-lg font-semibold text-on-surface mb-6">Atividades Recentes</h3>
 <div class="space-y-6">
 <div class="flex gap-4">
 <div class="relative">
@@ -321,7 +321,7 @@
 <!-- Tasks Table Section -->
 <div class="bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/10 shadow-sm">
 <div class="px-8 py-6 flex justify-between items-center bg-surface-container-low/50">
-<h3 class="text-xl font-bold text-on-surface">Tarefas Urgentes</h3>
+<h3 class="text-lg font-semibold text-on-surface">Tarefas Urgentes</h3>
 <div class="flex gap-2">
 <button class="bg-white px-4 py-2 rounded-lg text-xs font-bold border border-outline-variant/20 hover:bg-surface-bright transition-all">Filtrar</button>
 <button class="sidebar-gold-gradient text-white px-4 py-2 rounded-lg text-xs font-bold shadow-md hover:opacity-90 transition-all">Nova Tarefa</button>
@@ -331,11 +331,11 @@
 <table class="w-full text-left border-collapse">
 <thead>
 <tr class="bg-surface-container-low/30 border-b border-outline-variant/5">
-<th class="px-8 py-4 text-[10px] font-extrabold text-on-surface-variant uppercase tracking-widest">Tarefa</th>
-<th class="px-8 py-4 text-[10px] font-extrabold text-on-surface-variant uppercase tracking-widest">Cliente</th>
-<th class="px-8 py-4 text-[10px] font-extrabold text-on-surface-variant uppercase tracking-widest">Prazo</th>
-<th class="px-8 py-4 text-[10px] font-extrabold text-on-surface-variant uppercase tracking-widest">Status</th>
-<th class="px-8 py-4 text-[10px] font-extrabold text-on-surface-variant uppercase tracking-widest">Ações</th>
+<th class="px-8 py-4 text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Tarefa</th>
+<th class="px-8 py-4 text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Cliente</th>
+<th class="px-8 py-4 text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Prazo</th>
+<th class="px-8 py-4 text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Status</th>
+<th class="px-8 py-4 text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Ações</th>
 </tr>
 </thead>
 <tbody class="divide-y divide-outline-variant/5">
