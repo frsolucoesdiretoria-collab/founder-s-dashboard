@@ -1,318 +1,346 @@
 <!DOCTYPE html>
-
-<html lang="pt-BR"><head>
+<html lang="pt-BR">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Preview do Relatório - DOMA CONDO</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&amp;family=Work+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "inverse-on-surface": "#f3f0ef",
-                    "on-surface": "#1c1b1b",
-                    "secondary-fixed": "#e5e2e1",
-                    "surface-tint": "#735c00",
-                    "primary-fixed-dim": "#e9c349",
-                    "primary-container": "#d4af37",
-                    "secondary-container": "#e2dfde",
-                    "on-tertiary-fixed-variant": "#27438a",
-                    "outline": "#7f7663",
-                    "surface-container-lowest": "#ffffff",
-                    "surface-dim": "#dcd9d9",
-                    "secondary": "#5f5e5e",
-                    "on-background": "#1c1b1b",
-                    "background": "#fcf9f8",
-                    "on-surface-variant": "#4d4635",
-                    "on-secondary-fixed": "#1c1b1b",
-                    "on-primary-fixed-variant": "#574500",
-                    "on-tertiary-container": "#254188",
-                    "surface-container-high": "#eae7e7",
-                    "surface-container-highest": "#e5e2e1",
-                    "primary-fixed": "#ffe088",
-                    "surface-variant": "#e5e2e1",
-                    "error-container": "#ffdad6",
-                    "surface": "#fcf9f8",
-                    "on-secondary-container": "#636262",
-                    "tertiary-fixed": "#dbe1ff",
-                    "on-primary-fixed": "#241a00",
-                    "primary": "#735c00",
-                    "tertiary-fixed-dim": "#b4c5ff",
-                    "secondary-fixed-dim": "#c8c6c5",
-                    "on-tertiary": "#ffffff",
-                    "on-primary": "#ffffff",
-                    "tertiary-container": "#97b0ff",
-                    "on-error-container": "#93000a",
-                    "surface-container-low": "#f6f3f2",
-                    "outline-variant": "#d0c5af",
-                    "surface-container": "#f0eded",
-                    "error": "#ba1a1a",
-                    "surface-bright": "#fcf9f8",
-                    "inverse-surface": "#313030",
-                    "on-error": "#ffffff",
-                    "on-primary-container": "#554300",
-                    "on-secondary": "#ffffff",
-                    "on-secondary-fixed-variant": "#474746",
-                    "on-tertiary-fixed": "#00174b",
-                    "inverse-primary": "#e9c349",
-                    "tertiary": "#415ba4"
-            },
-            "borderRadius": {
-                    "DEFAULT": "0.125rem",
-                    "lg": "0.25rem",
-                    "xl": "0.5rem",
-                    "full": "0.75rem"
-            },
-            "fontFamily": {
-                    "headline": ["Outfit", "sans-serif"],
-                    "body": ["Work Sans", "sans-serif"],
-                    "label": ["Work Sans", "sans-serif"]
-            }
-          },
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "surface-container": "#edeef0",
+          "primary": "#765b00",
+          "inverse-on-surface": "#f0f1f3",
+          "on-background": "#191c1e",
+          "secondary-container": "#fbe0a0",
+          "background": "#f8f9fb",
+          "surface-container-lowest": "#ffffff",
+          "surface-container-high": "#e7e8ea",
+          "surface-dim": "#d9dadc",
+          "inverse-surface": "#2e3132",
+          "on-primary-container": "#614a00",
+          "outline": "#807662",
+          "outline-variant": "#d1c5ae",
+          "on-error": "#ffffff",
+          "on-secondary": "#ffffff",
+          "surface-bright": "#f8f9fb",
+          "on-tertiary-fixed-variant": "#005312",
+          "on-primary": "#ffffff",
+          "on-tertiary": "#ffffff",
+          "secondary-fixed": "#fbe0a0",
+          "primary-fixed-dim": "#f0c038",
+          "surface-container-highest": "#e1e2e4",
+          "inverse-primary": "#f0c038",
+          "surface": "#f8f9fb",
+          "on-surface-variant": "#4e4634",
+          "tertiary-fixed": "#a3f69c",
+          "primary-fixed": "#ffdf94",
+          "on-secondary-container": "#76622f",
+          "primary-container": "#e8b931",
+          "error": "#ba1a1a",
+          "surface-variant": "#e1e2e4",
+          "tertiary": "#1b6d24",
+          "surface-container-low": "#f2f4f6",
+          "surface-tint": "#765b00",
+          "on-surface": "#191c1e",
+          "on-secondary-fixed": "#251a00",
+          "tertiary-container": "#81d27c",
+          "on-primary-fixed": "#251a00",
+          "on-primary-fixed-variant": "#594400",
+          "secondary": "#705c29",
+          "error-container": "#ffdad6",
+          "secondary-fixed-dim": "#dec487",
+          "tertiary-fixed-dim": "#88d982",
+          "on-secondary-fixed-variant": "#564514",
+          "on-tertiary-fixed": "#002204",
+          "on-tertiary-container": "#005b14",
+          "on-error-container": "#93000a"
         },
-      }
-    </script>
+        "borderRadius": {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        "fontFamily": {
+          "headline": ["Plus Jakarta Sans"],
+          "body": ["Manrope"],
+          "label": ["Manrope"]
+        }
+      },
+    },
+  }
+</script>
 <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        body { font-family: 'Work Sans', sans-serif; }
-        h1, h2, h3, .brand-font { font-family: 'Outfit', sans-serif; }
-        .document-page {
-            width: 210mm;
-            min-height: 297mm;
-            padding: 20mm;
-            margin: 2rem auto;
-        }
-    </style>
+  body { font-family: 'Manrope', sans-serif; }
+  .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .document-page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 20mm;
+    margin: 2rem auto;
+  }
+</style>
 </head>
-<body class="bg-surface text-on-surface flex min-h-screen overflow-hidden">
-<!-- SideNavBar Component -->
-<aside class="bg-[#1A1A1A] h-screen w-64 flex flex-col py-8 shrink-0">
-<div class="px-6 mb-10">
-<h1 class="text-xl font-bold text-white tracking-tighter">DOMA CONDO</h1>
-<p class="text-xs text-gray-500 uppercase tracking-widest mt-1">Administração</p>
-</div>
-<nav class="flex-1 space-y-1">
-<a class="flex items-center px-6 py-3 space-x-3 text-gray-400 font-['Outfit'] font-medium text-sm tracking-tight hover:bg-white/10 hover:text-white transition-colors" href="#">
-<span class="material-symbols-outlined text-lg">dashboard</span>
-<span>Dashboard</span>
-</a>
-<a class="flex items-center px-6 py-3 space-x-3 text-gray-400 font-['Outfit'] font-medium text-sm tracking-tight hover:bg-white/10 hover:text-white transition-colors" href="#">
-<span class="material-symbols-outlined text-lg">domain</span>
-<span>Unidades</span>
-</a>
-<a class="flex items-center px-6 py-3 space-x-3 text-white border-r-2 border-[#D4AF37] bg-white/5 font-['Outfit'] font-medium text-sm tracking-tight" href="#">
-<span class="material-symbols-outlined text-lg">description</span>
-<span>Documentos</span>
-</a>
-<a class="flex items-center px-6 py-3 space-x-3 text-gray-400 font-['Outfit'] font-medium text-sm tracking-tight hover:bg-white/10 hover:text-white transition-colors" href="#">
-<span class="material-symbols-outlined text-lg">payments</span>
-<span>Financeiro</span>
-</a>
-<a class="flex items-center px-6 py-3 space-x-3 text-gray-400 font-['Outfit'] font-medium text-sm tracking-tight hover:bg-white/10 hover:text-white transition-colors" href="#">
-<span class="material-symbols-outlined text-lg">settings</span>
-<span>Configurações</span>
-</a>
-</nav>
-<div class="px-6 pt-6 border-t border-white/5">
-<div class="flex items-center space-x-3 text-white/70">
-<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-xs">AC</div>
-<div class="text-xs">
-<p class="font-semibold text-white">Ana Carolina</p>
-<p class="opacity-60">Consultora Sênior</p>
-</div>
-</div>
-</div>
+<body class="bg-surface text-on-surface">
+
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full z-40 w-72 flex flex-col border-none bg-white shadow-[0px_12px_32px_rgba(25,28,30,0.04)] font-['Plus_Jakarta_Sans'] font-medium text-sm">
+  <div class="p-8">
+    <div class="flex items-center gap-3 mb-10">
+      <div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center">
+        <span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">apartment</span>
+      </div>
+      <div>
+        <h1 class="text-2xl font-semibold tracking-tight text-[#765b00]">Doma Condo</h1>
+        <p class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold">Modern Concierge Portal</p>
+      </div>
+    </div>
+    <nav class="flex flex-col gap-1">
+      <a class="text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-3" href="portal.html">
+        <span class="material-symbols-outlined">dashboard</span>
+        Visão Geral
+      </a>
+      <a class="text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-3" href="#">
+        <span class="material-symbols-outlined">event_note</span>
+        Atividades
+      </a>
+      <!-- Active Tab: Relatórios -->
+      <a class="text-[#765b00] bg-[#e8b931]/10 border-l-4 border-[#e8b931] font-bold px-6 py-3 transition-all flex items-center gap-3" href="portal-reports.html">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">description</span>
+        Relatórios
+      </a>
+      <a class="text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-3" href="#">
+        <span class="material-symbols-outlined">pending_actions</span>
+        Pendências
+      </a>
+    </nav>
+  </div>
+  <div class="mt-auto p-8 border-t border-zinc-50">
+    <div class="flex items-center gap-3 mb-6 p-3 rounded-xl bg-surface-container-low">
+      <img alt="Resident Profile Avatar" class="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAxwoVHgsdTgegy7BHinfLUlUqoN_PJ5HkFsFitvH61-OrGp8ewoALZX_ACYYGlxFGxA1VsF_aBFno7gZ9KxxyNuMiiVfrDcPwDLBT2JpeM-0bWJX4xd5F6FJXZQKXq26xShnOyFV_FLAW21KfqIZA80xb99IU5TSG1ZuP_ITJsYM7DCK8BZDMQQpUpAyJl1b6bD7Wb9aE1C-rSSfoQQWVoGHxv9b8uz52Uhv66YSKRAVaxbDpk4bgQW52CNEIECSXwif2abN-xPz2"/>
+      <div class="overflow-hidden">
+        <p class="text-xs font-bold text-on-surface truncate">Ricardo Almeida</p>
+        <p class="text-[10px] text-zinc-500 truncate">Unidade 402, Torre A</p>
+      </div>
+    </div>
+    <nav class="flex flex-col gap-1">
+      <a class="text-zinc-500 px-6 py-2 hover:text-primary flex items-center gap-3 text-xs" href="#">
+        <span class="material-symbols-outlined text-lg">settings</span>
+        Configurações
+      </a>
+      <a class="text-zinc-500 px-6 py-2 hover:text-error flex items-center gap-3 text-xs" href="#">
+        <span class="material-symbols-outlined text-lg">logout</span>
+        Sair
+      </a>
+    </nav>
+  </div>
 </aside>
-<!-- Main Content Area -->
-<main class="flex-1 flex flex-col h-screen overflow-hidden">
-<!-- TopNavBar Component -->
-<header class="w-full h-16 sticky top-0 z-40 bg-[#fcf9f8] flex justify-between items-center px-8 shrink-0">
-<div class="flex items-center gap-4">
-<button class="flex items-center text-stone-600 font-['Work_Sans'] text-sm font-semibold hover:opacity-80 transition-opacity active:translate-y-px">
-<span class="material-symbols-outlined mr-1">arrow_back</span>
-                    ← Voltar
-                </button>
-<div class="h-4 w-px bg-outline-variant/30"></div>
-<h2 class="font-headline font-bold text-on-surface tracking-tight">Preview do Relatório</h2>
-</div>
-<div class="flex items-center gap-3">
-<button class="px-5 py-2 rounded-xl bg-surface-container-highest text-[#735c00] font-['Work_Sans'] text-sm font-semibold hover:opacity-80 transition-opacity active:translate-y-px">
-                    Download PDF
-                </button>
-<button class="px-6 py-2 rounded-xl bg-gradient-to-br from-primary to-primary-container text-white font-['Work_Sans'] text-sm font-semibold hover:opacity-90 transition-opacity active:translate-y-px shadow-sm shadow-primary/20">
-                    Aprovar
-                </button>
-</div>
+
+<!-- TopNavBar — Preview header with back + actions -->
+<header class="flex justify-between items-center pl-80 pr-12 w-full fixed top-0 z-30 bg-[#f8f9fb]/80 backdrop-blur-md h-20">
+  <div class="flex items-center gap-4">
+    <button onclick="history.back()" class="flex items-center gap-2 text-zinc-500 hover:text-primary transition-colors font-semibold text-sm">
+      <span class="material-symbols-outlined">arrow_back</span>
+      Voltar
+    </button>
+    <div class="h-5 w-px bg-outline-variant/30"></div>
+    <h2 class="font-headline font-semibold text-on-surface">Preview do Relatório</h2>
+    <span class="text-[10px] font-bold text-secondary/60 uppercase tracking-widest">Ref: REL-2026-0042</span>
+  </div>
+  <div class="flex items-center gap-3">
+    <button class="flex items-center gap-2 px-5 py-2.5 bg-surface-container-highest text-primary font-semibold rounded-xl text-sm hover:bg-surface-container transition-colors">
+      <span class="material-symbols-outlined text-lg">download</span>
+      Download PDF
+    </button>
+    <button class="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-br from-primary-container to-primary text-white font-semibold rounded-xl text-sm shadow-md hover:opacity-90 transition-all active:scale-95">
+      <span class="material-symbols-outlined text-lg">check_circle</span>
+      Aprovar
+    </button>
+  </div>
 </header>
+
 <!-- Document Workspace -->
-<div class="flex-1 bg-surface-container-low overflow-y-auto scroll-smooth">
-<div class="document-page bg-surface-container-lowest shadow-[0_32px_64px_-12px_rgba(28,27,27,0.04)] border border-outline-variant/10 relative">
-<!-- PDF Simulation Header -->
-<div class="flex justify-between items-start mb-12">
-<div class="brand-font flex items-center text-2xl tracking-tighter">
-<span class="font-extrabold text-on-surface">DOMA</span>
-<span class="font-bold text-[#D4AF37] ml-1">CONDO</span>
+<div class="pl-80 pt-20 min-h-screen bg-surface-container-low">
+  <div class="py-8">
+    <div class="document-page bg-white shadow-[0_32px_64px_-12px_rgba(28,27,27,0.06)] border border-outline-variant/10 relative">
+
+      <!-- PDF Simulation Header -->
+      <div class="flex justify-between items-start mb-12">
+        <div class="flex items-center text-2xl tracking-tighter font-['Plus_Jakarta_Sans']">
+          <span class="font-extrabold text-on-surface">DOMA</span>
+          <span class="font-bold text-[#e8b931] ml-1">CONDO</span>
+        </div>
+        <div class="text-right text-[10px] text-secondary uppercase tracking-widest font-medium">
+          Ref: REL-2026-0042<br/>Emitido em: 07/04/2026
+        </div>
+      </div>
+
+      <div class="mb-10 text-center">
+        <h1 class="text-3xl font-extrabold font-headline text-on-surface mb-2 tracking-tight">Relatório de Atividades</h1>
+        <div class="inline-block h-1 w-12 bg-primary rounded-full"></div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-8 mb-12 p-6 bg-surface-container-low rounded-xl">
+        <div>
+          <p class="text-[10px] uppercase tracking-widest text-secondary font-bold mb-1">Período de Referência</p>
+          <p class="font-headline font-medium text-on-surface text-lg">31/03/2026 a 06/04/2026</p>
+        </div>
+        <div class="text-right">
+          <p class="text-[10px] uppercase tracking-widest text-secondary font-bold mb-1">Cliente Solicitante</p>
+          <p class="font-headline font-medium text-on-surface text-lg">Adm. Litoral Sul</p>
+        </div>
+      </div>
+
+      <!-- IMPACT BLOCK -->
+      <section class="mb-12 rounded-2xl border border-outline-variant/15 overflow-hidden" style="background: linear-gradient(135deg, rgba(232,185,49,0.06) 0%, rgba(115,92,0,0.03) 100%);">
+        <div class="p-6">
+          <div class="text-center mb-5">
+            <p class="text-[9px] font-bold uppercase tracking-[0.3em] text-secondary/80">IMPACTO DA DOMA CONDO NO SEU NEGÓCIO</p>
+            <div class="mt-2 mx-auto w-8 h-0.5 bg-primary rounded-full"></div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="p-4 bg-white rounded-xl border border-outline-variant/10">
+              <p class="text-[8px] font-bold uppercase tracking-widest text-secondary/60 mb-1">Economia Estimada</p>
+              <p class="text-2xl font-black font-headline text-primary">R$ 3.200,00</p>
+              <p class="text-[9px] text-secondary/50 mt-1 leading-tight">vs. custo de um financeiro interno</p>
+            </div>
+            <div class="p-4 bg-white rounded-xl border border-outline-variant/10">
+              <p class="text-[8px] font-bold uppercase tracking-widest text-secondary/60 mb-1">Horas Poupadas</p>
+              <p class="text-2xl font-black font-headline text-primary">38h</p>
+              <p class="text-[9px] text-secondary/50 mt-1 leading-tight">de trabalho que você não precisou fazer</p>
+            </div>
+            <div class="p-4 bg-white rounded-xl border border-outline-variant/10">
+              <p class="text-[8px] font-bold uppercase tracking-widest text-secondary/60 mb-1">Prazos Cumpridos</p>
+              <p class="text-2xl font-black font-headline text-primary">100%</p>
+              <p class="text-[9px] text-secondary/50 mt-1 leading-tight">nenhum vencimento perdido · R$ 0 em multas</p>
+            </div>
+            <div class="p-4 bg-white rounded-xl border border-outline-variant/10">
+              <p class="text-[8px] font-bold uppercase tracking-widest text-secondary/60 mb-1">Parceria Ativa</p>
+              <p class="text-2xl font-black font-headline text-primary">Desde Mar/2026</p>
+              <p class="text-[9px] text-secondary/50 mt-1 leading-tight">cuidando do seu financeiro</p>
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-outline-variant/10 text-center">
+            <p class="text-[10px] text-secondary/70 italic leading-relaxed">Enquanto você focava no crescimento do seu negócio, nossa equipe executou <strong class="text-on-surface font-semibold not-italic">23 atividades financeiras</strong> com <strong class="text-primary font-semibold not-italic">100% de cumprimento de prazos.</strong></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Summary Bento Grid -->
+      <section class="mb-12">
+        <h3 class="font-headline font-bold text-lg text-on-surface mb-6 flex items-center">
+          <span class="w-1.5 h-6 bg-primary mr-3 rounded-full"></span>
+          Resumo das Atividades
+        </h3>
+        <div class="grid grid-cols-12 gap-4">
+          <div class="col-span-4 p-6 bg-primary-container/10 rounded-2xl flex flex-col justify-center items-center">
+            <p class="text-sm font-medium text-on-primary-container/70 mb-1">Volume Total</p>
+            <p class="text-5xl font-black font-headline text-primary">23</p>
+            <p class="text-xs font-semibold text-primary/80 mt-1 uppercase tracking-tighter">atividades realizadas</p>
+          </div>
+          <div class="col-span-8 grid grid-cols-2 gap-3">
+            <div class="p-4 bg-surface-container border border-outline-variant/10 rounded-xl">
+              <p class="text-[10px] font-bold text-secondary uppercase mb-2">Por Categoria</p>
+              <ul class="space-y-1.5 text-xs">
+                <li class="flex justify-between"><span>Contas a Pagar</span> <span class="font-bold text-on-surface">5</span></li>
+                <li class="flex justify-between"><span>Notas Fiscais</span> <span class="font-bold text-on-surface">8</span></li>
+                <li class="flex justify-between"><span>Conciliação</span> <span class="font-bold text-on-surface">4</span></li>
+                <li class="flex justify-between"><span>Fechamento</span> <span class="font-bold text-on-surface">6</span></li>
+              </ul>
+            </div>
+            <div class="p-4 bg-surface-container border border-outline-variant/10 rounded-xl">
+              <p class="text-[10px] font-bold text-secondary uppercase mb-2">Por Funcionário</p>
+              <ul class="space-y-1.5 text-xs">
+                <li class="flex justify-between"><span>Ana Carolina</span> <span class="font-bold text-on-surface">14</span></li>
+                <li class="flex justify-between"><span>Maria Fernanda</span> <span class="font-bold text-on-surface">9</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Detailed Table -->
+      <section class="mb-24">
+        <h3 class="font-headline font-bold text-lg text-on-surface mb-6 flex items-center">
+          <span class="w-1.5 h-6 bg-primary mr-3 rounded-full"></span>
+          Detalhamento Diário
+        </h3>
+        <div class="overflow-hidden border border-outline-variant/15 rounded-lg">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="bg-surface-container-high border-b border-outline-variant/20">
+                <th class="px-4 py-3 font-semibold text-on-surface-variant text-xs uppercase tracking-wider">Data</th>
+                <th class="px-4 py-3 font-semibold text-on-surface-variant text-xs uppercase tracking-wider">Hora</th>
+                <th class="px-4 py-3 font-semibold text-on-surface-variant text-xs uppercase tracking-wider">Atividade</th>
+                <th class="px-4 py-3 font-semibold text-on-surface-variant text-xs uppercase tracking-wider">Categoria</th>
+                <th class="px-4 py-3 font-semibold text-on-surface-variant text-xs uppercase tracking-wider text-right">Funcionário</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-outline-variant/10">
+              <tr class="hover:bg-surface-container-low transition-colors">
+                <td class="px-4 py-3 text-on-surface">31/03/26</td>
+                <td class="px-4 py-3 text-secondary">09:15</td>
+                <td class="px-4 py-3 font-medium">Lançamento de Notas Sabesp</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-secondary-container rounded text-[10px] font-bold">NOTAS FISCAIS</span></td>
+                <td class="px-4 py-3 text-right">Ana Carolina</td>
+              </tr>
+              <tr class="hover:bg-surface-container-low transition-colors">
+                <td class="px-4 py-3 text-on-surface">01/04/26</td>
+                <td class="px-4 py-3 text-secondary">10:30</td>
+                <td class="px-4 py-3 font-medium">Fechamento Cond. Solar</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-secondary-container rounded text-[10px] font-bold">FECHAMENTO</span></td>
+                <td class="px-4 py-3 text-right">Maria Fernanda</td>
+              </tr>
+              <tr class="hover:bg-surface-container-low transition-colors">
+                <td class="px-4 py-3 text-on-surface">01/04/26</td>
+                <td class="px-4 py-3 text-secondary">14:00</td>
+                <td class="px-4 py-3 font-medium">Conciliação Bradesco</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-secondary-container rounded text-[10px] font-bold">CONCILIAÇÃO</span></td>
+                <td class="px-4 py-3 text-right">Ana Carolina</td>
+              </tr>
+              <tr class="hover:bg-surface-container-low transition-colors">
+                <td class="px-4 py-3 text-on-surface">02/04/26</td>
+                <td class="px-4 py-3 text-secondary">08:45</td>
+                <td class="px-4 py-3 font-medium">Pagamento Fornecedores Eletr.</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-secondary-container rounded text-[10px] font-bold">CONTAS A PAGAR</span></td>
+                <td class="px-4 py-3 text-right">Ana Carolina</td>
+              </tr>
+              <tr class="hover:bg-surface-container-low transition-colors">
+                <td class="px-4 py-3 text-on-surface">03/04/26</td>
+                <td class="px-4 py-3 text-secondary">16:20</td>
+                <td class="px-4 py-3 font-medium">Auditoria Interna Notas</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-secondary-container rounded text-[10px] font-bold">NOTAS FISCAIS</span></td>
+                <td class="px-4 py-3 text-right">Maria Fernanda</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="px-4 py-2 bg-surface-container-low border-t border-outline-variant/10 flex justify-center">
+            <p class="text-[10px] text-secondary font-medium italic">Exibindo as primeiras 5 de 23 entradas no relatório consolidado.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- PDF Footer -->
+      <div class="absolute bottom-10 left-0 w-full px-20 border-t border-outline-variant/10 pt-6">
+        <div class="flex justify-between items-center text-[10px] text-secondary uppercase tracking-[0.2em] font-medium">
+          <span>Página 1 de 4</span>
+          <span>Doma Condo Assessoria e Consultoria</span>
+          <span>v2.1.0</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
-<div class="text-right text-[10px] text-secondary uppercase tracking-widest font-medium">
-                        Ref: REL-2026-0042<br/>Emitido em: 07/04/2026
-                    </div>
-</div>
-<div class="mb-10 text-center">
-<h1 class="text-3xl font-extrabold text-on-surface mb-2 tracking-tight">Relatório de Atividades</h1>
-<div class="inline-block h-1 w-12 bg-primary rounded-full"></div>
-</div>
-<div class="grid grid-cols-2 gap-8 mb-12 p-6 bg-surface-container-low rounded-xl">
-<div>
-<p class="text-[10px] uppercase tracking-widest text-secondary font-bold mb-1">Período de Referência</p>
-<p class="font-headline font-medium text-on-surface text-lg">31/03/2026 a 06/04/2026</p>
-</div>
-<div class="text-right">
-<p class="text-[10px] uppercase tracking-widest text-secondary font-bold mb-1">Cliente Solicitante</p>
-<p class="font-headline font-medium text-on-surface text-lg">Adm. Litoral Sul</p>
-</div>
-</div>
-<!-- IMPACT BLOCK -->
-<section class="mb-12 rounded-2xl border border-outline-variant/15 overflow-hidden" style="background: linear-gradient(135deg, rgba(232,185,49,0.06) 0%, rgba(115,92,0,0.03) 100%);">
-<div class="p-6">
-<div class="text-center mb-5">
-<p class="text-[9px] font-bold uppercase tracking-[0.3em] text-secondary/80">IMPACTO DA DOMA CONDO NO SEU NEGÓCIO</p>
-<div class="mt-2 mx-auto w-8 h-0.5 bg-primary rounded-full"></div>
-</div>
-<div class="grid grid-cols-2 gap-3">
-<div class="p-4 bg-surface-container-lowest rounded-xl border border-outline-variant/10">
-<p class="text-[8px] font-bold uppercase tracking-widest text-secondary/60 mb-1">Economia Estimada</p>
-<p class="text-2xl font-black font-headline text-primary">R$ 3.200,00</p>
-<p class="text-[9px] text-secondary/50 mt-1 leading-tight">vs. custo de um financeiro interno</p>
-</div>
-<div class="p-4 bg-surface-container-lowest rounded-xl border border-outline-variant/10">
-<p class="text-[8px] font-bold uppercase tracking-widest text-secondary/60 mb-1">Horas Poupadas</p>
-<p class="text-2xl font-black font-headline text-primary">38h</p>
-<p class="text-[9px] text-secondary/50 mt-1 leading-tight">de trabalho que você não precisou fazer</p>
-</div>
-<div class="p-4 bg-surface-container-lowest rounded-xl border border-outline-variant/10">
-<p class="text-[8px] font-bold uppercase tracking-widest text-secondary/60 mb-1">Prazos Cumpridos</p>
-<p class="text-2xl font-black font-headline text-primary">100%</p>
-<p class="text-[9px] text-secondary/50 mt-1 leading-tight">nenhum vencimento perdido · R$ 0 em multas</p>
-</div>
-<div class="p-4 bg-surface-container-lowest rounded-xl border border-outline-variant/10">
-<p class="text-[8px] font-bold uppercase tracking-widest text-secondary/60 mb-1">Parceria Ativa</p>
-<p class="text-2xl font-black font-headline text-primary">Desde Mar/2026</p>
-<p class="text-[9px] text-secondary/50 mt-1 leading-tight">cuidando do seu financeiro</p>
-</div>
-</div>
-<div class="mt-4 pt-4 border-t border-outline-variant/10 text-center">
-<p class="text-[10px] text-secondary/70 italic leading-relaxed">Enquanto você focava no crescimento do seu negócio, nossa equipe executou <strong class="text-on-surface font-semibold not-italic">23 atividades financeiras</strong> com <strong class="text-primary font-semibold not-italic">100% de cumprimento de prazos.</strong></p>
-</div>
-</div>
-</section>
-<!-- Summary Bento Grid -->
-<section class="mb-12">
-<h3 class="font-headline font-bold text-lg text-on-surface mb-6 flex items-center">
-<span class="w-1.5 h-6 bg-primary mr-3 rounded-full"></span>
-                        Resumo das Atividades
-                    </h3>
-<div class="grid grid-cols-12 gap-4">
-<div class="col-span-4 p-6 bg-primary-container/10 rounded-2xl flex flex-col justify-center items-center">
-<p class="text-sm font-medium text-on-primary-container/70 mb-1">Volume Total</p>
-<p class="text-5xl font-black text-primary">23</p>
-<p class="text-xs font-semibold text-primary/80 mt-1 uppercase tracking-tighter">atividades realizadas</p>
-</div>
-<div class="col-span-8 grid grid-cols-2 gap-3">
-<div class="p-4 bg-surface-container border border-outline-variant/10 rounded-xl">
-<p class="text-[10px] font-bold text-secondary uppercase mb-2">Por Categoria</p>
-<ul class="space-y-1.5 text-xs">
-<li class="flex justify-between"><span>Contas a Pagar</span> <span class="font-bold text-on-surface">5</span></li>
-<li class="flex justify-between"><span>Notas Fiscais</span> <span class="font-bold text-on-surface">8</span></li>
-<li class="flex justify-between"><span>Conciliação</span> <span class="font-bold text-on-surface">4</span></li>
-<li class="flex justify-between"><span>Fechamento</span> <span class="font-bold text-on-surface">6</span></li>
-</ul>
-</div>
-<div class="p-4 bg-surface-container border border-outline-variant/10 rounded-xl">
-<p class="text-[10px] font-bold text-secondary uppercase mb-2">Por Funcionário</p>
-<ul class="space-y-1.5 text-xs">
-<li class="flex justify-between"><span>Ana Carolina</span> <span class="font-bold text-on-surface">14</span></li>
-<li class="flex justify-between"><span>Maria Fernanda</span> <span class="font-bold text-on-surface">9</span></li>
-</ul>
-</div>
-</div>
-</div>
-</section>
-<!-- Detailed Table -->
-<section class="mb-12">
-<h3 class="font-headline font-bold text-lg text-on-surface mb-6 flex items-center">
-<span class="w-1.5 h-6 bg-primary mr-3 rounded-full"></span>
-                        Detalhamento Diário
-                    </h3>
-<div class="overflow-hidden border border-outline-variant/15 rounded-lg">
-<table class="w-full text-left border-collapse font-body text-sm">
-<thead>
-<tr class="bg-surface-container-high border-b border-outline-variant/20">
-<th class="px-4 py-3 font-semibold text-on-surface-variant text-xs uppercase tracking-wider">Data</th>
-<th class="px-4 py-3 font-semibold text-on-surface-variant text-xs uppercase tracking-wider">Hora</th>
-<th class="px-4 py-3 font-semibold text-on-surface-variant text-xs uppercase tracking-wider">Atividade</th>
-<th class="px-4 py-3 font-semibold text-on-surface-variant text-xs uppercase tracking-wider">Categoria</th>
-<th class="px-4 py-3 font-semibold text-on-surface-variant text-xs uppercase tracking-wider text-right">Funcionário</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-outline-variant/10">
-<tr class="hover:bg-surface-container-low transition-colors">
-<td class="px-4 py-3 text-on-surface">31/03/26</td>
-<td class="px-4 py-3 text-secondary">09:15</td>
-<td class="px-4 py-3 font-medium">Lançamento de Notas Sabesp</td>
-<td class="px-4 py-3"><span class="px-2 py-0.5 bg-secondary-container rounded text-[10px] font-bold">NOTAS FISCAIS</span></td>
-<td class="px-4 py-3 text-right">Ana Carolina</td>
-</tr>
-<tr class="hover:bg-surface-container-low transition-colors">
-<td class="px-4 py-3 text-on-surface">01/04/26</td>
-<td class="px-4 py-3 text-secondary">10:30</td>
-<td class="px-4 py-3 font-medium">Fechamento Cond. Solar</td>
-<td class="px-4 py-3"><span class="px-2 py-0.5 bg-secondary-container rounded text-[10px] font-bold">FECHAMENTO</span></td>
-<td class="px-4 py-3 text-right">Maria Fernanda</td>
-</tr>
-<tr class="hover:bg-surface-container-low transition-colors">
-<td class="px-4 py-3 text-on-surface">01/04/26</td>
-<td class="px-4 py-3 text-secondary">14:00</td>
-<td class="px-4 py-3 font-medium">Conciliação Bradesco</td>
-<td class="px-4 py-3"><span class="px-2 py-0.5 bg-secondary-container rounded text-[10px] font-bold">CONCILIAÇÃO</span></td>
-<td class="px-4 py-3 text-right">Ana Carolina</td>
-</tr>
-<tr class="hover:bg-surface-container-low transition-colors">
-<td class="px-4 py-3 text-on-surface">02/04/26</td>
-<td class="px-4 py-3 text-secondary">08:45</td>
-<td class="px-4 py-3 font-medium">Pagamento Fornecedores Eletr.</td>
-<td class="px-4 py-3"><span class="px-2 py-0.5 bg-secondary-container rounded text-[10px] font-bold">CONTAS A PAGAR</span></td>
-<td class="px-4 py-3 text-right">Ana Carolina</td>
-</tr>
-<tr class="hover:bg-surface-container-low transition-colors">
-<td class="px-4 py-3 text-on-surface">03/04/26</td>
-<td class="px-4 py-3 text-secondary">16:20</td>
-<td class="px-4 py-3 font-medium">Auditoria Interna Notas</td>
-<td class="px-4 py-3"><span class="px-2 py-0.5 bg-secondary-container rounded text-[10px] font-bold">NOTAS FISCAIS</span></td>
-<td class="px-4 py-3 text-right">Maria Fernanda</td>
-</tr>
-</tbody>
-</table>
-<div class="px-4 py-2 bg-surface-container-low border-t border-outline-variant/10 flex justify-center">
-<p class="text-[10px] text-secondary font-medium italic">Exibindo as primeiras 5 de 23 entradas no relatório consolidado.</p>
-</div>
-</div>
-</section>
-<!-- PDF Footer -->
-<div class="absolute bottom-10 left-0 w-full px-20 border-t border-outline-variant/10 pt-6">
-<div class="flex justify-between items-center text-[10px] text-secondary uppercase tracking-[0.2em] font-medium">
-<span>Página 1 de 4</span>
-<span>Doma Condo Assessoria e Consultoria</span>
-<span>v2.1.0</span>
-</div>
-</div>
-</div>
-</div>
-</main>
-</body></html>
+
+</body>
+</html>
