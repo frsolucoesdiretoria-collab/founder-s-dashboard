@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-br"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#a3f69c",
+                    "on-tertiary-fixed": "#002204",
+                    "on-tertiary-fixed-variant": "#005312",
+                    "inverse-surface": "#313030",
+                    "outline-variant": "#d0c5b2",
+                    "primary-fixed-dim": "#e7c265",
+                    "surface-dim": "#ddd9d9",
+                    "primary": "#594400",
+                    "surface-container-high": "#ebe7e7",
+                    "on-secondary-fixed-variant": "#584400",
+                    "on-error": "#ffffff",
+                    "inverse-primary": "#e7c265",
+                    "tertiary-container": "#1c6d24",
+                    "surface-tint": "#765b00",
+                    "on-primary-container": "#fbd576",
+                    "on-secondary-container": "#6f5600",
+                    "secondary-fixed": "#ffe08f",
+                    "on-tertiary-container": "#9aec93",
+                    "on-background": "#1c1b1b",
+                    "secondary-fixed-dim": "#f1c01b",
+                    "tertiary": "#005312",
+                    "outline": "#7f7665",
+                    "tertiary-fixed-dim": "#88d982",
+                    "surface-bright": "#fcf8f8",
+                    "inverse-on-surface": "#f4f0ef",
+                    "surface-container": "#f1edec",
+                    "background": "#fcf8f8",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed": "#241a00",
+                    "on-secondary": "#ffffff",
+                    "surface-variant": "#e5e2e1",
+                    "surface": "#fcf8f8",
+                    "on-surface": "#1c1b1b",
+                    "error-container": "#ffdad6",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed-variant": "#594400",
+                    "surface-container-low": "#f7f3f2",
+                    "primary-container": "#765b00",
+                    "on-error-container": "#93000a",
+                    "primary-fixed": "#ffdf93",
+                    "on-primary": "#ffffff",
+                    "on-surface-variant": "#4d4637",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed": "#241a00",
+                    "secondary-container": "#fecb2a",
+                    "secondary": "#755b00",
+                    "surface-container-highest": "#e5e2e1"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; background-color: #fcf8f8; color: #1c1b1b; }
+        .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24; }
+        .sovereign-gradient { background: linear-gradient(135deg, #FAC826 0%, #765B00 100%); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- SideNavBar -->
+<aside class="w-72 h-screen fixed left-0 top-0 border-r-0 bg-white dark:bg-neutral-900 shadow-xl shadow-neutral-200/50 dark:shadow-none flex flex-col py-8 z-50">
+<div class="px-8 mb-10">
+<h1 class="text-2xl font-semibold text-[#765B00] dark:text-[#FAC826] font-headline">Doma Condo</h1>
+<p class="text-[10px] tracking-wider text-neutral-500 font-label">BPO FINANCEIRO CONDOMINIAL</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 text-neutral-500 hover:text-[#765B00] py-3 px-8 transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-medium">Visão Geral</span>
+</a>
+<a class="flex items-center gap-3 text-neutral-500 hover:text-[#765B00] py-3 px-8 transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">event_note</span>
+<span class="text-sm font-medium">Atividades</span>
+</a>
+<a class="flex items-center gap-3 bg-[#FAC826]/10 text-[#765B00] font-bold border-l-4 border-[#FAC826] py-3 px-8 scale-[0.99] duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="text-sm">Relatórios</span>
+</a>
+<a class="flex items-center gap-3 text-neutral-500 hover:text-[#765B00] py-3 px-8 transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">pending_actions</span>
+<span class="text-sm font-medium">Pendências</span>
+</a>
+</nav>
+<div class="px-6 mt-auto space-y-4">
+<div class="p-4 bg-surface-container-low rounded-xl">
+<p class="text-xs text-neutral-400 mb-1">Usuário</p>
+<p class="text-xs font-bold text-[#765B00]">Ricardo Almeida / Adm. Litoral Sul</p>
+</div>
+<div class="space-y-1">
+<a class="flex items-center gap-3 text-neutral-500 hover:text-[#765B00] py-2 px-2 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">settings</span>
+<span class="text-sm">Configurações</span>
+</a>
+<a class="flex items-center gap-3 text-neutral-500 hover:text-[#765B00] py-2 px-2 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">logout</span>
+<span class="text-sm">Sair</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- TopAppBar -->
+<header class="h-20 w-[calc(100%-18rem)] fixed top-0 right-0 z-40 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl flex justify-between items-center px-12">
+<div class="flex items-center bg-surface-container-low px-4 py-2 rounded-full w-96 border border-outline-variant/20 focus-within:ring-2 focus-within:ring-[#FAC826]/20 transition-all">
+<span class="material-symbols-outlined text-neutral-400 mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-neutral-400" placeholder="Buscar relatórios ou atividades..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex gap-4">
+<button class="text-neutral-500 hover:text-[#765B00] transition-opacity">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-neutral-500 hover:text-[#765B00] transition-opacity">
+<span class="material-symbols-outlined">support_agent</span>
+</button>
+</div>
+<div class="h-10 w-10 rounded-full bg-neutral-200 overflow-hidden border-2 border-surface-container-high">
+<img alt="Ricardo Almeida" class="w-full h-full object-cover" data-alt="professional portrait of a middle-aged male executive with a warm confident smile in a bright modern office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0cB6yvmUweulu0VDiJ1Ari3L2L9iO4_WvtYL7gUHFmp-SqgE9ppK9L80RU3veAwO_juvRFrtP0hx42KJ3Zit_0Z_enRFNNVgyEGwPxyPTNzun3Kjf-QPzQKNx0SVRrVZYEvkXMHs1C-DPC1eepnJIGP2oOSCSpbV2VPjrQF8d97KbI4bpoNUyV42KICWtJ-Lp4retDW-SWkRUX76fz64PciF_10HRJnAzTYfkM18E8Dx17jmAfk7ayz7hlCh9tLmkfbHPzvIcYu4"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-72 pt-20 min-h-screen">
+<div class="px-12 py-10 max-w-7xl mx-auto">
+<!-- Hero Section -->
+<section class="mb-12 flex flex-col md:flex-row justify-between items-end gap-8">
+<div class="max-w-2xl">
+<span class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#765B00] mb-2 block">Portal do Cliente</span>
+<h1 class="text-5xl font-extrabold text-[#765B00] font-headline mb-4 tracking-tight">Relatórios Disponíveis</h1>
+<p class="text-on-surface-variant leading-relaxed text-lg">Acesse o histórico completo de atividades e rotinas financeiras do seu condomínio. Relatórios gerados semanalmente pela equipe Doma.</p>
+</div>
+<div class="flex gap-4">
+<button class="px-6 py-3 border border-outline text-[#765B00] font-bold rounded-lg hover:bg-surface-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined">filter_list</span>
+                        Filtrar
+                    </button>
+<button class="sovereign-gradient px-6 py-3 text-white font-bold rounded-lg shadow-lg shadow-[#FAC826]/20 flex items-center gap-2">
+<span class="material-symbols-outlined">calendar_month</span>
+                        Agendar Relatório
+                    </button>
+</div>
+</section>
+<!-- Value Bar -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+<div class="bg-surface-container-low p-6 rounded-xl relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2 opacity-10">
+<span class="material-symbols-outlined text-5xl">payments</span>
+</div>
+<p class="text-xs font-label text-neutral-500 uppercase tracking-wider mb-2">Economia Acumulada</p>
+<h3 class="text-2xl font-bold font-headline text-[#765B00]">R$ 19.200,00</h3>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2 opacity-10">
+<span class="material-symbols-outlined text-5xl">timer</span>
+</div>
+<p class="text-xs font-label text-neutral-500 uppercase tracking-wider mb-2">Horas Poupadas</p>
+<h3 class="text-2xl font-bold font-headline text-[#765B00]">228h <span class="text-sm font-normal text-neutral-400">acumulado</span></h3>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2 opacity-10">
+<span class="material-symbols-outlined text-5xl text-[#81D27C]">verified</span>
+</div>
+<p class="text-xs font-label text-neutral-500 uppercase tracking-wider mb-2">Prazos Cumpridos</p>
+<h3 class="text-2xl font-bold font-headline text-[#81D27C]">100%</h3>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2 opacity-10">
+<span class="material-symbols-outlined text-5xl">handshake</span>
+</div>
+<p class="text-xs font-label text-neutral-500 uppercase tracking-wider mb-2">Parceria Ativa</p>
+<h3 class="text-2xl font-bold font-headline text-[#765B00]">Desde Mar/2026</h3>
+</div>
+</section>
+<!-- Bento Grid Highlights -->
+<section class="grid grid-cols-12 gap-6 mb-12">
+<!-- Main Activity Chart -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-lowest p-8 rounded-2xl shadow-sm">
+<div class="flex justify-between items-start mb-8">
+<div>
+<h4 class="text-xl font-bold font-headline text-[#765B00] mb-1">Última Atividade — 69 atividades</h4>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#81D27C]/10 text-[#81D27C]">
+<span class="material-symbols-outlined text-xs mr-1" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+                                +12% vs mês anterior
+                            </span>
+</div>
+<div class="flex gap-2">
+<div class="h-2 w-2 rounded-full bg-[#765B00]"></div>
+<div class="h-2 w-2 rounded-full bg-neutral-200"></div>
+</div>
+</div>
+<!-- Mock Mini Bar Chart -->
+<div class="flex items-end justify-between h-40 gap-3">
+<div class="flex-1 bg-[#765B00]/10 rounded-t-lg h-[40%] transition-all hover:bg-[#765B00]/20"></div>
+<div class="flex-1 bg-[#765B00]/30 rounded-t-lg h-[60%] transition-all hover:bg-[#765B00]/40"></div>
+<div class="flex-1 bg-[#765B00]/10 rounded-t-lg h-[45%] transition-all hover:bg-[#765B00]/20"></div>
+<div class="flex-1 bg-[#765B00]/50 rounded-t-lg h-[80%] transition-all hover:bg-[#765B00]/60"></div>
+<div class="flex-1 bg-[#765B00]/20 rounded-t-lg h-[55%] transition-all hover:bg-[#765B00]/30"></div>
+<div class="flex-1 bg-[#FAC826] rounded-t-lg h-[100%] transition-all hover:opacity-80"></div>
+<div class="flex-1 bg-[#765B00]/40 rounded-t-lg h-[70%] transition-all hover:bg-[#765B00]/50"></div>
+<div class="flex-1 bg-[#765B00]/10 rounded-t-lg h-[30%] transition-all hover:bg-[#765B00]/20"></div>
+<div class="flex-1 bg-[#765B00]/60 rounded-t-lg h-[85%] transition-all hover:bg-[#765B00]/70"></div>
+<div class="flex-1 bg-[#765B00]/10 rounded-t-lg h-[50%] transition-all hover:bg-[#765B00]/20"></div>
+<div class="flex-1 bg-[#765B00]/30 rounded-t-lg h-[65%] transition-all hover:bg-[#765B00]/40"></div>
+<div class="flex-1 bg-[#765B00]/80 rounded-t-lg h-[95%] transition-all hover:bg-[#765B00]/90"></div>
+</div>
+<div class="flex justify-between mt-4 text-[10px] font-label text-neutral-400 uppercase tracking-widest px-1">
+<span>Semana 01</span>
+<span>Semana 02</span>
+<span>Semana 03</span>
+<span>Semana 04</span>
+</div>
+</div>
+<!-- Financial Highlight Card -->
+<div class="col-span-12 lg:col-span-4 bg-[#765B00] p-8 rounded-2xl relative overflow-hidden group">
+<div class="absolute -right-10 -bottom-10 opacity-20 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-[12rem] text-[#FAC826]" style="font-variation-settings: 'FILL' 1;">analytics</span>
+</div>
+<div class="relative z-10 h-full flex flex-col">
+<p class="text-[#FAC826] font-bold text-sm mb-2 font-label uppercase tracking-widest">Saúde Financeira</p>
+<h4 class="text-white text-3xl font-bold font-headline leading-tight mb-6">Redução de Inadimplência em 18% este trimestre.</h4>
+<div class="mt-auto">
+<button class="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 px-4 py-2 rounded text-xs font-bold transition-all">
+                                Ver Detalhes Financeiros
+                            </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Reports List -->
+<section class="space-y-4">
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-2xl font-bold font-headline text-[#765B00]">Relatórios Mensais</h2>
+<p class="text-sm text-neutral-400 font-label">Exibindo os 4 relatórios mais recentes</p>
+</div>
+<!-- Março 2026 -->
+<div class="bg-white hover:bg-surface-container-low p-6 rounded-xl flex flex-col md:flex-row items-center justify-between gap-6 transition-all border border-transparent hover:border-surface-container-high group">
+<div class="flex items-center gap-6 w-full md:w-auto">
+<div class="h-14 w-14 rounded-lg bg-surface-container-high flex items-center justify-center text-[#765B00] group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">description</span>
+</div>
+<div>
+<h5 class="text-lg font-bold text-[#765B00] font-headline">Relatório de Atividades Março 2026</h5>
+<p class="text-sm text-neutral-500">Gerado em 31/03/2026 • 2.4 MB • PDF</p>
+</div>
+</div>
+<div class="flex items-center gap-8 w-full md:w-auto justify-between md:justify-end">
+<span class="px-3 py-1 rounded-full text-xs font-bold bg-[#81D27C]/10 text-[#81D27C] flex items-center gap-1">
+<span class="h-1.5 w-1.5 rounded-full bg-[#81D27C] animate-pulse"></span>
+                            Disponível
+                        </span>
+<div class="flex gap-3">
+<button class="px-5 py-2.5 sovereign-gradient text-white font-bold rounded-lg text-sm shadow-md transition-transform active:scale-95">Visualizar</button>
+<button class="px-5 py-2.5 border border-outline text-[#765B00] font-bold rounded-lg text-sm hover:bg-surface-container transition-colors">Download PDF</button>
+</div>
+</div>
+</div>
+<!-- Fevereiro 2026 -->
+<div class="bg-white hover:bg-surface-container-low p-6 rounded-xl flex flex-col md:flex-row items-center justify-between gap-6 transition-all border border-transparent hover:border-surface-container-high group">
+<div class="flex items-center gap-6 w-full md:w-auto">
+<div class="h-14 w-14 rounded-lg bg-surface-container-high flex items-center justify-center text-[#765B00] group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">description</span>
+</div>
+<div>
+<h5 class="text-lg font-bold text-[#765B00] font-headline">Relatório de Atividades Fevereiro 2026</h5>
+<p class="text-sm text-neutral-500">Gerado em 28/02/2026 • 2.1 MB • PDF</p>
+</div>
+</div>
+<div class="flex items-center gap-8 w-full md:w-auto justify-between md:justify-end">
+<span class="px-3 py-1 rounded-full text-xs font-bold bg-[#81D27C]/10 text-[#81D27C] flex items-center gap-1">
+<span class="h-1.5 w-1.5 rounded-full bg-[#81D27C]"></span>
+                            Disponível
+                        </span>
+<div class="flex gap-3">
+<button class="px-5 py-2.5 sovereign-gradient text-white font-bold rounded-lg text-sm shadow-md transition-transform active:scale-95">Visualizar</button>
+<button class="px-5 py-2.5 border border-outline text-[#765B00] font-bold rounded-lg text-sm hover:bg-surface-container transition-colors">Download PDF</button>
+</div>
+</div>
+</div>
+<!-- Janeiro 2026 -->
+<div class="bg-white hover:bg-surface-container-low p-6 rounded-xl flex flex-col md:flex-row items-center justify-between gap-6 transition-all border border-transparent hover:border-surface-container-high group">
+<div class="flex items-center gap-6 w-full md:w-auto">
+<div class="h-14 w-14 rounded-lg bg-surface-container-high flex items-center justify-center text-[#765B00] group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">description</span>
+</div>
+<div>
+<h5 class="text-lg font-bold text-[#765B00] font-headline">Relatório de Atividades Janeiro 2026</h5>
+<p class="text-sm text-neutral-500">Gerado em 31/01/2026 • 2.8 MB • PDF</p>
+</div>
+</div>
+<div class="flex items-center gap-8 w-full md:w-auto justify-between md:justify-end">
+<span class="px-3 py-1 rounded-full text-xs font-bold bg-[#81D27C]/10 text-[#81D27C] flex items-center gap-1">
+<span class="h-1.5 w-1.5 rounded-full bg-[#81D27C]"></span>
+                            Disponível
+                        </span>
+<div class="flex gap-3">
+<button class="px-5 py-2.5 sovereign-gradient text-white font-bold rounded-lg text-sm shadow-md transition-transform active:scale-95">Visualizar</button>
+<button class="px-5 py-2.5 border border-outline text-[#765B00] font-bold rounded-lg text-sm hover:bg-surface-container transition-colors">Download PDF</button>
+</div>
+</div>
+</div>
+<!-- Dezembro 2025 -->
+<div class="bg-white hover:bg-surface-container-low p-6 rounded-xl flex flex-col md:flex-row items-center justify-between gap-6 transition-all border border-transparent hover:border-surface-container-high group opacity-75">
+<div class="flex items-center gap-6 w-full md:w-auto">
+<div class="h-14 w-14 rounded-lg bg-surface-container-high flex items-center justify-center text-neutral-400 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">history_edu</span>
+</div>
+<div>
+<h5 class="text-lg font-bold text-neutral-500 font-headline">Relatório de Atividades Dezembro 2025</h5>
+<p class="text-sm text-neutral-400">Processado em 02/01/2026 • 1.9 MB • PDF</p>
+</div>
+</div>
+<div class="flex items-center gap-8 w-full md:w-auto justify-between md:justify-end">
+<span class="px-3 py-1 rounded-full text-xs font-bold bg-secondary-container/20 text-[#765B00] flex items-center gap-1">
+<span class="h-1.5 w-1.5 rounded-full bg-[#FAC826]"></span>
+                            Pendente
+                        </span>
+<div class="flex gap-3">
+<button class="px-5 py-2.5 bg-neutral-200 text-neutral-400 font-bold rounded-lg text-sm cursor-not-allowed">Visualizar</button>
+<button class="px-5 py-2.5 border border-neutral-200 text-neutral-400 font-bold rounded-lg text-sm cursor-not-allowed">Download PDF</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</body></html>
