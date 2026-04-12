@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#765b00",
+                    "on-surface": "#191c1e",
+                    "on-secondary-fixed": "#111c2d",
+                    "on-primary-fixed-variant": "#594400",
+                    "on-primary-fixed": "#251a00",
+                    "secondary": "#545f73",
+                    "error-container": "#ffdad6",
+                    "tertiary-container": "#ccb2ff",
+                    "on-tertiary-fixed": "#25005a",
+                    "tertiary-fixed-dim": "#d2bbff",
+                    "secondary-fixed-dim": "#bcc7de",
+                    "on-secondary-fixed-variant": "#3c475a",
+                    "on-tertiary-container": "#6209d3",
+                    "on-error-container": "#93000a",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-highest": "#e1e2e4",
+                    "secondary-fixed": "#d8e3fb",
+                    "primary-fixed-dim": "#f0c038",
+                    "inverse-primary": "#f0c038",
+                    "tertiary-fixed": "#eaddff",
+                    "surface": "#f8f9fb",
+                    "on-surface-variant": "#4e4634",
+                    "primary-fixed": "#ffdf94",
+                    "primary-container": "#e8b931",
+                    "on-secondary-container": "#586377",
+                    "error": "#ba1a1a",
+                    "surface-variant": "#e1e2e4",
+                    "tertiary": "#732ee4",
+                    "surface-container-low": "#f2f4f6",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-high": "#e7e8ea",
+                    "background": "#f8f9fb",
+                    "outline": "#807662",
+                    "on-primary-container": "#614a00",
+                    "surface-dim": "#d9dadc",
+                    "inverse-surface": "#2e3132",
+                    "on-error": "#ffffff",
+                    "outline-variant": "#d1c5ae",
+                    "surface-bright": "#f8f9fb",
+                    "on-tertiary-fixed-variant": "#5a00c6",
+                    "on-primary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "surface-container": "#edeef0",
+                    "primary": "#765b00",
+                    "on-background": "#191c1e",
+                    "inverse-on-surface": "#f0f1f3",
+                    "secondary-container": "#d5e0f8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Outfit"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-header {
+            backdrop-filter: blur(20px);
+            background-color: rgba(248, 249, 251, 0.8);
+        }
+        .active-nav-border {
+            position: relative;
+        }
+        .active-nav-border::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 20%;
+            height: 60%;
+            width: 3px;
+            background-color: #765b00;
+            border-radius: 0 4px 4px 0;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface">
+<!-- SideNavBar (Execution from JSON) -->
+<aside class="fixed left-0 top-0 h-full flex flex-col py-6 px-4 h-screen w-64 border-r-0 bg-white dark:bg-slate-900 z-50">
+<div class="mb-10 px-4">
+<h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white font-headline">Doma Condo</h1>
+<p class="text-xs text-on-surface-variant font-label uppercase tracking-widest mt-1 opacity-70">Employee Portal</p>
+</div>
+<nav class="flex flex-col gap-2 grow">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors rounded-xl group" href="#">
+<span class="material-symbols-outlined text-slate-500 group-hover:text-primary transition-colors">dashboard</span>
+<span class="font-medium">Meu Trabalho</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-amber-100 dark:bg-amber-900/30 text-amber-900 dark:text-amber-100 rounded-xl font-semibold active-nav-border" href="#">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">assignment</span>
+<span>Minhas Tarefas</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors rounded-xl group" href="#">
+<span class="material-symbols-outlined text-slate-500 group-hover:text-primary transition-colors">chat_bubble</span>
+<span class="font-medium">Mensagens</span>
+</a>
+</nav>
+<div class="mt-auto px-4">
+<button class="w-full py-3 px-4 bg-primary text-white rounded-xl font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-95 duration-150">
+<span class="material-symbols-outlined text-lg">add</span>
+                Nova Tarefa
+            </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen">
+<!-- TopNavBar (Execution from JSON) -->
+<header class="flex justify-between items-center px-8 sticky top-0 z-40 h-16 glass-header">
+<div class="flex items-center gap-4 bg-surface-container-low px-4 py-2 rounded-full w-96">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full font-label" placeholder="Buscar tarefas..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-on-surface-variant hover:text-primary transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden bg-surface-container-highest ring-2 ring-primary/10">
+<img class="w-full h-full object-cover" data-alt="Professional headshot of a young male property manager with a friendly expression in a bright studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-brUFFLx7EoDphndmays6bg0lzky3xHjRR8sTPUhynFI1-4ptmQcR6F3896m4a7p4rfFTEMNqbGlcZaIymp7ZRhrZbPa4RVOY7_yBwGqRa_1nUZl143ziv6Us1idPtneexaDCrl8Hx3nsj3Smq9awAgMal-TqIrUfqsESkn33NUrtKo8RZuf9B1GqmCHX_AS2y9Mfcb93LGWQ1Z2iIW-YqfaC4sME3uldEL7YKnhEd2NOeVRrxS9BP9XSpfP6ChuoRxvhqyRBkXk"/>
+</div>
+</div>
+</header>
+<!-- Canvas Content -->
+<section class="p-8 max-w-5xl mx-auto">
+<header class="mb-8">
+<h2 class="text-3xl font-bold font-headline tracking-tight text-on-surface">Minhas Tarefas</h2>
+<p class="text-on-surface-variant mt-1">Gerencie suas responsabilidades diárias e prazos.</p>
+</header>
+<!-- Filters -->
+<nav class="flex items-center gap-8 mb-10 border-b border-outline-variant/15">
+<button class="pb-4 px-1 text-primary font-semibold border-b-2 border-primary transition-all relative">
+                    Todas
+                </button>
+<button class="pb-4 px-1 text-on-surface-variant font-medium hover:text-on-surface transition-colors">
+                    Pendentes
+                </button>
+<button class="pb-4 px-1 text-on-surface-variant font-medium hover:text-on-surface transition-colors">
+                    Em Andamento
+                </button>
+<button class="pb-4 px-1 text-on-surface-variant font-medium hover:text-on-surface transition-colors">
+                    Concluídas
+                </button>
+</nav>
+<!-- Task List Vertical Stack -->
+<div class="flex flex-col gap-4">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl transition-all hover:shadow-lg hover:shadow-black/5 group border-none">
+<div class="flex items-start justify-between">
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-3">
+<span class="px-3 py-1 bg-secondary-container/50 text-on-secondary-container text-[11px] font-bold uppercase tracking-wider rounded-full">Adm. Litoral Sul</span>
+<span class="px-3 py-1 bg-error-container/40 text-error text-[11px] font-bold uppercase tracking-wider rounded-full">ALTA</span>
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant text-[11px] font-bold uppercase tracking-wider rounded-full">Pendente</span>
+</div>
+<div>
+<h3 class="text-lg font-semibold text-on-surface font-headline group-hover:text-primary transition-colors">Pagar fatura energia elétrica</h3>
+<div class="flex items-center gap-2 mt-1 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+<span>Vencimento: 14/04/2025</span>
+</div>
+</div>
+</div>
+<button class="bg-primary text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-surface-tint transition-all active:scale-95 shadow-sm shadow-primary/20">
+                            Marcar como concluída
+                        </button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl transition-all hover:shadow-lg hover:shadow-black/5 group border-none">
+<div class="flex items-start justify-between">
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-3">
+<span class="px-3 py-1 bg-tertiary-container/30 text-on-tertiary-container text-[11px] font-bold uppercase tracking-wider rounded-full">Prime Adm.</span>
+<span class="px-3 py-1 bg-amber-100 text-amber-700 text-[11px] font-bold uppercase tracking-wider rounded-full">EM ANDAMENTO</span>
+</div>
+<div>
+<h3 class="text-lg font-semibold text-on-surface font-headline group-hover:text-primary transition-colors">Finalizar conciliação bancária março</h3>
+<div class="flex items-center gap-2 mt-1 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-[16px]">info</span>
+<span>Revisão de faturas pendentes da matriz</span>
+</div>
+</div>
+</div>
+<button class="bg-primary text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-surface-tint transition-all active:scale-95 shadow-sm shadow-primary/20">
+                            Marcar como concluída
+                        </button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl transition-all hover:shadow-lg hover:shadow-black/5 group border-none">
+<div class="flex items-start justify-between">
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-3">
+<span class="px-3 py-1 bg-error-container/20 text-error text-[11px] font-bold uppercase tracking-wider rounded-full">Atlântica</span>
+<span class="px-3 py-1 bg-yellow-100 text-yellow-800 text-[11px] font-bold uppercase tracking-wider rounded-full">MÉDIA</span>
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant text-[11px] font-bold uppercase tracking-wider rounded-full">Pendente</span>
+</div>
+<div>
+<h3 class="text-lg font-semibold text-on-surface font-headline group-hover:text-primary transition-colors">Cotação 3 empresas limpeza</h3>
+<div class="flex items-center gap-2 mt-1 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span>Unidade Residencial Atlântica Sul</span>
+</div>
+</div>
+</div>
+<button class="bg-primary text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-surface-tint transition-all active:scale-95 shadow-sm shadow-primary/20">
+                            Marcar como concluída
+                        </button>
+</div>
+</div>
+</div>
+<!-- Bento Grid Stats (High-End Extra) -->
+<div class="mt-12 grid grid-cols-12 gap-4">
+<div class="col-span-8 bg-surface-container-lowest p-6 rounded-xl">
+<div class="flex justify-between items-center mb-6">
+<h4 class="font-headline font-semibold">Produtividade Semanal</h4>
+<span class="text-xs font-label text-on-surface-variant bg-surface px-2 py-1 rounded">Últimos 7 dias</span>
+</div>
+<div class="flex items-end justify-between h-32 px-4">
+<div class="w-12 bg-primary/10 rounded-t-lg h-[40%]"></div>
+<div class="w-12 bg-primary/10 rounded-t-lg h-[65%]"></div>
+<div class="w-12 bg-primary/10 rounded-t-lg h-[45%]"></div>
+<div class="w-12 bg-primary/10 rounded-t-lg h-[90%] border-t-4 border-primary"></div>
+<div class="w-12 bg-primary/10 rounded-t-lg h-[60%]"></div>
+<div class="w-12 bg-primary/10 rounded-t-lg h-[30%]"></div>
+<div class="w-12 bg-primary/5 rounded-t-lg h-[10%]"></div>
+</div>
+</div>
+<div class="col-span-4 bg-primary text-on-primary p-6 rounded-xl flex flex-col justify-between">
+<span class="material-symbols-outlined text-4xl opacity-50">analytics</span>
+<div>
+<p class="text-4xl font-headline font-bold">85%</p>
+<p class="text-sm font-medium opacity-80">Tarefas concluídas no prazo esta semana.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+</body></html>

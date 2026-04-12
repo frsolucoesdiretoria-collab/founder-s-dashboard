@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Doma Condo — Clientes</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline": "#7f7663",
+                    "on-tertiary-fixed-variant": "#27438a",
+                    "inverse-surface": "#313030",
+                    "on-secondary-fixed-variant": "#544519",
+                    "tertiary-fixed": "#dbe1ff",
+                    "on-primary-fixed-variant": "#574500",
+                    "on-error": "#ffffff",
+                    "on-background": "#1c1b1b",
+                    "surface-bright": "#fcf9f8",
+                    "on-primary": "#ffffff",
+                    "surface-container-low": "#f6f3f2",
+                    "tertiary-container": "#97b0ff",
+                    "secondary": "#6d5d2f",
+                    "on-secondary-container": "#736334",
+                    "on-tertiary-fixed": "#00174b",
+                    "tertiary-fixed-dim": "#b4c5ff",
+                    "surface-container-high": "#ebe7e7",
+                    "surface-container-highest": "#e5e2e1",
+                    "primary-container": "#d4af37",
+                    "secondary-container": "#f7e1a6",
+                    "on-primary-fixed": "#241a00",
+                    "error-container": "#ffdad6",
+                    "surface-container": "#f0edec",
+                    "inverse-on-surface": "#f3f0ef",
+                    "secondary-fixed-dim": "#dac58d",
+                    "background": "#fcf9f8",
+                    "surface-tint": "#735c00",
+                    "primary": "#735c00",
+                    "on-tertiary-container": "#254188",
+                    "on-surface-variant": "#4d4635",
+                    "primary-fixed-dim": "#e9c349",
+                    "tertiary": "#415ba4",
+                    "surface-dim": "#dcd9d9",
+                    "on-tertiary": "#ffffff",
+                    "on-surface": "#1c1b1b",
+                    "secondary-fixed": "#f7e1a6",
+                    "surface-variant": "#e5e2e1",
+                    "on-secondary": "#ffffff",
+                    "on-primary-container": "#554300",
+                    "primary-fixed": "#ffe088",
+                    "surface": "#fcf9f8",
+                    "on-error-container": "#93000a",
+                    "error": "#ba1a1a",
+                    "outline-variant": "#d0c5af",
+                    "inverse-primary": "#e9c349",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed": "#241a00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .gold-gradient {
+            background: linear-gradient(135deg, #735c00 0%, #d4af37 100%);
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- SideNavBar Shell -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-[#313030] dark:bg-[#1a1a1a] flex flex-col py-8 shadow-2xl shadow-black/20 z-50">
+<div class="px-8 mb-12">
+<div class="text-2xl font-bold tracking-tighter text-[#D4AF37]">Doma</div>
+<div class="text-[10px] uppercase tracking-widest text-gray-500 mt-1">The Curated Estate</div>
+</div>
+<nav class="flex-1 px-4 space-y-2">
+<!-- Dashboard -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 font-medium hover:text-white hover:bg-white/10 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-[11px] uppercase tracking-widest">Dashboard</span>
+</a>
+<!-- Residents (ACTIVE) -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#D4AF37] bg-white/5 font-semibold border-r-2 border-[#D4AF37] transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="text-[11px] uppercase tracking-widest">Residents</span>
+</a>
+<!-- Maintenance -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 font-medium hover:text-white hover:bg-white/10 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="build">build</span>
+<span class="text-[11px] uppercase tracking-widest">Maintenance</span>
+</a>
+<!-- Amenities -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 font-medium hover:text-white hover:bg-white/10 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="pool">pool</span>
+<span class="text-[11px] uppercase tracking-widest">Amenities</span>
+</a>
+<!-- Communications -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 font-medium hover:text-white hover:bg-white/10 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+<span class="text-[11px] uppercase tracking-widest">Communications</span>
+</a>
+<!-- Financials -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 font-medium hover:text-white hover:bg-white/10 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="text-[11px] uppercase tracking-widest">Financials</span>
+</a>
+</nav>
+<div class="px-4 mt-auto space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 font-medium hover:text-white hover:bg-white/10 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-[11px] uppercase tracking-widest">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 font-medium hover:text-white hover:bg-white/10 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="text-[11px] uppercase tracking-widest">Support</span>
+</a>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-64 min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 bg-[#fcf9f8]/80 backdrop-blur-md flex justify-between items-center px-10 py-4 transition-all">
+<div class="flex items-center gap-8">
+<h1 class="text-2xl font-black tracking-tight text-[#313030]">Clientes</h1>
+<div class="relative group">
+<span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
+<span class="material-symbols-outlined text-lg" data-icon="search">search</span>
+</span>
+<input class="bg-surface-container border-none rounded-full pl-10 pr-4 py-2 text-sm w-64 focus:ring-1 focus:ring-[#D4AF37]/30 transition-all" placeholder="Buscar administrador..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="gold-gradient text-white px-6 py-2.5 rounded-lg font-bold text-sm shadow-lg shadow-[#D4AF37]/20 flex items-center gap-2 transform active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                    Novo Cliente
+                </button>
+<div class="flex items-center gap-4 text-[#313030]">
+<button class="hover:text-[#D4AF37] transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="hover:text-[#D4AF37] transition-colors">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Content Area -->
+<div class="pt-24 px-10 pb-12">
+<!-- Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+<!-- Card 1: Adm. Litoral Sul -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_12px_40px_rgba(28,27,27,0.06)] hover:translate-y-[-4px] transition-transform duration-300 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-tertiary-container/30 text-on-tertiary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Adm. Litoral Sul</span>
+<span class="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-1 rounded">EXCELENTE</span>
+</div>
+<h2 class="text-xl font-bold text-on-surface mb-1">Roberto Mendes</h2>
+<p class="text-sm text-on-surface-variant mb-6">8 condomínios sob gestão</p>
+<div class="space-y-4 mb-8">
+<div class="flex justify-between items-center text-xs">
+<span class="text-gray-500">Atividades/semana</span>
+<span class="font-bold text-on-surface">8</span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-gray-500">Pendências</span>
+<span class="font-bold text-on-surface">4</span>
+</div>
+<div class="pt-2">
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-green-500 h-full w-[92%]"></div>
+</div>
+</div>
+</div>
+</div>
+<button class="group flex items-center justify-between text-sm font-bold text-primary hover:text-primary-container transition-colors">
+<span>Ver detalhes</span>
+<span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Card 2: Prime Administração -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_12px_40px_rgba(28,27,27,0.06)] hover:translate-y-[-4px] transition-transform duration-300 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Prime Administração</span>
+<span class="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded">REGULAR</span>
+</div>
+<h2 class="text-xl font-bold text-on-surface mb-1">Carla Nascimento</h2>
+<p class="text-sm text-on-surface-variant mb-6">12 condomínios sob gestão</p>
+<div class="space-y-4 mb-8">
+<div class="flex justify-between items-center text-xs">
+<span class="text-gray-500">Atividades</span>
+<span class="font-bold text-on-surface">5</span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-gray-500">Pendências</span>
+<span class="font-bold text-on-surface">3</span>
+</div>
+<div class="pt-2">
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-yellow-500 h-full w-[65%]"></div>
+</div>
+</div>
+</div>
+</div>
+<button class="group flex items-center justify-between text-sm font-bold text-primary hover:text-primary-container transition-colors">
+<span>Ver detalhes</span>
+<span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Card 3: Catarinense Condominial -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_12px_40px_rgba(28,27,27,0.06)] hover:translate-y-[-4px] transition-transform duration-300 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Catarinense Condominial</span>
+<span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-1 rounded">ESTÁVEL</span>
+</div>
+<h2 class="text-xl font-bold text-on-surface mb-1">Eduardo Lima</h2>
+<p class="text-sm text-on-surface-variant mb-6">5 condomínios sob gestão</p>
+<div class="space-y-4 mb-8">
+<div class="flex justify-between items-center text-xs">
+<span class="text-gray-500">Atividades</span>
+<span class="font-bold text-on-surface">14</span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-gray-500">Pendências</span>
+<span class="font-bold text-on-surface">0</span>
+</div>
+<div class="pt-2">
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-green-500 h-full w-[80%]"></div>
+</div>
+</div>
+</div>
+</div>
+<button class="group flex items-center justify-between text-sm font-bold text-primary hover:text-primary-container transition-colors">
+<span>Ver detalhes</span>
+<span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Card 4: BC Gestão -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_12px_40px_rgba(28,27,27,0.06)] hover:translate-y-[-4px] transition-transform duration-300 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">BC Gestão</span>
+<span class="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded">ATENÇÃO</span>
+</div>
+<h2 class="text-xl font-bold text-on-surface mb-1">Fernanda Alves</h2>
+<p class="text-sm text-on-surface-variant mb-6">6 condomínios sob gestão</p>
+<div class="space-y-4 mb-8">
+<div class="flex justify-between items-center text-xs">
+<span class="text-gray-500">Avisos</span>
+<span class="font-bold text-on-surface">2</span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-gray-500">Atividades</span>
+<span class="font-bold text-on-surface">4</span>
+</div>
+<div class="pt-2">
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-amber-500 h-full w-[45%]"></div>
+</div>
+</div>
+</div>
+</div>
+<button class="group flex items-center justify-between text-sm font-bold text-primary hover:text-primary-container transition-colors">
+<span>Ver detalhes</span>
+<span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Card 5: Atlântica Adm. -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_12px_40px_rgba(28,27,27,0.06)] hover:translate-y-[-4px] transition-transform duration-300 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Atlântica Adm.</span>
+<span class="text-[10px] font-bold text-error bg-error-container/30 px-2 py-1 rounded">CRÍTICO</span>
+</div>
+<h2 class="text-xl font-bold text-on-surface mb-1">Marcos Souza</h2>
+<p class="text-sm text-on-surface-variant mb-6">4 condomínios sob gestão</p>
+<div class="space-y-4 mb-8">
+<div class="flex justify-between items-center text-xs">
+<span class="text-gray-500">Urgências</span>
+<span class="font-bold text-error">7</span>
+</div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-gray-500">Atividades</span>
+<span class="font-bold text-on-surface">2</span>
+</div>
+<div class="pt-2">
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-error h-full w-[20%]"></div>
+</div>
+</div>
+</div>
+</div>
+<button class="group flex items-center justify-between text-sm font-bold text-primary hover:text-primary-container transition-colors">
+<span>Ver detalhes</span>
+<span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Empty State / Add New Placeholder -->
+<div class="border-2 border-dashed border-outline-variant/30 rounded-xl p-6 flex flex-col items-center justify-center text-center group cursor-pointer hover:border-primary/50 transition-all">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center mb-4 text-gray-400 group-hover:bg-primary-container/20 group-hover:text-primary transition-all">
+<span class="material-symbols-outlined text-2xl" data-icon="add_business">add_business</span>
+</div>
+<h3 class="font-bold text-on-surface mb-1">Cadastrar Administrador</h3>
+<p class="text-xs text-on-surface-variant max-w-[150px]">Adicione novas parcerias de gestão à sua rede.</p>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB (Suppressed as per rules for Details/Settings/focused pages, but here it acts as a quick-add on main view) -->
+<div class="fixed bottom-8 right-8 z-50 md:hidden">
+<button class="gold-gradient w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-white">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</body></html>

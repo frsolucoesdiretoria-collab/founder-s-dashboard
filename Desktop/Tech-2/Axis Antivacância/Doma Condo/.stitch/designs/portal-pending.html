@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&amp;family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Inter:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary": "#ffffff",
+                      "primary-fixed-dim": "#f0c038",
+                      "outline-variant": "#d1c5ae",
+                      "tertiary-fixed-dim": "#8bceff",
+                      "inverse-primary": "#f0c038",
+                      "secondary": "#705c29",
+                      "error": "#ba1a1a",
+                      "surface-container-highest": "#e1e2e4",
+                      "on-secondary": "#ffffff",
+                      "on-primary-fixed": "#251a00",
+                      "secondary-container": "#fbe0a0",
+                      "on-error": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "primary-container": "#e8b931",
+                      "surface-bright": "#f8f9fb",
+                      "on-secondary-fixed-variant": "#564514",
+                      "secondary-fixed": "#fbe0a0",
+                      "on-tertiary": "#ffffff",
+                      "surface-tint": "#765b00",
+                      "on-tertiary-container": "#005279",
+                      "surface-container": "#edeef0",
+                      "primary": "#765b00",
+                      "tertiary-fixed": "#cae6ff",
+                      "surface-dim": "#d9dadc",
+                      "outline": "#807662",
+                      "inverse-on-surface": "#f0f1f3",
+                      "on-primary-container": "#614a00",
+                      "surface-container-low": "#f2f4f6",
+                      "secondary-fixed-dim": "#dec487",
+                      "tertiary-container": "#78c7ff",
+                      "on-primary-fixed-variant": "#594400",
+                      "surface-variant": "#e1e2e4",
+                      "tertiary": "#006492",
+                      "inverse-surface": "#2e3132",
+                      "on-secondary-fixed": "#251a00",
+                      "background": "#f8f9fb",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-fixed": "#ffdf94",
+                      "on-background": "#191c1e",
+                      "on-surface": "#191c1e",
+                      "error-container": "#ffdad6",
+                      "surface-container-high": "#e7e8ea",
+                      "on-secondary-container": "#76622f",
+                      "on-surface-variant": "#4e4634",
+                      "on-tertiary-fixed-variant": "#004b6f",
+                      "surface": "#f8f9fb",
+                      "on-tertiary-fixed": "#001e2f"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Outfit", "Plus Jakarta Sans"],
+                      "body": ["DM Sans", "Inter"],
+                      "label": ["DM Sans", "Inter"]
+              }
+            },
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .gilded-gradient {
+            background: linear-gradient(135deg, #e8b931 0%, #765b00 100%);
+        }
+        body {
+            background-color: #f8f9fb;
+            color: #191c1e;
+        }
+    </style>
+</head>
+<body class="font-body antialiased">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full w-64 flex flex-col py-8 px-6 bg-white/85 backdrop-blur-md z-50 shadow-xl shadow-slate-200/50">
+<div class="mb-10 flex flex-col items-start">
+<div class="flex items-center gap-3 mb-1">
+<div class="w-10 h-10 rounded-xl gilded-gradient flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" data-icon="apartment">apartment</span>
+</div>
+<h1 class="text-2xl font-bold tracking-tight text-slate-900 font-headline">Doma Condo</h1>
+</div>
+<span class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-400 pl-1">The Editorial Residence</span>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Navigation Items -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 hover:pl-6 text-slate-500 hover:text-slate-900 font-label" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Visão Geral</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 hover:pl-6 text-slate-500 hover:text-slate-900 font-label" href="#">
+<span class="material-symbols-outlined" data-icon="event_note">event_note</span>
+<span>Atividades</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 hover:pl-6 text-slate-500 hover:text-slate-900 font-label" href="#">
+<span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
+<span>Relatórios</span>
+</a>
+<!-- Active Tab: Pendências -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 hover:pl-6 text-[#E8B931] font-bold border-r-4 border-[#E8B931] bg-slate-50 font-label" href="#">
+<span class="material-symbols-outlined" data-icon="pending_actions" style="font-variation-settings: 'FILL' 1;">pending_actions</span>
+<span>Pendências</span>
+</a>
+</nav>
+<div class="mt-auto space-y-2 pt-6 border-t border-slate-100">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:text-slate-900 transition-all font-label" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Configurações</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:text-slate-900 transition-all font-label" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>Sair</span>
+</a>
+<div class="mt-6 p-4 rounded-xl bg-surface-container-low">
+<p class="text-xs text-on-surface-variant mb-2">Precisa de ajuda?</p>
+<button class="w-full gilded-gradient text-on-primary text-xs font-bold py-2 rounded-lg transition-transform active:scale-95">
+                    Suporte Premium
+                </button>
+</div>
+</div>
+</aside>
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 right-0 left-64 h-20 bg-[#F8F9FB] flex items-center justify-between px-12 z-40">
+<div class="flex items-center gap-4">
+<div class="h-10 w-1 bg-[#E8B931] rounded-full"></div>
+<h2 class="text-xl font-semibold font-headline text-on-surface">Adm. Litoral Sul</h2>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined" data-icon="search">search</span>
+<input class="bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 w-64 focus:ring-2 focus:ring-[#E8B931]/20 text-sm" placeholder="Buscar pendência..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-600 hover:text-[#E8B931] transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+<div class="text-right">
+<p class="text-sm font-bold font-headline leading-none">Carlos Mendes</p>
+<p class="text-[10px] text-slate-500 uppercase tracking-wider">Gestor Regional</p>
+</div>
+<img alt="User Profile" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm" data-alt="portrait of a professional mature man with a friendly smile, corporate headshot, soft neutral studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBll0ugjvuscEHrS7khNEdxIzOEiuALsGWgydTKWa4gNA4dDsvibd83W5skNZJKLe7ErRZTonFd8x1-fGSssKNV9iSpolNVLLuDBw_p-ITdAi3gA4m-8XHBuuY3d1lLNYVcIduld-S7PJCLWeMgh9wLHUPvhD4ntD8gL215iS8pju8_c92e57B2yJyu1B03zV7iEnrXALPU_bfFifhoh5saVzF0g0DS9hBqm0siYLxF2PXkyWp8EtiQ2TtixUDNz3Q-lvKW3XNxYuo"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-28 pb-12 px-12">
+<section class="max-w-6xl mx-auto">
+<!-- Breadcrumbs / Page Header -->
+<div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h1 class="text-4xl font-bold font-headline tracking-tight mb-2">Pendências</h1>
+<p class="text-on-surface-variant font-body">Você tem <span class="font-bold text-primary">3 tarefas prioritárias</span> para hoje em Adm. Litoral Sul.</p>
+</div>
+<div class="flex gap-3">
+<div class="px-4 py-2 rounded-xl bg-surface-container-lowest shadow-sm flex items-center gap-2 border border-outline-variant/10">
+<span class="material-symbols-outlined text-slate-400 text-lg" data-icon="filter_list">filter_list</span>
+<span class="text-xs font-bold text-slate-600 uppercase">Filtrar</span>
+</div>
+<div class="px-4 py-2 rounded-xl bg-surface-container-lowest shadow-sm flex items-center gap-2 border border-outline-variant/10">
+<span class="material-symbols-outlined text-slate-400 text-lg" data-icon="sort">sort</span>
+<span class="text-xs font-bold text-slate-600 uppercase">Ordenar por: Prazo</span>
+</div>
+</div>
+</div>
+<!-- Bento-style Task Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Main Task Column (Wider) -->
+<div class="lg:col-span-2 space-y-6">
+<!-- Card 1: Pagar fatura energia -->
+<div class="group bg-surface-container-lowest rounded-xl p-8 shadow-sm transition-all duration-300 hover:shadow-md border border-transparent hover:border-outline-variant/20">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-secondary-container/30 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+</div>
+<div>
+<h3 class="text-xl font-bold font-headline text-on-surface">Pagar fatura energia elétrica — venc 14/04</h3>
+<div class="flex items-center gap-2 mt-1">
+<span class="material-symbols-outlined text-xs text-slate-400" data-icon="apartment">apartment</span>
+<p class="text-xs text-slate-500 font-medium">Condomínio Res. Beira Mar</p>
+</div>
+</div>
+</div>
+<div class="bg-secondary-container text-on-secondary-container px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-widest uppercase flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+                                ALTA
+                            </div>
+</div>
+<div class="grid grid-cols-3 gap-6 pt-6 border-t border-slate-50">
+<div>
+<p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Responsável</p>
+<div class="flex items-center gap-2">
+<img alt="Ana Carolina" class="w-6 h-6 rounded-full object-cover" data-alt="portrait of a young female professional with glasses and a friendly look, office setting, soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJNH7Yu4pS2DvqEYkvY6z4KrOmNAV4TnD0BJt7akinDzmAw5X2bMMGjDEm9eRpMFJH8CLta-VXeFjq02UHsF3Xr-Fy8yUftGRQMfpPXg-ghG0_KTaCgoHmaj5ATxK6-QpYqynj26i2kFZP5oHPOahPzOTVedIAXQEedLZa0EH-HTSOgJnhJ-1FMulDSfghpyBb6BqRspKJt4SsdX9Rk_Xbe20tJRaoykh8D2sEAaojORUMb0y3YzRGb249Xto_fev0c97LfDigywg"/>
+<p class="text-sm font-medium text-on-surface">Ana Carolina</p>
+</div>
+</div>
+<div>
+<p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Previsão</p>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-[#E8B931]" data-icon="calendar_today">calendar_today</span>
+<p class="text-sm font-medium text-on-surface">14 de abril</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Valor Est.</p>
+<p class="text-sm font-bold text-on-surface">R$ 1.240,00</p>
+</div>
+</div>
+</div>
+<!-- Card 2: Emitir NF serviço dedetização -->
+<div class="group bg-surface-container-lowest rounded-xl p-8 shadow-sm transition-all duration-300 hover:shadow-md border border-transparent hover:border-outline-variant/20">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-error-container/30 flex items-center justify-center text-error">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+</div>
+<div>
+<h3 class="text-xl font-bold font-headline text-on-surface">Emitir NF serviço dedetização</h3>
+<div class="flex items-center gap-2 mt-1">
+<span class="material-symbols-outlined text-xs text-slate-400" data-icon="apartment">apartment</span>
+<p class="text-xs text-slate-500 font-medium">Ed. Costa Verde</p>
+</div>
+</div>
+</div>
+<div class="bg-error-container text-on-error-container px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-widest uppercase flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+                                URGENTE
+                            </div>
+</div>
+<div class="flex items-center justify-between pt-6 border-t border-slate-50">
+<div class="flex gap-8">
+<div>
+<p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Prazo Final</p>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-error" data-icon="schedule">schedule</span>
+<p class="text-sm font-bold text-error">Hoje, 12/04</p>
+</div>
+</div>
+<div>
+<p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Fornecedor</p>
+<p class="text-sm font-medium text-on-surface">BioControl Ltda.</p>
+</div>
+</div>
+<div class="flex -space-x-2">
+<img class="w-8 h-8 rounded-full border-2 border-white object-cover" data-alt="close up headshot of male professional in white shirt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYn4fXDp2Ik_qQ4uRvmln_jMHrZFrx8W0CD0dJ4qOETHr01zQQ8OIqz6dyWSmC1tMYrxydwjz5Zf5nfgBNxzanapIso4oJ4iFivWvV1aIY6WjKwO1huboVmZp5yTadArIgCnHULB4xBubbQWYOv9G9YVDsI3ZEwYmAT2dY3-Kld8COJr4AZlTZR6AsxMQxNKmhTD5mUZxZR5AG3NUJ1Sn-Epoxuvi1axQdIMsU6SE12ibmJYGfGe03JnRyONAD8S9y0mmSS2TTeBg"/>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest border-2 border-white flex items-center justify-center text-[10px] font-bold text-slate-600">+2</div>
+</div>
+</div>
+</div>
+<!-- Card 3: Preparar balancete março -->
+<div class="group bg-surface-container-lowest rounded-xl p-8 shadow-sm transition-all duration-300 hover:shadow-md border border-transparent hover:border-outline-variant/20">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+</div>
+<div>
+<h3 class="text-xl font-bold font-headline text-on-surface">Preparar balancete março</h3>
+<div class="flex items-center gap-2 mt-1">
+<span class="material-symbols-outlined text-xs text-slate-400" data-icon="category">category</span>
+<p class="text-xs text-slate-500 font-medium">Contabilidade Geral</p>
+</div>
+</div>
+</div>
+<div class="bg-secondary-container text-on-secondary-container px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-widest uppercase flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+                                ALTA
+                            </div>
+</div>
+<div class="flex gap-8 pt-6 border-t border-slate-50">
+<div>
+<p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Data Limite</p>
+<p class="text-sm font-medium text-on-surface">15 de abril (em 3 dias)</p>
+</div>
+<div>
+<p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Status Base</p>
+<div class="flex items-center gap-2">
+<div class="w-16 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="w-[60%] h-full gilded-gradient"></div>
+</div>
+<span class="text-[10px] font-bold text-slate-500">60%</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Secondary Column (Insights) -->
+<div class="space-y-8">
+<!-- Sidebar Card: Metrics -->
+<div class="bg-surface-container-low rounded-xl p-6">
+<h4 class="text-sm font-bold font-headline uppercase tracking-widest text-slate-400 mb-6">Resumo da Carteira</h4>
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-2 h-8 rounded-full bg-error"></div>
+<div>
+<p class="text-xs text-slate-500">Urgentes</p>
+<p class="text-xl font-bold font-headline">04</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-300" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-2 h-8 rounded-full bg-[#E8B931]"></div>
+<div>
+<p class="text-xs text-slate-500">Alta Prioridade</p>
+<p class="text-xl font-bold font-headline">12</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-300" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-2 h-8 rounded-full bg-slate-300"></div>
+<div>
+<p class="text-xs text-slate-500">Aguardando Terceiros</p>
+<p class="text-xl font-bold font-headline">07</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-300" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+<!-- Sidebar Card: Calendar Mini -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<h4 class="text-sm font-bold font-headline">Calendário de Prazos</h4>
+<span class="text-[10px] font-bold text-primary uppercase">Abril</span>
+</div>
+<div class="grid grid-cols-7 gap-2 text-center text-[10px] text-slate-400 mb-2">
+<span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span><span>D</span>
+</div>
+<div class="grid grid-cols-7 gap-2 text-center">
+<div class="p-1.5 text-xs text-slate-300">10</div>
+<div class="p-1.5 text-xs text-slate-300">11</div>
+<div class="p-1.5 text-xs bg-error/10 text-error font-bold rounded-lg ring-1 ring-error/30">12</div>
+<div class="p-1.5 text-xs text-slate-600 font-medium">13</div>
+<div class="p-1.5 text-xs bg-[#E8B931]/10 text-[#765b00] font-bold rounded-lg ring-1 ring-[#E8B931]/30">14</div>
+<div class="p-1.5 text-xs bg-[#E8B931]/10 text-[#765b00] font-bold rounded-lg ring-1 ring-[#E8B931]/30">15</div>
+<div class="p-1.5 text-xs text-slate-600 font-medium">16</div>
+</div>
+<p class="mt-4 text-[10px] leading-relaxed text-slate-500 italic">Próximo fechamento importante: Balancete Março em 3 dias.</p>
+</div>
+<!-- Decorative Branding Image -->
+<div class="relative h-48 rounded-xl overflow-hidden group">
+<img alt="Luxury Architecture" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Modern architectural detail of a glass and concrete skyscraper with blue sky reflection, minimalist and high-end aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnT6QBlcJeLI_GPnGfjW2brGRqzmLxwjdVHAciwdONdsnyHkcD4gQPqN7_u6v9GrVMejXd_EVYhgSbKZLh6lAXieJIPa7O7IHZAvIvkEg2VBlGuWQkXvPaFhNi8HNUzmhpwX-DnEjMYASrhtbw05nWRESZzV2e0dZgE0M5j9f3OUVlfAy2L73y8YaCeUHZ_LgUwqDXmsdn6g8NMYtFx3QZKM90JIOgmaOONNo6VnK0t-SXmLbg9xhpBW7zZ5RQuoKrZ37UpMlv94Q"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex flex-col justify-end p-4">
+<p class="text-white font-headline font-bold text-lg">Doma Condo</p>
+<p class="text-white/80 text-[10px] uppercase tracking-widest">Excelência em Gestão</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+</body></html>

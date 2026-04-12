@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Doma - Gestão de Tarefas</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error-container": "#ffdad6",
+                    "secondary-container": "#e4e2e1",
+                    "on-primary-fixed": "#251a00",
+                    "surface-container-highest": "#e5e2e1",
+                    "primary-container": "#e8b931",
+                    "on-tertiary-fixed": "#1b1c1c",
+                    "on-secondary-container": "#656464",
+                    "tertiary-container": "#c0bfbf",
+                    "secondary": "#5f5e5e",
+                    "surface-container-high": "#ebe7e7",
+                    "tertiary-fixed-dim": "#c8c6c6",
+                    "surface-bright": "#fcf9f8",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed-variant": "#594400",
+                    "on-error": "#ffffff",
+                    "on-background": "#1c1b1b",
+                    "surface-container-low": "#f6f3f2",
+                    "inverse-surface": "#313030",
+                    "outline": "#807662",
+                    "on-tertiary-fixed-variant": "#474747",
+                    "tertiary-fixed": "#e4e2e2",
+                    "on-secondary-fixed-variant": "#474747",
+                    "inverse-primary": "#f0c038",
+                    "outline-variant": "#d1c5ae",
+                    "surface": "#fcf9f8",
+                    "on-error-container": "#93000a",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed": "#1b1c1c",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed": "#e4e2e1",
+                    "on-surface": "#1c1b1b",
+                    "surface-dim": "#dcd9d9",
+                    "on-tertiary": "#ffffff",
+                    "primary-fixed": "#ffdf94",
+                    "surface-variant": "#e5e2e1",
+                    "on-secondary": "#ffffff",
+                    "on-primary-container": "#614a00",
+                    "primary-fixed-dim": "#f0c038",
+                    "on-surface-variant": "#4e4634",
+                    "on-tertiary-container": "#4e4e4d",
+                    "tertiary": "#5e5e5e",
+                    "inverse-on-surface": "#f3f0ef",
+                    "surface-container": "#f0edec",
+                    "surface-tint": "#765b00",
+                    "primary": "#765b00",
+                    "secondary-fixed-dim": "#c8c6c5",
+                    "background": "#fcf9f8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d1c5ae;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface selection:bg-primary-container/30">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-[#313030] dark:bg-[#1a1a1a] shadow-2xl flex flex-col h-full p-6 z-50 font-['Manrope'] antialiased tracking-tight">
+<div class="mb-10 px-2">
+<h1 class="text-2xl font-black tracking-tighter text-white">Doma</h1>
+<p class="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-bold mt-1">Prestige Management</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-medium hover:bg-white/5 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<!-- Active State: Tarefas -->
+<a class="flex items-center gap-3 px-4 py-3 bg-white/10 text-[#E8B931] font-bold rounded-lg group" href="#">
+<span class="material-symbols-outlined fill-icon" data-icon="assignment" style="font-variation-settings: 'FILL' 1;">assignment</span>
+<span>Tarefas</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-medium hover:bg-white/5 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span>Financeiro</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-medium hover:bg-white/5 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span>Moradores</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-white/5 space-y-1">
+<button class="w-full flex items-center justify-center gap-2 bg-gradient-to-tr from-[#E8B931] to-[#f0c038] text-on-primary-fixed font-bold py-3 rounded-lg mb-6 shadow-lg active:scale-95 transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="add">add</span>
+                Nova Tarefa
+            </button>
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-medium hover:bg-white/5 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Configurações</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-medium hover:bg-white/5 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>Sair</span>
+</a>
+</div>
+</aside>
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-[#f9f9f9] dark:bg-[#121212] flex items-center justify-between px-8 z-40 font-['Manrope'] text-sm font-semibold">
+<div class="flex items-center bg-surface-container-low px-4 py-2 rounded-full w-96 group focus-within:ring-1 focus-within:ring-[#E8B931]/20 transition-all">
+<span class="material-symbols-outlined text-on-surface-variant text-xl mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-gray-400" placeholder="Pesquisar em tarefas..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative text-gray-500 hover:text-[#E8B931] transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="flex items-center gap-3 pl-6 border-l border-outline-variant/20">
+<div class="text-right hidden sm:block">
+<p class="text-xs text-on-surface leading-none font-bold">Ricardo Silva</p>
+<p class="text-[10px] text-on-surface-variant leading-none mt-1">Administrador</p>
+</div>
+<img alt="Avatar" class="w-9 h-9 rounded-full object-cover shadow-sm border-2 border-white" data-alt="Close-up portrait of a professional man in a sharp suit with a neutral confident expression, studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD99w49NLAXUFIzz9_2i9tmqG7O9oh8-Out-cbSikuNGwZMqfiJKe9Q6eZFRUXb8vUMTmSptatd3xkEVAx-ulNZzCoXm--w8upfkprGuZchpaPqqQrqJ5A80lTS-hgpwafxo3XTsPSsRREybhQ0ETQeGzKUF3NNT5NEw8DdYtkbALDQDX26xL6z8jp0BcEaSdV9ipoEpL3XeOwiznGkUsn8wSBRWTjd1qA_aMGNAW56jzvWhnZgy9lseKB4vvfCNgVvSOyxTGYCSCgo"/>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 pt-24 px-10 pb-10 min-h-screen">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+<div class="max-w-2xl">
+<h2 class="font-headline text-4xl font-extrabold tracking-tight text-on-surface mb-2">Tarefas</h2>
+<p class="text-on-surface-variant font-body leading-relaxed">Gestão de manutenção e serviços do condomínio.</p>
+</div>
+<div class="flex flex-wrap items-center gap-3">
+<div class="flex items-center gap-2 bg-surface-container-lowest px-4 py-2 rounded-lg border border-outline-variant/15 text-sm font-medium cursor-pointer hover:bg-surface-container-low transition-colors">
+<span>Status</span>
+<span class="material-symbols-outlined text-lg" data-icon="expand_more">expand_more</span>
+</div>
+<div class="flex items-center gap-2 bg-surface-container-lowest px-4 py-2 rounded-lg border border-outline-variant/15 text-sm font-medium cursor-pointer hover:bg-surface-container-low transition-colors">
+<span>Categoria</span>
+<span class="material-symbols-outlined text-lg" data-icon="expand_more">expand_more</span>
+</div>
+<div class="flex items-center gap-2 bg-surface-container-lowest px-4 py-2 rounded-lg border border-outline-variant/15 text-sm font-medium cursor-pointer hover:bg-surface-container-low transition-colors">
+<span>Prioridade</span>
+<span class="material-symbols-outlined text-lg" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Kanban Board -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+<!-- Column: PENDENTE -->
+<section class="flex flex-col gap-6">
+<header class="flex items-center justify-between px-2">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-[#E8B931]"></div>
+<h3 class="font-headline text-xs font-bold tracking-[0.15em] text-on-surface-variant uppercase">PENDENTE</h3>
+</div>
+<span class="bg-primary-fixed text-on-primary-fixed px-2 py-0.5 rounded-full text-[10px] font-bold">4</span>
+</header>
+<div class="space-y-4">
+<!-- Task Card: Urgent -->
+<article class="bg-surface-container-lowest rounded-xl p-5 border-l-4 border-error shadow-sm hover:shadow-md transition-all group cursor-pointer">
+<div class="flex justify-between items-start mb-3">
+<span class="text-[10px] font-bold text-error uppercase tracking-wider bg-error-container/40 px-2 py-0.5 rounded">Unidade 402</span>
+<span class="material-symbols-outlined text-gray-300 group-hover:text-primary transition-colors" data-icon="more_horiz">more_horiz</span>
+</div>
+<h4 class="font-headline text-base font-bold text-on-surface mb-2 leading-tight">Vazamento no 402</h4>
+<div class="flex items-center gap-2 mb-4">
+<span class="text-[10px] font-medium text-on-surface-variant bg-surface-container-high px-2 py-0.5 rounded">Manutenção</span>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex -space-x-2">
+<img alt="Assignee" class="w-6 h-6 rounded-full border-2 border-white object-cover" data-alt="headshot of a male worker with short dark hair and friendly expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjlFmPbpTPqE8VGaf6EmFDBUOvmgx7E3ZJUckD9gHBKKmKvoq9hgVmC1CVdzf1oJs_sCXJeA1IA24KRXbcrmexQ5snHLRSkDWjkI_PielNoW35dQht_Ykj3NsCAwuttRSHvCh2Z8BF9XnOlFrBg5TrC46ij_8sjjotr0aMK9zy6UD-oujRMzU6ECjDqJTFOqG_mi022inDdka_aGqJPAFm93DqLDgjjBudNm3ASy-0NrYkIOlgRPzUMte8RDBA8cl25hRdZp3VG3SN"/>
+</div>
+<div class="flex items-center gap-1 text-error font-bold text-[10px]">
+<span class="material-symbols-outlined text-xs" data-icon="schedule">schedule</span>
+<span>Ontem</span>
+</div>
+</div>
+</article>
+<!-- Task Card: High -->
+<article class="bg-surface-container-lowest rounded-xl p-5 border-l-4 border-[#E8B931] shadow-sm hover:shadow-md transition-all group cursor-pointer">
+<div class="flex justify-between items-start mb-3">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider bg-surface-container-high px-2 py-0.5 rounded">Áreas Comuns</span>
+<span class="material-symbols-outlined text-gray-300 group-hover:text-primary transition-colors" data-icon="more_horiz">more_horiz</span>
+</div>
+<h4 class="font-headline text-base font-bold text-on-surface mb-2 leading-tight">Reparo Portão Garagem</h4>
+<div class="flex items-center gap-2 mb-4">
+<span class="text-[10px] font-medium text-on-surface-variant bg-surface-container-high px-2 py-0.5 rounded">Segurança</span>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex -space-x-2">
+<img alt="Assignee" class="w-6 h-6 rounded-full border-2 border-white object-cover" data-alt="professional male profile photo with blurred office background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCR5Vq_iQ3K5chm8QARjTt_oM8xdt5P2SCdrXONDYojftpGmH0sBmqUE9eaJx_qGXjCZtn8YNkdV_gyyu_YvoaCu2fjGxd9DREkysMIsMElUXbOH_2TLxPgpKh45toibTjPMbJzivnISAk8EkVRtr60FK5cVYSpgjUfcNb_f9pJlLNTmkY_EVC_eTtRQkK29hcvtBYJ7ADp2Oa318zkS1gSMeLs8oTMRo-jNFVnpwyiUvirfapHYJ-mZqrfERKaO0TFyiqNAm0QUWuH"/>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant font-medium text-[10px]">
+<span class="material-symbols-outlined text-xs" data-icon="calendar_today">calendar_today</span>
+<span>Hoje</span>
+</div>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="bg-surface-container-lowest rounded-xl p-5 border-l-4 border-[#E8B931] shadow-sm hover:shadow-md transition-all group cursor-pointer">
+<div class="flex justify-between items-start mb-3">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider bg-surface-container-high px-2 py-0.5 rounded">Hall Social</span>
+<span class="material-symbols-outlined text-gray-300 group-hover:text-primary transition-colors" data-icon="more_horiz">more_horiz</span>
+</div>
+<h4 class="font-headline text-base font-bold text-on-surface mb-2 leading-tight">Troca de Lâmpadas</h4>
+<div class="flex items-center gap-2 mb-4">
+<span class="text-[10px] font-medium text-on-surface-variant bg-surface-container-high px-2 py-0.5 rounded">Elétrica</span>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<img alt="Assignee" class="w-6 h-6 rounded-full border-2 border-white object-cover" data-alt="portrait of a woman with glasses and serious expression in a modern environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBr65j1dML7fin8td-YDrxmAogsK735iUpHos_kddvpFvbMs6SvsN9iLxA8TJBLNmk9_HWuZh9ry8EqTqbjX7c_6myTph1xN8SNJQQNHPY8aJxplW7BJ_4SlaXlz6XezWCNwVYuhZTuXtpbfhaMQEaIaW55fhzf6VCTmcX2RboRBIg1f-nCHpenoAvMPGBEkS2NDauNhLNIPmlzLVPfIQ7VAvFp-BF8__lrm6Qf9IJeXzuet0zyYIF_lYpECbbimCwiXdxSjHBJs2pU"/>
+<div class="flex items-center gap-1 text-on-surface-variant font-medium text-[10px]">
+<span>Amanhã</span>
+</div>
+</div>
+</article>
+<!-- Card 4 -->
+<article class="bg-surface-container-lowest rounded-xl p-5 border-l-4 border-primary-fixed-dim shadow-sm hover:shadow-md transition-all group cursor-pointer">
+<div class="flex justify-between items-start mb-3">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider bg-surface-container-high px-2 py-0.5 rounded">Academia</span>
+<span class="material-symbols-outlined text-gray-300 group-hover:text-primary transition-colors" data-icon="more_horiz">more_horiz</span>
+</div>
+<h4 class="font-headline text-base font-bold text-on-surface mb-2 leading-tight">Revisão Ar Condicionado</h4>
+<div class="flex items-center justify-between mt-auto">
+<span class="text-[10px] font-medium text-on-surface-variant bg-surface-container-high px-2 py-0.5 rounded">Preventiva</span>
+<div class="flex items-center gap-1 text-on-surface-variant font-medium text-[10px]">
+<span>12 Out</span>
+</div>
+</div>
+</article>
+</div>
+</section>
+<!-- Column: EM ANDAMENTO -->
+<section class="flex flex-col gap-6">
+<header class="flex items-center justify-between px-2">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-blue-500"></div>
+<h3 class="font-headline text-xs font-bold tracking-[0.15em] text-on-surface-variant uppercase">EM ANDAMENTO</h3>
+</div>
+<span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-[10px] font-bold">2</span>
+</header>
+<div class="space-y-4">
+<!-- Task Card: Medium -->
+<article class="bg-surface-container-lowest rounded-xl p-5 border-l-4 border-blue-400 shadow-sm hover:shadow-md transition-all group cursor-pointer">
+<div class="flex justify-between items-start mb-3">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider bg-surface-container-high px-2 py-0.5 rounded">Piscina</span>
+<span class="material-symbols-outlined text-gray-300 group-hover:text-primary transition-colors" data-icon="more_horiz">more_horiz</span>
+</div>
+<h4 class="font-headline text-base font-bold text-on-surface mb-2 leading-tight">Limpeza Piscina</h4>
+<div class="flex items-center gap-2 mb-4">
+<span class="text-[10px] font-medium text-on-surface-variant bg-surface-container-high px-2 py-0.5 rounded">Limpeza</span>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<img alt="Assignee" class="w-6 h-6 rounded-full border-2 border-white object-cover" data-alt="portrait of a man with a beard smiling slightly, outdoors light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCd8P00SsohkToP0u5XMpti78NKUtoQWu545HciNND7QFptFs-dB9LiA2_ratheBoCrTqIqVbRNrythN8UVzB9Lnys3b3We8jokc28HD794Ia8EcqQjuCDuD63D0Z6q0dH42p7-5MCtdnwlmmU7y-ktKL75a8fCsg3fF8MS-i_5cgde7DdwIKH8pY2Twf8ZD1Apu2Tnj1Pe6CSj1JelBl7XDNENM6AmrYV0z3d1RTyo09s67Sqm8BJ_0ULDqa4u2uLCJkOfourLBM76"/>
+<div class="flex items-center gap-1 text-blue-600 font-bold text-[10px]">
+<span class="material-symbols-outlined text-xs" data-icon="sync">sync</span>
+<span>Hoje</span>
+</div>
+</div>
+</article>
+<!-- Task Card: Medium -->
+<article class="bg-surface-container-lowest rounded-xl p-5 border-l-4 border-blue-400 shadow-sm hover:shadow-md transition-all group cursor-pointer">
+<div class="flex justify-between items-start mb-3">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider bg-surface-container-high px-2 py-0.5 rounded">Fachada</span>
+<span class="material-symbols-outlined text-gray-300 group-hover:text-primary transition-colors" data-icon="more_horiz">more_horiz</span>
+</div>
+<h4 class="font-headline text-base font-bold text-on-surface mb-2 leading-tight">Pintura de Marcas</h4>
+<div class="flex items-center gap-2 mb-4">
+<span class="text-[10px] font-medium text-on-surface-variant bg-surface-container-high px-2 py-0.5 rounded">Estética</span>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<img alt="Assignee" class="w-6 h-6 rounded-full border-2 border-white object-cover" data-alt="executive businessman portrait in a professional setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhJ_lBO28-P7C9jeW3lNcKmSUnMwwn_ppHqspTbmgYhDnKe4HC9bjMsxubac9fBu9WA456foS15mKV6vq_Nfjs1Nws9k3F5XZZd9UsgFiDX6oKcWfpyrxBhaZ7OcaSvBC_aEZ2Evl1uGfHaxWib7Le3IOKHDi8RwIjY-eOhQ55gsleo4_byUsyFx4sAPF6dfanpeHEj4Vt0NTuDdybvZZg28xN_RyFw6-FT6KgMKA7bcehg9gvYxGThaxZiQd6CdK2FGWigz-2ynKD"/>
+<div class="flex items-center gap-1 text-on-surface-variant font-medium text-[10px]">
+<span>9 Out</span>
+</div>
+</div>
+</article>
+</div>
+</section>
+<!-- Column: CONCLUÍDA -->
+<section class="flex flex-col gap-6">
+<header class="flex items-center justify-between px-2">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+<h3 class="font-headline text-xs font-bold tracking-[0.15em] text-on-surface-variant uppercase">CONCLUÍDA</h3>
+</div>
+<span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-[10px] font-bold">3</span>
+</header>
+<div class="space-y-4">
+<!-- Task Card: Completed -->
+<article class="bg-surface-container-lowest/50 rounded-xl p-5 border-l-4 border-emerald-400 opacity-80 hover:opacity-100 transition-all group cursor-pointer grayscale-[0.3]">
+<div class="flex justify-between items-start mb-3">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider bg-surface-container-high px-2 py-0.5 rounded">Jardim</span>
+<span class="material-symbols-outlined text-emerald-500 text-lg" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h4 class="font-headline text-base font-bold text-on-surface/60 mb-2 line-through leading-tight">Poda das Palmeiras</h4>
+<div class="flex items-center gap-2 mb-4">
+<span class="text-[10px] font-medium text-on-surface-variant/70 bg-surface-container-high px-2 py-0.5 rounded">Manutenção</span>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<img alt="Assignee" class="w-6 h-6 rounded-full border-2 border-white object-cover" data-alt="portrait of a smiling man with professional lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuijGTd56kkaVb45MgwvBlXhLDKEjOAf8UVYB1SHjxQ8I5WZeEdSS0d-VcBOTGODHG3SFsofgxn8nvvE2nJxNa_8PIV1MmTSWPv0DvJ4QxIC-zBhW8YFG5NPeQJ79FEd4RvB4PadD-WvEGHRG-ayB5u61nPt6vQCCOaMMjNTSXaMO47yRk8AqUMxe3zsrpJlg5j8So96eXnnkVR1fYn93ZzOJWuku49j0lUjsWkwxVBo4ri2roKAlrR0JL-66ojQy97OwX30li-GV3"/>
+<span class="text-[10px] font-bold text-emerald-600">Finalizado</span>
+</div>
+</article>
+<article class="bg-surface-container-lowest/50 rounded-xl p-5 border-l-4 border-emerald-400 opacity-80 hover:opacity-100 transition-all group cursor-pointer grayscale-[0.3]">
+<div class="flex justify-between items-start mb-3">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider bg-surface-container-high px-2 py-0.5 rounded">Elevador B</span>
+<span class="material-symbols-outlined text-emerald-500 text-lg" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h4 class="font-headline text-base font-bold text-on-surface/60 mb-2 line-through leading-tight">Ajuste de Nivelamento</h4>
+<div class="flex items-center justify-between mt-auto">
+<span class="text-[10px] font-medium text-on-surface-variant/70 bg-surface-container-high px-2 py-0.5 rounded">Técnica</span>
+<span class="text-[10px] font-bold text-emerald-600">Finalizado</span>
+</div>
+</article>
+<article class="bg-surface-container-lowest/50 rounded-xl p-5 border-l-4 border-emerald-400 opacity-80 hover:opacity-100 transition-all group cursor-pointer grayscale-[0.3]">
+<div class="flex justify-between items-start mb-3">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider bg-surface-container-high px-2 py-0.5 rounded">Admin</span>
+<span class="material-symbols-outlined text-emerald-500 text-lg" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h4 class="font-headline text-base font-bold text-on-surface/60 mb-2 line-through leading-tight">Envio de Boletos</h4>
+<div class="flex items-center justify-between mt-auto">
+<span class="text-[10px] font-medium text-on-surface-variant/70 bg-surface-container-high px-2 py-0.5 rounded">Financeiro</span>
+<span class="text-[10px] font-bold text-emerald-600">Finalizado</span>
+</div>
+</article>
+</div>
+</section>
+</div>
+</main>
+<!-- Contextual FAB (Suppressed as per rules for Details/Focused pages, but keeping for Home/Task context) -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-[#E8B931] text-on-primary-fixed rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all md:hidden">
+<span class="material-symbols-outlined text-2xl font-bold" data-icon="add">add</span>
+</button>
+</body></html>

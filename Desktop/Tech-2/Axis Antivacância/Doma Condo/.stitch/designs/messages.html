@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#f2f4f6",
+                    "surface-container": "#edeef0",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed": "#251a00",
+                    "surface-dim": "#d9dadc",
+                    "surface-bright": "#f8f9fb",
+                    "surface": "#f8f9fb",
+                    "primary": "#765b00",
+                    "on-primary": "#ffffff",
+                    "on-surface-variant": "#4e4634",
+                    "on-secondary-container": "#636262",
+                    "on-primary-fixed-variant": "#594400",
+                    "on-background": "#191c1e",
+                    "secondary": "#5f5e5e",
+                    "on-primary-container": "#614a00",
+                    "on-secondary-fixed": "#1c1b1b",
+                    "inverse-primary": "#f0c038",
+                    "tertiary-fixed-dim": "#c8c6c5",
+                    "secondary-fixed-dim": "#c8c6c5",
+                    "on-tertiary-container": "#4e4e4d",
+                    "tertiary-container": "#c1bfbf",
+                    "primary-fixed": "#ffdf94",
+                    "on-error-container": "#93000a",
+                    "surface-container-highest": "#e1e2e4",
+                    "primary-container": "#e8b931",
+                    "on-error": "#ffffff",
+                    "secondary-container": "#e2dfde",
+                    "background": "#f8f9fb",
+                    "inverse-surface": "#2e3132",
+                    "primary-fixed-dim": "#f0c038",
+                    "on-surface": "#191c1e",
+                    "outline-variant": "#d1c5ae",
+                    "surface-container-lowest": "#ffffff",
+                    "outline": "#807662",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed": "#1b1c1c",
+                    "tertiary-fixed": "#e4e2e1",
+                    "error": "#ba1a1a",
+                    "secondary-fixed": "#e5e2e1",
+                    "inverse-on-surface": "#f0f1f3",
+                    "surface-variant": "#e1e2e4",
+                    "surface-tint": "#765b00",
+                    "surface-container-high": "#e7e8ea",
+                    "on-secondary-fixed-variant": "#474746",
+                    "tertiary": "#5f5e5e",
+                    "on-tertiary-fixed-variant": "#474747"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .message-shadow {
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+        }
+        body { font-family: 'Manrope', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-[#1A1A1A] flex flex-col z-50 shadow-xl">
+<div class="px-8 py-10">
+<span class="text-xl font-bold tracking-tighter text-white">DOMA <span class="text-[#E8B931]">CONDO</span></span>
+<p class="text-[10px] uppercase tracking-[0.2em] text-gray-500 mt-1 font-headline">Administração Elite</p>
+</div>
+<nav class="flex-1 mt-4">
+<a class="text-gray-400 hover:text-white px-6 py-4 flex items-center gap-3 font-['Plus_Jakarta_Sans'] text-sm tracking-wide hover:bg-white/10 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="text-[#E8B931] bg-white/5 border-r-4 border-[#E8B931] px-6 py-4 flex items-center gap-3 font-['Plus_Jakarta_Sans'] text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="forum">forum</span>
+<span>Solicitações</span>
+</a>
+<a class="text-gray-400 hover:text-white px-6 py-4 flex items-center gap-3 font-['Plus_Jakarta_Sans'] text-sm tracking-wide hover:bg-white/10 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="apartment">apartment</span>
+<span>Áreas Comuns</span>
+</a>
+<a class="text-gray-400 hover:text-white px-6 py-4 flex items-center gap-3 font-['Plus_Jakarta_Sans'] text-sm tracking-wide hover:bg-white/10 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span>Financeiro</span>
+</a>
+<a class="text-gray-400 hover:text-white px-6 py-4 flex items-center gap-3 font-['Plus_Jakarta_Sans'] text-sm tracking-wide hover:bg-white/10 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Configurações</span>
+</a>
+</nav>
+<div class="p-6 border-t border-white/5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="professional male property manager portrait in high-end office attire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYjlNFWwICH_0KSov55o3bYqTyB5sgocNVPW0LmkTVnduwSVmOcBZiUheXtvCrtNQM8jMD2kMvdstT-ni9JlHCrLJKlLIOs9mUJnggnZtHrQuEqcZUDaGWI9HAgC78PvjDDqBNr4Lwcum8dAgj3zh2CMcOOtToYaCdeExfn65vIoCYFuNgu31Bu1oqCQgvvsuK-1_rwkpcRbI5IZOzZGpX-l_vQ9Cq0Hz11KcWTMIfGrYi53GkNPMV6y2ZKfu0tPrUEv9iB-0IRFY"/>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-semibold text-white">Ricardo Mendes</span>
+<span class="text-[10px] text-gray-500">Concierge Master</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Shell -->
+<main class="ml-64 flex-1 flex flex-col h-screen overflow-hidden">
+<!-- TopAppBar -->
+<header class="bg-[#f8f9fb] dark:bg-[#1A1A1A] flex items-center justify-between px-8 py-4 w-full h-20">
+<div class="flex items-center gap-4">
+<h1 class="font-['Plus_Jakarta_Sans'] font-semibold text-lg text-[#765b00] dark:text-[#E8B931]">Mensagens WhatsApp</h1>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative hidden lg:block">
+<input class="bg-surface-container-low border-none rounded-xl px-4 py-2 pl-10 text-sm focus:ring-1 focus:ring-primary-container w-64" placeholder="Buscar conversas..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-gray-400 text-sm" data-icon="search">search</span>
+</div>
+<div class="flex items-center gap-3">
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-low transition-all duration-200 text-gray-500">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-low transition-all duration-200 text-gray-500">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Page Container -->
+<div class="flex-1 flex overflow-hidden p-6 gap-6 bg-surface">
+<!-- LEFT: Conversation List (30%) -->
+<section class="w-[30%] flex flex-col gap-4 overflow-y-auto pr-2">
+<div class="flex items-center justify-between mb-2">
+<h2 class="text-xs font-bold uppercase tracking-widest text-gray-400">Atendimentos Ativos</h2>
+<span class="bg-primary-container/20 text-primary px-2 py-0.5 rounded-full text-[10px] font-bold">2 novos</span>
+</div>
+<!-- Card 1: Active -->
+<div class="bg-surface-container-lowest rounded-xl border-l-4 border-[#E8B931] p-4 flex gap-4 cursor-pointer hover:shadow-md transition-all duration-300 shadow-sm">
+<div class="w-12 h-12 rounded-full overflow-hidden shrink-0 border-2 border-primary-container/20">
+<img class="w-full h-full object-cover" data-alt="portrait of a professional woman with blonde hair smiling softly in a luxury apartment setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwQ_WQ5bckZYjGhn-60LZFriDUj2IrhAALLhENFdzShakqqP38txuO2M4DTBSd2mHIvTNcucI2wo-gYDlVt6BgRd5KoGDCkUFxS6vHefJqdae6w3I4ZfCuSC7oudmEngIY8dfHKE_CeINI1Mao0dXNzx8d9gp-jVtF1q8VqiLLCiKfO9965ccQSeN61fjS55r14VMyz4WBx2O44fZZC9p91Wcu018eE30rQCYemEOjVnMnPdghq8tIO4HN6uyHNvyi4wQG3UJv3ic"/>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex justify-between items-baseline">
+<h3 class="font-bold text-sm truncate">Ana Carolina Silva</h3>
+<span class="text-[10px] text-gray-400 font-medium">14:20</span>
+</div>
+<p class="text-xs text-on-surface-variant truncate mt-1">Ótimo, ficarei no aguardo da confirmação.</p>
+<div class="flex mt-2 gap-1 items-center">
+<span class="w-2 h-2 bg-[#E8B931] rounded-full"></span>
+<span class="text-[9px] uppercase font-bold text-primary tracking-tighter">Aguardando Resposta</span>
+</div>
+</div>
+</div>
+<!-- Card 2: Inactive -->
+<div class="bg-surface-container-lowest/60 rounded-xl p-4 flex gap-4 cursor-pointer hover:bg-surface-container-lowest transition-all duration-300">
+<div class="w-12 h-12 rounded-full overflow-hidden shrink-0 filter grayscale-[40%] opacity-80">
+<img class="w-full h-full object-cover" data-alt="portrait of a young woman with dark hair looking thoughtfully to the side" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAIR4mZaIb2g1KyOGjGGLJwnShRga_n5SNfBoEcxeslgt3BqUWeTO_gen10JPS0z4m6jLvXmZDTEmjeEvnn5RdRAXUO_sHWeXOCPE8mUDYooQiGR2Sa9JtiknwMPMiMBvEg7M0mKhNCcy4g1pL04ViucxUveQRPmw4i3nH8pngmuzEUIroatBT2sN0DTKGT2J7dfWI7rcMNh-3iSIzCT1SHxu1TmhMKkyahm56S0rH5apUQAhmc2HkwIKhK8ik4CWkkCY6npL6jchA"/>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex justify-between items-baseline">
+<h3 class="font-bold text-sm truncate text-gray-500">Maria Fernanda Costa</h3>
+<span class="text-[10px] text-gray-400 font-medium">Ontem</span>
+</div>
+<p class="text-xs text-gray-400 truncate mt-1">Pode enviar o boleto de reserva do salão?</p>
+</div>
+</div>
+</section>
+<!-- RIGHT: Chat View (70%) -->
+<section class="flex-1 bg-surface-container-low/50 rounded-2xl flex flex-col overflow-hidden relative">
+<!-- Chat Header -->
+<div class="bg-white/80 backdrop-blur-md px-6 py-4 flex items-center justify-between border-b border-surface-container-high/50 sticky top-0 z-10">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="Ana Carolina Silva profile photo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQJIfwBv9HAJfR6EBpk-un6WcHq7SMtsHhAxRgbAC3tZAhkU0B08GgIBGHen6p6WIIpt65ncM30OeVuHIma9J1NJsTWdecfBjv9Zk17Pp9RmQYFmVwj9mzBjj4wGN6as5wT5mcktw9I87fs6dZMfncbY7cFRlppVmRbWE3cIRdNGefrv65lHIOctcrDprtMYCtOEPDjN6G_mgZvnyUqNV0XrQtYlFA9gZ6SJQezxVziZk4DW-1hSekQNBOLht6a71pvesjXpEKqzI"/>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+</div>
+<div>
+<h2 class="font-bold text-sm">Ana Carolina Silva</h2>
+<p class="text-[10px] text-on-surface-variant/70 font-medium">Unidade 402 - Bloco Imperial</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-surface-container rounded-lg transition-colors text-gray-400">
+<span class="material-symbols-outlined" data-icon="videocam">videocam</span>
+</button>
+<button class="p-2 hover:bg-surface-container rounded-lg transition-colors text-gray-400">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Chat Body -->
+<div class="flex-1 overflow-y-auto p-8 flex flex-col gap-6">
+<div class="flex justify-center">
+<span class="px-4 py-1 bg-surface-container text-[10px] font-bold text-on-surface-variant uppercase tracking-widest rounded-full">Hoje</span>
+</div>
+<!-- Bot Message (Gray) -->
+<div class="flex flex-col max-w-[70%] self-start">
+<div class="bg-surface-container-highest text-on-surface p-4 rounded-xl rounded-bl-none message-shadow">
+<p class="text-sm leading-relaxed">Olá, Ana Carolina! Sou o assistente digital da Doma Condo. Em que posso ajudar com a sua unidade 402 hoje?</p>
+</div>
+<span class="text-[9px] text-gray-400 mt-1 ml-1 font-medium">09:15</span>
+</div>
+<!-- User Message (External - but asked for Bot vs Employee) -->
+<!-- Employee Message (Light Gold) -->
+<div class="flex flex-col max-w-[70%] self-end">
+<div class="bg-primary-container text-on-primary-container p-4 rounded-xl rounded-br-none message-shadow">
+<p class="text-sm leading-relaxed">Bom dia, Ana! Aqui é o Ricardo, seu Concierge. Vi que você teve dúvidas sobre a reserva da churrasqueira.</p>
+</div>
+<div class="flex justify-end items-center gap-1 mt-1 mr-1">
+<span class="text-[9px] text-gray-400 font-medium">10:45</span>
+<span class="material-symbols-outlined text-[12px] text-[#E8B931]" data-icon="done_all">done_all</span>
+</div>
+</div>
+<!-- Audio Message (Employee) -->
+<div class="flex flex-col max-w-[75%] self-end">
+<div class="bg-primary-container text-on-primary-container p-4 rounded-xl rounded-br-none flex items-center gap-4 message-shadow">
+<div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center cursor-pointer hover:bg-white/30 transition-colors">
+<span class="material-symbols-outlined" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+<!-- Waveform Visualization -->
+<div class="flex items-end gap-1 h-6">
+<div class="w-1 bg-white/40 h-2 rounded-full"></div>
+<div class="w-1 bg-white/60 h-4 rounded-full"></div>
+<div class="w-1 bg-white/80 h-3 rounded-full"></div>
+<div class="w-1 bg-white/100 h-6 rounded-full"></div>
+<div class="w-1 bg-white/60 h-4 rounded-full"></div>
+<div class="w-1 bg-white/40 h-2 rounded-full"></div>
+<div class="w-1 bg-white/80 h-5 rounded-full"></div>
+<div class="w-1 bg-white/100 h-4 rounded-full"></div>
+<div class="w-1 bg-white/60 h-2 rounded-full"></div>
+<div class="w-1 bg-white/40 h-3 rounded-full"></div>
+<div class="w-1 bg-white/80 h-5 rounded-full"></div>
+<div class="w-1 bg-white/100 h-6 rounded-full"></div>
+<div class="w-1 bg-white/40 h-2 rounded-full"></div>
+<div class="w-1 bg-white/60 h-4 rounded-full"></div>
+<div class="w-1 bg-white/80 h-3 rounded-full"></div>
+<div class="w-1 bg-white/40 h-2 rounded-full"></div>
+</div>
+<div class="flex flex-col gap-0.5">
+<span class="text-[10px] font-bold">0:24</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="mic">mic</span>
+</div>
+</div>
+<div class="flex justify-end items-center gap-1 mt-1 mr-1">
+<span class="text-[9px] text-gray-400 font-medium">10:46</span>
+<span class="material-symbols-outlined text-[12px] text-[#E8B931]" data-icon="done_all">done_all</span>
+</div>
+</div>
+<!-- Bot Message (Gray) -->
+<div class="flex flex-col max-w-[70%] self-start">
+<div class="bg-surface-container-highest text-on-surface p-4 rounded-xl rounded-bl-none message-shadow">
+<p class="text-sm leading-relaxed">Entendido! Já atualizei o status da sua solicitação. Gostaria de receber o regulamento atualizado em PDF?</p>
+</div>
+<span class="text-[9px] text-gray-400 mt-1 ml-1 font-medium">14:18</span>
+</div>
+<!-- Final User Message Context -->
+<div class="flex flex-col max-w-[70%] self-start">
+<div class="bg-surface-container-low text-on-surface-variant p-4 rounded-xl rounded-bl-none italic opacity-80 border border-surface-container-high">
+<p class="text-xs">Ana Carolina Silva: "Ótimo, ficarei no aguardo da confirmação."</p>
+</div>
+<span class="text-[9px] text-gray-400 mt-1 ml-1 font-medium">14:20</span>
+</div>
+</div>
+<!-- Footer / Status Indicator (No input box per prompt) -->
+<div class="p-4 bg-surface-container-low/80 backdrop-blur-sm border-t border-surface-container-high/30 flex justify-center items-center">
+<p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-[0.25em]">Apenas visualização do histórico</p>
+</div>
+<!-- Glassmorphism Background Decoration -->
+<div class="absolute -bottom-24 -right-24 w-64 h-64 bg-primary-container/10 blur-[100px] pointer-events-none rounded-full"></div>
+<div class="absolute -top-24 -left-24 w-64 h-64 bg-primary/5 blur-[100px] pointer-events-none rounded-full"></div>
+</section>
+</div>
+</main>
+</body></html>

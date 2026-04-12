@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#004b6f",
+                        "inverse-surface": "#313030",
+                        "secondary-container": "#fbe0a0",
+                        "on-tertiary-fixed": "#001e2f",
+                        "on-surface-variant": "#4e4634",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "primary-container": "#e8b931",
+                        "on-secondary-container": "#76622f",
+                        "primary-fixed-dim": "#f0c038",
+                        "surface-variant": "#e5e2e1",
+                        "secondary-fixed-dim": "#dec487",
+                        "on-primary-fixed": "#251a00",
+                        "surface-dim": "#dcd9d9",
+                        "tertiary-fixed-dim": "#8bceff",
+                        "surface-container": "#f0eded",
+                        "on-primary-fixed-variant": "#594400",
+                        "on-primary-container": "#614a00",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#d1c5ae",
+                        "on-surface": "#1c1b1b",
+                        "on-tertiary-container": "#005279",
+                        "background": "#fcf9f8",
+                        "tertiary-fixed": "#cae6ff",
+                        "error-container": "#ffdad6",
+                        "surface": "#fcf9f8",
+                        "surface-container-highest": "#e5e2e1",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#eae7e7",
+                        "surface-bright": "#fcf9f8",
+                        "tertiary-container": "#78c7ff",
+                        "on-background": "#1c1b1b",
+                        "primary": "#765b00",
+                        "on-secondary-fixed-variant": "#564514",
+                        "inverse-on-surface": "#f3f0ef",
+                        "surface-tint": "#765b00",
+                        "on-secondary-fixed": "#251a00",
+                        "on-primary": "#ffffff",
+                        "secondary": "#705c29",
+                        "primary-fixed": "#ffdf94",
+                        "surface-container-low": "#f6f3f2",
+                        "tertiary": "#006492",
+                        "inverse-primary": "#f0c038",
+                        "error": "#ba1a1a",
+                        "outline": "#807662",
+                        "secondary-fixed": "#fbe0a0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        h1, h2, h3, .brand-font { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="bg-[#1A1A1A] h-screen w-64 fixed left-0 top-0 flex flex-col py-8 px-4 z-50 shadow-2xl shadow-black/20">
+<div class="mb-10 px-2 flex items-center gap-2">
+<span class="font-bold text-white tracking-tight text-xl">DOMA</span>
+<span class="font-bold text-[#E8B931] tracking-tight text-xl">CONDO</span>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-medium hover:bg-white/10 hover:text-white transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined text-xl group-hover:text-[#E8B931]">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-medium hover:bg-white/10 hover:text-white transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined text-xl group-hover:text-[#E8B931]">domain</span>
+<span>Units</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-medium hover:bg-white/10 hover:text-white transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined text-xl group-hover:text-[#E8B931]">payments</span>
+<span>Financial</span>
+</a>
+<!-- Active State: Relatórios (Semantic mapping to Settings or Communication context, here specifically highlighted for the current task) -->
+<a class="flex items-center gap-3 px-4 py-3 text-[#E8B931] font-semibold border-r-2 border-[#E8B931] bg-white/5 rounded-l-lg transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-xl">description</span>
+<span>Relatórios</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-medium hover:bg-white/10 hover:text-white transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined text-xl group-hover:text-[#E8B931]">chat_bubble</span>
+<span>Communication</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-medium hover:bg-white/10 hover:text-white transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined text-xl group-hover:text-[#E8B931]">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-white/5 px-2">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full border-2 border-white/10" data-alt="professional male portrait for executive profile avatar with soft warm lighting and neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSuxNoGjJuiikqMBJFvW0QP4HQke_VZ4kJ_nj1PvLTv1xXUrnrUXle8FzkOFst45FPxrSNxKSYQfhXwPJzwyg1ldwsspAxVzMW9hN3UCFdCAzrd59ZG0Bgs0bS8ys2C_OcHEfn-cL5UVwIsDGubUP40nkzvEWBlVJXFaXAhszL3-Qh9qiiZyH8SJxmRbOKIbl8-idqBScj77WAeZVNtNlzB5rN4dRYMCxm3Lajc7nbAlequQxYE921dy4jyS39u1jENHcC7NKJm-Xv"/>
+<div>
+<p class="text-white text-sm font-semibold">Elite Management</p>
+<p class="text-gray-500 text-xs">Admin Access</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen relative">
+<!-- Top Nav -->
+<header class="h-16 flex justify-between items-center px-8 w-full z-40 bg-surface/80 backdrop-blur-md">
+<div class="relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-[#E8B931]/50 transition-all" placeholder="Buscar relatórios ou clientes..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:bg-black/5 rounded-full transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-surface"></span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-black/5 rounded-full transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="h-8 w-px bg-outline-variant/30 mx-2"></div>
+<div class="flex items-center gap-2">
+<span class="text-sm font-semibold text-on-surface">Gestor Master</span>
+<img class="w-8 h-8 rounded-full" data-alt="closeup profile of a professional woman with a welcoming expression in soft corporate office lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEG_9iFFdiCEa-2aQHlrGrpmDEBnyhHn9KahmLaihKdxvJgmAUUHY5B-DLTnXQ109HQD1GodywTsMNlstEuss80oC3iyWhqK9PDS73Cd1lEMT3RaJa1tYh2jnUGBRreip-2rgoXrxiEP9fow33GJ-nG99_Sn6FafxD17i8lsBy9RA5VbpwgPLvKSaGKrD1dyvOoia1xhrbTUCwiERDBJOka6varbvQTIaPZR3hq6ta5r889esdxrlnUXKnuk0xT8PCNDI2orhV1m1_"/>
+</div>
+</div>
+</header>
+<div class="p-8 max-w-7xl mx-auto">
+<!-- Content Header -->
+<div class="flex justify-between items-end mb-8">
+<div>
+<h1 class="text-3xl font-bold text-on-surface tracking-tight mb-2">Relatórios</h1>
+<p class="text-on-surface-variant text-body-md">Gerencie e acompanhe o histórico de atividades e performance dos seus ativos.</p>
+</div>
+<button class="flex items-center gap-2 bg-[#E8B931] hover:bg-[#d0a62c] text-on-primary-container px-6 py-3 rounded-xl font-bold shadow-lg shadow-[#E8B931]/20 transition-all active:scale-[0.98]">
+<span class="material-symbols-outlined">add_circle</span>
+                    Gerar Novo Relatório
+                </button>
+</div>
+<!-- Table Container -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-outline-variant/10">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low">
+<th class="px-6 py-4 text-label-sm font-semibold text-on-surface-variant uppercase tracking-wider">Cliente</th>
+<th class="px-6 py-4 text-label-sm font-semibold text-on-surface-variant uppercase tracking-wider">Período</th>
+<th class="px-6 py-4 text-label-sm font-semibold text-on-surface-variant uppercase tracking-wider text-center">Atividades</th>
+<th class="px-6 py-4 text-label-sm font-semibold text-on-surface-variant uppercase tracking-wider text-center">Status</th>
+<th class="px-6 py-4 text-label-sm font-semibold text-on-surface-variant uppercase tracking-wider">Gerado em</th>
+<th class="px-6 py-4 text-label-sm font-semibold text-on-surface-variant uppercase tracking-wider text-right">Ações</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="px-6 py-5">
+<span class="font-semibold text-on-surface">Adm. Litoral Sul</span>
+</td>
+<td class="px-6 py-5 text-on-surface-variant">01-07/Abr</td>
+<td class="px-6 py-5 text-center">
+<span class="bg-surface-container-high px-3 py-1 rounded-full text-xs font-medium text-on-surface">23 ativ</span>
+</td>
+<td class="px-6 py-5 text-center">
+<span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tight">Enviado</span>
+</td>
+<td class="px-6 py-5 text-on-surface-variant text-sm">08/04/2024</td>
+<td class="px-6 py-5 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 hover:bg-[#E8B931]/10 text-on-surface-variant hover:text-[#765b00] rounded-lg transition-colors" title="Ver"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
+<button class="p-2 hover:bg-[#E8B931]/10 text-on-surface-variant hover:text-[#765b00] rounded-lg transition-colors" title="Download"><span class="material-symbols-outlined text-[20px]">download</span></button>
+<button class="p-2 hover:bg-[#E8B931]/10 text-on-surface-variant hover:text-[#765b00] rounded-lg transition-colors" title="Enviar"><span class="material-symbols-outlined text-[20px]">send</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="px-6 py-5">
+<span class="font-semibold text-on-surface">Prime Adm.</span>
+</td>
+<td class="px-6 py-5 text-on-surface-variant">01-07/Abr</td>
+<td class="px-6 py-5 text-center">
+<span class="bg-surface-container-high px-3 py-1 rounded-full text-xs font-medium text-on-surface">18 ativ</span>
+</td>
+<td class="px-6 py-5 text-center">
+<span class="bg-[#E8B931]/20 text-[#765b00] px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tight">Aprovado</span>
+</td>
+<td class="px-6 py-5 text-on-surface-variant text-sm">07/04/2024</td>
+<td class="px-6 py-5 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 hover:bg-[#E8B931]/10 text-on-surface-variant hover:text-[#765b00] rounded-lg transition-colors" title="Ver"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
+<button class="p-2 hover:bg-[#E8B931]/10 text-on-surface-variant hover:text-[#765b00] rounded-lg transition-colors" title="Download"><span class="material-symbols-outlined text-[20px]">download</span></button>
+<button class="p-2 hover:bg-[#E8B931]/10 text-on-surface-variant hover:text-[#765b00] rounded-lg transition-colors" title="Enviar"><span class="material-symbols-outlined text-[20px]">send</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="px-6 py-5">
+<span class="font-semibold text-on-surface">Catarinense</span>
+</td>
+<td class="px-6 py-5 text-on-surface-variant">01-07/Abr</td>
+<td class="px-6 py-5 text-center">
+<span class="bg-surface-container-high px-3 py-1 rounded-full text-xs font-medium text-on-surface">15 ativ</span>
+</td>
+<td class="px-6 py-5 text-center">
+<span class="bg-gray-200 text-gray-600 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tight">Rascunho</span>
+</td>
+<td class="px-6 py-5 text-on-surface-variant text-sm">07/04/2024</td>
+<td class="px-6 py-5 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="px-3 py-1.5 text-xs font-bold text-[#765b00] hover:bg-[#E8B931] hover:text-white border border-[#E8B931] rounded-lg transition-all">APROVAR</button>
+<button class="p-2 hover:bg-[#E8B931]/10 text-on-surface-variant hover:text-[#765b00] rounded-lg transition-colors" title="Editar"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="px-6 py-5">
+<span class="font-semibold text-on-surface">Adm. Litoral Sul</span>
+</td>
+<td class="px-6 py-5 text-on-surface-variant">24-30/Mar</td>
+<td class="px-6 py-5 text-center">
+<span class="bg-surface-container-high px-3 py-1 rounded-full text-xs font-medium text-on-surface">27 ativ</span>
+</td>
+<td class="px-6 py-5 text-center">
+<span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tight">Enviado</span>
+</td>
+<td class="px-6 py-5 text-on-surface-variant text-sm">31/03/2024</td>
+<td class="px-6 py-5 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 hover:bg-[#E8B931]/10 text-on-surface-variant hover:text-[#765b00] rounded-lg transition-colors" title="Ver"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
+<button class="p-2 hover:bg-[#E8B931]/10 text-on-surface-variant hover:text-[#765b00] rounded-lg transition-colors" title="Download"><span class="material-symbols-outlined text-[20px]">download</span></button>
+<button class="p-2 hover:bg-[#E8B931]/10 text-on-surface-variant hover:text-[#765b00] rounded-lg transition-colors" title="Enviar"><span class="material-symbols-outlined text-[20px]">send</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="p-4 bg-surface-container-low/30 border-t border-surface-container flex justify-between items-center text-label-sm text-on-surface-variant font-medium">
+<span>Exibindo 4 de 48 relatórios</span>
+<div class="flex gap-2">
+<button class="p-1 hover:bg-surface-container-high rounded transition-colors disabled:opacity-30" disabled=""><span class="material-symbols-outlined">chevron_left</span></button>
+<button class="p-1 hover:bg-surface-container-high rounded transition-colors"><span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Background layer for Content -->
+<div class="fixed inset-0 bg-[#F8F9FB] -z-10"></div>
+</main>
+<!-- Modal Overlay -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center bg-[#1A1A1A]/60 backdrop-blur-sm">
+<div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden scale-100 opacity-100 transition-all">
+<!-- Modal Header -->
+<div class="px-8 py-6 flex justify-between items-center border-b border-surface-container-low">
+<h2 class="text-xl font-bold text-on-surface tracking-tight">Gerar Relatório</h2>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Modal Content -->
+<div class="px-8 py-8 space-y-6">
+<!-- Select Client -->
+<div class="space-y-2">
+<label class="text-sm font-semibold text-on-surface-variant ml-1">Selecione o Cliente</label>
+<div class="relative">
+<select class="w-full appearance-none bg-surface-container-low border-none rounded-xl py-3 pl-4 pr-10 text-on-surface font-medium focus:ring-2 focus:ring-[#E8B931] transition-all">
+<option selected="">Adm. Litoral Sul</option>
+<option>Prime Adm.</option>
+<option>Catarinense</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">expand_more</span>
+</div>
+</div>
+<!-- Date Range Picker -->
+<div class="space-y-2">
+<label class="text-sm font-semibold text-on-surface-variant ml-1">Período de Atividades</label>
+<div class="grid grid-cols-2 gap-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">calendar_today</span>
+<input class="w-full bg-surface-container-low border-none rounded-xl py-3 pl-10 pr-4 text-sm font-medium focus:ring-2 focus:ring-[#E8B931]" type="text" value="08/04/2024"/>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">calendar_today</span>
+<input class="w-full bg-surface-container-low border-none rounded-xl py-3 pl-10 pr-4 text-sm font-medium focus:ring-2 focus:ring-[#E8B931]" type="text" value="14/04/2024"/>
+</div>
+</div>
+</div>
+<!-- Info Box -->
+<div class="bg-tertiary/10 border border-tertiary/20 rounded-xl p-4 flex gap-4">
+<span class="material-symbols-outlined text-tertiary shrink-0">info</span>
+<p class="text-sm text-tertiary font-medium leading-relaxed">
+<span class="block font-bold mb-0.5">Resumo do Período:</span>
+                        Foram encontradas <span class="font-bold underline">23 atividades pendentes</span> de relatório para este cliente no período selecionado.
+                    </p>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="px-8 py-6 bg-surface-container-lowest border-t border-surface-container-low flex justify-end gap-3">
+<button class="px-6 py-3 text-on-surface-variant font-bold hover:bg-surface-container rounded-xl transition-all">
+                    Cancelar
+                </button>
+<button class="bg-[#E8B931] hover:bg-[#d0a62c] text-on-primary-container px-6 py-3 rounded-xl font-bold shadow-lg shadow-[#E8B931]/20 transition-all active:scale-[0.98]">
+                    Gerar e Visualizar
+                </button>
+</div>
+</div>
+</div>
+</body></html>

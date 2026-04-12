@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Outfit:wght@400;600;700&amp;family=DM+Sans:wght@400;500;700&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#005279",
+                        "surface-container-low": "#f2f4f6",
+                        "on-background": "#191c1e",
+                        "surface-container": "#edeef0",
+                        "surface": "#f8f9fb",
+                        "inverse-on-surface": "#f0f1f3",
+                        "outline-variant": "#d1c5ae",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed-dim": "#dec487",
+                        "secondary-fixed": "#fbe0a0",
+                        "background": "#f8f9fb",
+                        "surface-container-high": "#e7e8ea",
+                        "on-tertiary-fixed": "#001e2f",
+                        "inverse-surface": "#2e3132",
+                        "error-container": "#ffdad6",
+                        "on-primary": "#ffffff",
+                        "outline": "#807662",
+                        "primary": "#765b00",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#f0c038",
+                        "on-tertiary-fixed-variant": "#004b6f",
+                        "tertiary-container": "#78c7ff",
+                        "on-secondary-fixed": "#251a00",
+                        "on-secondary-container": "#76622f",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#cae6ff",
+                        "surface-bright": "#f8f9fb",
+                        "inverse-primary": "#f0c038",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#fbe0a0",
+                        "primary-container": "#e8b931",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#ffdf94",
+                        "secondary": "#705c29",
+                        "on-primary-fixed-variant": "#594400",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed-variant": "#564514",
+                        "tertiary": "#006492",
+                        "surface-variant": "#e1e2e4",
+                        "on-surface-variant": "#4e4634",
+                        "on-primary-fixed": "#251a00",
+                        "on-surface": "#191c1e",
+                        "on-primary-container": "#614a00",
+                        "surface-dim": "#d9dadc",
+                        "surface-tint": "#765b00",
+                        "surface-container-highest": "#e1e2e4",
+                        "tertiary-fixed-dim": "#8bceff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Outfit", "sans-serif"],
+                        "body": ["DM Sans", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .status-ribbon {
+            border-radius: 12px;
+            padding: 4px 12px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body antialiased">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r-0 flex flex-col py-8 px-4 bg-white dark:bg-slate-900 z-50">
+<div class="mb-10 px-2">
+<h1 class="text-xl font-bold tracking-widest text-[#765B00] dark:text-[#E8B931] font-headline">DOMA CONDO</h1>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-tighter mt-1">Gestão de Patrimônio</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-[#765B00] dark:text-[#E8B931] font-bold border-l-4 border-[#E8B931] bg-[#F8F9FB] dark:bg-slate-800/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm">Meu Trabalho</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-[#765B00] hover:bg-[#F2F4F6] dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm">Minhas Tarefas</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-[#765B00] hover:bg-[#F2F4F6] dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm">Mensagens</span>
+</a>
+</nav>
+<div class="mt-auto pt-4 px-2 border-t border-surface-variant/30">
+<div class="flex items-center gap-3">
+<img alt="Ana Carolina Silva" class="w-10 h-10 rounded-full" data-alt="professional headshot of a smiling young woman with dark hair in a clean business casual outfit, white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvKCkKp3jJGkpiVzUyjeISCDKJQyUZtMFvHQL3ToyYwLoO9HgGTPuCXNdcyuQqC0YmrRPSqExKXc8rKpCL5TTaJ6dE6kFCiOClIWXXDsVZG5BNJiUl7ckeIXuqTHg-wnMJrUAox2ZkyK-S4KoFEEcNgAOaoTnfvmoNfQUrkLLdOKI4cI8Kp2YPVjcUWGHESlwTKhC2OifLCv3_nkCQTlNsHThFJEiawmMiSAVG88VJIaSowGA-bNly0nlfav-1ho9xNKKWDjaLeOc"/>
+<div class="overflow-hidden">
+<p class="text-sm font-bold truncate">Ana Carolina Silva</p>
+<p class="text-xs text-slate-500">Gestora Residencial</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl flex justify-between items-center px-12 py-6">
+<div class="flex items-center gap-4 bg-surface-container-low px-4 py-2 rounded-full w-96">
+<span class="material-symbols-outlined text-outline" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-outline/60" placeholder="Buscar em Meu Trabalho..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative text-on-surface-variant hover:opacity-70 transition-opacity">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<div class="flex items-center gap-3">
+<span class="text-sm font-medium text-on-surface">Ana Carolina Silva</span>
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-xs">AC</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 pt-28 pb-12 px-12 min-h-screen">
+<!-- Page Title & Header Section -->
+<div class="flex flex-col gap-6 mb-10">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="text-[2rem] font-bold text-on-background font-headline tracking-tight">Meu Trabalho</h2>
+<div class="flex items-center gap-4 mt-2">
+<span class="text-on-surface-variant font-medium">Sexta-feira, 11 de Abril</span>
+<div class="flex gap-3">
+<div class="status-ribbon bg-green-100 text-green-700 text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                Manhã registrada
+                            </div>
+<div class="status-ribbon bg-amber-100 text-amber-700 text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+                                Tarde pendente
+                            </div>
+</div>
+</div>
+</div>
+<button class="bg-gradient-to-r from-primary to-primary-container text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-primary/10 active:scale-95 duration-150">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                    Nova Atividade
+                </button>
+</div>
+</div>
+<!-- Main Content Area - Bento Grid Concept -->
+<div class="flex flex-col gap-8">
+<!-- Today's Activities Card -->
+<section class="bg-surface-container-lowest rounded-xl shadow-[0_12px_40px_rgba(25,28,30,0.04)] overflow-hidden">
+<div class="p-8 flex justify-between items-center bg-surface-container-low/30 border-b border-surface-variant/10">
+<div>
+<h3 class="text-xl font-bold font-headline">Hoje, Sexta 11/04</h3>
+<p class="text-sm text-outline mt-1 font-medium">5 atividades registradas</p>
+</div>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-surface-container-high rounded-lg transition-colors">
+<span class="material-symbols-outlined text-outline" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-1">
+<!-- Activity 1 -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low/50 rounded-xl transition-colors group cursor-pointer">
+<div class="flex items-center gap-5">
+<div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+<span class="material-symbols-outlined" data-icon="water_drop">water_drop</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface leading-tight">Verificar leitura do hidrômetro</h4>
+<div class="flex items-center gap-3 mt-1">
+<span class="bg-surface-container-high px-3 py-1 rounded-full text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Res. Beira Mar</span>
+<span class="text-xs text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+                                        08:30 - 09:00
+                                    </span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-surface-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</div>
+<!-- Activity 2 -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low/50 rounded-xl transition-colors group cursor-pointer">
+<div class="flex items-center gap-5">
+<div class="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center text-amber-600">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface leading-tight">Conferência de boletos</h4>
+<div class="flex items-center gap-3 mt-1">
+<span class="bg-surface-container-high px-3 py-1 rounded-full text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Torre Leste</span>
+<span class="text-xs text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+                                        09:10 - 09:45
+                                    </span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-surface-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</div>
+<!-- Activity 3 -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low/50 rounded-xl transition-colors group cursor-pointer">
+<div class="flex items-center gap-5">
+<div class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-green-600">
+<span class="material-symbols-outlined" data-icon="domain_verification">domain_verification</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface leading-tight">Inspeção da área comum</h4>
+<div class="flex items-center gap-3 mt-1">
+<span class="bg-surface-container-high px-3 py-1 rounded-full text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Ed. Costa Verde</span>
+<span class="text-xs text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+                                        10:00 - 10:30
+                                    </span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-surface-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</div>
+<!-- Activity 4 -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low/50 rounded-xl transition-colors group cursor-pointer">
+<div class="flex items-center gap-5">
+<div class="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center text-purple-600">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface leading-tight">Registro de ocorrências</h4>
+<div class="flex items-center gap-3 mt-1">
+<span class="bg-surface-container-high px-3 py-1 rounded-full text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Prime Adm.</span>
+<span class="text-xs text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+                                        11:00 - 11:20
+                                    </span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-surface-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</div>
+<!-- Activity 5 -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low/50 rounded-xl transition-colors group cursor-pointer">
+<div class="flex items-center gap-5">
+<div class="w-12 h-12 rounded-full bg-cyan-50 flex items-center justify-center text-cyan-600">
+<span class="material-symbols-outlined" data-icon="cleaning_services">cleaning_services</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface leading-tight">Limpeza do hall de entrada</h4>
+<div class="flex items-center gap-3 mt-1">
+<span class="bg-surface-container-high px-3 py-1 rounded-full text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Atlântica</span>
+<span class="text-xs text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+                                        14:00 - 14:45
+                                    </span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-surface-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Collapsed Yesterday Card -->
+<section class="bg-surface-container-lowest/60 rounded-xl border border-surface-variant/20 hover:bg-surface-container-lowest transition-all group cursor-pointer overflow-hidden">
+<div class="px-8 py-6 flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-1 h-8 bg-outline/20 rounded-full"></div>
+<div>
+<h3 class="text-lg font-bold text-on-surface-variant group-hover:text-on-surface transition-colors">Quinta, 10/04</h3>
+<p class="text-xs text-outline font-medium">4 atividades realizadas</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full bg-blue-100 border-2 border-white flex items-center justify-center"><span class="material-symbols-outlined text-[14px] text-blue-600" data-icon="water_drop">water_drop</span></div>
+<div class="w-8 h-8 rounded-full bg-green-100 border-2 border-white flex items-center justify-center"><span class="material-symbols-outlined text-[14px] text-green-600" data-icon="domain_verification">domain_verification</span></div>
+<div class="w-8 h-8 rounded-full bg-amber-100 border-2 border-white flex items-center justify-center"><span class="material-symbols-outlined text-[14px] text-amber-600" data-icon="receipt_long">receipt_long</span></div>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- FAB for quick context (Suppressed on details as per rule, but this is a dashboard) -->
+<div class="fixed bottom-8 right-8 flex flex-col gap-4">
+<button class="w-14 h-14 rounded-full bg-primary text-white shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</div>
+</body></html>

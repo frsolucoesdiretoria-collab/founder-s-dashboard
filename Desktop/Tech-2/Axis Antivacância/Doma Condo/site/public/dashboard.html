@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-secondary": "#ffffff",
+          "surface-container-low": "#f6f3f2",
+          "on-error-container": "#93000a",
+          "outline": "#807662",
+          "background": "#fcf9f8",
+          "secondary-fixed": "#fbe0a0",
+          "surface-dim": "#dcd9d9",
+          "on-surface": "#1c1b1b",
+          "on-primary-fixed": "#251a00",
+          "on-primary-container": "#614a00",
+          "on-secondary-container": "#76622f",
+          "on-secondary-fixed-variant": "#564514",
+          "inverse-on-surface": "#f3f0ef",
+          "outline-variant": "#d1c5ae",
+          "on-primary": "#ffffff",
+          "primary": "#765b00",
+          "on-primary-fixed-variant": "#594400",
+          "primary-fixed": "#ffdf94",
+          "error": "#ba1a1a",
+          "on-tertiary-container": "#005279",
+          "on-tertiary": "#ffffff",
+          "secondary-fixed-dim": "#dec487",
+          "inverse-primary": "#f0c038",
+          "surface-bright": "#fcf9f8",
+          "on-tertiary-fixed": "#001e2f",
+          "secondary-container": "#fbe0a0",
+          "on-surface-variant": "#4e4634",
+          "surface": "#fcf9f8",
+          "inverse-surface": "#313030",
+          "primary-container": "#e8b931",
+          "error-container": "#ffdad6",
+          "surface-container": "#f0eded",
+          "on-secondary-fixed": "#251a00",
+          "tertiary-container": "#78c7ff",
+          "on-background": "#1c1b1b",
+          "surface-tint": "#765b00",
+          "primary-fixed-dim": "#f0c038",
+          "on-tertiary-fixed-variant": "#004b6f",
+          "tertiary-fixed": "#cae6ff",
+          "surface-variant": "#e5e2e1",
+          "on-error": "#ffffff",
+          "tertiary-fixed-dim": "#8bceff",
+          "surface-container-lowest": "#ffffff",
+          "secondary": "#705c29",
+          "surface-container-highest": "#e5e2e1",
+          "tertiary": "#006492",
+          "surface-container-high": "#eae7e7"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        "fontFamily": {
+          "headline": ["Manrope"],
+          "body": ["Inter"],
+          "label": ["Inter"]
+        }
+      },
+    },
+  }
+</script>
+<style>
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  body { font-family: 'Inter', sans-serif; }
+  h1, h2, h3, .brand-font { font-family: 'Manrope', sans-serif; }
+
+  /* Sidebar active item gold left border */
+  .nav-active {
+    border-left: 3px solid #E8B931;
+    background-color: #2D2D2D;
+    color: #FFFFFF;
+    font-weight: 700;
+  }
+  .nav-active .material-symbols-outlined {
+    color: #E8B931;
+  }
+
+  /* Bar chart bars */
+  .bar-container {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: flex-end;
+    height: 120px;
+    gap: 0;
+  }
+  .bar-ana {
+    background-color: #E8B931;
+    width: 22px;
+    border-radius: 3px 3px 0 0;
+    transition: opacity 0.2s;
+  }
+  .bar-ana:hover { opacity: 0.8; }
+  .bar-maria {
+    background-color: #3B82F6;
+    width: 22px;
+    transition: opacity 0.2s;
+  }
+  .bar-maria:hover { opacity: 0.8; }
+  .bar-maria:last-child {
+    border-radius: 0 0 3px 3px;
+  }
+
+  /* Stacked bar wrapper */
+  .bar-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 120px;
+  }
+</style>
+</head>
+<body class="bg-[#F8F9FB] text-on-surface antialiased">
+
+<!-- SIDEBAR -->
+<aside class="bg-[#1A1A1A] h-screen w-64 fixed left-0 top-0 flex flex-col py-6 px-4 shadow-2xl font-['Manrope'] antialiased z-50">
+  <!-- Logo -->
+  <div class="mb-10 px-2">
+    <h1 class="text-xl font-bold tracking-tighter">
+      <span class="text-white">DOMA</span><span class="text-[#E8B931]">CONDO</span>
+    </h1>
+    <p class="text-[10px] uppercase tracking-[0.2em] text-[#E8B931] font-bold">Property Management</p>
+  </div>
+
+  <!-- Nav -->
+  <nav class="flex-1 space-y-0.5">
+    <!-- Dashboard ACTIVE -->
+    <a class="nav-active flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all" href="#">
+      <span class="material-symbols-outlined">dashboard</span>
+      <span>Dashboard</span>
+    </a>
+    <a class="flex items-center gap-3 px-3 py-2.5 text-gray-400 font-medium hover:bg-white/10 hover:text-white rounded-lg transition-all" href="priorities.html">
+      <span class="material-symbols-outlined">star</span>
+      <span>Prioridades</span>
+    </a>
+    <a class="flex items-center gap-3 px-3 py-2.5 text-gray-400 font-medium hover:bg-white/10 hover:text-white rounded-lg transition-all" href="team.html">
+      <span class="material-symbols-outlined">group</span>
+      <span>Equipe</span>
+    </a>
+    <a class="flex items-center gap-3 px-3 py-2.5 text-gray-400 font-medium hover:bg-white/10 hover:text-white rounded-lg transition-all" href="clients.html">
+      <span class="material-symbols-outlined">apartment</span>
+      <span>Clientes</span>
+    </a>
+    <a class="flex items-center gap-3 px-3 py-2.5 text-gray-400 font-medium hover:bg-white/10 hover:text-white rounded-lg transition-all" href="tasks.html">
+      <span class="material-symbols-outlined">assignment</span>
+      <span>Tarefas</span>
+    </a>
+    <a class="flex items-center gap-3 px-3 py-2.5 text-gray-400 font-medium hover:bg-white/10 hover:text-white rounded-lg transition-all" href="work-logs.html">
+      <span class="material-symbols-outlined">history</span>
+      <span>Atividades</span>
+    </a>
+    <a class="flex items-center gap-3 px-3 py-2.5 text-gray-400 font-medium hover:bg-white/10 hover:text-white rounded-lg transition-all" href="messages.html">
+      <span class="material-symbols-outlined">chat_bubble</span>
+      <span>Mensagens</span>
+    </a>
+    <a class="flex items-center gap-3 px-3 py-2.5 text-gray-400 font-medium hover:bg-white/10 hover:text-white rounded-lg transition-all" href="reports.html">
+      <span class="material-symbols-outlined">assessment</span>
+      <span>Relatórios</span>
+    </a>
+    <a class="flex items-center gap-3 px-3 py-2.5 text-gray-400 font-medium hover:bg-white/10 hover:text-white rounded-lg transition-all" href="categories.html">
+      <span class="material-symbols-outlined">category</span>
+      <span>Categorias</span>
+    </a>
+    <a class="flex items-center gap-3 px-3 py-2.5 text-gray-400 font-medium hover:bg-white/10 hover:text-white rounded-lg transition-all" href="settings.html">
+      <span class="material-symbols-outlined">settings</span>
+      <span>Configurações</span>
+    </a>
+  </nav>
+
+  <!-- User profile at bottom -->
+  <div class="mt-auto pt-6 border-t border-white/5">
+    <div class="flex items-center gap-3 px-3 py-2.5">
+      <div class="w-9 h-9 rounded-full bg-[#E8B931] flex items-center justify-center flex-shrink-0">
+        <span class="text-[#1A1A1A] text-xs font-black">JO</span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-white text-sm font-bold truncate">Jéssica Oliveira</p>
+        <p class="text-gray-400 text-[10px] font-medium">Admin</p>
+      </div>
+      <span class="material-symbols-outlined text-gray-500 text-sm">more_vert</span>
+    </div>
+  </div>
+</aside>
+
+<!-- HEADER -->
+<header class="fixed top-0 right-0 left-64 h-16 bg-white border-b border-gray-200 flex justify-between items-center px-8 z-40 shadow-sm">
+  <div class="flex items-center gap-2">
+    <span class="text-[#765B00] font-['Manrope'] text-lg font-bold">Dashboard</span>
+  </div>
+  <div class="flex items-center gap-3">
+    <span class="text-on-surface-variant text-sm font-medium hidden md:block">Bom dia, Jéssica 👋</span>
+    <div class="w-px h-5 bg-gray-200"></div>
+    <button class="relative p-2 hover:bg-gray-100 rounded-lg transition-colors">
+      <span class="material-symbols-outlined text-on-surface-variant text-[22px]">notifications</span>
+      <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+    </button>
+    <div class="w-8 h-8 rounded-full bg-[#E8B931] flex items-center justify-center">
+      <span class="text-[#1A1A1A] text-xs font-black">JO</span>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main class="ml-64 mt-16 p-8 min-h-screen bg-[#F8F9FB]">
+  <div class="max-w-7xl mx-auto space-y-6">
+
+    <!-- ROW 1: KPI Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+
+      <!-- KPI 1: Atividades Hoje -->
+      <div class="bg-white rounded-xl p-6 shadow-[0_1px_4px_rgba(0,0,0,0.07)] border border-gray-100">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-10 h-10 rounded-xl bg-[#FEF3C7] flex items-center justify-center">
+            <span class="material-symbols-outlined text-[#E8B931] text-[20px]">assignment_turned_in</span>
+          </div>
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-green-50 text-green-700 text-[11px] font-bold rounded-full">
+            <span class="material-symbols-outlined text-[12px]">trending_up</span>
+            +25%
+          </span>
+        </div>
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Atividades Hoje</p>
+        <p class="text-3xl font-extrabold text-on-surface font-['Manrope']">10</p>
+        <p class="text-xs text-gray-400 mt-1.5">vs ontem</p>
+      </div>
+
+      <!-- KPI 2: Tarefas Pendentes -->
+      <div class="bg-white rounded-xl p-6 shadow-[0_1px_4px_rgba(0,0,0,0.07)] border border-gray-100">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
+            <span class="material-symbols-outlined text-red-500 text-[20px]">error</span>
+          </div>
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-red-50 text-red-600 text-[11px] font-bold rounded-full">
+            2 urgentes
+          </span>
+        </div>
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Tarefas Pendentes</p>
+        <p class="text-3xl font-extrabold text-on-surface font-['Manrope']">6</p>
+        <p class="text-xs text-gray-400 mt-1.5">requerem atenção</p>
+      </div>
+
+      <!-- KPI 3: Clientes Ativos -->
+      <div class="bg-white rounded-xl p-6 shadow-[0_1px_4px_rgba(0,0,0,0.07)] border border-gray-100">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+            <span class="material-symbols-outlined text-blue-500 text-[20px]">apartment</span>
+          </div>
+        </div>
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Clientes Ativos</p>
+        <p class="text-3xl font-extrabold text-on-surface font-['Manrope']">5</p>
+        <p class="text-xs text-gray-400 mt-1.5">35 condomínios</p>
+      </div>
+
+      <!-- KPI 4: Resposta WhatsApp -->
+      <div class="bg-white rounded-xl p-6 shadow-[0_1px_4px_rgba(0,0,0,0.07)] border border-gray-100">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
+            <span class="material-symbols-outlined text-emerald-500 text-[20px]">chat_bubble</span>
+          </div>
+        </div>
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Resposta WhatsApp</p>
+        <p class="text-3xl font-extrabold text-on-surface font-['Manrope']">100%</p>
+        <p class="text-xs text-emerald-600 font-medium mt-1.5">Todas responderam hoje</p>
+      </div>
+    </div>
+
+    <!-- ROW 2: Chart + Foco do Dia -->
+    <div class="grid grid-cols-1 xl:grid-cols-5 gap-5">
+
+      <!-- LEFT: Bar Chart (60% = 3/5 cols) -->
+      <div class="xl:col-span-3 bg-white rounded-xl p-6 shadow-[0_1px_4px_rgba(0,0,0,0.07)] border border-gray-100">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="text-base font-bold text-on-surface font-['Manrope']">Atividades por Dia</h3>
+            <p class="text-xs text-gray-400 mt-0.5">Últimos 7 dias — Ana e Maria</p>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="flex items-center gap-1.5 text-xs text-gray-500">
+              <span class="w-3 h-3 rounded-sm bg-[#E8B931] inline-block"></span>
+              Ana Carolina
+            </span>
+            <span class="flex items-center gap-1.5 text-xs text-gray-500">
+              <span class="w-3 h-3 rounded-sm bg-[#3B82F6] inline-block"></span>
+              Maria Fernanda
+            </span>
+          </div>
+        </div>
+
+        <!-- Bar Chart: Seg(4), Ter(4), Qua(6), Qui(4), Sex(10), Sáb(0), Dom(0) -->
+        <!-- Each bar is stacked: Ana (gold, top) + Maria (blue, bottom) -->
+        <!-- Max total = 10, chart height = 120px, so 1 unit = 12px -->
+        <div class="flex items-end justify-between gap-2 h-36 px-2">
+
+          <!-- Seg: Ana=2, Maria=2 total=4 -->
+          <div class="flex flex-col items-center gap-1 flex-1">
+            <div class="flex flex-col items-center justify-end w-full" style="height:120px;">
+              <div class="w-full max-w-[28px] mx-auto" style="height:24px; background:#E8B931; border-radius:3px 3px 0 0;"></div>
+              <div class="w-full max-w-[28px] mx-auto" style="height:24px; background:#3B82F6; border-radius:0 0 3px 3px;"></div>
+            </div>
+            <span class="text-[10px] text-gray-400 font-medium mt-1">Seg</span>
+          </div>
+
+          <!-- Ter: Ana=2, Maria=2 total=4 -->
+          <div class="flex flex-col items-center gap-1 flex-1">
+            <div class="flex flex-col items-center justify-end w-full" style="height:120px;">
+              <div class="w-full max-w-[28px] mx-auto" style="height:24px; background:#E8B931; border-radius:3px 3px 0 0;"></div>
+              <div class="w-full max-w-[28px] mx-auto" style="height:24px; background:#3B82F6; border-radius:0 0 3px 3px;"></div>
+            </div>
+            <span class="text-[10px] text-gray-400 font-medium mt-1">Ter</span>
+          </div>
+
+          <!-- Qua: Ana=3, Maria=3 total=6 -->
+          <div class="flex flex-col items-center gap-1 flex-1">
+            <div class="flex flex-col items-center justify-end w-full" style="height:120px;">
+              <div class="w-full max-w-[28px] mx-auto" style="height:36px; background:#E8B931; border-radius:3px 3px 0 0;"></div>
+              <div class="w-full max-w-[28px] mx-auto" style="height:36px; background:#3B82F6; border-radius:0 0 3px 3px;"></div>
+            </div>
+            <span class="text-[10px] text-gray-400 font-medium mt-1">Qua</span>
+          </div>
+
+          <!-- Qui: Ana=2, Maria=2 total=4 -->
+          <div class="flex flex-col items-center gap-1 flex-1">
+            <div class="flex flex-col items-center justify-end w-full" style="height:120px;">
+              <div class="w-full max-w-[28px] mx-auto" style="height:24px; background:#E8B931; border-radius:3px 3px 0 0;"></div>
+              <div class="w-full max-w-[28px] mx-auto" style="height:24px; background:#3B82F6; border-radius:0 0 3px 3px;"></div>
+            </div>
+            <span class="text-[10px] text-gray-400 font-medium mt-1">Qui</span>
+          </div>
+
+          <!-- Sex: Ana=5, Maria=5 total=10 — HIGHLIGHT -->
+          <div class="flex flex-col items-center gap-1 flex-1">
+            <div class="flex flex-col items-center justify-end w-full" style="height:120px;">
+              <div class="w-full max-w-[28px] mx-auto" style="height:60px; background:#E8B931; border-radius:3px 3px 0 0; box-shadow:0 -2px 8px rgba(232,185,49,0.4);"></div>
+              <div class="w-full max-w-[28px] mx-auto" style="height:60px; background:#3B82F6; border-radius:0 0 3px 3px; box-shadow:0 2px 8px rgba(59,130,246,0.3);"></div>
+            </div>
+            <span class="text-[10px] text-[#E8B931] font-bold mt-1">Sex</span>
+          </div>
+
+          <!-- Sáb: 0 -->
+          <div class="flex flex-col items-center gap-1 flex-1">
+            <div class="flex flex-col items-center justify-end w-full" style="height:120px;">
+              <div class="w-full max-w-[28px] mx-auto" style="height:4px; background:#E5E7EB; border-radius:3px;"></div>
+            </div>
+            <span class="text-[10px] text-gray-300 font-medium mt-1">Sáb</span>
+          </div>
+
+          <!-- Dom: 0 -->
+          <div class="flex flex-col items-center gap-1 flex-1">
+            <div class="flex flex-col items-center justify-end w-full" style="height:120px;">
+              <div class="w-full max-w-[28px] mx-auto" style="height:4px; background:#E5E7EB; border-radius:3px;"></div>
+            </div>
+            <span class="text-[10px] text-gray-300 font-medium mt-1">Dom</span>
+          </div>
+
+        </div>
+
+        <!-- Y-axis reference lines (decorative) -->
+        <div class="mt-3 pt-3 border-t border-gray-100 flex justify-between text-[10px] text-gray-300 font-medium">
+          <span>0</span>
+          <span>2</span>
+          <span>4</span>
+          <span>6</span>
+          <span>8</span>
+          <span>10</span>
+        </div>
+      </div>
+
+      <!-- RIGHT: Foco do Dia (40% = 2/5 cols) -->
+      <div class="xl:col-span-2 bg-white rounded-xl p-6 shadow-[0_1px_4px_rgba(0,0,0,0.07)] border border-gray-100">
+        <div class="flex items-center justify-between mb-5">
+          <h3 class="text-base font-bold text-on-surface font-['Manrope']">Foco do Dia</h3>
+          <span class="text-lg">🎯</span>
+        </div>
+
+        <div class="space-y-1">
+
+          <!-- 1. Adm. Litoral Sul -->
+          <div class="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-gray-50 cursor-pointer group transition-colors">
+            <div class="flex items-center justify-center w-5 h-5 flex-shrink-0">
+              <span class="w-2.5 h-2.5 rounded-full bg-blue-500 block"></span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold text-on-surface truncate">Adm. Litoral Sul</p>
+              <p class="text-[11px] text-gray-400">4 pendentes</p>
+            </div>
+            <span class="inline-flex items-center px-1.5 py-0.5 bg-red-100 text-red-600 text-[10px] font-bold rounded-md flex-shrink-0">1 vencida</span>
+            <span class="material-symbols-outlined text-gray-300 group-hover:text-gray-400 text-[18px] transition-colors">chevron_right</span>
+          </div>
+
+          <!-- 2. BC Gestão Condominial -->
+          <div class="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-gray-50 cursor-pointer group transition-colors">
+            <div class="flex items-center justify-center w-5 h-5 flex-shrink-0">
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-400 block"></span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold text-on-surface truncate">BC Gestão Condominial</p>
+              <p class="text-[11px] text-gray-400">3 pendentes</p>
+            </div>
+            <span class="inline-flex items-center px-1.5 py-0.5 bg-red-100 text-red-600 text-[10px] font-bold rounded-md flex-shrink-0">1 vencida</span>
+            <span class="material-symbols-outlined text-gray-300 group-hover:text-gray-400 text-[18px] transition-colors">chevron_right</span>
+          </div>
+
+          <!-- 3. Prime Administração -->
+          <div class="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-gray-50 cursor-pointer group transition-colors">
+            <div class="flex items-center justify-center w-5 h-5 flex-shrink-0">
+              <span class="w-2.5 h-2.5 rounded-full bg-purple-500 block"></span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold text-on-surface truncate">Prime Administração</p>
+              <p class="text-[11px] text-gray-400">3 pendentes</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-300 group-hover:text-gray-400 text-[18px] transition-colors">chevron_right</span>
+          </div>
+
+          <!-- 4. Catarinense Condominial -->
+          <div class="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-gray-50 cursor-pointer group transition-colors">
+            <div class="flex items-center justify-center w-5 h-5 flex-shrink-0">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 block"></span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold text-on-surface truncate">Catarinense Condominial</p>
+              <p class="text-[11px] text-gray-400">2 pendentes</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-300 group-hover:text-gray-400 text-[18px] transition-colors">chevron_right</span>
+          </div>
+
+          <!-- 5. Atlântica Administradora -->
+          <div class="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-gray-50 cursor-pointer group transition-colors">
+            <div class="flex items-center justify-center w-5 h-5 flex-shrink-0">
+              <span class="w-2.5 h-2.5 rounded-full bg-red-500 block"></span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold text-on-surface truncate">Atlântica Administradora</p>
+              <p class="text-[11px] text-gray-400">1 pendente</p>
+            </div>
+            <span class="material-symbols-outlined text-gray-300 group-hover:text-gray-400 text-[18px] transition-colors">chevron_right</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 3: Últimas Atividades (full width) -->
+    <div class="bg-white rounded-xl shadow-[0_1px_4px_rgba(0,0,0,0.07)] border border-gray-100 overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <h3 class="text-base font-bold text-on-surface font-['Manrope']">Últimas Atividades</h3>
+        <a href="work-logs.html" class="text-[#765B00] text-sm font-semibold hover:underline flex items-center gap-1">
+          Ver todas
+          <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+        </a>
+      </div>
+
+      <div class="divide-y divide-gray-50">
+
+        <!-- Activity 1 -->
+        <div class="flex items-center gap-4 px-6 py-3.5 hover:bg-gray-50/60 transition-colors">
+          <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0">
+            <span class="text-white text-[10px] font-black">AC</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-sm font-semibold text-on-surface">Ana Carolina</span>
+              <span class="text-sm text-gray-500">•</span>
+              <span class="text-sm text-gray-600 truncate">Lançamento de 5 boletos de fornecedores</span>
+            </div>
+          </div>
+          <span class="inline-flex items-center px-2 py-0.5 bg-blue-50 text-blue-700 text-[10px] font-bold rounded-md flex-shrink-0">Adm. Litoral Sul</span>
+          <span class="text-[11px] text-gray-400 flex-shrink-0 min-w-[40px] text-right">há 2h</span>
+        </div>
+
+        <!-- Activity 2 -->
+        <div class="flex items-center gap-4 px-6 py-3.5 hover:bg-gray-50/60 transition-colors">
+          <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0">
+            <span class="text-white text-[10px] font-black">AC</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-sm font-semibold text-on-surface">Ana Carolina</span>
+              <span class="text-sm text-gray-500">•</span>
+              <span class="text-sm text-gray-600 truncate">Emissão de 3 NFs de manutenção predial</span>
+            </div>
+          </div>
+          <span class="inline-flex items-center px-2 py-0.5 bg-blue-50 text-blue-700 text-[10px] font-bold rounded-md flex-shrink-0">Adm. Litoral Sul</span>
+          <span class="text-[11px] text-gray-400 flex-shrink-0 min-w-[40px] text-right">há 3h</span>
+        </div>
+
+        <!-- Activity 3 -->
+        <div class="flex items-center gap-4 px-6 py-3.5 hover:bg-gray-50/60 transition-colors">
+          <div class="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center flex-shrink-0">
+            <span class="text-white text-[10px] font-black">MF</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-sm font-semibold text-on-surface">Maria Fernanda</span>
+              <span class="text-sm text-gray-500">•</span>
+              <span class="text-sm text-gray-600 truncate">Baixa de 12 boletos de taxa condominial</span>
+            </div>
+          </div>
+          <span class="inline-flex items-center px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-md flex-shrink-0">Catarinense Cond.</span>
+          <span class="text-[11px] text-gray-400 flex-shrink-0 min-w-[40px] text-right">há 3h</span>
+        </div>
+
+        <!-- Activity 4 -->
+        <div class="flex items-center gap-4 px-6 py-3.5 hover:bg-gray-50/60 transition-colors">
+          <div class="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center flex-shrink-0">
+            <span class="text-white text-[10px] font-black">MF</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-sm font-semibold text-on-surface">Maria Fernanda</span>
+              <span class="text-sm text-gray-500">•</span>
+              <span class="text-sm text-gray-600 truncate">8 PIX para fornecedores</span>
+            </div>
+          </div>
+          <span class="inline-flex items-center px-2 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-bold rounded-md flex-shrink-0">BC Gestão Cond.</span>
+          <span class="text-[11px] text-gray-400 flex-shrink-0 min-w-[40px] text-right">há 4h</span>
+        </div>
+
+        <!-- Activity 5 -->
+        <div class="flex items-center gap-4 px-6 py-3.5 hover:bg-gray-50/60 transition-colors">
+          <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0">
+            <span class="text-white text-[10px] font-black">AC</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-sm font-semibold text-on-surface">Ana Carolina</span>
+              <span class="text-sm text-gray-500">•</span>
+              <span class="text-sm text-gray-600 truncate">Conciliação bancária março — 47 lançamentos</span>
+            </div>
+          </div>
+          <span class="inline-flex items-center px-2 py-0.5 bg-purple-50 text-purple-700 text-[10px] font-bold rounded-md flex-shrink-0">Prime Administração</span>
+          <span class="text-[11px] text-gray-400 flex-shrink-0 min-w-[40px] text-right">há 4h</span>
+        </div>
+
+        <!-- Activity 6 -->
+        <div class="flex items-center gap-4 px-6 py-3.5 hover:bg-gray-50/60 transition-colors">
+          <div class="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center flex-shrink-0">
+            <span class="text-white text-[10px] font-black">MF</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-sm font-semibold text-on-surface">Maria Fernanda</span>
+              <span class="text-sm text-gray-500">•</span>
+              <span class="text-sm text-gray-600 truncate">Emissão de 30 boletos de taxa condominial</span>
+            </div>
+          </div>
+          <span class="inline-flex items-center px-2 py-0.5 bg-red-50 text-red-700 text-[10px] font-bold rounded-md flex-shrink-0">Atlântica Adm.</span>
+          <span class="text-[11px] text-gray-400 flex-shrink-0 min-w-[40px] text-right">há 5h</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ROW 4: Status da Equipe -->
+    <div class="bg-white rounded-xl shadow-[0_1px_4px_rgba(0,0,0,0.07)] border border-gray-100 overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <h3 class="text-base font-bold text-on-surface font-['Manrope']">Status da Equipe</h3>
+        <span class="text-[11px] text-gray-400 font-medium">Hoje, 11 de abril</span>
+      </div>
+
+      <div class="divide-y divide-gray-50">
+
+        <!-- Ana Carolina -->
+        <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-4">
+          <div class="flex items-center gap-3 w-48 flex-shrink-0">
+            <div class="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0">
+              <span class="text-white text-xs font-black">AC</span>
+            </div>
+            <div>
+              <p class="text-sm font-bold text-on-surface">Ana Carolina Silva</p>
+              <p class="text-[11px] text-gray-400">Assistente</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 flex-1 flex-wrap">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 text-[11px] font-semibold rounded-full">
+              <span class="material-symbols-outlined text-[14px]">check_circle</span>
+              Manhã respondida
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-700 text-[11px] font-semibold rounded-full">
+              <span class="material-symbols-outlined text-[14px]">hourglass_empty</span>
+              Tarde pendente
+            </span>
+            <span class="ml-auto text-[11px] text-gray-400 font-medium whitespace-nowrap">
+              5 atividades &middot; 3 tarefas
+            </span>
+          </div>
+        </div>
+
+        <!-- Maria Fernanda -->
+        <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-4">
+          <div class="flex items-center gap-3 w-48 flex-shrink-0">
+            <div class="w-9 h-9 rounded-full bg-purple-500 flex items-center justify-center flex-shrink-0">
+              <span class="text-white text-xs font-black">MF</span>
+            </div>
+            <div>
+              <p class="text-sm font-bold text-on-surface">Maria Fernanda Costa</p>
+              <p class="text-[11px] text-gray-400">Assistente</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 flex-1 flex-wrap">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 text-[11px] font-semibold rounded-full">
+              <span class="material-symbols-outlined text-[14px]">check_circle</span>
+              Manhã respondida
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-700 text-[11px] font-semibold rounded-full">
+              <span class="material-symbols-outlined text-[14px]">hourglass_empty</span>
+              Tarde pendente
+            </span>
+            <span class="ml-auto text-[11px] text-gray-400 font-medium whitespace-nowrap">
+              5 atividades &middot; 3 tarefas
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</main>
+
+</body>
+</html>
