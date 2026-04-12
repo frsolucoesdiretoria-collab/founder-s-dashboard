@@ -11,12 +11,17 @@
   .header { background: #1A1A1A; padding: 24px 40px; display: flex; align-items: center; gap: 12px; }
   .logo { font-family: 'Manrope', sans-serif; font-size: 24px; font-weight: 800; }
   .logo-doma { color: #fff; }
-  .logo-condo { color: #E8B931; }
+  .logo-condo { color: #FAC826; }
   .logo-sub { color: #9CA3AF; font-size: 12px; font-family: 'Inter', sans-serif; font-weight: 400; margin-top: 2px; }
-  .badge { background: #E8B931; color: #1A1A1A; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; margin-left: 16px; }
+  .badge { background: #FAC826; color: #1A1A1A; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; margin-left: 16px; }
   .container { max-width: 1100px; margin: 40px auto; padding: 0 24px; }
   h2 { font-family: 'Manrope', sans-serif; font-size: 20px; font-weight: 700; color: #111827; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
-  h2::before { content: ''; display: block; width: 4px; height: 20px; background: #E8B931; border-radius: 2px; }
+  h2::before { content: ''; display: block; width: 4px; height: 20px; background: #FAC826; border-radius: 2px; }
+  .version-label { font-size: 11px; font-weight: 600; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; margin-top: -4px; }
+  .v2-label { font-size: 11px; font-weight: 700; color: #765B00; background: #FAC826; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; margin-top: 8px; display: inline-block; }
+  a.card.v2 { border-color: #FAC826; }
+  a.card.v2:hover { border-color: #765B00; box-shadow: 0 4px 16px rgba(250,200,38,0.25); }
+  a.card.v2 .card-version { font-size: 10px; font-weight: 700; color: #765B00; background: #FAC826; padding: 1px 6px; border-radius: 8px; display: inline-block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-bottom: 40px; }
   a.card {
     background: #fff;
@@ -46,7 +51,7 @@
     <div class="logo"><span class="logo-doma">DOMA</span> <span class="logo-condo">CONDO</span></div>
     <div class="logo-sub">Assessoria e Consultoria</div>
   </div>
-  <span class="badge">Protótipo — 21 páginas</span>
+  <span class="badge">Protótipo — 24 páginas</span>
 </div>
 
 <div class="container">
@@ -161,6 +166,7 @@
   </div>
 
   <h2>Portal do Cliente</h2>
+  <p class="version-label">V1 — Original</p>
   <div class="grid">
     <a class="card" href="portal.html">
       <div class="card-icon">🏠</div>
@@ -173,6 +179,27 @@
       <div class="card-path">/portal/reports</div>
     </a>
     <a class="card" href="report-preview.html">
+      <div class="card-icon">🖨️</div>
+      <div class="card-name">Preview Relatório</div>
+      <div class="card-path">/reports/:id</div>
+    </a>
+  </div>
+  <div class="v2-label">V2 — Brand Guide</div>
+  <div class="grid">
+    <a class="card v2" href="portal-v2.html">
+      <div class="card-version">v2</div>
+      <div class="card-icon">🏠</div>
+      <div class="card-name">Visão Geral</div>
+      <div class="card-path">/portal</div>
+    </a>
+    <a class="card v2" href="portal-reports-v2.html">
+      <div class="card-version">v2</div>
+      <div class="card-icon">📑</div>
+      <div class="card-name">Relatórios</div>
+      <div class="card-path">/portal/reports</div>
+    </a>
+    <a class="card v2" href="report-preview-v2.html">
+      <div class="card-version">v2</div>
       <div class="card-icon">🖨️</div>
       <div class="card-name">Preview Relatório</div>
       <div class="card-path">/reports/:id</div>
