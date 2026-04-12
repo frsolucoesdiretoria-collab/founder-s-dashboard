@@ -4,30 +4,28 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Doma Condo — Protótipo de Navegação</title>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Inter', sans-serif; background: #F8F9FB; min-height: 100vh; }
-  .header { background: #1A1A1A; padding: 24px 40px; display: flex; align-items: center; gap: 12px; }
-  .logo { font-family: 'Manrope', sans-serif; font-size: 24px; font-weight: 800; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F8F9FB; min-height: 100vh; }
+  .header { background: #1A1A1A; padding: 24px 40px; display: flex; align-items: center; gap: 16px; }
+  .logo-wrap { display: flex; align-items: center; gap: 12px; }
+  .logo-img { width: 40px; height: 40px; object-fit: contain; background: #e8b931; border-radius: 8px; padding: 4px; }
+  .logo { font-family: 'Manrope', sans-serif; font-size: 22px; font-weight: 800; }
   .logo-doma { color: #fff; }
   .logo-condo { color: #FAC826; }
-  .logo-sub { color: #9CA3AF; font-size: 12px; font-family: 'Inter', sans-serif; font-weight: 400; margin-top: 2px; }
-  .badge { background: #FAC826; color: #1A1A1A; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; margin-left: 16px; }
+  .logo-sub { color: #9CA3AF; font-size: 11px; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 400; margin-top: 2px; }
+  .badge { background: #FAC826; color: #1A1A1A; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-left: auto; }
   .container { max-width: 1100px; margin: 40px auto; padding: 0 24px; }
-  h2 { font-family: 'Manrope', sans-serif; font-size: 20px; font-weight: 700; color: #111827; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
-  h2::before { content: ''; display: block; width: 4px; height: 20px; background: #FAC826; border-radius: 2px; }
-  .version-label { font-size: 11px; font-weight: 600; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; margin-top: -4px; }
-  .v2-label { font-size: 11px; font-weight: 700; color: #765B00; background: #FAC826; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; margin-top: 8px; display: inline-block; }
-  a.card.v2 { border-color: #FAC826; }
-  a.card.v2:hover { border-color: #765B00; box-shadow: 0 4px 16px rgba(250,200,38,0.25); }
-  a.card.v2 .card-version { font-size: 10px; font-weight: 700; color: #765B00; background: #FAC826; padding: 1px 6px; border-radius: 8px; display: inline-block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-bottom: 40px; }
+  h2 { font-family: 'Manrope', sans-serif; font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  h2::before { content: ''; display: block; width: 4px; height: 18px; background: #FAC826; border-radius: 2px; }
+  .section-desc { color: #6B7280; font-size: 13px; margin-bottom: 20px; margin-top: -8px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; margin-bottom: 40px; }
   a.card {
     background: #fff;
     border: 1.5px solid #E5E7EB;
     border-radius: 12px;
-    padding: 20px;
+    padding: 18px;
     text-decoration: none;
     color: inherit;
     display: block;
@@ -38,26 +36,28 @@
     box-shadow: 0 4px 16px rgba(232,185,49,0.15);
     transform: translateY(-2px);
   }
-  .card-icon { font-size: 24px; margin-bottom: 10px; }
-  .card-name { font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 600; color: #111827; margin-bottom: 4px; }
+  .card-icon { font-size: 22px; margin-bottom: 10px; }
+  .card-name { font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700; color: #111827; margin-bottom: 4px; }
   .card-path { font-size: 11px; color: #9CA3AF; font-family: monospace; }
-  .section-desc { color: #6B7280; font-size: 13px; margin-bottom: 20px; margin-top: -8px; }
   .footer { text-align: center; color: #9CA3AF; font-size: 12px; padding: 40px 0 24px; border-top: 1px solid #E5E7EB; margin-top: 20px; }
 </style>
 </head>
 <body>
 <div class="header">
-  <div>
-    <div class="logo"><span class="logo-doma">DOMA</span> <span class="logo-condo">CONDO</span></div>
-    <div class="logo-sub">Assessoria e Consultoria</div>
+  <div class="logo-wrap">
+    <img class="logo-img" src="images/logo.png" alt="Doma Condo"/>
+    <div>
+      <div class="logo"><span class="logo-doma">DOMA</span> <span class="logo-condo">CONDO</span></div>
+      <div class="logo-sub">Assessoria e Consultoria</div>
+    </div>
   </div>
-  <span class="badge">Protótipo — 24 páginas</span>
+  <span class="badge">Protótipo — 22 páginas</span>
 </div>
 
 <div class="container">
 
-  <p style="color:#6B7280;font-size:14px;margin-bottom:32px;margin-top:8px;">
-    Clique em qualquer página para visualizar. Use a barra lateral dentro de cada página para navegar.
+  <p style="color:#6B7280;font-size:14px;margin-bottom:32px;margin-top:24px;">
+    Clique em qualquer página para visualizar. Use a barra lateral dentro de cada página para navegar entre as telas.
   </p>
 
   <h2>Autenticação</h2>
@@ -78,12 +78,17 @@
     </a>
     <a class="card" href="priorities.html">
       <div class="card-icon">🎯</div>
-      <div class="card-name">Prioridades</div>
+      <div class="card-name">Prioridades do Dia</div>
       <div class="card-path">/priorities</div>
+    </a>
+    <a class="card" href="pending.html">
+      <div class="card-icon">⏳</div>
+      <div class="card-name">Pendências BPO</div>
+      <div class="card-path">/pending</div>
     </a>
   </div>
 
-  <h2>Admin — Operacional</h2>
+  <h2>Admin — Gestão</h2>
   <div class="grid">
     <a class="card" href="team.html">
       <div class="card-icon">👥</div>
@@ -92,7 +97,7 @@
     </a>
     <a class="card" href="team-detail.html">
       <div class="card-icon">👤</div>
-      <div class="card-name">Detalhe Funcionária</div>
+      <div class="card-name">Perfil Funcionária</div>
       <div class="card-path">/team/:id</div>
     </a>
     <a class="card" href="clients.html">
@@ -107,13 +112,18 @@
     </a>
     <a class="card" href="tasks.html">
       <div class="card-icon">✅</div>
-      <div class="card-name">Tarefas (Kanban)</div>
+      <div class="card-name">Kanban de Tarefas</div>
       <div class="card-path">/tasks</div>
     </a>
     <a class="card" href="work-logs.html">
       <div class="card-icon">📋</div>
-      <div class="card-name">Atividades</div>
+      <div class="card-name">Registro Atividades</div>
       <div class="card-path">/work-logs</div>
+    </a>
+    <a class="card" href="categories.html">
+      <div class="card-icon">🏷️</div>
+      <div class="card-name">Categorias</div>
+      <div class="card-path">/categories</div>
     </a>
   </div>
 
@@ -121,32 +131,28 @@
   <div class="grid">
     <a class="card" href="messages.html">
       <div class="card-icon">💬</div>
-      <div class="card-name">Mensagens</div>
+      <div class="card-name">Mensagens WhatsApp</div>
       <div class="card-path">/messages</div>
     </a>
     <a class="card" href="reports.html">
       <div class="card-icon">📄</div>
-      <div class="card-name">Relatórios</div>
+      <div class="card-name">Relatórios Admin</div>
       <div class="card-path">/reports</div>
     </a>
-    <a class="card" href="categories.html">
-      <div class="card-icon">🏷️</div>
-      <div class="card-name">Categorias</div>
-      <div class="card-path">/categories</div>
+    <a class="card" href="report-preview.html">
+      <div class="card-icon">🖨️</div>
+      <div class="card-name">Preview Relatório</div>
+      <div class="card-path">/reports/:id</div>
     </a>
     <a class="card" href="settings.html">
       <div class="card-icon">⚙️</div>
       <div class="card-name">Configurações</div>
       <div class="card-path">/settings</div>
     </a>
-    <a class="card" href="portal-pending.html">
-      <div class="card-icon">⏳</div>
-      <div class="card-name">Pendências</div>
-      <div class="card-path">/portal/pending</div>
-    </a>
   </div>
 
   <h2>Área da Funcionária</h2>
+  <p class="section-desc">Ana Souza — Gestora Financeira</p>
   <div class="grid">
     <a class="card" href="my-work.html">
       <div class="card-icon">🗂️</div>
@@ -166,48 +172,32 @@
   </div>
 
   <h2>Portal do Cliente</h2>
-  <p class="version-label">V1 — Original</p>
+  <p class="section-desc">Portal de acesso do cliente ao BPO condominial</p>
   <div class="grid">
-    <a class="card" href="portal.html">
+    <a class="card" href="portal-overview.html">
       <div class="card-icon">🏠</div>
       <div class="card-name">Visão Geral</div>
       <div class="card-path">/portal</div>
+    </a>
+    <a class="card" href="portal.html">
+      <div class="card-icon">📅</div>
+      <div class="card-name">Atividades</div>
+      <div class="card-path">/portal/activities</div>
     </a>
     <a class="card" href="portal-reports.html">
       <div class="card-icon">📑</div>
       <div class="card-name">Relatórios</div>
       <div class="card-path">/portal/reports</div>
     </a>
-    <a class="card" href="report-preview.html">
-      <div class="card-icon">🖨️</div>
-      <div class="card-name">Preview Relatório</div>
-      <div class="card-path">/reports/:id</div>
-    </a>
-  </div>
-  <div class="v2-label">V2 — Brand Guide</div>
-  <div class="grid">
-    <a class="card v2" href="portal-v2.html">
-      <div class="card-version">v2</div>
-      <div class="card-icon">🏠</div>
-      <div class="card-name">Visão Geral</div>
-      <div class="card-path">/portal</div>
-    </a>
-    <a class="card v2" href="portal-reports-v2.html">
-      <div class="card-version">v2</div>
-      <div class="card-icon">📑</div>
-      <div class="card-name">Relatórios</div>
-      <div class="card-path">/portal/reports</div>
-    </a>
-    <a class="card v2" href="report-preview-v2.html">
-      <div class="card-version">v2</div>
-      <div class="card-icon">🖨️</div>
-      <div class="card-name">Preview Relatório</div>
-      <div class="card-path">/reports/:id</div>
+    <a class="card" href="portal-pending.html">
+      <div class="card-icon">⚠️</div>
+      <div class="card-name">Pendências</div>
+      <div class="card-path">/portal/pending</div>
     </a>
   </div>
 
   <div class="footer">
-    Doma Condo Assessoria e Consultoria · Protótipo gerado com Stitch + Claude Code · Abril 2026
+    Doma Condo Assessoria e Consultoria · 22 páginas geradas com Stitch + Claude Code · Abril 2026
   </div>
 
 </div>

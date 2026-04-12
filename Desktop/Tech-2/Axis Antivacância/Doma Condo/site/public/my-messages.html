@@ -1,312 +1,259 @@
 <!DOCTYPE html>
 
-<html class="light" lang="pt-BR"><head>
+<html lang="pt-BR"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;family=Outfit:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "on-tertiary-fixed-variant": "#004b6f",
-                    "surface-container-high": "#e7e8ea",
-                    "primary-fixed": "#ffdf94",
-                    "error": "#ba1a1a",
-                    "on-tertiary-container": "#005279",
-                    "on-secondary-container": "#76622f",
-                    "tertiary": "#006492",
-                    "on-primary": "#ffffff",
-                    "secondary-fixed": "#fbe0a0",
-                    "on-background": "#191c1e",
-                    "on-secondary": "#ffffff",
-                    "on-primary-fixed-variant": "#594400",
-                    "inverse-primary": "#f0c038",
-                    "background": "#f8f9fb",
-                    "secondary-fixed-dim": "#dec487",
-                    "primary": "#765b00",
-                    "surface": "#f8f9fb",
-                    "surface-tint": "#765b00",
-                    "surface-container-low": "#f2f4f6",
-                    "inverse-surface": "#2e3132",
-                    "surface-container": "#edeef0",
-                    "on-surface": "#191c1e",
-                    "on-error": "#ffffff",
-                    "on-primary-container": "#614a00",
-                    "on-secondary-fixed": "#251a00",
-                    "primary-container": "#e8b931",
-                    "on-secondary-fixed-variant": "#564514",
-                    "on-tertiary": "#ffffff",
-                    "on-error-container": "#93000a",
-                    "surface-bright": "#f8f9fb",
-                    "tertiary-fixed-dim": "#8bceff",
-                    "secondary-container": "#fbe0a0",
-                    "outline-variant": "#d1c5ae",
-                    "on-primary-fixed": "#251a00",
-                    "secondary": "#705c29",
-                    "tertiary-fixed": "#cae6ff",
-                    "primary-fixed-dim": "#f0c038",
-                    "tertiary-container": "#78c7ff",
-                    "surface-dim": "#d9dadc",
-                    "error-container": "#ffdad6",
-                    "on-tertiary-fixed": "#001e2f",
-                    "surface-container-lowest": "#ffffff",
-                    "surface-variant": "#e1e2e4",
-                    "inverse-on-surface": "#f0f1f3",
-                    "outline": "#807662",
-                    "on-surface-variant": "#4e4634",
-                    "surface-container-highest": "#e1e2e4"
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#251a00",
+                        "on-primary": "#ffffff",
+                        "secondary": "#705c29",
+                        "primary-fixed": "#ffdf94",
+                        "surface-container-low": "#f6f3f2",
+                        "tertiary": "#006492",
+                        "surface-tint": "#765b00",
+                        "inverse-primary": "#f0c038",
+                        "error": "#ba1a1a",
+                        "outline": "#807662",
+                        "secondary-fixed": "#fbe0a0",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#eae7e7",
+                        "error-container": "#ffdad6",
+                        "surface": "#fcf9f8",
+                        "surface-container-highest": "#e5e2e1",
+                        "on-background": "#1c1b1b",
+                        "primary": "#765b00",
+                        "on-secondary-fixed-variant": "#564514",
+                        "inverse-on-surface": "#f3f0ef",
+                        "surface-bright": "#fcf9f8",
+                        "tertiary-container": "#78c7ff",
+                        "on-primary-fixed-variant": "#594400",
+                        "on-primary-container": "#614a00",
+                        "on-tertiary": "#ffffff",
+                        "surface-container": "#f0eded",
+                        "on-surface": "#1c1b1b",
+                        "on-tertiary-container": "#005279",
+                        "background": "#fcf9f8",
+                        "tertiary-fixed": "#cae6ff",
+                        "outline-variant": "#d1c5ae",
+                        "on-surface-variant": "#4e4634",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "primary-container": "#e8b931",
+                        "on-secondary-container": "#76622f",
+                        "primary-fixed-dim": "#f0c038",
+                        "on-tertiary-fixed-variant": "#004b6f",
+                        "inverse-surface": "#313030",
+                        "secondary-container": "#fbe0a0",
+                        "on-tertiary-fixed": "#001e2f",
+                        "surface-dim": "#dcd9d9",
+                        "tertiary-fixed-dim": "#8bceff",
+                        "surface-variant": "#e5e2e1",
+                        "secondary-fixed-dim": "#dec487",
+                        "on-primary-fixed": "#251a00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
             },
-            "borderRadius": {
-                    "DEFAULT": "0.75rem",
-                    "lg": "0.5rem",
-                    "xl": "0.75rem",
-                    "full": "9999px"
-            },
-            "fontFamily": {
-                    "headline": ["Plus Jakarta Sans"],
-                    "body": ["Manrope"],
-                    "label": ["Manrope"],
-                    "display": ["Outfit"]
-            }
-          },
         }
-      }
     </script>
 <style>
+        body { font-family: 'Manrope', sans-serif; }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            display: inline-block;
-            line-height: 1;
-            text-transform: none;
-            letter-spacing: normal;
-            word-wrap: normal;
-            white-space: nowrap;
-            direction: ltr;
         }
-        .tonal-stepping { background-color: #f2f4f6; }
+        .tonal-shift { background-color: #fcf9f8; }
+        .no-borders { border: none !important; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="bg-surface font-body text-on-surface antialiased">
-<!-- SideNavBar Shell -->
-<aside class="fixed left-0 top-0 h-full flex flex-col bg-neutral-50 dark:bg-neutral-900 h-screen w-64 border-r-0 z-50">
-<div class="p-6">
-<h1 class="text-2xl font-semibold tracking-tight text-[#765B00] dark:text-[#E8B931] font-headline">Doma Condo</h1>
-<p class="text-xs text-neutral-500 font-medium tracking-widest uppercase mt-1">Luxury Concierge</p>
+<body class="bg-background text-on-surface overflow-hidden">
+<!-- SideNavBar (Authority: Shared Components JSON) -->
+<aside class="h-full w-64 fixed left-0 top-0 bg-[#1A1A1A] flex flex-col py-8 px-4 z-20">
+<!-- Brand Logo -->
+<div class="mb-12 px-2">
+<h1 class="text-xl font-bold uppercase tracking-tighter select-none">
+<span class="text-white">DOMA</span>
+<span class="text-[#e8b931]">CONDO</span>
+</h1>
+<p class="text-[10px] text-gray-500 tracking-widest mt-1 uppercase">BPO Financeiro</p>
 </div>
-<nav class="flex-1 mt-4">
-<a class="flex items-center gap-3 px-4 py-3 text-neutral-500 dark:text-neutral-400 hover:text-[#765B00] dark:hover:text-[#E8B931] transition-colors font-medium" href="#">
-<span class="material-symbols-outlined">dashboard</span>
-<span>Meu Trabalho</span>
+<!-- Navigation Links -->
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-medium hover:bg-white/10 hover:text-white transition-all scale-95 active:scale-90 duration-150" href="my-work.html">
+<span class="material-symbols-outlined" data-icon="work">work</span>
+<span class="text-sm font-['Plus_Jakarta_Sans'] tracking-tight">Meu Trabalho</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-neutral-500 dark:text-neutral-400 hover:text-[#765B00] dark:hover:text-[#E8B931] transition-colors font-medium" href="#">
-<span class="material-symbols-outlined">assignment_turned_in</span>
-<span>Minhas Tarefas</span>
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-medium hover:bg-white/10 hover:text-white transition-all scale-95 active:scale-90 duration-150" href="my-tasks.html">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="text-sm font-['Plus_Jakarta_Sans'] tracking-tight">Minhas Tarefas</span>
 </a>
-<!-- Active State: Mensagens -->
-<a class="flex items-center gap-3 px-4 py-3 text-[#765B00] dark:text-[#E8B931] font-medium border-l-4 border-[#765B00] bg-neutral-100 dark:bg-neutral-800" href="#">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
-<span>Mensagens</span>
+<!-- ACTIVE TAB: Minhas Mensagens -->
+<a class="flex items-center gap-3 px-4 py-3 text-[#e8b931] font-semibold border-r-4 border-[#e8b931] bg-white/5 transition-all scale-95 active:scale-90 duration-150" href="my-messages.html">
+<span class="material-symbols-outlined" data-icon="mail" style="font-variation-settings: 'FILL' 1;">mail</span>
+<span class="text-sm font-['Plus_Jakarta_Sans'] tracking-tight">Minhas Mensagens</span>
 </a>
 </nav>
-<div class="p-4 mt-auto">
-<button class="w-full bg-primary text-on-primary py-3 px-4 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all hover:opacity-90 active:scale-95">
-<span class="material-symbols-outlined">add</span>
-<span>Novo Registro</span>
-</button>
-<div class="mt-6 flex items-center gap-3 px-2">
-<img alt="Profile" class="w-10 h-10 rounded-full bg-surface-container" data-alt="professional concierge employee headshot in a luxury uniform with a friendly expression and neat grooming" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQPg2W6MaliY0f7FJuchZ-u88vnNdnVqpIpQiyidrHa3LOVZ_0n6T4zwTp2oMfm2CO4BTI6e4lMZInPiODDPGlqpAH72K6qO-DgXry-6Tq1WZrgTHRK2rVSIh6xVO3aJMdTPeSttaxI0GW6iK4ed_vd57hcRIvlhqMpXOfcqcEINW9yv2e2n5s1N6x7nQz2E0wZR2U69iJ9cgii4wXSSC_-LyhzdEdjKBII_jXwY1abnqRMu9C83Sx0mSAHqAa6lsQz0_nAZLSEZk"/>
+<!-- Profile Section -->
+<div class="mt-auto pt-6 border-t border-white/10 flex items-center gap-3 px-2">
+<img alt="Ana Souza Profile" class="w-10 h-10 rounded-full object-cover grayscale-[0.2]" data-alt="Professional portrait of a confident Brazilian woman with dark hair, corporate attire, soft office background, professional photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaUoJjBIVvB6VTc_cbLm2i60JT3b_96_5cHe83AWPkOsvYRKlPZnX9JOwEk3BnDkiUvc9Qk8a7VNZd9bLbqWG1N9B7HCC92hDM2VUDcxdu7_vGduHw9FcyK9f3lSmzyByDYV0JWczdfXn50m0Jh1Fpm01Zhq0yu41KM2_4Yv809p1Ju131_cWBnlp7IaRGOgmLRI-kWfzUuiX3Qwz_GvMXzigeCuAY7Q5BCw7YEAI3SzzKafPbreRR1r4vQDz8E2J-HzTFAkiA5FAb"/>
 <div class="overflow-hidden">
-<p class="text-sm font-bold truncate">Carlos Silva</p>
-<p class="text-[10px] text-neutral-500 uppercase font-bold tracking-tighter">Concierge Senior</p>
-</div>
+<p class="text-white text-sm font-bold truncate">Ana Souza</p>
+<p class="text-gray-500 text-[10px] uppercase tracking-wider">Agente Senior</p>
 </div>
 </div>
 </aside>
-<!-- TopNavBar Shell -->
-<header class="sticky top-0 z-40 flex items-center justify-between px-8 ml-64 w-full h-16 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl shadow-sm shadow-black/5">
-<div class="flex items-center flex-1 max-w-xl">
-<div class="relative w-full">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">search</span>
-<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full text-sm focus:ring-2 focus:ring-primary-container" placeholder="Buscar conversas ou registros..." type="text"/>
-</div>
+<!-- Main Viewport Shell -->
+<main class="ml-64 min-h-screen flex flex-col relative">
+<!-- TopAppBar (Authority: Shared Components JSON) -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-10 bg-[#fcf9f8]/80 backdrop-blur-md flex justify-between items-center h-16 px-8 border-b border-[#1A1A1A]/5">
+<div class="flex items-center gap-4">
+<span class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#765b00]">Financial Atelier</span>
 </div>
 <div class="flex items-center gap-6">
-<button class="text-neutral-600 dark:text-neutral-400 hover:text-[#E8B931] transition-colors relative">
-<span class="material-symbols-outlined">notifications</span>
-<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+<button class="text-gray-500 hover:text-[#765b00] transition-colors tap-highlight-none">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
 </button>
-<button class="text-neutral-600 dark:text-neutral-400 hover:text-[#E8B931] transition-colors">
-<span class="material-symbols-outlined">settings</span>
-</button>
-<button class="text-neutral-600 dark:text-neutral-400 hover:text-[#E8B931] transition-colors">
-<span class="material-symbols-outlined">account_circle</span>
+<button class="text-gray-500 hover:text-[#765b00] transition-colors tap-highlight-none">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
 </button>
 </div>
 </header>
-<!-- Main Content -->
-<main class="ml-64 p-8 min-h-[calc(100vh-64px)]">
-<!-- Header Section -->
-<header class="mb-8">
-<h2 class="text-3xl font-bold font-display tracking-tight text-on-surface">Minhas Mensagens</h2>
-<p class="text-on-surface-variant font-medium mt-1">Histórico de comunicações operacionais com a Doma Bot</p>
-</header>
-<div class="grid grid-cols-12 gap-8">
-<!-- Chat View Section -->
-<div class="col-span-12 lg:col-span-8">
-<div class="bg-surface-container-lowest rounded-[12px] flex flex-col h-[600px] overflow-hidden shadow-sm">
+<!-- Content Canvas -->
+<section class="mt-16 p-8 flex flex-col h-[calc(100vh-4rem)]">
+<!-- Jessica Signature Header -->
+<div class="mb-8">
+<h2 class="text-4xl font-extrabold tracking-tight text-on-surface">Minhas Mensagens com o Agente</h2>
+<p class="text-on-surface-variant font-medium mt-1">Sua comunicação direta com a inteligência auxiliar da Doma Condo.</p>
+</div>
+<!-- Two-Column Layout -->
+<div class="flex-1 flex gap-8 overflow-hidden">
+<!-- Left Column: Conversation List -->
+<div class="w-1/3 flex flex-col gap-4">
+<div class="bg-surface-container-low rounded-xl p-4 flex flex-col h-full overflow-y-auto scrollbar-hide">
+<div class="flex items-center justify-between mb-4 px-2">
+<span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Conversas</span>
+<span class="material-symbols-outlined text-sm text-primary" data-icon="edit_square">edit_square</span>
+</div>
+<!-- Contact Card: Active -->
+<div class="p-4 bg-surface-container-lowest rounded-lg border border-primary/10 flex items-center gap-4 transition-all cursor-pointer">
+<div class="w-12 h-12 bg-primary-container rounded-full flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="smart_toy" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline">
+<h4 class="font-bold text-sm truncate">Doma Bot</h4>
+<span class="text-[10px] text-primary font-medium">Agora</span>
+</div>
+<p class="text-xs text-on-surface-variant truncate">Entendido, Ana! Atividade regis...</p>
+</div>
+</div>
+<!-- Contact Card: Static Placeholder -->
+<div class="p-4 hover:bg-surface-container-highest rounded-lg flex items-center gap-4 transition-all cursor-pointer">
+<div class="w-12 h-12 bg-surface-container-highest rounded-full flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline">
+<h4 class="font-bold text-sm truncate">Gerente Mar Azul</h4>
+<span class="text-[10px] text-on-surface-variant">Ontem</span>
+</div>
+<p class="text-xs text-on-surface-variant truncate">Obrigado pelos relatórios envi...</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Active Chat Window -->
+<div class="flex-1 flex flex-col bg-surface-container-low rounded-2xl relative overflow-hidden">
 <!-- Chat Header -->
-<div class="px-6 py-4 border-b border-outline-variant/15 flex items-center justify-between">
+<div class="h-16 px-6 bg-surface-container-lowest/50 backdrop-blur-sm border-b border-outline-variant/10 flex items-center justify-between">
 <div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-primary">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<div class="w-8 h-8 bg-primary-container rounded-full flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-lg" data-icon="smart_toy" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
 </div>
 <div>
-<h3 class="font-bold text-sm">Doma Bot</h3>
-<div class="flex items-center gap-1.5">
-<span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
-<span class="text-[10px] font-bold text-primary uppercase tracking-widest">Sistema Ativo</span>
+<h3 class="text-sm font-bold">Doma Condo AI Agent</h3>
+<div class="flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+<span class="text-[10px] font-semibold text-green-600 uppercase tracking-tight">Disponível</span>
 </div>
 </div>
 </div>
-<span class="text-xs text-on-surface-variant font-medium">Protocolo: #2024-0891</span>
-</div>
-<!-- Chat History -->
-<div class="flex-1 overflow-y-auto p-6 space-y-6 bg-surface-container-low/30">
-<!-- Message 1 (Bot) -->
-<div class="flex items-start gap-3 max-w-[80%]">
-<div class="w-8 h-8 rounded-full bg-primary-container/30 flex-shrink-0 flex items-center justify-center text-primary">
-<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
-</div>
-<div class="bg-[#F1F3F5] text-[#191C1E] p-4 rounded-2xl rounded-tl-none shadow-sm">
-<p class="text-sm">Bom dia! Como foi sua rotina de manutenção hoje cedo?</p>
-<span class="block text-[10px] text-neutral-400 mt-2 text-right">08:02 AM</span>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors" data-icon="search">search</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors" data-icon="more_vert">more_vert</span>
 </div>
 </div>
-<!-- Message 2 (Employee) -->
-<div class="flex flex-col items-end gap-1 ml-auto max-w-[80%]">
-<div class="bg-[#FEF9E7] text-[#191C1E] p-4 rounded-2xl rounded-tr-none shadow-sm w-full">
-<div class="flex items-center gap-4">
-<button class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-md">
-<span class="material-symbols-outlined">play_arrow</span>
+<!-- Messages Scroll Area -->
+<div class="flex-1 p-8 overflow-y-auto space-y-6 scrollbar-hide bg-surface">
+<!-- Date Marker -->
+<div class="flex justify-center">
+<span class="px-3 py-1 bg-surface-container-highest/50 rounded-full text-[10px] font-bold text-on-surface-variant tracking-wider uppercase">Hoje</span>
+</div>
+<!-- User Message -->
+<div class="flex flex-col items-end space-y-1">
+<div class="max-w-[70%] bg-primary-container text-on-primary-container p-4 rounded-xl rounded-tr-none shadow-sm text-sm leading-relaxed">
+                                Processei os boletos do Cond. Mar Azul
+                            </div>
+<span class="text-[10px] text-on-surface-variant font-medium">14:20</span>
+</div>
+<!-- Bot Message -->
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex-shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-sm text-primary" data-icon="smart_toy">smart_toy</span>
+</div>
+<div class="flex flex-col space-y-1">
+<div class="max-w-[85%] bg-surface-container-lowest text-on-surface p-4 rounded-xl rounded-tl-none shadow-sm text-sm border border-outline-variant/5 leading-relaxed">
+                                    Entendido, Ana! Atividade registrada com sucesso. Deseja reportar algo mais?
+                                </div>
+<span class="text-[10px] text-on-surface-variant font-medium">14:21</span>
+</div>
+</div>
+<!-- Dynamic Feedback Placeholder -->
+<div class="pt-4 flex gap-2 overflow-x-auto scrollbar-hide">
+<button class="whitespace-nowrap px-4 py-2 bg-surface-container-lowest border border-outline-variant/30 rounded-full text-xs font-semibold text-primary hover:border-primary transition-all">Sim, registrar nota fiscal</button>
+<button class="whitespace-nowrap px-4 py-2 bg-surface-container-lowest border border-outline-variant/30 rounded-full text-xs font-semibold text-primary hover:border-primary transition-all">Não, por enquanto é só</button>
+<button class="whitespace-nowrap px-4 py-2 bg-surface-container-lowest border border-outline-variant/30 rounded-full text-xs font-semibold text-primary hover:border-primary transition-all">Ver status do condomínio</button>
+</div>
+</div>
+<!-- Input Area -->
+<div class="p-6 bg-surface-container-lowest border-t border-outline-variant/10">
+<div class="flex items-center gap-3 bg-surface-container-low rounded-2xl p-2 pl-4 border border-transparent focus-within:border-primary/30 transition-all">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
 </button>
-<div class="flex-1 h-8 flex items-center gap-0.5">
-<!-- Waveform Visual -->
-<div class="w-1 h-3 bg-primary/20 rounded-full"></div>
-<div class="w-1 h-5 bg-primary/40 rounded-full"></div>
-<div class="w-1 h-8 bg-primary rounded-full"></div>
-<div class="w-1 h-4 bg-primary/60 rounded-full"></div>
-<div class="w-1 h-6 bg-primary rounded-full"></div>
-<div class="w-1 h-2 bg-primary/30 rounded-full"></div>
-<div class="w-1 h-7 bg-primary rounded-full"></div>
-<div class="w-1 h-4 bg-primary/50 rounded-full"></div>
-<div class="w-1 h-6 bg-primary rounded-full"></div>
-<div class="w-1 h-3 bg-primary/30 rounded-full"></div>
-<div class="w-1 h-5 bg-primary/40 rounded-full"></div>
-<div class="w-1 h-8 bg-primary rounded-full"></div>
-<div class="w-1 h-4 bg-primary/60 rounded-full"></div>
-<div class="w-1 h-2 bg-primary/30 rounded-full"></div>
-<div class="w-1 h-6 bg-primary rounded-full"></div>
-<div class="w-1 h-3 bg-primary/20 rounded-full"></div>
-<div class="w-1 h-5 bg-primary/40 rounded-full"></div>
-</div>
-<span class="text-xs font-bold text-primary">0:14</span>
-</div>
-<span class="block text-[10px] text-neutral-400 mt-2 text-right">08:05 AM</span>
-</div>
-</div>
-<!-- Message 3 (Bot) -->
-<div class="flex items-start gap-3 max-w-[80%]">
-<div class="w-8 h-8 rounded-full bg-primary-container/30 flex-shrink-0 flex items-center justify-center text-primary">
-<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
-</div>
-<div class="bg-[#F1F3F5] text-[#191C1E] p-4 rounded-2xl rounded-tl-none shadow-sm">
-<p class="text-sm">Entendido. Você realizou a vistoria do elevador e verificou a iluminação do hall. Confirma?</p>
-<span class="block text-[10px] text-neutral-400 mt-2 text-right">08:06 AM</span>
-</div>
-</div>
-<!-- Message 4 (Employee) -->
-<div class="flex flex-col items-end gap-1 ml-auto max-w-[80%]">
-<div class="bg-[#FEF9E7] text-[#191C1E] p-4 rounded-2xl rounded-tr-none shadow-sm">
-<p class="text-sm">Sim, tudo certo.</p>
-<div class="flex items-center justify-end gap-1 mt-2">
-<span class="text-[10px] text-neutral-400">08:07 AM</span>
-<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'opsz' 20;">done_all</span>
+<input class="flex-1 bg-transparent border-none focus:ring-0 text-sm py-2 placeholder:text-on-surface-variant/60" placeholder="Escreva sua mensagem aqui..." type="text"/>
+<div class="flex items-center gap-1 pr-1">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="mood">mood</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-[#765b00] to-[#e8b931] text-white shadow-lg active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="send" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
 </div>
 </div>
 </div>
 </div>
-<!-- Chat Footer -->
-<div class="px-6 py-4 bg-surface-container border-t border-outline-variant/15 flex items-center justify-center gap-2">
-<span class="material-symbols-outlined text-neutral-500 text-sm">lock</span>
-<p class="text-xs text-neutral-500 font-medium">Esta conversa foi arquivada pelo sistema de gestão.</p>
 </div>
-</div>
-</div>
-<!-- Summary Section -->
-<div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
-<!-- Summary Card 1 -->
-<div class="bg-surface-container-lowest p-6 rounded-[12px] shadow-sm border-l-4 border-primary">
-<div class="flex items-center gap-3 mb-4">
-<div class="w-10 h-10 rounded-lg bg-primary-container/20 flex items-center justify-center text-primary">
-<span class="material-symbols-outlined">summarize</span>
-</div>
-<h4 class="font-bold text-sm">Sumário de Atividade</h4>
-</div>
-<div class="space-y-4">
-<div class="flex justify-between items-center text-sm">
-<span class="text-on-surface-variant">Check-ins realizados</span>
-<span class="font-display font-semibold text-primary">04/05</span>
-</div>
-<div class="w-full bg-surface-container-low h-1.5 rounded-full overflow-hidden">
-<div class="bg-primary h-full w-[80%]"></div>
-</div>
-<p class="text-xs text-on-surface-variant leading-relaxed">Registro automático gerado via comando de voz processado pela IA.</p>
-</div>
-</div>
-<!-- Summary Card 2 -->
-<div class="bg-surface-container-lowest p-6 rounded-[12px] shadow-sm">
-<div class="flex items-center gap-3 mb-4">
-<div class="w-10 h-10 rounded-lg bg-primary-container/20 flex items-center justify-center text-primary">
-<span class="material-symbols-outlined">verified</span>
-</div>
-<h4 class="font-bold text-sm">Última Vistoria</h4>
-</div>
-<div class="space-y-2">
-<p class="text-xs font-bold text-primary uppercase tracking-wider">Elevador Social B</p>
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-success text-sm text-green-600">check_circle</span>
-<span class="text-sm font-medium">Sem irregularidades</span>
-</div>
-<div class="mt-4 pt-4 border-t border-outline-variant/10">
-<p class="text-[10px] text-neutral-500 uppercase font-bold">Horário de Log</p>
-<p class="text-sm font-semibold">Hoje, às 08:06</p>
-</div>
-</div>
-</div>
-<!-- Summary Card 3 -->
-<div class="bg-surface-container-lowest p-6 rounded-[12px] shadow-sm">
-<div class="flex items-center gap-3 mb-4">
-<div class="w-10 h-10 rounded-lg bg-primary-container/20 flex items-center justify-center text-primary">
-<span class="material-symbols-outlined">pending_actions</span>
-</div>
-<h4 class="font-bold text-sm">Status do Turno</h4>
-</div>
-<div class="flex items-center justify-between">
-<div>
-<p class="text-2xl font-display font-bold text-on-surface">6h 12m</p>
-<p class="text-xs text-on-surface-variant">Tempo em serviço</p>
-</div>
-<div class="px-3 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-bold uppercase tracking-widest">
-                            Em Progresso
-                        </div>
-</div>
-</div>
-</div>
-</div>
+</section>
 </main>
 </body></html>

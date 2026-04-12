@@ -1,369 +1,457 @@
 <!DOCTYPE html>
 
-<html lang="pt-BR"><head>
+<html class="light" lang="pt-BR"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Doma Condo - Visão Geral</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "surface-container": "#edeef0",
-                    "primary": "#765b00",
-                    "inverse-on-surface": "#f0f1f3",
-                    "on-background": "#191c1e",
-                    "secondary-container": "#fbe0a0",
-                    "background": "#f8f9fb",
-                    "surface-container-lowest": "#ffffff",
-                    "surface-container-high": "#e7e8ea",
-                    "surface-dim": "#d9dadc",
-                    "inverse-surface": "#2e3132",
-                    "on-primary-container": "#614a00",
-                    "outline": "#807662",
-                    "outline-variant": "#d1c5ae",
-                    "on-error": "#ffffff",
-                    "on-secondary": "#ffffff",
-                    "surface-bright": "#f8f9fb",
-                    "on-tertiary-fixed-variant": "#005312",
-                    "on-primary": "#ffffff",
-                    "on-tertiary": "#ffffff",
-                    "secondary-fixed": "#fbe0a0",
-                    "primary-fixed-dim": "#f0c038",
-                    "surface-container-highest": "#e1e2e4",
-                    "inverse-primary": "#f0c038",
-                    "surface": "#f8f9fb",
-                    "on-surface-variant": "#4e4634",
-                    "tertiary-fixed": "#a3f69c",
-                    "primary-fixed": "#ffdf94",
-                    "on-secondary-container": "#76622f",
-                    "primary-container": "#e8b931",
-                    "error": "#ba1a1a",
-                    "surface-variant": "#e1e2e4",
-                    "tertiary": "#1b6d24",
-                    "surface-container-low": "#f2f4f6",
-                    "surface-tint": "#765b00",
-                    "on-surface": "#191c1e",
-                    "on-secondary-fixed": "#251a00",
-                    "tertiary-container": "#81d27c",
-                    "on-primary-fixed": "#251a00",
-                    "on-primary-fixed-variant": "#594400",
-                    "secondary": "#705c29",
-                    "error-container": "#ffdad6",
-                    "secondary-fixed-dim": "#dec487",
-                    "tertiary-fixed-dim": "#88d982",
-                    "on-secondary-fixed-variant": "#564514",
-                    "on-tertiary-fixed": "#002204",
-                    "on-tertiary-container": "#005b14",
-                    "on-error-container": "#93000a"
-            },
-            "borderRadius": {
-                    "DEFAULT": "0.25rem",
-                    "lg": "0.5rem",
-                    "xl": "0.75rem",
-                    "full": "9999px"
-            },
-            "fontFamily": {
-                    "headline": ["Plus Jakarta Sans"],
-                    "body": ["Manrope"],
-                    "label": ["Manrope"]
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#564514",
+                        "inverse-surface": "#2e3132",
+                        "surface-container-low": "#f2f4f6",
+                        "surface-dim": "#d9dadc",
+                        "surface": "#f8f9fb",
+                        "primary-fixed-dim": "#f0c038",
+                        "primary": "#765b00",
+                        "on-secondary-fixed": "#251a00",
+                        "on-primary-fixed": "#251a00",
+                        "surface-container-highest": "#e1e2e4",
+                        "secondary-fixed": "#fbe0a0",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#4e4634",
+                        "secondary-container": "#fbe0a0",
+                        "on-tertiary-fixed": "#002204",
+                        "on-surface": "#191c1e",
+                        "tertiary": "#1b6d24",
+                        "secondary-fixed-dim": "#dec487",
+                        "surface-tint": "#765b00",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#76622f",
+                        "secondary": "#705c29",
+                        "surface-bright": "#f8f9fb",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#e8b931",
+                        "outline": "#807662",
+                        "surface-container-high": "#e7e8ea",
+                        "background": "#f8f9fb",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#edeef0",
+                        "inverse-primary": "#f0c038",
+                        "tertiary-fixed-dim": "#88d982",
+                        "inverse-on-surface": "#f0f1f3",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#a3f69c",
+                        "on-primary-container": "#614a00",
+                        "tertiary-container": "#81d27c",
+                        "surface-variant": "#e1e2e4",
+                        "outline-variant": "#d1c5ae",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#005312",
+                        "primary-fixed": "#ffdf94",
+                        "on-tertiary-container": "#005b14",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed-variant": "#594400",
+                        "on-background": "#191c1e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
             }
-          },
-        },
-      }
+        }
     </script>
 <style>
         body { font-family: 'Manrope', sans-serif; }
-        .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
     </style>
 </head>
 <body class="bg-surface text-on-surface">
 <!-- SideNavBar -->
-<aside class="fixed left-0 top-0 h-full z-40 h-screen w-72 flex flex-col border-none bg-white shadow-[0px_12px_32px_rgba(25,28,30,0.04)] font-['Plus_Jakarta_Sans'] font-medium text-sm">
-<div class="p-8">
-<div class="flex items-center gap-3 mb-10">
-<div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center">
-<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">apartment</span>
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-lowest shadow-[0px_12px_32px_rgba(25,28,30,0.04)] flex flex-col py-6 z-50">
+<div class="px-6 mb-10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center overflow-hidden">
+<img alt="Doma Condo" class="w-full h-full object-contain p-1" src="images/logo.png"/>
 </div>
 <div>
-<h1 class="text-2xl font-semibold tracking-tight text-[#765b00]">Doma Condo</h1>
-<p class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold">Modern Concierge Portal</p>
+<h1 class="text-xl font-bold tracking-tight text-primary font-headline">DOMA CONDO</h1>
+<p class="text-[10px] uppercase tracking-widest text-on-surface-variant font-semibold">Resident Portal</p>
 </div>
 </div>
-<nav class="flex flex-col gap-1">
-<!-- Active Tab: Visão Geral -->
-<a class="text-[#765b00] bg-[#e8b931]/10 border-l-4 border-[#e8b931] font-bold px-6 py-3 transition-all flex items-center gap-3" href="#">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
-Visão Geral
+</div>
+<nav class="flex-1 space-y-1 font-headline font-medium text-sm">
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-zinc-50 transition-colors mx-2 rounded-lg" href="portal-overview.html">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Visão Geral</span>
 </a>
-<a class="text-zinc-500 dark:text-zinc-400 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-3" href="#">
-<span class="material-symbols-outlined">event_note</span>
-Atividades
+<a class="flex items-center gap-3 px-4 py-3 text-primary bg-primary-container/10 border-l-4 border-primary-container mx-2 rounded-r-lg" href="portal.html">
+<span class="material-symbols-outlined text-primary" data-icon="event_note">event_note</span>
+<span>Atividades</span>
 </a>
-<a class="text-zinc-500 dark:text-zinc-400 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-3" href="#">
-<span class="material-symbols-outlined">description</span>
-Relatórios
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-zinc-50 transition-colors mx-2 rounded-lg" href="portal-reports.html">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span>Relatórios</span>
 </a>
-<a class="text-zinc-500 dark:text-zinc-400 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-3" href="#">
-<span class="material-symbols-outlined">pending_actions</span>
-Pendências
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-zinc-50 transition-colors mx-2 rounded-lg" href="portal-pending.html">
+<span class="material-symbols-outlined" data-icon="pending_actions">pending_actions</span>
+<span>Pendências</span>
 </a>
 </nav>
+<div class="px-6 pt-6 mt-auto border-t border-outline-variant/15">
+<div class="flex items-center gap-3 p-2 rounded-xl hover:bg-zinc-50 transition-colors cursor-pointer">
+<img alt="Resident Profile" class="w-10 h-10 rounded-full object-cover shadow-sm" data-alt="Professional headshot of a refined modern woman in a business casual attire with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPc4AxI_Mo2_yMvJKQHERHFBeov4Y-DSvR-GQe9g5UlnMvnkoa8f53ZOn3tDZ6e1VNy7ZxmK7C3EBTm3r4hS6QVNbVA1leVRNKqn3N-wqcuBiSNY5Az4awkRcfAJ3YU9xDKzr2RA1DhNOoEj7kMb5hEyJq4IQZpP7LovVee4VavLOq-mbrQcMV29X9b2-OLdxKsLmU91GKLGxMeguZ7i_7ctVALJ8LqpkPiKM6a9yYFYrz0zo_QfBbQdzynKLK7JIX1I9g_RG23mqC"/>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-on-surface">Ana Silva</span>
+<span class="text-[10px] text-on-surface-variant">Unidade 402-B</span>
 </div>
-<div class="mt-auto p-8 border-t border-zinc-50">
-<div class="flex items-center gap-3 mb-6 p-3 rounded-xl bg-surface-container-low">
-<img alt="Resident Profile Avatar" class="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAxwoVHgsdTgegy7BHinfLUlUqoN_PJ5HkFsFitvH61-OrGp8ewoALZX_ACYYGlxFGxA1VsF_aBFno7gZ9KxxyNuMiiVfrDcPwDLBT2JpeM-0bWJX4xd5F6FJXZQKXq26xShnOyFV_FLAW21KfqIZA80xb99IU5TSG1ZuP_ITJsYM7DCK8BZDMQQpUpAyJl1b6bD7Wb9aE1C-rSSfoQQWVoGHxv9b8uz52Uhv66YSKRAVaxbDpk4bgQW52CNEIECSXwif2abN-xPz2"/>
-<div class="overflow-hidden">
-<p class="text-xs font-bold text-on-surface truncate">Admin</p>
-<p class="text-[10px] text-zinc-500 truncate">Adm. Litoral Sul</p>
 </div>
-</div>
-<nav class="flex flex-col gap-1">
-<a class="text-zinc-500 px-6 py-2 hover:text-primary flex items-center gap-3 text-xs" href="#">
-<span class="material-symbols-outlined text-lg">settings</span>
-Configurações
-</a>
-<a class="text-zinc-500 px-6 py-2 hover:text-error flex items-center gap-3 text-xs" href="#">
-<span class="material-symbols-outlined text-lg">logout</span>
-Sair
-</a>
-</nav>
 </div>
 </aside>
+<!-- Main Content Wrapper -->
+<div class="ml-64 min-h-screen flex flex-col">
 <!-- TopNavBar -->
-<header class="flex justify-between items-center pl-80 pr-12 w-full fixed top-0 z-30 bg-[#f8f9fb]/80 backdrop-blur-md h-20">
-<div class="flex-1 max-w-xl">
-<div class="relative group">
-<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-primary transition-colors">search</span>
-<input class="w-full bg-surface-container-high border-none rounded-xl py-3 pl-12 pr-4 text-sm focus:ring-1 focus:ring-primary/40 focus:bg-surface-container-lowest transition-all" placeholder="Buscar atividades..." type="text"/>
+<header class="w-full h-16 sticky top-0 z-40 bg-surface/80 backdrop-blur-md flex items-center justify-between px-8">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-high border-none rounded-full text-sm focus:ring-1 focus:ring-primary/40 focus:bg-surface-container-lowest transition-all" placeholder="Buscar transações ou fornecedores..." type="text"/>
 </div>
 </div>
-<div class="flex items-center gap-6 ml-8">
-<button class="relative text-zinc-400 hover:text-primary transition-colors">
-<span class="material-symbols-outlined">notifications</span>
-<span class="absolute -top-1 -right-1 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-zinc-100/50 rounded-full transition-transform active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
 </button>
-<button class="text-zinc-400 hover:text-primary transition-colors">
-<span class="material-symbols-outlined">support_agent</span>
+<button class="p-2 hover:bg-zinc-100/50 rounded-full transition-transform active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="settings">settings</span>
 </button>
-<div class="h-8 w-[1px] bg-outline-variant/20 mx-2"></div>
-<div class="flex items-center gap-3 cursor-pointer group">
-<span class="text-sm font-medium text-on-surface group-hover:text-primary transition-colors">Ajuda</span>
-<span class="material-symbols-outlined text-zinc-400 group-hover:text-primary transition-colors">help_outline</span>
+<div class="h-6 w-px bg-outline-variant/20 mx-2"></div>
+<div class="flex items-center gap-3 ml-2">
+<span class="text-sm font-semibold text-primary hidden md:inline">DOMA CONDO</span>
 </div>
 </div>
 </header>
-<!-- Main Content Canvas -->
-<main class="pl-80 pt-28 pr-12 pb-12 min-h-screen">
-<!-- Hero Header Section -->
-<section class="mb-10">
-<div class="flex items-end justify-between mb-2">
-<div>
-<span class="text-[10px] font-bold uppercase tracking-[0.2em] text-primary mb-2 block">Portal do Residente</span>
-<h2 class="text-4xl font-headline font-semibold text-primary leading-tight">Visão Geral</h2>
+<!-- Page Canvas -->
+<main class="p-8 space-y-8 animate-fade-in">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="space-y-1">
+<span class="text-primary font-bold text-xs tracking-[0.2em] uppercase">Gestão Financeira</span>
+<h2 class="text-3xl md:text-4xl font-headline font-semibold text-on-surface tracking-tight">Atividades Financeiras</h2>
+<p class="text-on-surface-variant text-sm max-w-lg">Acompanhe e gerencie o fluxo de caixa, pagamentos e recebíveis do condomínio em tempo real.</p>
 </div>
 <div class="flex gap-3">
-<button class="flex items-center gap-2 px-5 py-2.5 bg-surface-container-lowest text-on-surface-variant font-semibold rounded-xl text-sm shadow-sm hover:bg-surface-container transition-colors">
-<span class="material-symbols-outlined text-lg">filter_list</span>
-Filtrar
-</button>
-<button class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-br from-primary-container to-primary text-white font-semibold rounded-xl text-sm shadow-md hover:opacity-90 transition-all active:scale-95">
-<span class="material-symbols-outlined text-lg">add</span>
-Nova Atividade
-</button>
+<button class="flex items-center gap-2 px-5 py-2.5 bg-surface-container-lowest text-on-surface text-sm font-semibold rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">file_download</span>
+                        Exportar Relatório
+                    </button>
+<button class="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-br from-primary-container to-primary text-on-primary text-sm font-bold rounded-xl shadow-md active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                        Nova Transação
+                    </button>
 </div>
 </div>
-<p class="text-on-surface-variant/70 text-sm max-w-2xl">Acompanhe as operações e rotinas financeiras do seu condomínio com transparência e precisão total.</p>
-</section>
-<!-- VALUE COMPACT BAR -->
-<div class="bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] overflow-hidden mb-10">
-<div class="grid grid-cols-2 md:grid-cols-4 divide-x divide-zinc-100">
-<div class="px-7 py-5 flex flex-col gap-1">
-<p class="text-[9px] font-bold uppercase tracking-widest text-zinc-400">Economia Mensal</p>
-<p class="text-xl font-bold font-headline text-primary">R$ 12.800,00</p>
-<p class="text-[9px] text-zinc-400">vs. custo de um financeiro interno</p>
-</div>
-<div class="px-7 py-5 flex flex-col gap-1">
-<p class="text-[9px] font-bold uppercase tracking-widest text-zinc-400">Horas Poupadas</p>
-<p class="text-xl font-bold font-headline text-on-surface">152h <span class="text-xs font-medium text-zinc-400">/mês</span></p>
-<p class="text-[9px] text-zinc-400">você não precisou trabalhar</p>
-</div>
-<div class="px-7 py-5 flex flex-col gap-1">
-<p class="text-[9px] font-bold uppercase tracking-widest text-zinc-400">Prazos Cumpridos</p>
-<p class="text-xl font-bold font-headline text-tertiary">100%</p>
-<p class="text-[9px] text-zinc-400">nenhum vencimento perdido</p>
-</div>
-<div class="px-7 py-5 flex flex-col gap-1">
-<p class="text-[9px] font-bold uppercase tracking-widest text-zinc-400">Parceria Ativa</p>
-<p class="text-xl font-bold font-headline text-on-surface">Desde Mar/2026</p>
-<p class="text-[9px] text-zinc-400">cuidando do seu financeiro</p>
-</div>
-</div>
-</div>
-<!-- Filter Bar -->
-<div class="flex flex-wrap gap-4 items-end mb-10">
-<div class="space-y-1.5 flex-1 min-w-[200px]">
-<label class="text-xs font-bold uppercase tracking-widest text-zinc-400 px-1">Condomínio</label>
+<!-- Bento Filter Bar -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+<div class="md:col-span-8 bg-surface-container-lowest p-4 rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] flex flex-wrap items-center gap-6">
+<div class="flex flex-col gap-1.5 min-w-[180px]">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider px-1">Período</label>
 <div class="relative">
-<select class="appearance-none w-full bg-surface-container-lowest border-none rounded-xl py-3 px-4 text-sm font-medium shadow-sm ring-1 ring-black/5 focus:ring-2 focus:ring-primary/20">
-<option>Adm. Litoral Sul</option>
-<option>Residencial Mar Azul</option>
-<option>Edifício Aurora</option>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary text-sm">calendar_month</span>
+<select class="w-full pl-9 pr-4 py-2 bg-surface border-none rounded-lg text-sm font-medium focus:ring-1 focus:ring-primary/40 appearance-none">
+<option>Últimos 30 dias</option>
+<option>Últimos 90 dias</option>
+<option>Ano Atual (2024)</option>
+<option>Personalizado</option>
 </select>
-<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400">expand_more</span>
 </div>
 </div>
-<div class="space-y-1.5 flex-1 min-w-[200px]">
-<label class="text-xs font-bold uppercase tracking-widest text-zinc-400 px-1">Categoria</label>
+<div class="flex flex-col gap-1.5 min-w-[180px]">
+<label class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider px-1">Categoria</label>
 <div class="relative">
-<select class="appearance-none w-full bg-surface-container-lowest border-none rounded-xl py-3 px-4 text-sm font-medium shadow-sm ring-1 ring-black/5 focus:ring-2 focus:ring-primary/20">
-<option>Todas as categorias</option>
-<option>Financeiro</option>
-<option>Administrativo</option>
-<option>Cobrança</option>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary text-sm">category</span>
+<select class="w-full pl-9 pr-4 py-2 bg-surface border-none rounded-lg text-sm font-medium focus:ring-1 focus:ring-primary/40 appearance-none">
+<option>Todas Categorias</option>
+<option>Manutenção</option>
+<option>Impostos</option>
+<option>Serviços</option>
+<option>Utilidades</option>
 </select>
-<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400">filter_list</span>
 </div>
 </div>
-<div class="space-y-1.5 flex-1 min-w-[240px]">
-<label class="text-xs font-bold uppercase tracking-widest text-zinc-400 px-1">Período</label>
-<div class="relative flex items-center">
-<input class="w-full bg-surface-container-lowest border-none rounded-xl py-3 px-4 text-sm font-medium shadow-sm ring-1 ring-black/5 cursor-pointer focus:ring-2 focus:ring-primary/20" readonly="" type="text" value="01/05/2026 - 31/05/2026"/>
-<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400">calendar_today</span>
+<div class="h-10 w-px bg-outline-variant/20 hidden lg:block"></div>
+<div class="flex gap-2">
+<button class="px-4 py-2 bg-primary-container/10 text-primary text-xs font-bold rounded-full">Ativos</button>
+<button class="px-4 py-2 text-on-surface-variant text-xs font-medium hover:bg-zinc-50 rounded-full transition-colors">Histórico</button>
 </div>
 </div>
-<button class="bg-gradient-to-br from-primary-container to-primary text-white font-semibold px-8 py-3 rounded-xl shadow-md hover:opacity-90 active:scale-95 transition-all flex items-center gap-2">
-<span class="material-symbols-outlined text-lg">refresh</span>
-<span class="text-sm">Filtrar</span>
-</button>
+<div class="md:col-span-4 bg-primary text-on-primary p-5 rounded-xl flex items-center justify-between overflow-hidden relative group cursor-pointer">
+<div class="relative z-10">
+<p class="text-[10px] font-bold uppercase tracking-widest opacity-70">Saldo Disponível</p>
+<h3 class="text-2xl font-headline font-bold">R$ 142.850,00</h3>
 </div>
-<!-- Data Table Card -->
-<div class="bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] overflow-hidden mb-10">
+<div class="bg-primary-container p-3 rounded-full relative z-10 shadow-lg">
+<span class="material-symbols-outlined text-on-primary-container text-2xl">account_balance_wallet</span>
+</div>
+<!-- Aesthetic texture -->
+<div class="absolute -right-4 -bottom-4 w-24 h-24 bg-primary-container/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
+</div>
+</div>
+<!-- Activity List Table -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] overflow-hidden">
+<div class="px-6 py-4 border-b border-outline-variant/10 flex items-center justify-between">
+<h4 class="font-headline font-semibold text-on-surface">Transações Recentes</h4>
+<span class="text-xs text-on-surface-variant">Exibindo 1-10 de 128 itens</span>
+</div>
+<div class="overflow-x-auto">
 <table class="w-full text-left border-collapse">
 <thead>
 <tr class="bg-surface-container-low/50">
-<th class="py-5 px-8 text-[11px] font-bold uppercase tracking-widest text-zinc-500">Data</th>
-<th class="py-5 px-8 text-[11px] font-bold uppercase tracking-widest text-zinc-500">Atividade</th>
-<th class="py-5 px-8 text-[11px] font-bold uppercase tracking-widest text-zinc-500">Categoria</th>
-<th class="py-5 px-8 text-[11px] font-bold uppercase tracking-widest text-zinc-500">Condomínio</th>
-<th class="py-5 px-8 text-[11px] font-bold uppercase tracking-widest text-zinc-500">Responsável</th>
-<th class="py-5 px-8"></th>
+<th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Descrição</th>
+<th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Data</th>
+<th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Categoria</th>
+<th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Status</th>
+<th class="px-6 py-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest text-right">Valor</th>
+<th class="px-6 py-4"></th>
 </tr>
 </thead>
-<tbody class="divide-y divide-zinc-50">
-<tr class="hover:bg-surface-container-low/30 transition-colors group">
-<td class="py-6 px-8"><span class="text-sm font-semibold text-on-surface font-headline">10/05/2026</span></td>
-<td class="py-6 px-8"><span class="text-sm font-medium text-on-surface">Notas Fiscais</span></td>
-<td class="py-6 px-8"><span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-600 ring-1 ring-blue-100">Financeiro</span></td>
-<td class="py-6 px-8"><span class="text-sm text-on-surface-variant">Adm. Litoral Sul</span></td>
-<td class="py-6 px-8">
-<div class="flex items-center gap-2">
-<div class="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold text-zinc-500">JS</div>
-<span class="text-sm text-on-surface">João Silva</span>
+<tbody class="divide-y divide-outline-variant/5">
+<!-- Item 1 -->
+<tr class="hover:bg-zinc-50 transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="engineering">engineering</span>
+</div>
+<div>
+<p class="text-sm font-semibold text-on-surface">Pagamento Mensal Elevadores</p>
+<p class="text-xs text-on-surface-variant">Elevadores Atlas S.A.</p>
+</div>
 </div>
 </td>
-<td class="py-6 px-8 text-right">
-<button class="p-2 text-zinc-400 hover:bg-surface-container-low rounded-lg transition-colors"><span class="material-symbols-outlined">more_vert</span></button>
+<td class="px-6 py-5 text-sm text-on-surface-variant">
+<div class="flex flex-col">
+<span>12 Mai 2024</span>
+<span class="text-[10px] opacity-60 italic">14:30</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-surface-container text-on-surface-variant text-[10px] font-bold rounded-full uppercase">Manutenção</span>
+</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-tertiary-container text-on-tertiary-container text-[10px] font-bold rounded-full uppercase">
+<span class="w-1 h-1 rounded-full bg-on-tertiary-container"></span>
+                                        Pago
+                                    </span>
+</td>
+<td class="px-6 py-5 text-right font-bold text-on-surface text-sm">
+                                    R$ 2.450,00
+                                </td>
+<td class="px-6 py-5 text-right">
+<button class="p-2 hover:bg-zinc-100 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-lg text-on-surface-variant">more_vert</span>
+</button>
 </td>
 </tr>
-<tr class="hover:bg-surface-container-low/30 transition-colors group">
-<td class="py-6 px-8"><span class="text-sm font-semibold text-on-surface font-headline">09/05/2026</span></td>
-<td class="py-6 px-8"><span class="text-sm font-medium text-on-surface">Contas a Pagar</span></td>
-<td class="py-6 px-8"><span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600 ring-1 ring-emerald-100">Administrativo</span></td>
-<td class="py-6 px-8"><span class="text-sm text-on-surface-variant">Adm. Litoral Sul</span></td>
-<td class="py-6 px-8">
-<div class="flex items-center gap-2">
-<div class="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold text-zinc-500">MO</div>
-<span class="text-sm text-on-surface">Maria Oliveira</span>
+<!-- Item 2 -->
+<tr class="hover:bg-zinc-50 transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+</div>
+<div>
+<p class="text-sm font-semibold text-on-surface">Conta de Luz Comum</p>
+<p class="text-xs text-on-surface-variant">Enel Distribuição</p>
+</div>
 </div>
 </td>
-<td class="py-6 px-8 text-right">
-<button class="p-2 text-zinc-400 hover:bg-surface-container-low rounded-lg transition-colors"><span class="material-symbols-outlined">more_vert</span></button>
+<td class="px-6 py-5 text-sm text-on-surface-variant">
+<div class="flex flex-col">
+<span>15 Mai 2024</span>
+<span class="text-[10px] opacity-60 italic">09:15</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-surface-container text-on-surface-variant text-[10px] font-bold rounded-full uppercase">Utilidades</span>
+</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-secondary-container text-on-secondary-container text-[10px] font-bold rounded-full uppercase">
+<span class="w-1 h-1 rounded-full bg-on-secondary-container animate-pulse"></span>
+                                        Agendado
+                                    </span>
+</td>
+<td class="px-6 py-5 text-right font-bold text-on-surface text-sm">
+                                    R$ 12.890,45
+                                </td>
+<td class="px-6 py-5 text-right">
+<button class="p-2 hover:bg-zinc-100 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-lg text-on-surface-variant">more_vert</span>
+</button>
 </td>
 </tr>
-<tr class="hover:bg-surface-container-low/30 transition-colors group">
-<td class="py-6 px-8"><span class="text-sm font-semibold text-on-surface font-headline">08/05/2026</span></td>
-<td class="py-6 px-8"><span class="text-sm font-medium text-on-surface">Conciliação Bancária</span></td>
-<td class="py-6 px-8"><span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-600 ring-1 ring-blue-100">Financeiro</span></td>
-<td class="py-6 px-8"><span class="text-sm text-on-surface-variant">Adm. Litoral Sul</span></td>
-<td class="py-6 px-8">
-<div class="flex items-center gap-2">
-<div class="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold text-zinc-500">CS</div>
-<span class="text-sm text-on-surface">Carlos Souza</span>
+<!-- Item 3 -->
+<tr class="hover:bg-zinc-50 transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="cleaning_services">cleaning_services</span>
+</div>
+<div>
+<p class="text-sm font-semibold text-on-surface">Compra Materiais Limpeza</p>
+<p class="text-xs text-on-surface-variant">LimpaMais Distribuidora</p>
+</div>
 </div>
 </td>
-<td class="py-6 px-8 text-right">
-<button class="p-2 text-zinc-400 hover:bg-surface-container-low rounded-lg transition-colors"><span class="material-symbols-outlined">more_vert</span></button>
+<td class="px-6 py-5 text-sm text-on-surface-variant">
+<div class="flex flex-col">
+<span>10 Mai 2024</span>
+<span class="text-[10px] opacity-60 italic">16:45</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-surface-container text-on-surface-variant text-[10px] font-bold rounded-full uppercase">Serviços</span>
+</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-tertiary-container text-on-tertiary-container text-[10px] font-bold rounded-full uppercase">
+<span class="w-1 h-1 rounded-full bg-on-tertiary-container"></span>
+                                        Pago
+                                    </span>
+</td>
+<td class="px-6 py-5 text-right font-bold text-on-surface text-sm">
+                                    R$ 840,20
+                                </td>
+<td class="px-6 py-5 text-right">
+<button class="p-2 hover:bg-zinc-100 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-lg text-on-surface-variant">more_vert</span>
+</button>
 </td>
 </tr>
-<tr class="hover:bg-surface-container-low/30 transition-colors group">
-<td class="py-6 px-8"><span class="text-sm font-semibold text-on-surface font-headline">07/05/2026</span></td>
-<td class="py-6 px-8"><span class="text-sm font-medium text-on-surface">Boletos</span></td>
-<td class="py-6 px-8"><span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-purple-50 text-purple-600 ring-1 ring-purple-100">Cobrança</span></td>
-<td class="py-6 px-8"><span class="text-sm text-on-surface-variant">Adm. Litoral Sul</span></td>
-<td class="py-6 px-8">
-<div class="flex items-center gap-2">
-<div class="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center text-[10px] font-bold text-zinc-500">AC</div>
-<span class="text-sm text-on-surface">Ana Costa</span>
+<!-- Item 4 -->
+<tr class="hover:bg-zinc-50 transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+</div>
+<div>
+<p class="text-sm font-semibold text-on-surface">Imposto Predial (Parcela 4/10)</p>
+<p class="text-xs text-on-surface-variant">Prefeitura Municipal</p>
+</div>
 </div>
 </td>
-<td class="py-6 px-8 text-right">
-<button class="p-2 text-zinc-400 hover:bg-surface-container-low rounded-lg transition-colors"><span class="material-symbols-outlined">more_vert</span></button>
+<td class="px-6 py-5 text-sm text-on-surface-variant">
+<div class="flex flex-col">
+<span>08 Mai 2024</span>
+<span class="text-[10px] opacity-60 italic">11:00</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-surface-container text-on-surface-variant text-[10px] font-bold rounded-full uppercase">Impostos</span>
+</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-zinc-200 text-zinc-600 text-[10px] font-bold rounded-full uppercase">
+<span class="w-1 h-1 rounded-full bg-zinc-500"></span>
+                                        Processando
+                                    </span>
+</td>
+<td class="px-6 py-5 text-right font-bold text-on-surface text-sm">
+                                    R$ 4.120,00
+                                </td>
+<td class="px-6 py-5 text-right">
+<button class="p-2 hover:bg-zinc-100 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-lg text-on-surface-variant">more_vert</span>
+</button>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="px-8 py-6 bg-surface-container-low/20 flex items-center justify-between">
-<p class="text-xs text-on-surface-variant italic">Mostrando 4 de 24 atividades</p>
-<div class="flex gap-2">
-<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant/20 text-zinc-400 disabled:opacity-50" disabled="">
+</div>
+<!-- Pagination -->
+<div class="px-6 py-6 border-t border-outline-variant/10 flex items-center justify-center gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-zinc-100 text-on-surface-variant transition-colors disabled:opacity-30" disabled="">
 <span class="material-symbols-outlined">chevron_left</span>
 </button>
-<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-white text-xs font-bold">1</button>
-<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant/20 text-on-surface-variant hover:bg-surface-container transition-colors text-xs font-bold">2</button>
-<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant/20 text-on-surface-variant hover:bg-surface-container transition-colors">
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-on-primary text-xs font-bold">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-zinc-100 text-on-surface-variant text-xs font-bold transition-colors">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-zinc-100 text-on-surface-variant text-xs font-bold transition-colors">3</button>
+<span class="text-xs text-on-surface-variant px-2">...</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-zinc-100 text-on-surface-variant text-xs font-bold transition-colors">12</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-zinc-100 text-on-surface-variant transition-colors">
 <span class="material-symbols-outlined">chevron_right</span>
 </button>
 </div>
 </div>
+<!-- Dashboard Bottom Widgets -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Distribution Card -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] col-span-1">
+<h4 class="font-headline font-semibold text-sm mb-4">Distribuição de Gastos</h4>
+<div class="space-y-4">
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-medium">
+<span class="text-on-surface-variant">Manutenção</span>
+<span class="text-on-surface font-bold">45%</span>
 </div>
-<!-- Stats Section -->
-<section class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-<div class="col-span-1 bg-primary rounded-xl p-8 text-white flex flex-col justify-between relative overflow-hidden">
-<div class="absolute top-0 right-0 p-8 opacity-20">
-<span class="material-symbols-outlined text-6xl">task_alt</span>
-</div>
-<div>
-<h3 class="font-headline font-medium text-primary-fixed mb-1">Taxa de Conclusão</h3>
-<p class="text-sm opacity-80 leading-relaxed">Atividades concluídas no período em andamento.</p>
-</div>
-<p class="text-4xl font-headline font-bold mt-6">85%</p>
-</div>
-<div class="flex items-start gap-4 p-6 bg-secondary-container/10 rounded-xl">
-<span class="material-symbols-outlined text-secondary text-3xl">warning</span>
-<div>
-<h4 class="font-headline font-semibold text-secondary mb-1">Pendências Críticas</h4>
-<p class="text-sm text-on-surface-variant/80">02 itens aguardando resolução urgente neste período.</p>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[45%]"></div>
 </div>
 </div>
-<div class="flex items-start gap-4 p-6 bg-tertiary-container/10 rounded-xl">
-<span class="material-symbols-outlined text-tertiary text-3xl">history</span>
-<div>
-<h4 class="font-headline font-semibold text-tertiary mb-1">Atividades este Ano</h4>
-<p class="text-sm text-on-surface-variant/80">128 atividades financeiras executadas desde Jan/2026.</p>
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-medium">
+<span class="text-on-surface-variant">Utilidades</span>
+<span class="text-on-surface font-bold">30%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[30%]"></div>
 </div>
 </div>
-</section>
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-medium">
+<span class="text-on-surface-variant">Outros</span>
+<span class="text-on-surface font-bold">25%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-outline-variant w-[25%]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Concierge Support -->
+<div class="bg-surface-container-low p-6 rounded-xl col-span-1 md:col-span-2 flex items-center gap-8 relative overflow-hidden group">
+<div class="flex-1 space-y-3 relative z-10">
+<h4 class="font-headline font-semibold text-lg text-primary">Dúvidas sobre o financeiro?</h4>
+<p class="text-on-surface-variant text-sm">Nossa equipe de suporte está disponível para esclarecer qualquer lançamento ou pendência em sua unidade.</p>
+<button class="px-6 py-2 bg-primary-container/20 text-primary border border-primary/20 text-xs font-bold rounded-lg hover:bg-primary-container/30 transition-all">Falar com Concierge</button>
+</div>
+<div class="hidden lg:block relative z-10">
+<div class="w-32 h-32 rounded-2xl bg-white p-2 shadow-xl -rotate-6 group-hover:rotate-0 transition-transform duration-500">
+<img alt="Support Icon" class="w-full h-full object-cover rounded-xl" data-alt="Close-up of a high-end golden key and a silk tassel on a white marble surface representing premium concierge service" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYJByPS8ob-koEu0aZHzSTh8Ynh935qLD9in_x2ZmW_hA9jEaxhoaj-eki-citd1E5UQ2QaDQN4OWmDMHe62GEn9UljPggsZ3KxuL7tHPGpDMEPaVz3qWHEKOhAeO9a-aWUzm94T782zQ30u29M72S5ouFCfboFBInpsQ3qo08Mz0hI5Z_2RUgepO0GZob6fpyTrDQ3t8i6pHeI6NVvsl56lugje7XQ6UQ1ei3ihZuDCf97fEzcsy9H_E64xz3PoajXxEd3DEhSF1E"/>
+</div>
+</div>
+<!-- Aesthetic backdrop -->
+<div class="absolute right-0 top-0 w-64 h-64 bg-primary-container/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2"></div>
+</div>
+</div>
 </main>
-<!-- FAB -->
-<button class="fixed bottom-8 right-8 bg-primary text-on-primary w-14 h-14 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50">
-<span class="material-symbols-outlined">add</span>
-</button>
+<!-- Footer -->
+<footer class="mt-auto py-8 px-8 border-t border-outline-variant/15 text-center">
+<p class="text-xs text-on-surface-variant opacity-60 font-medium tracking-wide">© 2024 DOMA CONDO PORTAL. TODOS OS DIREITOS RESERVADOS.</p>
+</footer>
+</div>
 </body></html>

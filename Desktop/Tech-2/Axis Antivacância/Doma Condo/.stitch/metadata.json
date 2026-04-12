@@ -1,11 +1,27 @@
 {
-  "name": "projects/11992718627129525492",
-  "projectId": "11992718627129525492",
-  "title": "Doma Condo — BPO Financeiro",
+  "name": "projects/12178400275174425977",
+  "projectId": "12178400275174425977",
+  "title": "Doma - Portal Reports",
   "visibility": "PRIVATE",
-  "createTime": "2026-04-12T00:23:05.824832Z",
   "projectType": "PROJECT_DESIGN",
   "origin": "STITCH",
   "deviceType": "DESKTOP",
-  "screens": {}
+  "designTheme": {
+    "font": "PLUS_JAKARTA_SANS",
+    "headlineFont": "PLUS_JAKARTA_SANS",
+    "bodyFont": "MANROPE",
+    "labelFont": "MANROPE",
+    "colorMode": "LIGHT",
+    "customColor": "#E8B931",
+    "overridePrimaryColor": "#E8B931",
+    "roundness": "ROUND_EIGHT"
+  },
+  "screens": {
+    "portal-reports": {
+      "id": "8924c258f0e1428ab1be3562eac46ad1",
+      "sourceScreen": "projects/12178400275174425977/screens/8924c258f0e1428ab1be3562eac46ad1",
+      "width": 1280,
+      "height": 1224
+    }
+  }
 }

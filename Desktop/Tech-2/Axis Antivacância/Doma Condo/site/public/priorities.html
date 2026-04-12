@@ -3,379 +3,378 @@
 <html lang="pt-BR"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<title>DOMA CONDO - Prioridades do Dia</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "on-secondary": "#ffffff",
-                    "surface-container-low": "#f6f3f2",
-                    "on-error-container": "#93000a",
-                    "outline": "#807662",
-                    "background": "#fcf9f8",
-                    "secondary-fixed": "#fbe0a0",
-                    "surface-dim": "#dcd9d9",
-                    "on-surface": "#1c1b1b",
-                    "on-primary-fixed": "#251a00",
-                    "on-primary-container": "#614a00",
-                    "on-secondary-container": "#76622f",
-                    "on-secondary-fixed-variant": "#564514",
-                    "inverse-on-surface": "#f3f0ef",
-                    "outline-variant": "#d1c5ae",
-                    "on-primary": "#ffffff",
-                    "primary": "#765b00",
-                    "on-primary-fixed-variant": "#594400",
-                    "primary-fixed": "#ffdf94",
-                    "error": "#ba1a1a",
-                    "on-tertiary-container": "#005279",
-                    "on-tertiary": "#ffffff",
-                    "secondary-fixed-dim": "#dec487",
-                    "inverse-primary": "#f0c038",
-                    "surface-bright": "#fcf9f8",
-                    "on-tertiary-fixed": "#001e2f",
-                    "secondary-container": "#fbe0a0",
-                    "on-surface-variant": "#4e4634",
-                    "surface": "#fcf9f8",
-                    "inverse-surface": "#313030",
-                    "primary-container": "#e8b931",
-                    "error-container": "#ffdad6",
-                    "surface-container": "#f0eded",
-                    "on-secondary-fixed": "#251a00",
-                    "tertiary-container": "#78c7ff",
-                    "on-background": "#1c1b1b",
-                    "surface-tint": "#765b00",
-                    "primary-fixed-dim": "#f0c038",
-                    "on-tertiary-fixed-variant": "#004b6f",
-                    "tertiary-fixed": "#cae6ff",
-                    "surface-variant": "#e5e2e1",
-                    "on-error": "#ffffff",
-                    "tertiary-fixed-dim": "#8bceff",
-                    "surface-container-lowest": "#ffffff",
-                    "secondary": "#705c29",
-                    "surface-container-highest": "#e5e2e1",
-                    "tertiary": "#006492",
-                    "surface-container-high": "#eae7e7"
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#251a00",
+                        "on-primary-container": "#614a00",
+                        "background": "#fcf9f8",
+                        "secondary": "#705c29",
+                        "primary": "#765b00",
+                        "primary-fixed": "#ffdf94",
+                        "tertiary-container": "#78c7ff",
+                        "on-secondary-fixed": "#251a00",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-highest": "#e5e2e1",
+                        "on-surface": "#1c1b1b",
+                        "surface-tint": "#765b00",
+                        "tertiary": "#006492",
+                        "surface-variant": "#e5e2e1",
+                        "inverse-primary": "#f0c038",
+                        "surface-bright": "#fcf9f8",
+                        "secondary-fixed-dim": "#dec487",
+                        "secondary-fixed": "#fbe0a0",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#e8b931",
+                        "on-error": "#ffffff",
+                        "surface": "#fcf9f8",
+                        "error": "#ba1a1a",
+                        "outline": "#807662",
+                        "inverse-surface": "#313030",
+                        "outline-variant": "#d1c5ae",
+                        "tertiary-fixed-dim": "#8bceff",
+                        "tertiary-fixed": "#cae6ff",
+                        "surface-container-low": "#f6f3f2",
+                        "on-tertiary-fixed": "#001e2f",
+                        "surface-container": "#f0eded",
+                        "on-surface-variant": "#4e4634",
+                        "on-secondary-fixed-variant": "#564514",
+                        "surface-dim": "#dcd9d9",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#004b6f",
+                        "on-background": "#1c1b1b",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#fbe0a0",
+                        "surface-container-high": "#eae7e7",
+                        "on-secondary-container": "#76622f",
+                        "on-primary-fixed-variant": "#594400",
+                        "on-tertiary-container": "#005279",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#f0c038",
+                        "inverse-on-surface": "#f3f0ef"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
             },
-            "borderRadius": {
-                    "DEFAULT": "0.125rem",
-                    "lg": "0.25rem",
-                    "xl": "0.5rem",
-                    "full": "0.75rem"
-            },
-            "fontFamily": {
-                    "headline": ["Manrope"],
-                    "body": ["Inter"],
-                    "label": ["Inter"]
-            }
-          },
-        },
-      }
+        }
     </script>
 <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
         }
-        body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3, .brand-font { font-family: 'Manrope', sans-serif; }
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #fcf9f8;
+        }
+        .sidebar-active {
+            background-color: #e8b931;
+            color: #1A1A1A;
+        }
     </style>
 </head>
-<body class="bg-background text-on-surface antialiased">
-<aside class="bg-[#1A1A1A] h-screen w-64 fixed left-0 top-0 flex flex-col py-6 px-4 shadow-2xl font-['Manrope'] antialiased z-50">
-<div class="mb-10 px-2">
-<h1 class="text-xl font-bold tracking-tighter text-white">DOMA/CONDO</h1>
-<p class="text-[10px] uppercase tracking-[0.2em] text-[#E8B931] font-bold">Property Management</p>
+<body class="antialiased text-on-surface">
+<!-- SideNavBar (Authority: Shared Components JSON) -->
+<aside class="w-64 h-screen fixed left-0 top-0 bg-[#1A1A1A] flex flex-col py-6 font-['Plus_Jakarta_Sans'] antialiased tracking-tight">
+<div class="px-6 mb-10">
+<h1 class="text-xl font-bold tracking-tighter text-white">
+                DOMA <span class="text-[#e8b931]">CONDO</span>
+</h1>
+<p class="text-[10px] text-gray-500 tracking-widest mt-1">BPO FINANCEIRO</p>
 </div>
 <nav class="flex-1 space-y-1">
-<a class="flex items-center gap-3 px-3 py-2.5 text-gray-400 font-medium hover:bg-white/10 hover:text-white transition-all scale-95 active:scale-90" href="#">
-<span class="material-symbols-outlined">dashboard</span>
-<span>Dashboard</span>
-</a>
-<a class="flex items-center gap-3 px-3 py-2.5 text-[#E8B931] font-bold bg-white/5 rounded-lg transition-all scale-95 active:scale-90" href="#">
-<span class="material-symbols-outlined">star</span>
+<!-- Active Item: Prioridades -->
+<a class="bg-[#e8b931] text-[#1A1A1A] font-semibold rounded-lg mx-3 px-4 py-3 flex items-center gap-3 scale-95 active:transition-transform" href="priorities.html">
+<span class="material-symbols-outlined" data-icon="priority_high">priority_high</span>
 <span>Prioridades</span>
 </a>
-<a class="flex items-center gap-3 px-3 py-2.5 text-gray-400 font-medium hover:bg-white/10 hover:text-white transition-all scale-95 active:scale-90" href="#">
-<span class="material-symbols-outlined">assignment</span>
-<span>Tarefas</span>
+<a class="text-gray-400 hover:text-white hover:bg-white/5 mx-3 px-4 py-3 flex items-center gap-3 transition-colors" href="clients.html">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span>Fluxo de Caixa</span>
 </a>
-<a class="flex items-center gap-3 px-3 py-2.5 text-gray-400 font-medium hover:bg-white/10 hover:text-white transition-all scale-95 active:scale-90" href="#">
-<span class="material-symbols-outlined">group</span>
-<span>Clientes</span>
+<a class="text-gray-400 hover:text-white hover:bg-white/5 mx-3 px-4 py-3 flex items-center gap-3 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span>Contas a Pagar</span>
 </a>
-<a class="flex items-center gap-3 px-3 py-2.5 text-gray-400 font-medium hover:bg-white/10 hover:text-white transition-all scale-95 active:scale-90" href="#">
-<span class="material-symbols-outlined">assessment</span>
+<a class="text-gray-400 hover:text-white hover:bg-white/5 mx-3 px-4 py-3 flex items-center gap-3 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="request_quote">request_quote</span>
+<span>Contas a Receber</span>
+</a>
+<a class="text-gray-400 hover:text-white hover:bg-white/5 mx-3 px-4 py-3 flex items-center gap-3 transition-colors" href="reports.html">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
 <span>Relatórios</span>
 </a>
-</nav>
-<div class="mt-auto space-y-1 pt-6 border-t border-white/5">
-<a class="flex items-center gap-3 px-3 py-2.5 text-gray-400 font-medium hover:bg-white/10 hover:text-white transition-all scale-95 active:scale-90" href="#">
-<span class="material-symbols-outlined">settings</span>
+<a class="text-gray-400 hover:text-white hover:bg-white/5 mx-3 px-4 py-3 flex items-center gap-3 transition-colors" href="settings.html">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
 <span>Configurações</span>
 </a>
-<a class="flex items-center gap-3 px-3 py-2.5 text-gray-400 font-medium hover:bg-white/10 hover:text-white transition-all scale-95 active:scale-90" href="#">
-<span class="material-symbols-outlined">logout</span>
-<span>Sair</span>
+</nav>
+<div class="px-3 mt-auto">
+<button class="w-full bg-[#e8b931] text-[#1A1A1A] font-bold py-3 rounded-xl mb-4 hover:opacity-90 transition-opacity">
+                Novo Lançamento
+            </button>
+<a class="text-gray-400 hover:text-white hover:bg-white/5 px-4 py-3 flex items-center gap-3 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span>Suporte</span>
 </a>
 </div>
 </aside>
-<header class="fixed top-0 right-0 left-64 h-16 bg-[#fcf9f8] dark:bg-[#1C1B1B] border-b border-[#1C1B1B]/15 flex justify-between items-center px-8 w-full z-40">
-<div class="flex items-center gap-4">
-<span class="text-[#765B00] dark:text-[#E8B931] font-['Manrope'] text-lg font-semibold">Priorização do Dia</span>
-<div class="relative ml-4">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
-<input class="bg-surface-container-low border-none rounded-lg pl-10 pr-4 py-1.5 text-sm focus:ring-1 focus:ring-primary w-64" placeholder="Buscar condomínio..." type="text"/>
+<!-- TopAppBar (Authority: Shared Components JSON) -->
+<header class="h-16 sticky top-0 z-40 ml-64 bg-[#fcf9f8] flex items-center justify-between px-8 w-[calc(100%-16rem)]">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-96 group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-lg">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-[#e8b931] transition-all" placeholder="Pesquisar por cliente ou tarefa..." type="text"/>
+</div>
+<div class="ml-4 text-xs font-medium text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span>Terça-feira, 24 de Outubro</span>
 </div>
 </div>
-<div class="flex items-center gap-4">
-<button class="p-2 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors duration-200 relative">
-<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-neutral-100 rounded-full transition-colors relative">
+<span class="material-symbols-outlined text-neutral-600">notifications</span>
 <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
 </button>
-<div class="flex items-center gap-3 pl-4 border-l border-outline-variant/30">
-<div class="text-right">
-<p class="text-xs font-bold text-on-surface">Ricardo Silva</p>
-<p class="text-[10px] text-on-surface-variant">Gestor Sênior</p>
+<button class="p-2 hover:bg-neutral-100 rounded-full transition-colors">
+<span class="material-symbols-outlined text-neutral-600">history</span>
+</button>
 </div>
-<span class="material-symbols-outlined text-3xl text-on-surface-variant">account_circle</span>
+<div class="flex items-center gap-3 pl-4 border-l border-outline-variant/20">
+<div class="text-right">
+<p class="text-xs font-bold text-on-surface">Consultor Financeiro</p>
+<p class="text-[10px] text-on-surface-variant">Admin Painel</p>
+</div>
+<img alt="Avatar do Consultor" class="w-10 h-10 rounded-full object-cover border-2 border-primary-container" data-alt="Professional headshot of a financial consultant in a modern office setting with warm natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMb3riA-thSnbq9PqEYYHfm-n_l3I54UQwCPuTbHN-tXi9HMGtiiZqNlAV31fwvA4nJkx3HOVyLKA50pYhOkWAm6hOnqi-uwDSqmXYA-tOcQrUTZjDZqYDCNLOTObkIKl1Akb-9ASLQezoKSIx-VZ12-xOR-uLaNJy6m0N4Ns068GbtYwpn-EnsldTt-xgRN4EfAFikWdcbfuS-0HvImW3qKEYviHXLeNG-6jKhU3PeqVH0A9WHDZ0VMWSLa6zMGscLplACWaRW9SA"/>
 </div>
 </div>
 </header>
-<main class="ml-64 mt-16 p-8 min-h-screen">
-<section class="max-w-7xl mx-auto space-y-8">
-<div class="bg-error-container text-on-error-container px-6 py-4 rounded-xl flex items-center justify-between shadow-sm">
+<!-- Main Content -->
+<main class="ml-64 p-8 min-h-screen bg-surface">
+<!-- Jessica Signature: Statement Header -->
+<header class="mb-10 flex justify-between items-end">
+<div>
+<h2 class="text-4xl font-extrabold tracking-tight text-on-surface mb-2">Prioridades do Dia</h2>
+<p class="text-on-surface-variant max-w-2xl leading-relaxed">
+                    Seu foco para hoje: 10 tarefas pendentes para 5 clientes. Mantenha a precisão no BPO.
+                </p>
+</div>
+<button class="flex items-center gap-2 px-6 py-3 bg-primary-container text-on-primary-container font-bold rounded-xl hover:shadow-lg transition-all active:scale-95">
+<span class="material-symbols-outlined">done_all</span>
+                Marcar Todas Concluídas
+            </button>
+</header>
+<!-- Bento Grid Layout for Clients -->
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+<!-- Card 1: Adm. Litoral Sul -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 transition-all hover:bg-surface-bright group border border-transparent hover:border-outline-variant/10">
+<div class="flex justify-between items-start mb-6">
 <div class="flex items-center gap-3">
-<span class="material-symbols-outlined">warning</span>
-<p class="font-semibold">⚠️ 2 tarefas vencidas precisam de atenção imediata</p>
-</div>
-<button class="text-sm font-bold underline underline-offset-4 decoration-2">Ver Urgências</button>
-</div>
-<div class="flex flex-col lg:flex-row gap-8">
-<div class="flex-1 space-y-6">
-<div class="flex items-end justify-between">
-<div>
-<h2 class="text-2xl font-extrabold text-on-surface tracking-tight">Carteira de Clientes</h2>
-<p class="text-on-surface-variant text-sm mt-1">Distribuição de urgências e progresso operacional.</p>
-</div>
-<div class="flex gap-2">
-<span class="px-3 py-1 bg-surface-container text-on-surface-variant text-[11px] font-bold rounded-full uppercase tracking-wider">Filtro: Todos</span>
-<span class="px-3 py-1 bg-surface-container text-on-surface-variant text-[11px] font-bold rounded-full uppercase tracking-wider">Ordem: Urgência</span>
-</div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
-<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_12px_40px_rgba(28,27,27,0.06)] hover:translate-y-[-4px] transition-transform duration-300 flex flex-col">
-<div class="flex justify-between items-start mb-4">
-<span class="bg-tertiary-container/30 text-on-tertiary-container px-3 py-1 rounded-sm text-[10px] font-extrabold uppercase tracking-widest">Adm. Litoral Sul</span>
-<div class="text-right">
-<p class="text-[10px] text-on-surface-variant uppercase font-bold">Progresso</p>
-<p class="text-lg font-black text-on-surface">65%</p>
-</div>
-</div>
-<div class="w-full bg-surface-container-low h-1.5 rounded-full mb-6">
-<div class="bg-tertiary h-full rounded-full" style="width: 65%"></div>
-</div>
-<div class="flex-1 space-y-3 mb-6">
-<div class="flex items-center gap-2 text-xs font-bold text-on-surface-variant">
-<span class="material-symbols-outlined text-sm">event_note</span>
-<span>04 pendências</span>
-</div>
-<ul class="space-y-2">
-<li class="flex items-center gap-2 text-sm text-on-surface">
-<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
-                                        Renovação de Seguro Predial
-                                    </li>
-<li class="flex items-center gap-2 text-sm text-on-surface">
-<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
-                                        Vistoria de Gás Individualizada
-                                    </li>
-</ul>
-</div>
-<button class="w-full py-3 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-xl text-sm transition-all active:scale-95 shadow-lg shadow-primary/20">Atribuir tarefa</button>
-</div>
-<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_12px_40px_rgba(28,27,27,0.06)] hover:translate-y-[-4px] transition-transform duration-300 flex flex-col">
-<div class="flex justify-between items-start mb-4">
-<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-sm text-[10px] font-extrabold uppercase tracking-widest">BC Gestão</span>
-<div class="text-right">
-<p class="text-[10px] text-on-surface-variant uppercase font-bold">Progresso</p>
-<p class="text-lg font-black text-on-surface">40%</p>
-</div>
-</div>
-<div class="w-full bg-surface-container-low h-1.5 rounded-full mb-6">
-<div class="bg-secondary h-full rounded-full" style="width: 40%"></div>
-</div>
-<div class="flex-1 space-y-3 mb-6">
-<div class="flex items-center gap-2 text-xs font-bold text-on-surface-variant">
-<span class="material-symbols-outlined text-sm">event_note</span>
-<span>03 pendências</span>
-</div>
-<ul class="space-y-2">
-<li class="flex items-center gap-2 text-sm text-on-surface">
-<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-                                        Aprovação de Orçamento Pintura
-                                    </li>
-<li class="flex items-center gap-2 text-sm text-on-surface">
-<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-                                        Reunião de Conselho Fiscal
-                                    </li>
-</ul>
-</div>
-<button class="w-full py-3 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-xl text-sm transition-all active:scale-95 shadow-lg shadow-primary/20">Atribuir tarefa</button>
-</div>
-<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_12px_40px_rgba(28,27,27,0.06)] hover:translate-y-[-4px] transition-transform duration-300 flex flex-col">
-<div class="flex justify-between items-start mb-4">
-<span class="bg-[#E9D5FF] text-[#6B21A8] px-3 py-1 rounded-sm text-[10px] font-extrabold uppercase tracking-widest">Prime Adm.</span>
-<div class="text-right">
-<p class="text-[10px] text-on-surface-variant uppercase font-bold">Progresso</p>
-<p class="text-lg font-black text-on-surface">80%</p>
-</div>
-</div>
-<div class="w-full bg-surface-container-low h-1.5 rounded-full mb-6">
-<div class="bg-[#8B5CF6] h-full rounded-full" style="width: 80%"></div>
-</div>
-<div class="flex-1 space-y-3 mb-6">
-<div class="flex items-center gap-2 text-xs font-bold text-on-surface-variant">
-<span class="material-symbols-outlined text-sm">event_note</span>
-<span>03 pendências</span>
-</div>
-<ul class="space-y-2">
-<li class="flex items-center gap-2 text-sm text-on-surface">
-<span class="w-1.5 h-1.5 rounded-full bg-[#8B5CF6]"></span>
-                                        Contratação de Manutenção Elevador
-                                    </li>
-<li class="flex items-center gap-2 text-sm text-on-surface">
-<span class="w-1.5 h-1.5 rounded-full bg-[#8B5CF6]"></span>
-                                        Digitalização de Atas
-                                    </li>
-</ul>
-</div>
-<button class="w-full py-3 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-xl text-sm transition-all active:scale-95 shadow-lg shadow-primary/20">Atribuir tarefa</button>
-</div>
-<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_12px_40px_rgba(28,27,27,0.06)] hover:translate-y-[-4px] transition-transform duration-300 flex flex-col">
-<div class="flex justify-between items-start mb-4">
-<span class="bg-tertiary-fixed text-on-tertiary-fixed-variant px-3 py-1 rounded-sm text-[10px] font-extrabold uppercase tracking-widest">Catarinense</span>
-<div class="text-right">
-<p class="text-[10px] text-on-surface-variant uppercase font-bold">Progresso</p>
-<p class="text-lg font-black text-on-surface">90%</p>
-</div>
-</div>
-<div class="w-full bg-surface-container-low h-1.5 rounded-full mb-6">
-<div class="bg-tertiary h-full rounded-full" style="width: 90%"></div>
-</div>
-<div class="flex-1 space-y-3 mb-6">
-<div class="flex items-center gap-2 text-xs font-bold text-on-surface-variant">
-<span class="material-symbols-outlined text-sm">event_note</span>
-<span>02 pendências</span>
-</div>
-<ul class="space-y-2">
-<li class="flex items-center gap-2 text-sm text-on-surface">
-<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
-                                        Pagamento de Taxa de Lixo
-                                    </li>
-<li class="flex items-center gap-2 text-sm text-on-surface">
-<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
-                                        Envio de Demonstrativo Mensal
-                                    </li>
-</ul>
-</div>
-<button class="w-full py-3 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-xl text-sm transition-all active:scale-95 shadow-lg shadow-primary/20">Atribuir tarefa</button>
-</div>
-<div class="md:col-span-2 bg-inverse-surface rounded-xl p-8 shadow-2xl relative overflow-hidden group">
-<div class="absolute top-0 right-0 p-4">
-<span class="bg-error text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest animate-pulse">URGENTE</span>
-</div>
-<div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-<div class="space-y-2">
-<span class="bg-error-container text-on-error-container px-3 py-1 rounded-sm text-[10px] font-extrabold uppercase tracking-widest">Atlântica</span>
-<h3 class="text-3xl font-black text-white tracking-tighter">Crítico</h3>
-<p class="text-gray-400 text-sm">Ação imediata necessária para evitar multas contratuais.</p>
-</div>
-<div class="space-y-4">
-<div class="flex justify-between items-end">
-<span class="text-[10px] text-gray-400 font-bold uppercase">Progresso Geral</span>
-<span class="text-2xl font-black text-error">15%</span>
-</div>
-<div class="w-full bg-white/10 h-2 rounded-full overflow-hidden">
-<div class="bg-error h-full rounded-full" style="width: 15%"></div>
-</div>
-<div class="flex items-center gap-2 text-error text-sm font-bold">
-<span class="material-symbols-outlined">report</span>
-<span>01 pendência crítica</span>
-</div>
-</div>
-<div class="space-y-4">
-<div class="bg-white/5 p-4 rounded-lg border border-white/10">
-<p class="text-xs text-gray-400 font-bold uppercase mb-1">Tarefa em atraso</p>
-<p class="text-white font-bold">VENCIDO: Laudo de Corpo de Bombeiros</p>
-</div>
-<button class="w-full py-4 bg-[#E8B931] text-[#1A1A1A] font-black rounded-xl text-sm transition-all hover:scale-[1.02] active:scale-95">Atribuir tarefa</button>
-</div>
-</div>
-<div class="absolute bottom-0 right-0 opacity-10 group-hover:opacity-20 transition-opacity">
-<span class="material-symbols-outlined text-[160px] translate-y-1/3 translate-x-1/4 text-white">warning</span>
-</div>
-</div>
-</div>
-</div>
-<aside class="w-full lg:w-80 space-y-6">
-<div class="bg-[#1A1A1A] rounded-2xl p-6 text-white shadow-xl relative overflow-hidden">
-<h3 class="text-lg font-extrabold mb-6 flex items-center gap-2">
-<span class="material-symbols-outlined text-[#E8B931]">donut_large</span>
-                            Status Geral da Carteira
-                        </h3>
-<div class="space-y-8">
-<div class="text-center py-4 border-b border-white/10">
-<p class="text-5xl font-black text-[#E8B931] tracking-tighter">82%</p>
-<p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-2">Adimplência Total</p>
-</div>
-<div class="space-y-4">
-<div class="flex justify-between items-center">
-<span class="text-sm text-gray-300">Condomínios Ativos</span>
-<span class="font-bold">42</span>
-</div>
-<div class="flex justify-between items-center">
-<span class="text-sm text-gray-300">Tarefas em Aberto</span>
-<span class="font-bold text-[#E8B931]">128</span>
-</div>
-<div class="flex justify-between items-center">
-<span class="text-sm text-gray-300">Vencimentos (7 dias)</span>
-<span class="font-bold text-error">12</span>
-</div>
-</div>
-<div class="pt-4">
-<button class="w-full py-3 border border-white/20 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-white/5 transition-colors">Baixar Relatório Mensal</button>
-</div>
-</div>
-<div class="absolute -bottom-4 -left-4 w-24 h-24 bg-[#E8B931]/10 rounded-full blur-3xl"></div>
-</div>
-<div class="bg-surface-container-low rounded-2xl p-6">
-<h4 class="text-sm font-bold text-on-surface mb-4">Métricas de Performance</h4>
-<div class="space-y-4">
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center">
-<span class="material-symbols-outlined text-primary">speed</span>
+<div class="w-10 h-10 rounded-xl bg-tertiary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary-container">business</span>
 </div>
 <div>
-<p class="text-[10px] text-on-surface-variant font-bold uppercase">Tempo Médio Resolução</p>
-<p class="text-sm font-bold">4.2 dias</p>
+<h3 class="font-bold text-lg text-on-surface">Adm. Litoral Sul</h3>
+<span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-tertiary-container text-on-tertiary-container rounded">Portfólio Azul</span>
 </div>
 </div>
-<div class="flex items-center gap-4">
-<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center">
-<span class="material-symbols-outlined text-primary">sentiment_satisfied</span>
+<div class="text-right">
+<span class="text-[10px] text-on-surface-variant font-bold block mb-1">RESPONSÁVEL</span>
+<div class="flex items-center gap-2">
+<span class="text-xs font-semibold">Ana</span>
+<div class="w-6 h-6 rounded-full bg-tertiary-fixed-dim border border-white"></div>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-container-low transition-colors">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary-container" type="checkbox"/>
+<div class="flex-1">
+<p class="text-sm font-medium">Conciliação bancária Mensal - Santander</p>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-error-container text-on-error-container">URGENTE</span>
+</div>
+</div>
+<div class="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-container-low transition-colors">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary-container" type="checkbox"/>
+<div class="flex-1">
+<p class="text-sm font-medium">Emissão de boletos de condomínio - Ref. Nov/23</p>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container">ALTA</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2: Prime Administração -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 transition-all hover:bg-surface-bright group border border-transparent hover:border-outline-variant/10">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
+<span class="material-symbols-outlined text-purple-700">corporate_fare</span>
 </div>
 <div>
-<p class="text-[10px] text-on-surface-variant font-bold uppercase">Satisfação Morador</p>
-<p class="text-sm font-bold">4.8 / 5.0</p>
+<h3 class="font-bold text-lg text-on-surface">Prime Administração</h3>
+<span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-purple-100 text-purple-700 rounded">Gestão VIP</span>
+</div>
+</div>
+<div class="text-right">
+<span class="text-[10px] text-on-surface-variant font-bold block mb-1">RESPONSÁVEL</span>
+<div class="flex items-center gap-2">
+<span class="text-xs font-semibold">Maria</span>
+<div class="w-6 h-6 rounded-full bg-purple-200 border border-white"></div>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-container-low transition-colors">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary-container" type="checkbox"/>
+<div class="flex-1">
+<p class="text-sm font-medium">Lançamento de NF de serviços - Manutenção Elevador</p>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container">ALTA</span>
+</div>
+</div>
+<div class="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-container-low transition-colors">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary-container" type="checkbox"/>
+<div class="flex-1">
+<p class="text-sm font-medium">Relatório de Inadimplência Semanal</p>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant">NORMAL</span>
 </div>
 </div>
 </div>
 </div>
-</aside>
+<!-- Card 3: Catarinense Condominial -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 transition-all hover:bg-surface-bright group border border-transparent hover:border-outline-variant/10">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
+<span class="material-symbols-outlined text-emerald-700">home_work</span>
 </div>
-</section>
+<div>
+<h3 class="font-bold text-lg text-on-surface">Catarinense Condominial</h3>
+<span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-700 rounded">Portfólio Regional</span>
+</div>
+</div>
+<div class="text-right">
+<span class="text-[10px] text-on-surface-variant font-bold block mb-1">RESPONSÁVEL</span>
+<div class="flex items-center gap-2">
+<span class="text-xs font-semibold">Ana</span>
+<div class="w-6 h-6 rounded-full bg-emerald-200 border border-white"></div>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-container-low transition-colors">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary-container" type="checkbox"/>
+<div class="flex-1">
+<p class="text-sm font-medium">Aprovação de pagamentos via App Bank</p>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-error-container text-on-error-container">URGENTE</span>
+</div>
+</div>
+<div class="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-container-low transition-colors">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary-container" type="checkbox"/>
+<div class="flex-1">
+<p class="text-sm font-medium">Envio de balancete prévio para Síndico</p>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant">NORMAL</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 4: BC Gestão -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 transition-all hover:bg-surface-bright group border border-transparent hover:border-outline-variant/10">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
+<span class="material-symbols-outlined text-amber-700">apartment</span>
+</div>
+<div>
+<h3 class="font-bold text-lg text-on-surface">BC Gestão</h3>
+<span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-700 rounded">Foco Comercial</span>
+</div>
+</div>
+<div class="text-right">
+<span class="text-[10px] text-on-surface-variant font-bold block mb-1">RESPONSÁVEL</span>
+<div class="flex items-center gap-2">
+<span class="text-xs font-semibold">Maria</span>
+<div class="w-6 h-6 rounded-full bg-amber-200 border border-white"></div>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-container-low transition-colors">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary-container" type="checkbox"/>
+<div class="flex-1">
+<p class="text-sm font-medium">Baixa de arquivos de retorno bancário</p>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container">ALTA</span>
+</div>
+</div>
+<div class="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-container-low transition-colors">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary-container" type="checkbox"/>
+<div class="flex-1">
+<p class="text-sm font-medium">Verificação de duplicidade em boletos gerados</p>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant">NORMAL</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 5: Atlântica (Full Width in Desktop Asymmetry) -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 transition-all hover:bg-surface-bright group border border-transparent hover:border-outline-variant/10 xl:col-span-2">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
+<span class="material-symbols-outlined text-red-700">domain</span>
+</div>
+<div>
+<h3 class="font-bold text-lg text-on-surface">Atlântica</h3>
+<span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-red-100 text-red-700 rounded">Crítico / Atendimento</span>
+</div>
+</div>
+<div class="text-right">
+<span class="text-[10px] text-on-surface-variant font-bold block mb-1">RESPONSÁVEL</span>
+<div class="flex items-center gap-2">
+<span class="text-xs font-semibold">Ana</span>
+<div class="w-6 h-6 rounded-full bg-red-200 border border-white"></div>
+</div>
+</div>
+</div>
+<div class="grid md:grid-cols-2 gap-6">
+<div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-2xl border border-error-container/20">
+<input class="w-6 h-6 rounded border-outline-variant text-primary focus:ring-primary-container" type="checkbox"/>
+<div class="flex-1">
+<p class="text-sm font-bold">Regularização de DARF em atraso - Urgente</p>
+<span class="text-[10px] font-black px-2 py-1 rounded bg-error text-on-error">MUITO URGENTE</span>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-2xl">
+<input class="w-6 h-6 rounded border-outline-variant text-primary focus:ring-primary-container" type="checkbox"/>
+<div class="flex-1">
+<p class="text-sm font-bold">Atualização de fluxo de caixa projetado (Dez/23)</p>
+<span class="text-[10px] font-bold px-2 py-1 rounded bg-secondary-container text-on-secondary-container">ALTA</span>
+</div>
+</div>
+</div>
+</div>
+</div>
 </main>
+<!-- FAB for Task Focused Context -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
 </body></html>

@@ -1,187 +1,204 @@
 <!DOCTYPE html>
 
-<html class="light" lang="pt-BR"><head>
+<html lang="pt-BR"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Login | Doma Condo</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Manrope:wght@300;400;500;600&amp;family=Outfit:wght@300;400;500;600;700&amp;family=DM+Sans:ital,wght@0,400;0,500;1,400&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<title>Login - Doma Condo BPO Financeiro</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "on-tertiary-fixed": "#001e2f",
-                        "on-primary": "#ffffff",
-                        "surface-container-lowest": "#ffffff",
-                        "primary-fixed-dim": "#f0c038",
-                        "tertiary-fixed": "#cae6ff",
-                        "on-tertiary": "#ffffff",
-                        "inverse-on-surface": "#f0f1f3",
-                        "on-secondary-fixed": "#251a00",
-                        "on-secondary-container": "#76622f",
-                        "on-primary-container": "#614a00",
-                        "surface-container": "#edeef0",
-                        "on-secondary": "#ffffff",
-                        "inverse-primary": "#f0c038",
-                        "primary-container": "#e8b931",
-                        "on-primary-fixed": "#251a00",
-                        "surface-container-highest": "#e1e2e4",
-                        "outline-variant": "#d1c5ae",
-                        "inverse-surface": "#2e3132",
-                        "surface-container-low": "#f2f4f6",
-                        "on-surface": "#191c1e",
-                        "on-tertiary-fixed-variant": "#004b6f",
-                        "primary": "#765b00",
-                        "secondary-container": "#fbe0a0",
-                        "on-surface-variant": "#4e4634",
-                        "surface-dim": "#d9dadc",
-                        "tertiary": "#006492",
-                        "on-tertiary-container": "#005279",
-                        "on-error": "#ffffff",
-                        "surface": "#f8f9fb",
-                        "error-container": "#ffdad6",
-                        "secondary-fixed-dim": "#dec487",
-                        "tertiary-fixed-dim": "#8bceff",
-                        "primary-fixed": "#ffdf94",
-                        "secondary": "#705c29",
-                        "secondary-fixed": "#fbe0a0",
-                        "background": "#f8f9fb",
-                        "on-secondary-fixed-variant": "#564514",
-                        "surface-variant": "#e1e2e4",
-                        "surface-bright": "#f8f9fb",
-                        "on-primary-fixed-variant": "#594400",
-                        "surface-container-high": "#e7e8ea",
-                        "surface-tint": "#765b00",
-                        "tertiary-container": "#78c7ff",
-                        "outline": "#807662",
-                        "on-background": "#191c1e",
-                        "error": "#ba1a1a",
-                        "on-error-container": "#93000a"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "fontFamily": {
-                        "headline": ["Outfit", "Plus Jakarta Sans"],
-                        "body": ["Manrope", "DM Sans"],
-                        "label": ["Manrope", "DM Sans"]
-                    }
-                },
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "primary-container": "#e8b931",
+                    "on-secondary-container": "#76622f",
+                    "tertiary-fixed-dim": "#88d982",
+                    "tertiary": "#1b6d24",
+                    "inverse-primary": "#f0c038",
+                    "on-surface": "#191c1e",
+                    "surface-container-highest": "#e1e2e4",
+                    "tertiary-container": "#81d27c",
+                    "outline": "#807662",
+                    "outline-variant": "#d1c5ae",
+                    "surface": "#f8f9fb",
+                    "secondary-container": "#fbe0a0",
+                    "inverse-surface": "#2e3132",
+                    "on-tertiary-container": "#005b14",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-fixed": "#002204",
+                    "on-tertiary-fixed-variant": "#005312",
+                    "primary-fixed": "#ffdf94",
+                    "surface-variant": "#e1e2e4",
+                    "on-secondary-fixed-variant": "#564514",
+                    "inverse-on-surface": "#f0f1f3",
+                    "on-secondary-fixed": "#251a00",
+                    "on-background": "#191c1e",
+                    "on-surface-variant": "#4e4634",
+                    "on-primary-fixed": "#251a00",
+                    "surface-tint": "#765b00",
+                    "primary": "#765b00",
+                    "surface-container": "#edeef0",
+                    "secondary": "#705c29",
+                    "on-primary-fixed-variant": "#594400",
+                    "surface-container-low": "#f2f4f6",
+                    "tertiary-fixed": "#a3f69c",
+                    "surface-container-high": "#e7e8ea",
+                    "secondary-fixed": "#fbe0a0",
+                    "surface-bright": "#f8f9fb",
+                    "on-error": "#ffffff",
+                    "on-primary-container": "#614a00",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed-dim": "#f0c038",
+                    "surface-dim": "#d9dadc",
+                    "error": "#ba1a1a",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed-dim": "#dec487",
+                    "background": "#f8f9fb",
+                    "on-tertiary": "#ffffff",
+                    "error-container": "#ffdad6"
             },
-        }
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
     </script>
 <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-        .bg-pattern {
-            background-image: radial-gradient(#e8b931 0.5px, transparent 0.5px);
-            background-size: 24px 24px;
-            opacity: 0.1;
+        .bg-luxury-overlay {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.9) 0%, rgba(26, 26, 26, 0.7) 100%);
+        }
+        .shimmer-gold {
+            background: linear-gradient(135deg, #e8b931 0%, #765b00 100%);
         }
     </style>
 </head>
-<body class="bg-surface font-body text-on-surface selection:bg-primary-container selection:text-on-primary-container overflow-hidden">
-<main class="min-h-screen flex flex-col md:flex-row">
-<!-- LEFT COLUMN: AUTHENTICATION FLOW -->
-<section class="w-full md:w-1/2 bg-surface-container-lowest flex flex-col p-8 md:p-16 lg:p-24 relative overflow-y-auto">
-<!-- Branding Header -->
-<header class="mb-12 md:mb-20">
-<div class="flex flex-col">
-<div class="flex items-baseline space-x-1 font-headline font-bold text-[24px] tracking-tight">
-<span class="text-[#1A1A1A]">DOMA</span>
-<span class="text-[#E8B931]">CONDO</span>
+<body class="bg-surface font-body text-on-surface overflow-hidden">
+<main class="flex min-h-screen">
+<!-- Left Section: Brand & Aesthetic -->
+<section class="hidden lg:flex w-1/2 relative flex-col justify-between p-16 overflow-hidden bg-[#1A1A1A]">
+<!-- Background Image with Overlay -->
+<div class="absolute inset-0 z-0">
+<img alt="Architecture" class="w-full h-full object-cover opacity-40" data-alt="Luxury modern skyscraper with glass facade reflecting a clear sky at sunset, emphasizing professional and high-end corporate architecture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNJa2-J5pST_YZ55-5wjbKk5zwteUudyCpyqFwZDvPwa6pdtDiz73gv5Jqi8V7JwEV7x77zkuWNe94L7oXq-AAZwQBciK0AOzCaVziNM30fgGwac8NxEkhoRH6_OS7h886o_J3_-lENZF3Iz2X3_WYt5pLOwAibwlk0ZKnPQaBwamwShk1_aQKYn1ilkEZJimRX7D-a6CHJCm2Xqy5DFQo7Df47vd-2NDrPytC90ks9yi_9VZkSmMzoRlWNspuW2HF25vdU1xsD65I"/>
+<div class="absolute inset-0 bg-luxury-overlay"></div>
 </div>
-<span class="font-body text-[12px] text-[#6B7280] uppercase tracking-widest mt-1">Assessoria e Consultoria</span>
+<!-- Content Container -->
+<div class="relative z-10 flex flex-col h-full justify-between">
+<!-- Logo -->
+<div class="flex items-baseline gap-1">
+<span class="font-headline font-extrabold text-3xl tracking-tight text-white">DOMA</span>
+<span class="font-headline font-extrabold text-3xl tracking-tight text-primary-container">CONDO</span>
 </div>
+<!-- Slogan and Benefits -->
+<div class="max-w-md">
+<h1 class="font-headline text-4xl font-semibold text-white leading-tight mb-8">
+                        Vestimos sua camisa e te impulsionamos ao sucesso!
+                    </h1>
+<ul class="space-y-6">
+<li class="flex items-center gap-4 group">
+<div class="flex-shrink-0 w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center transition-all group-hover:bg-primary-container/20">
+<span class="material-symbols-outlined text-primary-container" data-icon="verified_user">verified_user</span>
+</div>
+<span class="text-white/90 font-medium text-lg">Transparência Total</span>
+</li>
+<li class="flex items-center gap-4 group">
+<div class="flex-shrink-0 w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center transition-all group-hover:bg-primary-container/20">
+<span class="material-symbols-outlined text-primary-container" data-icon="concierge">concierge</span>
+</div>
+<span class="text-white/90 font-medium text-lg">Conciergerie Especializada</span>
+</li>
+<li class="flex items-center gap-4 group">
+<div class="flex-shrink-0 w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center transition-all group-hover:bg-primary-container/20">
+<span class="material-symbols-outlined text-primary-container" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+<span class="text-white/90 font-medium text-lg">Gestão Eficiente</span>
+</li>
+</ul>
+</div>
+<!-- Footer Copyright (Subtle) -->
+<div class="text-white/40 text-sm">
+                    © 2024 Doma Condo. Todos os direitos reservados.
+                </div>
+</div>
+</section>
+<!-- Right Section: Login Form -->
+<section class="w-full lg:w-1/2 flex items-center justify-center bg-surface-container-lowest p-8 md:p-24">
+<div class="w-full max-w-md">
+<!-- Mobile Logo (Visible only on small screens) -->
+<div class="lg:hidden flex items-baseline gap-1 mb-12">
+<span class="font-headline font-extrabold text-2xl tracking-tight text-[#1A1A1A]">DOMA</span>
+<span class="font-headline font-extrabold text-2xl tracking-tight text-primary">CONDO</span>
+</div>
+<header class="mb-10">
+<h2 class="font-headline text-3xl font-bold text-on-surface mb-2">Bem-vindo de volta</h2>
+<p class="text-on-surface-variant font-medium">Faça login na sua conta para gerenciar seu condomínio.</p>
 </header>
-<!-- Login Form Container -->
-<div class="max-w-md w-full mx-auto my-auto">
-<div class="mb-10 text-center md:text-left">
-<h1 class="font-headline font-semibold text-[22px] text-on-surface mb-2">Bem-vindo de volta</h1>
-<p class="font-body text-[14px] text-[#6B7280]">Faça login para continuar</p>
-</div>
-<form class="space-y-6" onsubmit="return false;">
-<!-- Email Input -->
+<form class="space-y-6">
+<!-- Email Field -->
 <div class="space-y-2">
-<label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider ml-1" for="email">E-mail</label>
+<label class="block text-sm font-semibold text-on-surface-variant" for="email">Email</label>
 <div class="relative group">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">mail</span>
-<input class="w-full pl-10 pr-4 py-3 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/50 text-sm transition-all placeholder:text-outline" id="email" placeholder="jessica@domacondo.com.br" type="email"/>
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-on-surface-variant text-xl" data-icon="mail">mail</span>
+</div>
+<input class="block w-full pl-11 pr-4 py-4 bg-surface-container-high border-none rounded-xl focus:ring-1 focus:ring-primary/40 focus:bg-surface-container-lowest transition-all placeholder:text-on-surface-variant/50 text-on-surface font-medium" id="email" name="email" placeholder="exemplo@domacondo.com.br" type="email"/>
 </div>
 </div>
-<!-- Password Input -->
+<!-- Password Field -->
 <div class="space-y-2">
-<label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider ml-1" for="password">Senha</label>
+<div class="flex justify-between items-center">
+<label class="block text-sm font-semibold text-on-surface-variant" for="password">Senha</label>
+<a class="text-sm font-bold text-primary hover:opacity-80 transition-opacity" href="#">Esqueceu a senha?</a>
+</div>
 <div class="relative group">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">lock</span>
-<input class="w-full pl-10 pr-12 py-3 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/50 text-sm transition-all placeholder:text-outline" id="password" placeholder="••••••••" type="password"/>
-<button class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface transition-colors" type="button">
-<span class="material-symbols-outlined">visibility</span>
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-on-surface-variant text-xl" data-icon="lock">lock</span>
+</div>
+<input class="block w-full pl-11 pr-12 py-4 bg-surface-container-high border-none rounded-xl focus:ring-1 focus:ring-primary/40 focus:bg-surface-container-lowest transition-all placeholder:text-on-surface-variant/50 text-on-surface font-medium" id="password" name="password" placeholder="••••••••" type="password"/>
+<button class="absolute inset-y-0 right-0 pr-4 flex items-center text-on-surface-variant hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
 </button>
 </div>
 </div>
-<!-- Actions Row -->
-<div class="flex items-center justify-between">
-<label class="flex items-center space-x-2 cursor-pointer group">
-<input class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary cursor-pointer" type="checkbox"/>
-<span class="text-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Lembrar de mim</span>
+<!-- Remember Me & Policy -->
+<div class="flex items-center">
+<label class="flex items-center cursor-pointer group">
+<div class="relative flex items-center">
+<input class="peer h-5 w-5 cursor-pointer appearance-none rounded border border-outline-variant bg-surface-container-low checked:bg-primary checked:border-primary transition-all focus:ring-offset-0 focus:ring-0" type="checkbox"/>
+<span class="material-symbols-outlined absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-xs font-bold" data-icon="check" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="ml-3 text-sm font-medium text-on-surface-variant group-hover:text-on-surface transition-colors">Lembrar de mim</span>
 </label>
 </div>
 <!-- Submit Button -->
-<button class="w-full h-[42px] bg-[#E8B931] text-[#1A1A1A] font-body font-medium rounded-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center text-sm" type="submit">
+<button class="w-full shimmer-gold text-[#1A1A1A] font-extrabold py-4 rounded-xl shadow-lg shadow-primary/10 hover:shadow-primary/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2" type="submit">
                         Entrar
-                    </button>
-<!-- Forgot Password -->
-<div class="text-center pt-4">
-<a class="text-sm font-medium text-[#E8B931] hover:underline transition-all decoration-2 underline-offset-4" href="#">
-                            Esqueci minha senha
-                        </a>
-</div>
+                        <span class="material-symbols-outlined text-xl" data-icon="arrow_forward">arrow_forward</span>
+</button>
 </form>
-</div>
-<!-- Footer for Left Column -->
-<footer class="mt-auto pt-12 flex justify-center md:justify-start">
-<p class="text-[10px] text-outline-variant uppercase tracking-[0.2em] font-medium">© 2024 Doma Condo. Todos os direitos reservados.</p>
+<!-- Support Footer -->
+<footer class="mt-12 pt-8 border-t border-outline-variant/15 text-center">
+<p class="text-sm text-on-surface-variant">
+                        Precisa de ajuda? 
+                        <a class="font-bold text-primary hover:underline" href="#">Entre em contato com o suporte</a>
+</p>
 </footer>
-</section>
-<!-- RIGHT COLUMN: BRAND EXPERIENCE -->
-<section class="hidden md:flex md:w-1/2 bg-[#1A1A1A] relative items-center justify-center p-12 overflow-hidden">
-<!-- Visual Accents -->
-<div class="absolute inset-0 bg-pattern"></div>
-<div class="absolute -top-24 -right-24 w-96 h-96 bg-primary/10 rounded-full blur-[120px]"></div>
-<div class="absolute -bottom-24 -left-24 w-96 h-96 bg-primary-container/5 rounded-full blur-[120px]"></div>
-<!-- Central Branding Content -->
-<div class="relative z-10 flex flex-col items-center text-center max-w-lg">
-<div class="mb-16">
-<div class="flex items-baseline space-x-2 font-headline font-bold text-[48px] tracking-tight mb-2">
-<span class="text-white">DOMA</span>
-<span class="text-[#E8B931]">CONDO</span>
-</div>
-<div class="h-px w-12 bg-[#E8B931] mx-auto mb-4"></div>
-<p class="font-body text-[14px] text-[#9CA3AF] uppercase tracking-[0.3em]">Assessoria e Consultoria</p>
-</div>
-<blockquote class="mb-12">
-<p class="font-headline font-light italic text-[20px] text-white leading-relaxed">
-                        "Gestão inteligente para quem move condomínios."
-                    </p>
-</blockquote>
-<!-- Abstract Visual Representative of Condo Architecture -->
-<div class="w-full aspect-video rounded-xl overflow-hidden shadow-2xl relative">
-<img alt="Arquitetura Moderna" class="w-full h-full object-cover grayscale contrast-125 opacity-40" data-alt="Modern architectural building facade with clean lines and glass windows reflecting a clear blue sky, high-end professional aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBney8kdteuSF7flInfEd-ShlKoPw0aMoAivG5a7HXadHmbZnhPDADw-qCi093WkXSbQ27UCMGM-gzEH-KJ5rD0S1BUYWZZPcixPjVQphjzkCOANQMd2pt6F3RBVOdcC_lOPjt6y9-lpONhIQ8yH2fttqzgsSqqaGDhsET1-kkL03an-1yMyJ-pj73hAUVl1TqOirwDrpbbGsnUbpfKlYZHaNkb7-JJjK9_y-du5rQswZStg18KqbPv7QQ7u2krez0AgWVGdI1jjEjV"/>
-<div class="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-transparent to-transparent opacity-80"></div>
-</div>
-</div>
-<!-- Subliminal Branding Text -->
-<div class="absolute bottom-12 right-12 select-none pointer-events-none">
-<span class="text-[120px] font-headline font-bold text-white/[0.02] leading-none">DOMA</span>
 </div>
 </section>
 </main>
