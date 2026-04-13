@@ -84,63 +84,58 @@
         h1, h2, h3, .headline { font-family: 'Raleway', sans-serif; }
     </style>
 </head>
-<body class="bg-background text-on-surface min-h-screen">
-<!-- SideNavBar (Shared Component) -->
-<aside class="fixed left-0 top-0 h-full flex flex-col z-40 h-screen w-64 border-r-0 bg-white dark:bg-gray-900 shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
-<div class="p-6">
+<body class="bg-surface text-on-surface antialiased">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 z-40 h-screen w-72 flex flex-col border-none bg-white shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+<div class="p-8">
 <img src="images/logo.png" alt="Doma Condo Logo" class="h-10 object-contain mb-4"/>
-<h1 class="text-xl font-bold tracking-tight text-yellow-700 dark:text-yellow-500">DOMA CONDO</h1>
-<p class="text-xs text-on-surface-variant/60 mt-1 font-medium">Apartment 402</p>
+<h2 class="text-2xl font-semibold tracking-tight text-[#020202]" style="font-family:'Raleway',sans-serif;">DOMA CONDO</h2>
+<p class="text-[10px] text-zinc-400 mt-1 uppercase tracking-widest font-bold" style="font-family:'Raleway',sans-serif;">Assessoria e Consultoria</p>
 </div>
-<nav class="flex-1 px-3 mt-4 space-y-1">
-<a class="flex items-center gap-3 px-4 py-3 text-gray-500 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-500 font-['Raleway'] font-medium text-sm transition-colors duration-200" href="portal-overview.html">
-<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-                Visão Geral
-            </a>
-<a class="flex items-center gap-3 px-4 py-3 text-gray-500 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-500 font-['Raleway'] font-medium text-sm transition-colors duration-200" href="portal.html">
-<span class="material-symbols-outlined" data-icon="event_note">event_note</span>
-                Atividades
-            </a>
-<a class="flex items-center gap-3 px-4 py-3 text-gray-500 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-500 font-['Raleway'] font-medium text-sm transition-colors duration-200" href="portal-reports.html">
-<span class="material-symbols-outlined" data-icon="description">description</span>
-                Relatórios
-            </a>
-<!-- Active State: Pendências -->
-<a class="flex items-center gap-3 px-4 py-3 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-l-4 border-yellow-600 font-semibold font-['Raleway'] text-sm" href="portal-pending.html">
-<span class="material-symbols-outlined" data-icon="pending_actions" style="font-variation-settings: 'FILL' 1;">pending_actions</span>
-                Pendências
-            </a>
+<nav class="flex-1 mt-4">
+<ul class="space-y-1">
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="portal-overview.html"><span class="material-symbols-outlined">dashboard</span><span>Visão Geral</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="portal.html"><span class="material-symbols-outlined">event_note</span><span>Atividades</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="portal-reports.html"><span class="material-symbols-outlined">description</span><span>Relatórios</span></a></li>
+<li><a class="text-[#765b00] bg-[#FAC826]/10 border-l-4 border-[#FAC826] font-bold transition-all flex items-center gap-4 px-6 py-3" href="portal-pending.html"><span class="material-symbols-outlined">pending_actions</span><span>Pendências</span></a></li>
+</ul>
 </nav>
-<div class="p-4 mt-auto space-y-1">
-<a class="flex items-center gap-3 px-4 py-3 text-gray-500 dark:text-gray-400 hover:bg-gray-50 font-medium text-sm rounded-lg transition-colors" href="#">
-<span class="material-symbols-outlined" data-icon="settings">settings</span>
-                Settings
-            </a>
-<a class="flex items-center gap-3 px-4 py-3 text-gray-500 dark:text-gray-400 hover:bg-gray-50 font-medium text-sm rounded-lg transition-colors" href="#">
-<span class="material-symbols-outlined" data-icon="logout">logout</span>
-                Logout
-            </a>
+<div class="mt-auto p-4 border-t border-zinc-100">
+<ul class="space-y-1">
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="settings.html"><span class="material-symbols-outlined">settings</span><span>Configurações</span></a></li>
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="login.html"><span class="material-symbols-outlined">logout</span><span>Sair</span></a></li>
+</ul>
 </div>
 </aside>
-<!-- TopNavBar (Shared Component) -->
-<header class="sticky top-0 right-0 flex items-center justify-between px-8 z-30 ml-64 w-full h-16 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md">
-<div class="flex-1 flex justify-end items-center gap-6">
-<div class="relative w-full max-w-xs">
-<input class="w-full bg-surface-container-high border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Buscar pendência..." type="text"/>
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg" data-icon="search">search</span>
+<!-- TopNavBar Shell -->
+<header class="flex justify-between items-center pl-80 pr-12 w-full fixed top-0 z-30 h-20 bg-[#f8f9fb]/80 backdrop-blur-md">
+<div class="flex-1">
+<div class="relative max-w-md">
+<input class="w-full bg-surface-container-high border-none rounded-full py-2.5 px-6 focus:ring-2 focus:ring-primary/20 text-sm" placeholder="Buscar pendência..." type="text"/>
+<span class="material-symbols-outlined absolute right-4 top-2.5 text-zinc-400">search</span>
 </div>
-<div class="flex items-center gap-2">
-<button class="hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full p-2 transition-all">
-<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4">
+<button class="text-[#765b00] hover:text-[#FAC826] transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
 </button>
-<button class="hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full p-2 transition-all">
-<span class="material-symbols-outlined text-on-surface-variant" data-icon="account_circle">account_circle</span>
+<button class="text-[#765b00] hover:text-[#FAC826] transition-colors">
+<span class="material-symbols-outlined">support_agent</span>
 </button>
+</div>
+<div class="h-10 w-[1px] bg-outline-variant/30 mx-2"></div>
+<div class="flex items-center gap-3">
+<div class="text-right">
+<p class="text-sm font-semibold text-on-surface">Ricardo Mendonça</p>
+<p class="text-[10px] text-zinc-500 uppercase tracking-tighter">Residente • Bloco B 402</p>
+</div>
 </div>
 </div>
 </header>
 <!-- Main Content -->
-<main class="ml-64 p-12 max-w-[1200px] mx-auto">
+<main class="pl-80 pr-12 pt-28 pb-12">
 <!-- Header Section -->
 <section class="mb-12">
 <span class="text-[0.6875rem] font-bold tracking-[0.15em] text-primary mb-2 block font-label">PORTAL DO RESIDENTE</span>

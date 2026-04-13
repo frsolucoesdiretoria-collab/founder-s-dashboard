@@ -81,73 +81,58 @@
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
     </style>
 </head>
-<body class="bg-surface text-on-surface">
-<!-- SideNavBar -->
-<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-lowest shadow-[0px_12px_32px_rgba(25,28,30,0.04)] flex flex-col py-6 z-50">
-<div class="px-6 mb-10">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center overflow-hidden">
-<img alt="Doma Condo" class="w-full h-full object-contain p-1" src="images/logo.png"/>
+<body class="bg-surface text-on-surface antialiased">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 z-40 h-screen w-72 flex flex-col border-none bg-white shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+<div class="p-8">
+<img src="images/logo.png" alt="Doma Condo Logo" class="h-10 object-contain mb-4"/>
+<h2 class="text-2xl font-semibold tracking-tight text-[#020202]" style="font-family:'Raleway',sans-serif;">DOMA CONDO</h2>
+<p class="text-[10px] text-zinc-400 mt-1 uppercase tracking-widest font-bold" style="font-family:'Raleway',sans-serif;">Assessoria e Consultoria</p>
 </div>
-<div>
-<h1 class="text-xl font-bold tracking-tight text-primary font-headline">DOMA CONDO</h1>
-<p class="text-[10px] uppercase tracking-widest text-on-surface-variant font-semibold">Resident Portal</p>
-</div>
-</div>
-</div>
-<nav class="flex-1 space-y-1 font-headline font-medium text-sm">
-<a class="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-zinc-50 transition-colors mx-2 rounded-lg" href="portal-overview.html">
-<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-<span>Visão Geral</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 text-primary bg-primary-container/10 border-l-4 border-primary-container mx-2 rounded-r-lg" href="portal.html">
-<span class="material-symbols-outlined text-primary" data-icon="event_note">event_note</span>
-<span>Atividades</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-zinc-50 transition-colors mx-2 rounded-lg" href="portal-reports.html">
-<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
-<span>Relatórios</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 text-zinc-500 hover:bg-zinc-50 transition-colors mx-2 rounded-lg" href="portal-pending.html">
-<span class="material-symbols-outlined" data-icon="pending_actions">pending_actions</span>
-<span>Pendências</span>
-</a>
+<nav class="flex-1 mt-4">
+<ul class="space-y-1">
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="portal-overview.html"><span class="material-symbols-outlined">dashboard</span><span>Visão Geral</span></a></li>
+<li><a class="text-[#765b00] bg-[#FAC826]/10 border-l-4 border-[#FAC826] font-bold transition-all flex items-center gap-4 px-6 py-3" href="portal.html"><span class="material-symbols-outlined">event_note</span><span>Atividades</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="portal-reports.html"><span class="material-symbols-outlined">description</span><span>Relatórios</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="portal-pending.html"><span class="material-symbols-outlined">pending_actions</span><span>Pendências</span></a></li>
+</ul>
 </nav>
-<div class="px-6 pt-6 mt-auto border-t border-outline-variant/15">
-<div class="flex items-center gap-3 p-2 rounded-xl hover:bg-zinc-50 transition-colors cursor-pointer">
-<img alt="Resident Profile" class="w-10 h-10 rounded-full object-cover shadow-sm" data-alt="Professional headshot of a refined modern woman in a business casual attire with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPc4AxI_Mo2_yMvJKQHERHFBeov4Y-DSvR-GQe9g5UlnMvnkoa8f53ZOn3tDZ6e1VNy7ZxmK7C3EBTm3r4hS6QVNbVA1leVRNKqn3N-wqcuBiSNY5Az4awkRcfAJ3YU9xDKzr2RA1DhNOoEj7kMb5hEyJq4IQZpP7LovVee4VavLOq-mbrQcMV29X9b2-OLdxKsLmU91GKLGxMeguZ7i_7ctVALJ8LqpkPiKM6a9yYFYrz0zo_QfBbQdzynKLK7JIX1I9g_RG23mqC"/>
-<div class="flex flex-col">
-<span class="text-xs font-bold text-on-surface">Ana Silva</span>
-<span class="text-[10px] text-on-surface-variant">Unidade 402-B</span>
-</div>
-</div>
+<div class="mt-auto p-4 border-t border-zinc-100">
+<ul class="space-y-1">
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="settings.html"><span class="material-symbols-outlined">settings</span><span>Configurações</span></a></li>
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="login.html"><span class="material-symbols-outlined">logout</span><span>Sair</span></a></li>
+</ul>
 </div>
 </aside>
-<!-- Main Content Wrapper -->
-<div class="ml-64 min-h-screen flex flex-col">
-<!-- TopNavBar -->
-<header class="w-full h-16 sticky top-0 z-40 bg-surface/80 backdrop-blur-md flex items-center justify-between px-8">
-<div class="flex items-center gap-4 flex-1">
-<div class="relative w-full max-w-md">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
-<input class="w-full pl-10 pr-4 py-2 bg-surface-container-high border-none rounded-full text-sm focus:ring-1 focus:ring-primary/40 focus:bg-surface-container-lowest transition-all" placeholder="Buscar transações ou fornecedores..." type="text"/>
+<!-- TopNavBar Shell -->
+<header class="flex justify-between items-center pl-80 pr-12 w-full fixed top-0 z-30 h-20 bg-[#f8f9fb]/80 backdrop-blur-md">
+<div class="flex-1">
+<div class="relative max-w-md">
+<input class="w-full bg-surface-container-high border-none rounded-full py-2.5 px-6 focus:ring-2 focus:ring-primary/20 text-sm" placeholder="Buscar transações ou fornecedores..." type="text"/>
+<span class="material-symbols-outlined absolute right-4 top-2.5 text-zinc-400">search</span>
 </div>
 </div>
-<div class="flex items-center gap-2">
-<button class="p-2 hover:bg-zinc-100/50 rounded-full transition-transform active:scale-95">
-<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4">
+<button class="text-[#765b00] hover:text-[#FAC826] transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
 </button>
-<button class="p-2 hover:bg-zinc-100/50 rounded-full transition-transform active:scale-95">
-<span class="material-symbols-outlined text-on-surface-variant" data-icon="settings">settings</span>
+<button class="text-[#765b00] hover:text-[#FAC826] transition-colors">
+<span class="material-symbols-outlined">support_agent</span>
 </button>
-<div class="h-6 w-px bg-outline-variant/20 mx-2"></div>
-<div class="flex items-center gap-3 ml-2">
-<span class="text-sm font-semibold text-primary hidden md:inline">DOMA CONDO</span>
+</div>
+<div class="h-10 w-[1px] bg-outline-variant/30 mx-2"></div>
+<div class="flex items-center gap-3">
+<div class="text-right">
+<p class="text-sm font-semibold text-on-surface">Ricardo Mendonça</p>
+<p class="text-[10px] text-zinc-500 uppercase tracking-tighter">Residente • Bloco B 402</p>
+</div>
 </div>
 </div>
 </header>
 <!-- Page Canvas -->
-<main class="p-8 space-y-8 animate-fade-in">
+<main class="pl-80 pr-12 pt-28 pb-12 space-y-8">
 <!-- Header Section -->
 <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
 <div class="space-y-1">
@@ -453,5 +438,4 @@
 <footer class="mt-auto py-8 px-8 border-t border-outline-variant/15 text-center">
 <p class="text-xs text-on-surface-variant opacity-60 font-medium tracking-wide">© 2024 DOMA CONDO PORTAL. TODOS OS DIREITOS RESERVADOS.</p>
 </footer>
-</div>
 </body></html>

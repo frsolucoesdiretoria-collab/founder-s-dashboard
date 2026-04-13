@@ -84,59 +84,31 @@
         }
     </style>
 </head>
-<body class="bg-surface text-on-surface">
-<!-- SideNavBar Integration -->
-<aside class="fixed left-0 top-0 h-full z-40 h-screen w-72 flex flex-col border-none bg-white shadow-[0px_12px_32px_rgba(25,28,30,0.04)] font-['Raleway'] font-medium text-sm">
+<body class="bg-surface text-on-surface antialiased">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 z-40 h-screen w-72 flex flex-col border-none bg-white shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
 <div class="p-8">
-<div class="flex items-center gap-3 mb-10">
-<div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center"><img alt="Doma Condo" class="w-8 h-8 object-contain p-0.5" src="images/logo.png"/></div>
-<div>
-<h1 class="text-2xl font-semibold tracking-tight text-[#765b00] dark:text-[#FAC826]">Doma Condo</h1>
-<p class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold">Modern Concierge Portal</p>
+<img src="images/logo.png" alt="Doma Condo Logo" class="h-10 object-contain mb-4"/>
+<h2 class="text-2xl font-semibold tracking-tight text-[#020202]" style="font-family:'Raleway',sans-serif;">DOMA CONDO</h2>
+<p class="text-[10px] text-zinc-400 mt-1 uppercase tracking-widest font-bold" style="font-family:'Raleway',sans-serif;">Assessoria e Consultoria</p>
 </div>
-</div>
-<nav class="flex flex-col gap-1">
-<a class="text-zinc-500 dark:text-zinc-400 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-3" href="portal-overview.html">
-<span class="material-symbols-outlined">dashboard</span>
-                    Visão Geral
-                </a>
-<a class="text-zinc-500 dark:text-zinc-400 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-3" href="portal.html">
-<span class="material-symbols-outlined">event_note</span>
-                    Atividades
-                </a>
-<!-- Active Tab: Relatórios -->
-<a class="text-[#765b00] bg-[#FAC826]/10 border-l-4 border-[#FAC826] font-bold px-6 py-3 transition-all flex items-center gap-3" href="portal-reports.html">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">description</span>
-                    Relatórios
-                </a>
-<a class="text-zinc-500 dark:text-zinc-400 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-3" href="portal-pending.html">
-<span class="material-symbols-outlined">pending_actions</span>
-                    Pendências
-                </a>
+<nav class="flex-1 mt-4">
+<ul class="space-y-1">
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="portal-overview.html"><span class="material-symbols-outlined">dashboard</span><span>Visão Geral</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="portal.html"><span class="material-symbols-outlined">event_note</span><span>Atividades</span></a></li>
+<li><a class="text-[#765b00] bg-[#FAC826]/10 border-l-4 border-[#FAC826] font-bold transition-all flex items-center gap-4 px-6 py-3" href="portal-reports.html"><span class="material-symbols-outlined">description</span><span>Relatórios</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="portal-pending.html"><span class="material-symbols-outlined">pending_actions</span><span>Pendências</span></a></li>
+</ul>
 </nav>
-</div>
-<div class="mt-auto p-8 border-t border-zinc-50">
-<div class="flex items-center gap-3 mb-6 p-3 rounded-xl bg-surface-container-low">
-<img alt="Resident Profile Avatar" class="w-10 h-10 rounded-full object-cover" data-alt="close-up portrait of a professional man in a tailored blazer, soft natural lighting, high-end residential concierge aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAxwoVHgsdTgegy7BHinfLUlUqoN_PJ5HkFsFitvH61-OrGp8ewoALZX_ACYYGlxFGxA1VsF_aBFno7gZ9KxxyNuMiiVfrDcPwDLBT2JpeM-0bWJX4xd5F6FJXZQKXq26xShnOyFV_FLAW21KfqIZA80xb99IU5TSG1ZuP_ITJsYM7DCK8BZDMQQpUpAyJl1b6bD7Wb9aE1C-rSSfoQQWVoGHxv9b8uz52Uhv66YSKRAVaxbDpk4bgQW52CNEIECSXwif2abN-xPz2"/>
-<div class="overflow-hidden">
-<p class="text-xs font-bold text-on-surface truncate">Ricardo Almeida</p>
-<p class="text-[10px] text-zinc-500 truncate">Unidade 402, Torre A</p>
-</div>
-</div>
-<nav class="flex flex-col gap-1">
-<a class="text-zinc-500 px-6 py-2 hover:text-primary flex items-center gap-3 text-xs" href="#">
-<span class="material-symbols-outlined text-lg">settings</span>
-                    Configurações
-                </a>
-<a class="text-zinc-500 px-6 py-2 hover:text-error flex items-center gap-3 text-xs" href="#">
-<span class="material-symbols-outlined text-lg">logout</span>
-                    Sair
-                </a>
-</nav>
+<div class="mt-auto p-4 border-t border-zinc-100">
+<ul class="space-y-1">
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="settings.html"><span class="material-symbols-outlined">settings</span><span>Configurações</span></a></li>
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="login.html"><span class="material-symbols-outlined">logout</span><span>Sair</span></a></li>
+</ul>
 </div>
 </aside>
-<!-- TopNavBar Integration -->
-<header class="flex justify-between items-center pl-80 pr-12 w-full fixed top-0 z-30 bg-[#f8f9fb]/80 backdrop-blur-md h-20">
+<!-- TopNavBar Shell -->
+<header class="flex justify-between items-center pl-80 pr-12 w-full fixed top-0 z-30 h-20 bg-[#f8f9fb]/80 backdrop-blur-md">
 <div class="flex-1 max-w-xl">
 <div class="relative group">
 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-primary transition-colors">search</span>
