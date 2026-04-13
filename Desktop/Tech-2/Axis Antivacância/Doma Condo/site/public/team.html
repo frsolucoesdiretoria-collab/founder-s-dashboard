@@ -78,37 +78,36 @@
 </ul>
 </div>
 </aside>
-<!-- TopAppBar Shell -->
+<!-- TopNavBar Shell -->
 <header class="flex justify-between items-center pl-80 pr-12 w-full fixed top-0 z-30 h-20 bg-[#f8f9fb]/80 backdrop-blur-md">
-<div class="flex items-center gap-8 flex-1">
-<h2 class="text-neutral-900 text-lg font-semibold">Equipe</h2>
-<div class="relative w-full max-w-md">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg" data-icon="search">search</span>
-<input class="w-full bg-surface-container-lowest border-none focus:ring-2 focus:ring-primary/20 rounded-xl py-2.5 pl-10 pr-4 text-sm outline-none transition-all placeholder:text-outline-variant" placeholder="Buscar membros da equipe..." type="text"/>
+<div class="flex-1">
+<div class="relative max-w-md">
+<input class="w-full bg-surface-container-high border-none rounded-full py-2.5 px-6 focus:ring-2 focus:ring-primary/20 text-sm" placeholder="Buscar no painel..." type="text"/>
+<span class="material-symbols-outlined absolute right-4 top-2.5 text-zinc-400">search</span>
 </div>
 </div>
 <div class="flex items-center gap-6">
 <div class="flex items-center gap-4">
-<button class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:text-primary transition-all backdrop-blur-md opacity-80">
-<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<button class="text-[#765b00] hover:text-[#FAC826] transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
 </button>
-<div class="h-8 w-[1px] bg-outline-variant/30"></div>
-<div class="flex items-center gap-3 pl-2">
+<button class="text-[#765b00] hover:text-[#FAC826] transition-colors">
+<span class="material-symbols-outlined">support_agent</span>
+</button>
+</div>
+<div class="h-10 w-[1px] bg-outline-variant/30 mx-2"></div>
+<div class="flex items-center gap-3">
 <div class="text-right">
-<p class="font-bold text-xs text-on-surface">Admin User</p>
-<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Superintendente</p>
+<p class="text-sm font-semibold text-on-surface">Jessica Lima</p>
+<p class="text-[10px] text-zinc-500 uppercase tracking-tighter">Administradora • Doma Condo</p>
 </div>
-<img class="w-10 h-10 rounded-full object-cover ring-2 ring-primary-container" data-alt="Professional portrait of a financial executive in a sharp suit, high-end corporate office background, soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6yPbWwJqqKQ-FStMQ0FAw-Lz4Dq444p-nJlB2HDSyd_LlaodjkDNaNDwuarE6R6IlBPxGxQHdjlkKWoIvr_oz_h0mn-cT9rjv_8JCMpCCeW1MuIGs-WPYNiQLqT9x57hGCRtP2ldbamKg2PSxlHGMyxAEHwkJdrZ7ZQYUlcIPw1HYerLoOIOeBi9xq4LXaTFEYpi3nf7nWQo30pqiw5SsHWMe3jFlFGZuJHqWLdRCbkmETQcOFFx8spRmFVzzaxBvAONhnBLo3ev6"/>
+<div class="h-10 w-10 rounded-full bg-[#FAC826] flex items-center justify-center text-[#765b00] font-bold text-sm">JL</div>
 </div>
-</div>
-<button class="bg-primary text-white px-6 py-2.5 rounded-lg signature-gradient font-bold hover:opacity-90 transition-all flex items-center gap-2">
-<span class="material-symbols-outlined text-sm">person_add</span>
-                Novo Membro
-            </button>
 </div>
 </header>
 <!-- Main Content Canvas -->
-<main class="pl-80 pt-20 p-12 min-h-[calc(100vh-5rem)]">
+<main class="pl-80 pr-12 pt-28 pb-12 min-h-[calc(100vh-5rem)]">
 <!-- Statement Header -->
 <div class="mb-12 max-w-4xl">
 <h3 class="text-4xl font-semibold text-on-surface leading-tight tracking-tight mb-4">
