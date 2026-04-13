@@ -1,0 +1,126 @@
+name: Deploy Doma Condo Site
+
+on:
+  push:
+    branches:
+      - main
+      - feature/v5-3-6-replica
+    paths:
+      - 'Desktop/Tech-2/**'
+  workflow_dispatch:
+
+jobs:
+  deploy-doma-condo:
+    name: Deploy domacondo.agendainteligentes.com
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
+        run: |
+          set -e
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          echo "$VPS_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p ${VPS_PORT} -H ${VPS_HOST} >> ~/.ssh/known_hosts 2>/dev/null || true
+          chmod 644 ~/.ssh/known_hosts
+          ssh -i ~/.ssh/deploy_key \
+            -o StrictHostKeyChecking=accept-new \
+            -p ${VPS_PORT} \
+            ${VPS_USER}@${VPS_HOST} \
+            "echo '✅ SSH OK'"
+
+      - name: Create webroot on VM
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
+        run: |
+          SSH_OPTS="-i ~/.ssh/deploy_key -o StrictHostKeyChecking=accept-new -p ${VPS_PORT}"
+          ssh $SSH_OPTS ${VPS_USER}@${VPS_HOST} \
+            "sudo mkdir -p /var/www/domacondo.agendainteligentes.com && sudo chown -R ${VPS_USER}:${VPS_USER} /var/www/domacondo.agendainteligentes.com"
+
+      - name: Deploy site files (rsync)
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
+        run: |
+          set -e
+          SSH_OPTS="-i ~/.ssh/deploy_key -o StrictHostKeyChecking=accept-new -p ${VPS_PORT}"
+
+          SITE_DIR="Desktop/Tech-2/Axis Antivacância/Doma Condo/site/public"
+
+          echo "🚀 Deploying Doma Condo site..."
+          rsync -avz --delete \
+            --exclude '.git' \
+            -e "ssh $SSH_OPTS" \
+            "${SITE_DIR}/" \
+            "${VPS_USER}@${VPS_HOST}:/var/www/domacondo.agendainteligentes.com/"
+
+          echo "✅ Site sincronizado!"
+
+      - name: Configure nginx (if not exists)
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
+        run: |
+          SSH_OPTS="-i ~/.ssh/deploy_key -o StrictHostKeyChecking=accept-new -p ${VPS_PORT}"
+
+          ssh $SSH_OPTS ${VPS_USER}@${VPS_HOST} "
+            if [ ! -f /etc/nginx/sites-available/domacondo.agendainteligentes.com ]; then
+              sudo tee /etc/nginx/sites-available/domacondo.agendainteligentes.com > /dev/null << 'NGINX'
+server {
+    listen 80;
+    server_name domacondo.agendainteligentes.com;
+    root /var/www/domacondo.agendainteligentes.com;
+    index index.html login.html;
+
+    location / {
+        try_files \$uri \$uri/ /index.html;
+    }
+
+    location ~* \.(html|css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf)$ {
+        expires 1d;
+        add_header Cache-Control 'public, immutable';
+    }
+
+    gzip on;
+    gzip_types text/html text/css application/javascript image/svg+xml;
+}
+NGINX
+              sudo ln -sf /etc/nginx/sites-available/domacondo.agendainteligentes.com /etc/nginx/sites-enabled/
+              sudo nginx -t && sudo systemctl reload nginx
+              echo '✅ Nginx configurado para domacondo.agendainteligentes.com'
+            else
+              echo '✅ Nginx já configurado — pulando'
+            fi
+          "
+
+      - name: Verify deploy
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_PORT: ${{ secrets.VPS_PORT || '22' }}
+        run: |
+          SSH_OPTS="-i ~/.ssh/deploy_key -o StrictHostKeyChecking=accept-new -p ${VPS_PORT}"
+
+          FILE_COUNT=$(ssh $SSH_OPTS ${VPS_USER}@${VPS_HOST} \
+            "ls /var/www/domacondo.agendainteligentes.com/*.html 2>/dev/null | wc -l")
+
+          echo "📄 Arquivos HTML no servidor: ${FILE_COUNT}"
+
+          if [ "$FILE_COUNT" -ge "20" ]; then
+            echo "✅ Deploy verificado — ${FILE_COUNT} páginas no ar!"
+          else
+            echo "⚠️  Menos páginas do que esperado (${FILE_COUNT}/22)"
+          fi
