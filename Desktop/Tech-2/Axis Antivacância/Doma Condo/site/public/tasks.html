@@ -13,155 +13,96 @@
             theme: {
                 extend: {
                     "colors": {
-                        "on-tertiary": "#ffffff",
-                        "on-secondary": "#ffffff",
-                        "on-primary-fixed": "#251a00",
-                        "surface-dim": "#dcd9d9",
-                        "surface-bright": "#fcf9f8",
-                        "surface": "#fcf9f8",
-                        "primary": "#765b00",
-                        "on-primary": "#ffffff",
-                        "surface-container-low": "#f6f3f2",
-                        "surface-container": "#f0eded",
-                        "secondary": "#705c29",
-                        "on-primary-container": "#614a00",
-                        "on-secondary-fixed": "#251a00",
-                        "inverse-primary": "#f0c038",
-                        "on-surface-variant": "#4e4634",
-                        "on-secondary-container": "#76622f",
-                        "on-primary-fixed-variant": "#594400",
-                        "on-background": "#1c1b1b",
-                        "tertiary-fixed-dim": "#8bceff",
-                        "secondary-fixed-dim": "#dec487",
-                        "on-tertiary-container": "#005279",
-                        "tertiary-container": "#78c7ff",
-                        "primary-container": "#FAC826",
-                        "on-error": "#ffffff",
-                        "primary-fixed": "#ffdf94",
-                        "on-error-container": "#93000a",
-                        "surface-container-highest": "#e5e2e1",
-                        "outline-variant": "#d1c5ae",
-                        "secondary-container": "#fbe0a0",
-                        "background": "#fcf9f8",
-                        "inverse-surface": "#313030",
-                        "primary-fixed-dim": "#f0c038",
-                        "on-surface": "#1c1b1b",
-                        "on-tertiary-fixed": "#001e2f",
-                        "tertiary-fixed": "#cae6ff",
-                        "surface-container-lowest": "#ffffff",
-                        "outline": "#807662",
-                        "error-container": "#ffdad6",
-                        "error": "#ba1a1a",
-                        "secondary-fixed": "#fbe0a0",
-                        "inverse-on-surface": "#f3f0ef",
-                        "tertiary": "#006492",
-                        "on-tertiary-fixed-variant": "#004b6f",
-                        "surface-variant": "#e5e2e1",
-                        "surface-tint": "#765b00",
-                        "surface-container-high": "#eae7e7",
-                        "on-secondary-fixed-variant": "#564514"
+                        "primary-fixed": "#ffdf94","on-background": "#191c1e","surface-dim": "#d9dadc",
+                        "surface-tint": "#765b00","on-tertiary-container": "#005b14","on-surface": "#191c1e",
+                        "primary-fixed-dim": "#f0c038","on-surface-variant": "#4e4634","primary-container": "#FAC826",
+                        "on-tertiary": "#ffffff","tertiary-fixed-dim": "#88d982","secondary": "#705c29",
+                        "outline": "#807662","on-error-container": "#93000a","on-error": "#ffffff",
+                        "error-container": "#ffdad6","surface-container-lowest": "#ffffff","on-tertiary-fixed": "#002204",
+                        "on-secondary-fixed": "#251a00","on-primary-fixed": "#251a00","surface-container": "#edeef0",
+                        "surface-bright": "#f8f9fb","error": "#ba1a1a","secondary-fixed-dim": "#dec487",
+                        "on-primary-fixed-variant": "#594400","outline-variant": "#d1c5ae","secondary-container": "#fbe0a0",
+                        "on-secondary": "#ffffff","on-secondary-fixed-variant": "#564514","tertiary-container": "#81d27c",
+                        "inverse-on-surface": "#f0f1f3","surface": "#f8f9fb","surface-container-low": "#f2f4f6",
+                        "background": "#f8f9fb","inverse-primary": "#f0c038","inverse-surface": "#2e3132",
+                        "on-tertiary-fixed-variant": "#005312","tertiary-fixed": "#a3f69c","surface-variant": "#e1e2e4",
+                        "tertiary": "#1b6d24","primary": "#765b00","surface-container-highest": "#e1e2e4",
+                        "surface-container-high": "#e7e8ea","on-primary-container": "#614a00","on-primary": "#ffffff",
+                        "on-secondary-container": "#76622f","secondary-fixed": "#fbe0a0"
                     },
-                    "borderRadius": {
-                        "DEFAULT": "0.125rem",
-                        "lg": "0.25rem",
-                        "xl": "0.5rem",
-                        "full": "0.75rem"
-                    },
-                    "fontFamily": {
-                        "headline": ["Raleway"],
-                        "body": ["Raleway"],
-                        "label": ["Raleway"]
-                    }
+                    "borderRadius": {"DEFAULT": "0.25rem","lg": "0.5rem","xl": "0.75rem","full": "9999px"},
+                    "fontFamily": {"headline": ["Raleway"],"body": ["Raleway"],"label": ["Raleway"]}
                 },
             },
         }
     </script>
 <style>
-        body { font-family: 'Raleway', sans-serif; }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { font-family: 'Raleway', sans-serif; background-color: #f8f9fb; }
         .kanban-column { min-height: calc(100vh - 180px); }
         .gradient-gold { background: linear-gradient(135deg, #765b00 0%, #FAC826 100%); }
     </style>
 </head>
 <body class="bg-background text-on-surface min-h-screen">
 <!-- SideNavBar Shell -->
-<aside class="h-screen w-64 fixed left-0 top-0 bg-[#1A1A1A] font-['Raleway'] antialiased tracking-tight flex flex-col py-6">
-<div class="px-6 mb-10">
-<img src="images/logo.png" alt="Doma Condo Logo" class="h-10 mb-2 object-contain"/>
-<h1 class="text-2xl font-semibold text-white tracking-tight">Doma Condo</h1>
-<p class="text-gray-500 text-xs mt-1">Financial BPO</p>
+<aside class="fixed left-0 top-0 z-40 h-screen w-72 flex flex-col border-none bg-white shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+<div class="p-8">
+<img src="images/logo.png" alt="Doma Condo Logo" class="h-10 object-contain mb-4"/>
+<h2 class="text-2xl font-semibold tracking-tight text-[#020202]" style="font-family:'Raleway',sans-serif;">DOMA CONDO</h2>
+<p class="text-[10px] text-zinc-400 mt-1 uppercase tracking-widest font-bold" style="font-family:'Raleway',sans-serif;">Assessoria e Consultoria</p>
 </div>
-<nav class="flex-1 space-y-1">
-<a class="text-gray-400 hover:text-white mx-2 px-4 py-3 flex items-center gap-3 transition-colors hover:bg-white/5" href="dashboard.html">
-<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-<span>Visão Geral</span>
-</a>
-<!-- Active State: Tarefas -->
-<a class="bg-[#FAC826] text-[#1A1A1A] font-semibold rounded-lg mx-2 px-4 py-3 flex items-center gap-3" href="tasks.html">
-<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
-<span>Tarefas</span>
-</a>
-<a class="text-gray-400 hover:text-white mx-2 px-4 py-3 flex items-center gap-3 transition-colors hover:bg-white/5" href="#">
-<span class="material-symbols-outlined" data-icon="payments">payments</span>
-<span>Finanças</span>
-</a>
-<a class="text-gray-400 hover:text-white mx-2 px-4 py-3 flex items-center gap-3 transition-colors hover:bg-white/5" href="#">
-<span class="material-symbols-outlined" data-icon="description">description</span>
-<span>Documentos</span>
-</a>
-<a class="text-gray-400 hover:text-white mx-2 px-4 py-3 flex items-center gap-3 transition-colors hover:bg-white/5" href="settings.html">
-<span class="material-symbols-outlined" data-icon="settings">settings</span>
-<span>Configurações</span>
-</a>
+<nav class="flex-1 mt-4">
+<ul class="space-y-1">
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="dashboard.html"><span class="material-symbols-outlined">dashboard</span><span>Dashboard</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="priorities.html"><span class="material-symbols-outlined">priority_high</span><span>Prioridades</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="team.html"><span class="material-symbols-outlined">group</span><span>Equipe</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="clients.html"><span class="material-symbols-outlined">business_center</span><span>Clientes</span></a></li>
+<li><a class="text-[#765b00] bg-[#FAC826]/10 border-l-4 border-[#FAC826] font-bold transition-all flex items-center gap-4 px-6 py-3" href="tasks.html"><span class="material-symbols-outlined">task_alt</span><span>Tarefas</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="work-logs.html"><span class="material-symbols-outlined">analytics</span><span>Atividades</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="messages.html"><span class="material-symbols-outlined">mail</span><span>Mensagens</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="reports.html"><span class="material-symbols-outlined">assessment</span><span>Relatórios</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="categories.html"><span class="material-symbols-outlined">category</span><span>Categorias</span></a></li>
+</ul>
 </nav>
-<div class="px-6 mt-auto">
-<button class="w-full gradient-gold text-white font-bold py-3 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-lg">
-<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
-                Novo Projeto
-            </button>
-<div class="mt-6 border-t border-white/10 pt-6">
-<a class="text-gray-400 hover:text-white px-4 py-2 flex items-center gap-3 transition-colors hover:bg-white/5 rounded-lg" href="#">
-<span class="material-symbols-outlined" data-icon="help">help</span>
-<span>Ajuda</span>
-</a>
-</div>
+<div class="mt-auto p-4 border-t border-zinc-100">
+<ul class="space-y-1">
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="settings.html"><span class="material-symbols-outlined">settings</span><span>Configurações</span></a></li>
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="login.html"><span class="material-symbols-outlined">logout</span><span>Sair</span></a></li>
+</ul>
 </div>
 </aside>
 <!-- Main Content Area -->
-<main class="ml-64 min-h-screen flex flex-col">
+<main class="pl-80 min-h-screen flex flex-col">
 <!-- TopAppBar -->
-<header class="flex justify-between items-center h-20 px-8 w-full bg-[#fcf9f8] dark:bg-stone-900 border-b border-gray-100 dark:border-stone-800 sticky top-0 z-10">
+<header class="flex justify-between items-center pl-80 pr-12 w-full fixed top-0 z-30 h-20 bg-[#f8f9fb]/80 backdrop-blur-md">
 <div class="flex items-center gap-8">
-<h2 class="text-2xl font-semibold text-[#1A1A1A] dark:text-white font-['Raleway']">Tarefas</h2>
+<h2 class="text-2xl font-semibold text-[#020202] font-['Raleway']">Tarefas</h2>
 <div class="hidden md:flex items-center gap-6">
 <a class="text-[#765b00] border-b-2 border-[#765b00] pb-4 pt-4 px-1 font-medium text-sm" href="#">Pendentes</a>
-<a class="text-gray-500 hover:text-[#1A1A1A] pb-4 pt-4 px-1 transition-all font-medium text-sm" href="#">Em Revisão</a>
-<a class="text-gray-500 hover:text-[#1A1A1A] pb-4 pt-4 px-1 transition-all font-medium text-sm" href="#">Concluídas</a>
+<a class="text-gray-500 hover:text-[#020202] pb-4 pt-4 px-1 transition-all font-medium text-sm" href="#">Em Revisão</a>
+<a class="text-gray-500 hover:text-[#020202] pb-4 pt-4 px-1 transition-all font-medium text-sm" href="#">Concluídas</a>
 </div>
 </div>
 <div class="flex items-center gap-4">
 <div class="relative group">
-<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-400 text-xl" data-icon="search">search</span>
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-400 text-xl">search</span>
 <input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full text-sm w-64 focus:ring-1 focus:ring-primary" placeholder="Buscar tarefas..." type="text"/>
 </div>
 <button class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-on-surface hover:bg-surface-container-high rounded-lg transition-colors">
-<span class="material-symbols-outlined text-lg" data-icon="filter_list">filter_list</span>
+<span class="material-symbols-outlined text-lg">filter_list</span>
                     Filtros
                 </button>
 <button class="gradient-gold text-white text-sm font-bold px-5 py-2.5 rounded-full flex items-center gap-2 active:scale-95 transition-transform">
-<span class="material-symbols-outlined text-lg" data-icon="add">add</span>
+<span class="material-symbols-outlined text-lg">add</span>
                     Nova Tarefa
                 </button>
 <div class="flex items-center gap-2 ml-4 pl-4 border-l border-gray-200">
-<span class="material-symbols-outlined text-gray-500 p-2 hover:bg-surface-container rounded-full cursor-pointer" data-icon="notifications">notifications</span>
-<img alt="User profile" class="w-10 h-10 rounded-full border-2 border-primary-container p-0.5" data-alt="professional portrait of a confident finance manager woman with glasses and formal attire in a modern office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6KWiRTK_-_MAXsQHV6Mkk5e73l4uUAc0HBgSMWHeHbErLM8Vq-10VlUcwKmBLYGiK0U0x1-AqzY2cyHPSCt3dOlhBecev-feueRA5csLbU-GJfSb_4Z8j4giXdYQ6gimwIY558GvwcoteK7_9DayMUHSc-xMlvmU6kDZtqZSxdBeNYP9zlZ2xzvyUHZpWMImZf1kCZukFAyi-F9Y2dFYWjYXoe1MPr5Vq4OSt_pUijiL-T2MsL291pCGYckPwm95aTYb3oMO7koWh"/>
+<span class="material-symbols-outlined text-gray-500 p-2 hover:bg-surface-container rounded-full cursor-pointer">notifications</span>
 </div>
 </div>
 </header>
 <!-- Kanban Board Content -->
-<div class="p-8 flex-1">
+<div class="p-8 pt-28 flex-1">
 <!-- Statement Header -->
 <div class="mb-8">
 <h3 class="text-4xl font-semibold text-on-surface tracking-tight font-headline">Fluxo de Operações</h3>
