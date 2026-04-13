@@ -6,78 +6,37 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
         tailwind.config = {
           darkMode: "class",
           theme: {
             extend: {
               "colors": {
-                      "primary-fixed-dim": "#f0c038",
-                      "on-tertiary-fixed-variant": "#004b6f",
-                      "on-tertiary-fixed": "#001e2f",
-                      "on-tertiary-container": "#005279",
-                      "on-primary-container": "#614a00",
-                      "surface-container-highest": "#e5e2e1",
-                      "primary-container": "#FAC826",
-                      "surface-variant": "#e5e2e1",
-                      "on-secondary-fixed": "#251a00",
-                      "on-error-container": "#93000a",
-                      "secondary-container": "#fbe0a0",
-                      "on-secondary-container": "#76622f",
-                      "primary-fixed": "#ffdf94",
-                      "surface": "#fcf9f8",
-                      "on-secondary": "#ffffff",
-                      "on-surface-variant": "#4e4634",
-                      "inverse-surface": "#313030",
-                      "on-surface": "#1c1b1b",
-                      "on-primary": "#ffffff",
-                      "error-container": "#ffdad6",
-                      "surface-container-lowest": "#ffffff",
-                      "inverse-on-surface": "#f3f0ef",
-                      "surface-container-low": "#f6f3f2",
-                      "error": "#ba1a1a",
-                      "background": "#fcf9f8",
-                      "on-secondary-fixed-variant": "#564514",
-                      "outline": "#807662",
-                      "secondary": "#705c29",
-                      "tertiary-fixed": "#cae6ff",
-                      "secondary-fixed-dim": "#dec487",
-                      "primary": "#765b00",
-                      "outline-variant": "#d1c5ae",
-                      "on-error": "#ffffff",
-                      "on-background": "#1c1b1b",
-                      "on-primary-fixed-variant": "#594400",
-                      "tertiary": "#006492",
-                      "secondary-fixed": "#fbe0a0",
-                      "inverse-primary": "#f0c038",
-                      "on-tertiary": "#ffffff",
-                      "tertiary-container": "#78c7ff",
-                      "surface-bright": "#fcf9f8",
-                      "tertiary-fixed-dim": "#8bceff",
-                      "on-primary-fixed": "#251a00",
-                      "surface-tint": "#765b00",
-                      "surface-dim": "#dcd9d9",
-                      "surface-container-high": "#eae7e7",
-                      "surface-container": "#f0eded"
+                  "primary-fixed": "#ffdf94","on-background": "#191c1e","surface-dim": "#d9dadc",
+                  "surface-tint": "#765b00","on-tertiary-container": "#005b14","on-surface": "#191c1e",
+                  "primary-fixed-dim": "#f0c038","on-surface-variant": "#4e4634","primary-container": "#FAC826",
+                  "on-tertiary": "#ffffff","tertiary-fixed-dim": "#88d982","secondary": "#705c29",
+                  "outline": "#807662","on-error-container": "#93000a","on-error": "#ffffff",
+                  "error-container": "#ffdad6","surface-container-lowest": "#ffffff","on-tertiary-fixed": "#002204",
+                  "on-secondary-fixed": "#251a00","on-primary-fixed": "#251a00","surface-container": "#edeef0",
+                  "surface-bright": "#f8f9fb","error": "#ba1a1a","secondary-fixed-dim": "#dec487",
+                  "on-primary-fixed-variant": "#594400","outline-variant": "#d1c5ae","secondary-container": "#fbe0a0",
+                  "on-secondary": "#ffffff","on-secondary-fixed-variant": "#564514","tertiary-container": "#81d27c",
+                  "inverse-on-surface": "#f0f1f3","surface": "#f8f9fb","surface-container-low": "#f2f4f6",
+                  "background": "#f8f9fb","inverse-primary": "#f0c038","inverse-surface": "#2e3132",
+                  "on-tertiary-fixed-variant": "#005312","tertiary-fixed": "#a3f69c","surface-variant": "#e1e2e4",
+                  "tertiary": "#1b6d24","primary": "#765b00","surface-container-highest": "#e1e2e4",
+                  "surface-container-high": "#e7e8ea","on-primary-container": "#614a00","on-primary": "#ffffff",
+                  "on-secondary-container": "#76622f","secondary-fixed": "#fbe0a0"
               },
-              "borderRadius": {
-                      "DEFAULT": "0.125rem",
-                      "lg": "0.25rem",
-                      "xl": "0.5rem",
-                      "full": "0.75rem"
-              },
-              "fontFamily": {
-                      "headline": ["Raleway"],
-                      "body": ["Raleway"],
-                      "label": ["Raleway"]
-              }
+              "borderRadius": {"DEFAULT": "0.25rem","lg": "0.5rem","xl": "0.75rem","full": "9999px"},
+              "fontFamily": {"headline": ["Raleway"],"body": ["Raleway"],"label": ["Raleway"]}
             },
           },
         }
     </script>
 <style>
-        body { font-family: 'Raleway', sans-serif; }
+        body { font-family: 'Raleway', sans-serif; background-color: #f8f9fb; }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
             vertical-align: middle;
@@ -94,44 +53,34 @@
 </head>
 <body class="bg-background text-on-surface">
 <!-- SideNavBar Shell -->
-<aside class="bg-[#1A1A1A] h-full w-64 fixed left-0 top-0 flex flex-col py-8 z-50">
-<div class="px-8 mb-12">
-<img src="images/logo.png" alt="Doma Condo Logo" class="h-10 object-contain mb-2"/>
-<div class="flex items-center gap-2">
-<span class="text-2xl font-semibold tracking-tight text-white">DOMA</span>
-<span class="text-2xl font-semibold tracking-tight text-[#FAC826]">CONDO</span>
+<aside class="fixed left-0 top-0 z-40 h-screen w-72 flex flex-col border-none bg-white shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+<div class="p-8">
+<img src="images/logo.png" alt="Doma Condo Logo" class="h-10 object-contain mb-4"/>
+<h2 class="text-2xl font-semibold tracking-tight text-[#020202]" style="font-family:'Raleway',sans-serif;">DOMA CONDO</h2>
+<p class="text-[10px] text-zinc-400 mt-1 uppercase tracking-widest font-bold" style="font-family:'Raleway',sans-serif;">Assessoria e Consultoria</p>
 </div>
-</div>
-<nav class="flex-1 space-y-1">
-<a class="flex items-center px-8 py-3 gap-3 text-gray-400 font-medium hover:bg-white/5 transition-colors duration-150 font-raleway text-sm tracking-wide" href="dashboard.html">
-<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-<span>Dashboard</span>
-</a>
-<a class="flex items-center px-8 py-3 gap-3 text-gray-400 font-medium hover:bg-white/5 transition-colors duration-150 font-raleway text-sm tracking-wide" href="priorities.html">
-<span class="material-symbols-outlined" data-icon="priority_high">priority_high</span>
-<span>Priorities</span>
-</a>
-<a class="flex items-center px-8 py-3 gap-3 text-gray-400 font-medium hover:bg-white/5 transition-colors duration-150 font-raleway text-sm tracking-wide" href="team.html">
-<span class="material-symbols-outlined" data-icon="group">group</span>
-<span>Team</span>
-</a>
-<!-- Active Navigation: Clients -->
-<a class="flex items-center px-8 py-3 gap-3 text-[#FAC826] font-bold border-r-4 border-[#FAC826] bg-surface-container-high/10 transition-colors duration-150 font-raleway text-sm tracking-wide" href="clients.html">
-<span class="material-symbols-outlined" data-icon="account_balance_wallet" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
-<span>Clients</span>
-</a>
-<a class="flex items-center px-8 py-3 gap-3 text-gray-400 font-medium hover:bg-white/5 transition-colors duration-150 font-raleway text-sm tracking-wide" href="reports.html">
-<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
-<span>Reports</span>
-</a>
-<a class="flex items-center px-8 py-3 gap-3 text-gray-400 font-medium hover:bg-white/5 transition-colors duration-150 font-raleway text-sm tracking-wide" href="settings.html">
-<span class="material-symbols-outlined" data-icon="settings">settings</span>
-<span>Settings</span>
-</a>
+<nav class="flex-1 mt-4">
+<ul class="space-y-1">
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="dashboard.html"><span class="material-symbols-outlined">dashboard</span><span>Dashboard</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="priorities.html"><span class="material-symbols-outlined">priority_high</span><span>Prioridades</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="team.html"><span class="material-symbols-outlined">group</span><span>Equipe</span></a></li>
+<li><a class="text-[#765b00] bg-[#FAC826]/10 border-l-4 border-[#FAC826] font-bold transition-all flex items-center gap-4 px-6 py-3" href="clients.html"><span class="material-symbols-outlined">business_center</span><span>Clientes</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="tasks.html"><span class="material-symbols-outlined">task_alt</span><span>Tarefas</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="work-logs.html"><span class="material-symbols-outlined">analytics</span><span>Atividades</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="messages.html"><span class="material-symbols-outlined">mail</span><span>Mensagens</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="reports.html"><span class="material-symbols-outlined">assessment</span><span>Relatórios</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="categories.html"><span class="material-symbols-outlined">category</span><span>Categorias</span></a></li>
+</ul>
 </nav>
+<div class="mt-auto p-4 border-t border-zinc-100">
+<ul class="space-y-1">
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="settings.html"><span class="material-symbols-outlined">settings</span><span>Configurações</span></a></li>
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="login.html"><span class="material-symbols-outlined">logout</span><span>Sair</span></a></li>
+</ul>
+</div>
 </aside>
 <!-- TopNavBar Shell -->
-<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-[#fcf9f8] dark:bg-surface-dim flex justify-between items-center px-12 z-40 backdrop-blur-md">
+<header class="flex justify-between items-center pl-80 pr-12 w-full fixed top-0 z-30 h-20 bg-[#f8f9fb]/80 backdrop-blur-md">
 <div class="flex items-center gap-4">
 <nav class="flex items-center gap-2 text-sm font-medium">
 <span class="text-on-surface-variant">Clientes</span>
@@ -154,7 +103,7 @@
 </div>
 </header>
 <!-- Main Content Canvas -->
-<main class="pt-24 pl-72 pr-12 pb-12 min-h-screen">
+<main class="pt-24 pl-80 pr-12 pb-12 min-h-screen">
 <!-- Jessica's Statement Header -->
 <section class="mb-10">
 <div class="flex justify-between items-start">
