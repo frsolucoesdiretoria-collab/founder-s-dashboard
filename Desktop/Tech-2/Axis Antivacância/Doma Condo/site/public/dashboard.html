@@ -104,22 +104,31 @@
 </ul>
 </div>
 </aside>
-<!-- TopNavBar -->
+<!-- TopNavBar Shell -->
 <header class="flex justify-between items-center pl-80 pr-12 w-full fixed top-0 z-30 h-20 bg-[#f8f9fb]/80 backdrop-blur-md">
-<div>
-<h2 class="font-['Raleway'] text-lg font-bold text-[#765b00]">Dashboard</h2>
+<div class="flex-1">
+<div class="relative max-w-md">
+<input class="w-full bg-surface-container-high border-none rounded-full py-2.5 px-6 focus:ring-2 focus:ring-primary/20 text-sm" placeholder="Buscar no painel..." type="text"/>
+<span class="material-symbols-outlined absolute right-4 top-2.5 text-zinc-400">search</span>
+</div>
 </div>
 <div class="flex items-center gap-6">
-<div class="relative">
-<button class="text-gray-500 hover:text-[#765b00] transition-all relative">
-<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<div class="flex items-center gap-4">
+<button class="text-[#765b00] hover:text-[#FAC826] transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
 <span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
 </button>
+<button class="text-[#765b00] hover:text-[#FAC826] transition-colors">
+<span class="material-symbols-outlined">support_agent</span>
+</button>
 </div>
-<div class="h-8 w-[1px] bg-outline-variant opacity-20"></div>
+<div class="h-10 w-[1px] bg-outline-variant/30 mx-2"></div>
 <div class="flex items-center gap-3">
-<span class="text-xs font-semibold text-on-surface">Jéssica Oliveira</span>
-<img class="w-8 h-8 rounded-full object-cover border border-primary-container" data-alt="Jessica Oliveira portrait professional" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYUe_lLJqIvLJ4uHJsRSuW5bnr2wFcX4fTzcI2T6qz_yUkPW1E-8lcRUnqs3ygrDlG3tbU0IO_KdEIblrcWNeHJwRfyDZBXlQwhaZnELbbEdYZ1-mrWYp_gXHy45IzCCFoJ228vK2wZfflmKy2ZpL5bOUOWA-5QLyGTJSRGxEXk5ZU3xE9__5_NvhN7Zq7OxIq-ILZWyBh01wzDHiRNOsN5dJ7Y8qSW6NcCcZFtolge5f72v3R6P49UwA2u-GoOgtUtQAmYzRngoz0"/>
+<div class="text-right">
+<p class="text-sm font-semibold text-on-surface">Jessica Lima</p>
+<p class="text-[10px] text-zinc-500 uppercase tracking-tighter">Administradora • Doma Condo</p>
+</div>
+<div class="h-10 w-10 rounded-full bg-[#FAC826] flex items-center justify-center text-[#765b00] font-bold text-sm">JL</div>
 </div>
 </div>
 </header>

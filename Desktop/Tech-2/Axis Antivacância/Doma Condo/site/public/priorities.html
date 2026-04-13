@@ -103,34 +103,31 @@
 </ul>
 </div>
 </aside>
-<!-- TopAppBar -->
+<!-- TopNavBar Shell -->
 <header class="flex justify-between items-center pl-80 pr-12 w-full fixed top-0 z-30 h-20 bg-[#f8f9fb]/80 backdrop-blur-md">
-<div class="flex items-center gap-4 flex-1">
-<div class="relative w-96 group">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-lg">search</span>
-<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-[#FAC826] transition-all" placeholder="Pesquisar por cliente ou tarefa..." type="text"/>
-</div>
-<div class="ml-4 text-xs font-medium text-on-surface-variant flex items-center gap-2">
-<span class="material-symbols-outlined text-sm">calendar_today</span>
-<span>Terça-feira, 24 de Outubro</span>
+<div class="flex-1">
+<div class="relative max-w-md">
+<input class="w-full bg-surface-container-high border-none rounded-full py-2.5 px-6 focus:ring-2 focus:ring-primary/20 text-sm" placeholder="Buscar no painel..." type="text"/>
+<span class="material-symbols-outlined absolute right-4 top-2.5 text-zinc-400">search</span>
 </div>
 </div>
 <div class="flex items-center gap-6">
-<div class="flex items-center gap-2">
-<button class="p-2 hover:bg-neutral-100 rounded-full transition-colors relative">
-<span class="material-symbols-outlined text-neutral-600">notifications</span>
-<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+<div class="flex items-center gap-4">
+<button class="text-[#765b00] hover:text-[#FAC826] transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
 </button>
-<button class="p-2 hover:bg-neutral-100 rounded-full transition-colors">
-<span class="material-symbols-outlined text-neutral-600">history</span>
+<button class="text-[#765b00] hover:text-[#FAC826] transition-colors">
+<span class="material-symbols-outlined">support_agent</span>
 </button>
 </div>
-<div class="flex items-center gap-3 pl-4 border-l border-outline-variant/20">
+<div class="h-10 w-[1px] bg-outline-variant/30 mx-2"></div>
+<div class="flex items-center gap-3">
 <div class="text-right">
-<p class="text-xs font-bold text-on-surface">Consultor Financeiro</p>
-<p class="text-[10px] text-on-surface-variant">Admin Painel</p>
+<p class="text-sm font-semibold text-on-surface">Jessica Lima</p>
+<p class="text-[10px] text-zinc-500 uppercase tracking-tighter">Administradora • Doma Condo</p>
 </div>
-<img alt="Avatar do Consultor" class="w-10 h-10 rounded-full object-cover border-2 border-primary-container" data-alt="Professional headshot of a financial consultant in a modern office setting with warm natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMb3riA-thSnbq9PqEYYHfm-n_l3I54UQwCPuTbHN-tXi9HMGtiiZqNlAV31fwvA4nJkx3HOVyLKA50pYhOkWAm6hOnqi-uwDSqmXYA-tOcQrUTZjDZqYDCNLOTObkIKl1Akb-9ASLQezoKSIx-VZ12-xOR-uLaNJy6m0N4Ns068GbtYwpn-EnsldTt-xgRN4EfAFikWdcbfuS-0HvImW3qKEYviHXLeNG-6jKhU3PeqVH0A9WHDZ0VMWSLa6zMGscLplACWaRW9SA"/>
+<div class="h-10 w-10 rounded-full bg-[#FAC826] flex items-center justify-center text-[#765b00] font-bold text-sm">JL</div>
 </div>
 </div>
 </header>
