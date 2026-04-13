@@ -77,7 +77,7 @@
         }
     </script>
 <style>
-        body { font-family: 'Raleway', sans-serif; }
+        body { font-family: 'Raleway', sans-serif; background-color: #f8f9fb; }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
@@ -87,46 +87,31 @@
     </style>
 </head>
 <body class="bg-background text-on-surface overflow-hidden">
-<!-- SideNavBar (Authority: Shared Components JSON) -->
-<aside class="h-full w-64 fixed left-0 top-0 bg-[#1A1A1A] flex flex-col py-8 px-4 z-20">
-<!-- Brand Logo -->
-<div class="mb-12 px-2">
-<img src="images/logo.png" alt="Doma Condo Logo" class="h-10 object-contain mb-2"/>
-<h1 class="text-xl font-semibold uppercase tracking-tight select-none">
-<span class="text-white">DOMA</span>
-<span class="text-[#FAC826]">CONDO</span>
-</h1>
-<p class="text-[10px] text-gray-500 tracking-widest mt-1 uppercase">BPO Financeiro</p>
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 z-40 h-screen w-72 flex flex-col border-none bg-white shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+<div class="p-8">
+<img src="images/logo.png" alt="Doma Condo Logo" class="h-10 object-contain mb-4"/>
+<h2 class="text-2xl font-semibold tracking-tight text-[#020202]" style="font-family:'Raleway',sans-serif;">DOMA CONDO</h2>
+<p class="text-[10px] text-zinc-400 mt-1 uppercase tracking-widest font-bold" style="font-family:'Raleway',sans-serif;">Assessoria e Consultoria</p>
 </div>
-<!-- Navigation Links -->
-<nav class="flex-1 space-y-2">
-<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-medium hover:bg-white/10 hover:text-white transition-all scale-95 active:scale-90 duration-150" href="my-work.html">
-<span class="material-symbols-outlined" data-icon="work">work</span>
-<span class="text-sm font-['Raleway'] tracking-tight">Meu Trabalho</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-medium hover:bg-white/10 hover:text-white transition-all scale-95 active:scale-90 duration-150" href="my-tasks.html">
-<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
-<span class="text-sm font-['Raleway'] tracking-tight">Minhas Tarefas</span>
-</a>
-<!-- ACTIVE TAB: Minhas Mensagens -->
-<a class="flex items-center gap-3 px-4 py-3 text-[#FAC826] font-semibold border-r-4 border-[#FAC826] bg-white/5 transition-all scale-95 active:scale-90 duration-150" href="my-messages.html">
-<span class="material-symbols-outlined" data-icon="mail" style="font-variation-settings: 'FILL' 1;">mail</span>
-<span class="text-sm font-['Raleway'] tracking-tight">Minhas Mensagens</span>
-</a>
+<nav class="flex-1 mt-4">
+<ul class="space-y-1">
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="my-work.html"><span class="material-symbols-outlined">work</span><span>Meu Trabalho</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="my-tasks.html"><span class="material-symbols-outlined">task_alt</span><span>Minhas Tarefas</span></a></li>
+<li><a class="text-[#765b00] bg-[#FAC826]/10 border-l-4 border-[#FAC826] font-bold transition-all flex items-center gap-4 px-6 py-3" href="my-messages.html"><span class="material-symbols-outlined">mail</span><span>Mensagens</span></a></li>
+</ul>
 </nav>
-<!-- Profile Section -->
-<div class="mt-auto pt-6 border-t border-white/10 flex items-center gap-3 px-2">
-<img alt="Ana Souza Profile" class="w-10 h-10 rounded-full object-cover grayscale-[0.2]" data-alt="Professional portrait of a confident Brazilian woman with dark hair, corporate attire, soft office background, professional photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaUoJjBIVvB6VTc_cbLm2i60JT3b_96_5cHe83AWPkOsvYRKlPZnX9JOwEk3BnDkiUvc9Qk8a7VNZd9bLbqWG1N9B7HCC92hDM2VUDcxdu7_vGduHw9FcyK9f3lSmzyByDYV0JWczdfXn50m0Jh1Fpm01Zhq0yu41KM2_4Yv809p1Ju131_cWBnlp7IaRGOgmLRI-kWfzUuiX3Qwz_GvMXzigeCuAY7Q5BCw7YEAI3SzzKafPbreRR1r4vQDz8E2J-HzTFAkiA5FAb"/>
-<div class="overflow-hidden">
-<p class="text-white text-sm font-bold truncate">Ana Souza</p>
-<p class="text-gray-500 text-[10px] uppercase tracking-wider">Agente Senior</p>
-</div>
+<div class="mt-auto p-4 border-t border-zinc-100">
+<ul class="space-y-1">
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="settings.html"><span class="material-symbols-outlined">settings</span><span>Configurações</span></a></li>
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="login.html"><span class="material-symbols-outlined">logout</span><span>Sair</span></a></li>
+</ul>
 </div>
 </aside>
 <!-- Main Viewport Shell -->
-<main class="ml-64 min-h-screen flex flex-col relative">
+<main class="pl-80 min-h-screen flex flex-col relative">
 <!-- TopAppBar (Authority: Shared Components JSON) -->
-<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-10 bg-[#fcf9f8]/80 backdrop-blur-md flex justify-between items-center h-16 px-8 border-b border-[#1A1A1A]/5">
+<header class="flex justify-between items-center pl-80 pr-12 w-full fixed top-0 z-30 h-20 bg-[#f8f9fb]/80 backdrop-blur-md border-b border-zinc-100">
 <div class="flex items-center gap-4">
 <span class="font-['Raleway'] text-lg font-bold text-[#765b00]">Financial Atelier</span>
 </div>
@@ -140,7 +125,7 @@
 </div>
 </header>
 <!-- Content Canvas -->
-<section class="mt-16 p-8 flex flex-col h-[calc(100vh-4rem)]">
+<section class="mt-20 p-8 flex flex-col h-[calc(100vh-5rem)]">
 <!-- Jessica Signature Header -->
 <div class="mb-8">
 <h2 class="text-4xl font-extrabold tracking-tight text-on-surface">Minhas Mensagens com o Agente</h2>
