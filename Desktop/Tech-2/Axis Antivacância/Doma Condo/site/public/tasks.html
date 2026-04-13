@@ -8,39 +8,79 @@
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "primary-fixed": "#ffdf94","on-background": "#191c1e","surface-dim": "#d9dadc",
-                        "surface-tint": "#765b00","on-tertiary-container": "#005b14","on-surface": "#191c1e",
-                        "primary-fixed-dim": "#f0c038","on-surface-variant": "#4e4634","primary-container": "#FAC826",
-                        "on-tertiary": "#ffffff","tertiary-fixed-dim": "#88d982","secondary": "#705c29",
-                        "outline": "#807662","on-error-container": "#93000a","on-error": "#ffffff",
-                        "error-container": "#ffdad6","surface-container-lowest": "#ffffff","on-tertiary-fixed": "#002204",
-                        "on-secondary-fixed": "#251a00","on-primary-fixed": "#251a00","surface-container": "#edeef0",
-                        "surface-bright": "#f8f9fb","error": "#ba1a1a","secondary-fixed-dim": "#dec487",
-                        "on-primary-fixed-variant": "#594400","outline-variant": "#d1c5ae","secondary-container": "#fbe0a0",
-                        "on-secondary": "#ffffff","on-secondary-fixed-variant": "#564514","tertiary-container": "#81d27c",
-                        "inverse-on-surface": "#f0f1f3","surface": "#f8f9fb","surface-container-low": "#f2f4f6",
-                        "background": "#f8f9fb","inverse-primary": "#f0c038","inverse-surface": "#2e3132",
-                        "on-tertiary-fixed-variant": "#005312","tertiary-fixed": "#a3f69c","surface-variant": "#e1e2e4",
-                        "tertiary": "#1b6d24","primary": "#765b00","surface-container-highest": "#e1e2e4",
-                        "surface-container-high": "#e7e8ea","on-primary-container": "#614a00","on-primary": "#ffffff",
-                        "on-secondary-container": "#76622f","secondary-fixed": "#fbe0a0"
-                    },
-                    "borderRadius": {"DEFAULT": "0.25rem","lg": "0.5rem","xl": "0.75rem","full": "9999px"},
-                    "fontFamily": {"headline": ["Raleway"],"body": ["Raleway"],"label": ["Raleway"]}
-                },
-            },
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+            "primary-fixed": "#ffdf94",
+            "on-background": "#191c1e",
+            "surface-dim": "#d9dadc",
+            "surface-tint": "#765b00",
+            "on-tertiary-container": "#005b14",
+            "on-surface": "#191c1e",
+            "primary-fixed-dim": "#f0c038",
+            "on-surface-variant": "#4e4634",
+            "primary-container": "#FAC826",
+            "on-tertiary": "#ffffff",
+            "tertiary-fixed-dim": "#88d982",
+            "secondary": "#705c29",
+            "outline": "#807662",
+            "on-error-container": "#93000a",
+            "on-error": "#ffffff",
+            "error-container": "#ffdad6",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-fixed": "#002204",
+            "on-secondary-fixed": "#251a00",
+            "on-primary-fixed": "#251a00",
+            "surface-container": "#edeef0",
+            "surface-bright": "#f8f9fb",
+            "error": "#ba1a1a",
+            "secondary-fixed-dim": "#dec487",
+            "on-primary-fixed-variant": "#594400",
+            "outline-variant": "#d1c5ae",
+            "secondary-container": "#fbe0a0",
+            "on-secondary": "#ffffff",
+            "on-secondary-fixed-variant": "#564514",
+            "tertiary-container": "#81d27c",
+            "inverse-on-surface": "#f0f1f3",
+            "surface": "#f8f9fb",
+            "surface-container-low": "#f2f4f6",
+            "background": "#f8f9fb",
+            "inverse-primary": "#f0c038",
+            "inverse-surface": "#2e3132",
+            "on-tertiary-fixed-variant": "#005312",
+            "tertiary-fixed": "#a3f69c",
+            "surface-variant": "#e1e2e4",
+            "tertiary": "#1b6d24",
+            "primary": "#765b00",
+            "surface-container-highest": "#e1e2e4",
+            "surface-container-high": "#e7e8ea",
+            "on-primary-container": "#614a00",
+            "on-primary": "#ffffff",
+            "on-secondary-container": "#76622f",
+            "secondary-fixed": "#fbe0a0"
+        },
+        "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+        },
+        "fontFamily": {
+            "headline": ["Raleway"],
+            "body": ["Raleway"],
+            "label": ["Raleway"]
         }
-    </script>
+      },
+    },
+  }
+</script>
 <style>
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        body { font-family: 'Raleway', sans-serif; background-color: #f8f9fb; }
-        .kanban-column { min-height: calc(100vh - 180px); }
-    </style>
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    body { font-family: 'Raleway', sans-serif; background-color: #f8f9fb; }
+    .kanban-column { min-height: calc(100vh - 180px); }
+</style>
 </head>
 <body class="bg-surface text-on-surface antialiased">
 <!-- SideNavBar Shell -->
@@ -48,7 +88,7 @@
 <div class="p-8">
 <img src="images/logo.png" alt="Doma Condo Logo" class="h-10 object-contain mb-4"/>
 <h2 class="text-2xl font-semibold tracking-tight text-[#020202]" style="font-family:'Raleway',sans-serif;">DOMA CONDO</h2>
-<p class="text-[10px] text-zinc-400 mt-1 uppercase tracking-widest font-bold" style="font-family:'Raleway',sans-serif;">Assessoria e Consultoria</p>
+<p class="text-[10px] text-zinc-400 mt-1 uppercase tracking-widest font-bold">Assessoria e Consultoria</p>
 </div>
 <nav class="flex-1 mt-4">
 <ul class="space-y-1">
@@ -101,36 +141,36 @@
 <!-- Main Content Area -->
 <main class="pl-80 pr-12 pt-28 pb-12">
 <!-- Statement Header -->
-<header class="mb-8">
+<header class="mb-10">
 <span class="text-[10px] font-bold tracking-[0.2em] text-primary uppercase mb-2 block">PAINEL ADMINISTRATIVO</span>
 <h1 class="text-4xl font-semibold text-primary tracking-tight">Tarefas</h1>
 </header>
 <!-- Board Grid -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 <!-- Column: Pendente -->
-<div class="kanban-column flex flex-col gap-4">
+<div class="kanban-column bg-surface-container-low rounded-xl p-4 flex flex-col gap-4">
 <div class="flex items-center justify-between mb-2">
 <div class="flex items-center gap-3">
-<span class="w-3 h-3 rounded-full bg-amber-500"></span>
-<h4 class="font-bold text-lg uppercase tracking-wider text-on-surface">Pendente</h4>
-<span class="bg-surface-container-high px-2.5 py-0.5 rounded-full text-xs font-bold text-on-surface-variant">4</span>
+<span class="material-symbols-outlined text-primary" data-icon="schedule">schedule</span>
+<h4 class="text-sm font-semibold text-on-surface">Pendente</h4>
+<span class="bg-surface-container-highest px-2.5 py-0.5 rounded-full text-xs font-bold text-on-surface-variant">4</span>
 </div>
-<button class="material-symbols-outlined text-gray-400" data-icon="more_horiz">more_horiz</button>
+<button class="material-symbols-outlined text-on-surface-variant" data-icon="more_horiz">more_horiz</button>
 </div>
 <div class="flex flex-col gap-4">
 <!-- Card 1 -->
-<div class="bg-surface-container-lowest rounded-xl p-5 border-l-4 border-error transition-all hover:translate-y-[-4px] hover:bg-white">
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-[0px_12px_32px_rgba(25,28,30,0.04)] transition-all hover:translate-y-[-4px] hover:shadow-md">
 <div class="flex justify-between items-start mb-3">
-<span class="bg-error-container text-error text-[10px] font-black px-2 py-1 rounded tracking-widest">URGENTE</span>
-<span class="material-symbols-outlined text-gray-300 text-sm" data-icon="attach_file">attach_file</span>
+<span class="bg-error-container text-on-error-container text-[10px] font-black px-2 py-1 rounded tracking-widest uppercase">Urgente</span>
+<span class="material-symbols-outlined text-on-surface-variant text-sm" data-icon="attach_file">attach_file</span>
 </div>
 <h5 class="text-on-surface font-bold text-base leading-tight mb-3">Conciliação Bancária - Outubro</h5>
 <div class="flex flex-wrap gap-2 mb-4">
-<span class="bg-blue-50 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Residencial Aurora</span>
+<span class="bg-surface-container-highest text-zinc-500 text-[10px] font-bold px-2 py-0.5 rounded-full">Residencial Aurora</span>
 </div>
-<div class="flex items-center justify-between pt-4 border-t border-gray-50">
+<div class="flex items-center justify-between pt-4 border-t border-surface-container/30">
 <div class="flex items-center gap-2">
-<img class="w-6 h-6 rounded-full" data-alt="portrait of a professional accountant man with a friendly expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuByeH_TMBIBIJ-4_JdDmXTZNU7YGQdf3u_PFHZP07BcbYsdMPVQ5YOXQXG7pV2NGwP5TeQUPVBaHDPyyaI-2V2XtfmIxuZVec-Vq87eLwDyKEw5ahiwTtI5_3PjQV-x7g6N2yQrMWr5_tyxl-v1WHIu-K18Ieq2GaoN0prRyfIUX6yxVAoX3y7c5LQjhBl620Nb7VfV-VIFLMMycFfTFhCYuqF_6vGbg9JTooS5IJZdanCLZgigiDsOkuHv9sbKXvDiY_iDucnf3Ofx"/>
+<div class="w-6 h-6 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container text-[10px] font-bold">CS</div>
 <span class="text-xs text-on-surface-variant font-medium">Carlos Silva</span>
 </div>
 <div class="flex items-center gap-1 text-error">
@@ -140,17 +180,17 @@
 </div>
 </div>
 <!-- Card 2 -->
-<div class="bg-surface-container-lowest rounded-xl p-5 border-l-4 border-primary-container transition-all hover:translate-y-[-4px] hover:bg-white">
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-[0px_12px_32px_rgba(25,28,30,0.04)] transition-all hover:translate-y-[-4px] hover:shadow-md">
 <div class="flex justify-between items-start mb-3">
 <span class="bg-secondary-container text-on-secondary-container text-[10px] font-black px-2 py-1 rounded tracking-widest uppercase">Alta</span>
 </div>
 <h5 class="text-on-surface font-bold text-base leading-tight mb-3">Fechamento de Folha Portaria</h5>
 <div class="flex flex-wrap gap-2 mb-4">
-<span class="bg-purple-50 text-purple-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Cond. Saint Tropez</span>
+<span class="bg-surface-container-highest text-zinc-500 text-[10px] font-bold px-2 py-0.5 rounded-full">Cond. Saint Tropez</span>
 </div>
-<div class="flex items-center justify-between pt-4 border-t border-gray-50">
+<div class="flex items-center justify-between pt-4 border-t border-surface-container/30">
 <div class="flex items-center gap-2">
-<img class="w-6 h-6 rounded-full" data-alt="portrait of a smiling female finance specialist" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEA-9gP5ng6FS7A7Xb7p6oCBf5lwFEyJKUFVGwXWIUD8ZKC9-79USey81_gy0OVMEYjreYw8PajrZxcsJImqhN5BUgicYTRfE_6YkFqoXgivTBQZloM5yT4_BgmIX7KB859QxI_6u0XGjFATQvqnEhEQUI_dH0LO3kUubB1JqBbG1wPPQx0UFXB02r8YmB36C2AR24CGl5ziZw6ynmbHe6hKW3mG8jFIjcLIZSu7-tWUMKc56V0MpBu3ur48ugDEZOa0RBjmVJDOEk"/>
+<div class="w-6 h-6 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container text-[10px] font-bold">AS</div>
 <span class="text-xs text-on-surface-variant font-medium">Ana Souza</span>
 </div>
 <div class="flex items-center gap-1 text-on-surface-variant">
@@ -160,17 +200,17 @@
 </div>
 </div>
 <!-- Card 3 -->
-<div class="bg-surface-container-lowest rounded-xl p-5 border-l-4 border-tertiary transition-all hover:translate-y-[-4px] hover:bg-white">
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-[0px_12px_32px_rgba(25,28,30,0.04)] transition-all hover:translate-y-[-4px] hover:shadow-md">
 <div class="flex justify-between items-start mb-3">
-<span class="bg-tertiary-container text-on-tertiary-container text-[10px] font-black px-2 py-1 rounded tracking-widest uppercase">Normal</span>
+<span class="bg-surface-container-highest text-zinc-500 text-[10px] font-black px-2 py-1 rounded tracking-widest uppercase">Normal</span>
 </div>
 <h5 class="text-on-surface font-bold text-base leading-tight mb-3">Revisão de Contrato Elevadores</h5>
 <div class="flex flex-wrap gap-2 mb-4">
-<span class="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Edifício Platinum</span>
+<span class="bg-surface-container-highest text-zinc-500 text-[10px] font-bold px-2 py-0.5 rounded-full">Edifício Platinum</span>
 </div>
-<div class="flex items-center justify-between pt-4 border-t border-gray-50">
+<div class="flex items-center justify-between pt-4 border-t border-surface-container/30">
 <div class="flex items-center gap-2">
-<img class="w-6 h-6 rounded-full" data-alt="portrait of a senior administrative manager" src="https://lh3.googleusercontent.com/aida-public/AB6AXuADZp4n2FvQzsPOjzKPGwCPlnhq6Mbqok4QbKag9xS7I3sCKduZ9f-4JLh5_rUrF5U9A2r4l3_wASwQeVpYzGCuqg8yNldQmaGzef2-Ko4wz8SuR3l2YkXNbJBzIEbsCjJs1X8N63Xff9Y_t22WiimkM97gfND9GiOD3J_UzYg03NDUwH-upXMSbMiYE20wtzn1DBPKNP5zvVfnMZfBUtsoifvzmbes4J0M7op9hh9EaYo4BZ9th6PGRPLTUI-XLWqcwloVXXgVMBfO"/>
+<div class="w-6 h-6 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container text-[10px] font-bold">ML</div>
 <span class="text-xs text-on-surface-variant font-medium">Marcos Lima</span>
 </div>
 <div class="flex items-center gap-1 text-on-surface-variant">
@@ -182,28 +222,28 @@
 </div>
 </div>
 <!-- Column: Em Andamento -->
-<div class="kanban-column flex flex-col gap-4">
+<div class="kanban-column bg-surface-container-low rounded-xl p-4 flex flex-col gap-4">
 <div class="flex items-center justify-between mb-2">
 <div class="flex items-center gap-3">
-<span class="w-3 h-3 rounded-full bg-blue-500"></span>
-<h4 class="font-bold text-lg uppercase tracking-wider text-on-surface">Em Andamento</h4>
-<span class="bg-surface-container-high px-2.5 py-0.5 rounded-full text-xs font-bold text-on-surface-variant">2</span>
+<span class="material-symbols-outlined text-primary" data-icon="autorenew">autorenew</span>
+<h4 class="text-sm font-semibold text-on-surface">Em Andamento</h4>
+<span class="bg-surface-container-highest px-2.5 py-0.5 rounded-full text-xs font-bold text-on-surface-variant">2</span>
 </div>
-<button class="material-symbols-outlined text-gray-400" data-icon="more_horiz">more_horiz</button>
+<button class="material-symbols-outlined text-on-surface-variant" data-icon="more_horiz">more_horiz</button>
 </div>
 <div class="flex flex-col gap-4">
 <!-- Card 4 -->
-<div class="bg-surface-container-lowest rounded-xl p-5 border-l-4 border-primary-container transition-all hover:translate-y-[-4px] hover:bg-white">
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-[0px_12px_32px_rgba(25,28,30,0.04)] transition-all hover:translate-y-[-4px] hover:shadow-md">
 <div class="flex justify-between items-start mb-3">
 <span class="bg-secondary-container text-on-secondary-container text-[10px] font-black px-2 py-1 rounded tracking-widest uppercase">Alta</span>
 </div>
 <h5 class="text-on-surface font-bold text-base leading-tight mb-3">Aprovação de Pagamentos Fornecedores</h5>
 <div class="flex flex-wrap gap-2 mb-4">
-<span class="bg-blue-50 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Residencial Aurora</span>
+<span class="bg-surface-container-highest text-zinc-500 text-[10px] font-bold px-2 py-0.5 rounded-full">Residencial Aurora</span>
 </div>
-<div class="flex items-center justify-between pt-4 border-t border-gray-50">
+<div class="flex items-center justify-between pt-4 border-t border-surface-container/30">
 <div class="flex items-center gap-2">
-<img class="w-6 h-6 rounded-full" data-alt="professional portrait of a finance specialist" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZfgRkmxhrR0A-OJ4Qo1sFdQ-4NSUbK0QMeV1C4rukDWTPf6cOJP1KGVGoS4Mi1RIoff5VOC524Uo3ItIyIsnkqYbp-lDakvsk-tzVWYBRmzWd2YF7AO0WPiZ_EhQFoafDUlP1KFzrLnpgjki8veBWGz7yaDaQwW9QjV1guIG2HxGnZENtPd-o3CE-Gb8FTK1eFiDNGNn-o6NQ7_dhoQVvC3fVsLo5QeGyYrY5UZq_z8PF9GshpeOrQ_rUW5xSQL9q-g0LkRY7TXVv"/>
+<div class="w-6 h-6 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container text-[10px] font-bold">JM</div>
 <span class="text-xs text-on-surface-variant font-medium">Jessica M.</span>
 </div>
 <div class="flex items-center gap-1 text-on-surface-variant">
@@ -213,17 +253,17 @@
 </div>
 </div>
 <!-- Card 5 -->
-<div class="bg-surface-container-lowest rounded-xl p-5 border-l-4 border-tertiary transition-all hover:translate-y-[-4px] hover:bg-white">
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-[0px_12px_32px_rgba(25,28,30,0.04)] transition-all hover:translate-y-[-4px] hover:shadow-md">
 <div class="flex justify-between items-start mb-3">
-<span class="bg-tertiary-container text-on-tertiary-container text-[10px] font-black px-2 py-1 rounded tracking-widest uppercase">Normal</span>
+<span class="bg-surface-container-highest text-zinc-500 text-[10px] font-black px-2 py-1 rounded tracking-widest uppercase">Normal</span>
 </div>
 <h5 class="text-on-surface font-bold text-base leading-tight mb-3">Emissão de Boletos - Taxa Extra</h5>
 <div class="flex flex-wrap gap-2 mb-4">
-<span class="bg-orange-50 text-orange-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Vila das Flores</span>
+<span class="bg-surface-container-highest text-zinc-500 text-[10px] font-bold px-2 py-0.5 rounded-full">Vila das Flores</span>
 </div>
-<div class="flex items-center justify-between pt-4 border-t border-gray-50">
+<div class="flex items-center justify-between pt-4 border-t border-surface-container/30">
 <div class="flex items-center gap-2">
-<img class="w-6 h-6 rounded-full" data-alt="portrait of a professional clerk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgeJZ5fBSLdzjlsOHdsWcSYMwtWTL7nQ61KvhBJRBiToXWzGx1213cT7s-MpDHkuGh4GIz0g2g1gR30srPb3zXKDf45zEdPNXtDpksPEOrGVjZrthbbYBOtda74iVT13YuEMAIlGwU8zeZOUordlaorpxkHQS1RHiCCcenYgD3LkS6uDaaFNmr4UlBFp-urXmY446nLAlCco087WHw878n0ViHyUZ7wSScdUGrBprSMHee0KunJ-doBWuN0c9rPh2K13EKvFfVPVUT"/>
+<div class="w-6 h-6 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container text-[10px] font-bold">PS</div>
 <span class="text-xs text-on-surface-variant font-medium">Pedro Santos</span>
 </div>
 <div class="flex items-center gap-1 text-on-surface-variant">
@@ -235,50 +275,50 @@
 </div>
 </div>
 <!-- Column: Concluída -->
-<div class="kanban-column flex flex-col gap-4">
+<div class="kanban-column bg-surface-container-lowest rounded-xl p-4 flex flex-col gap-4">
 <div class="flex items-center justify-between mb-2">
 <div class="flex items-center gap-3">
-<span class="w-3 h-3 rounded-full bg-emerald-500"></span>
-<h4 class="font-bold text-lg uppercase tracking-wider text-on-surface">Concluída</h4>
-<span class="bg-surface-container-high px-2.5 py-0.5 rounded-full text-xs font-bold text-on-surface-variant">3</span>
+<span class="material-symbols-outlined text-tertiary" data-icon="check_circle">check_circle</span>
+<h4 class="text-sm font-semibold text-on-surface">Concluída</h4>
+<span class="bg-surface-container-highest px-2.5 py-0.5 rounded-full text-xs font-bold text-on-surface-variant">3</span>
 </div>
-<button class="material-symbols-outlined text-gray-400" data-icon="more_horiz">more_horiz</button>
+<button class="material-symbols-outlined text-on-surface-variant" data-icon="more_horiz">more_horiz</button>
 </div>
 <div class="flex flex-col gap-4 opacity-75">
 <!-- Card 6 -->
-<div class="bg-surface-container-lowest rounded-xl p-5 border-l-4 border-tertiary transition-all">
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-[0px_12px_32px_rgba(25,28,30,0.04)] transition-all">
 <div class="flex justify-between items-start mb-3">
-<span class="bg-tertiary-container text-on-tertiary-container text-[10px] font-black px-2 py-1 rounded tracking-widest uppercase">Normal</span>
-<span class="material-symbols-outlined text-emerald-500 text-lg" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="bg-surface-container-highest text-zinc-500 text-[10px] font-black px-2 py-1 rounded tracking-widest uppercase">Normal</span>
+<span class="material-symbols-outlined text-tertiary text-lg" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
 </div>
 <h5 class="text-on-surface font-bold text-base leading-tight mb-3 line-through text-on-surface-variant">Prestação de Contas Trimestral</h5>
 <div class="flex flex-wrap gap-2 mb-4">
-<span class="bg-gray-100 text-gray-600 text-[10px] font-bold px-2 py-0.5 rounded-full">Edifício Platinum</span>
+<span class="bg-surface-container-highest text-zinc-500 text-[10px] font-bold px-2 py-0.5 rounded-full">Edifício Platinum</span>
 </div>
-<div class="flex items-center justify-between pt-4 border-t border-gray-50">
+<div class="flex items-center justify-between pt-4 border-t border-surface-container/30">
 <div class="flex items-center gap-2">
-<img class="w-6 h-6 rounded-full" data-alt="portrait of a professional" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZv-vuKiGHekSNLXdqidjMCBiSneqZzTR7P-yLb3aEr1qByo-C2MseTcMx3rCYXLTGn600ZG_kTysSx0bzD7xWjZdwt6fi_-fK5hOCe3m6yjtQ_9uBVk5M5Tf-qwnPkCDWNC2hPdu3mQWpZVW6iaqjXdML0my9vUTCkhcCuP4sFWNICcXwF5siaF0cMDedWIlBWMUjwHqa7SxReU7DCU2ca1fDckqn270PKYiZZV8oXE7KprrmpJGFQBgctTDSPW49wTfnhj2U2YKR"/>
+<div class="w-6 h-6 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container text-[10px] font-bold">AS</div>
 <span class="text-xs text-on-surface-variant font-medium">Ana Souza</span>
 </div>
-<div class="text-[10px] font-bold text-emerald-600">CONCLUÍDO</div>
+<div class="text-[10px] font-bold text-tertiary">CONCLUÍDO</div>
 </div>
 </div>
 <!-- Card 7 -->
-<div class="bg-surface-container-lowest rounded-xl p-5 border-l-4 border-tertiary transition-all">
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-[0px_12px_32px_rgba(25,28,30,0.04)] transition-all">
 <div class="flex justify-between items-start mb-3">
-<span class="bg-tertiary-container text-on-tertiary-container text-[10px] font-black px-2 py-1 rounded tracking-widest uppercase">Normal</span>
-<span class="material-symbols-outlined text-emerald-500 text-lg" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="bg-surface-container-highest text-zinc-500 text-[10px] font-black px-2 py-1 rounded tracking-widest uppercase">Normal</span>
+<span class="material-symbols-outlined text-tertiary text-lg" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
 </div>
 <h5 class="text-on-surface font-bold text-base leading-tight mb-3 line-through text-on-surface-variant">Renovação do Seguro Predial</h5>
 <div class="flex flex-wrap gap-2 mb-4">
-<span class="bg-gray-100 text-gray-600 text-[10px] font-bold px-2 py-0.5 rounded-full">Residencial Aurora</span>
+<span class="bg-surface-container-highest text-zinc-500 text-[10px] font-bold px-2 py-0.5 rounded-full">Residencial Aurora</span>
 </div>
-<div class="flex items-center justify-between pt-4 border-t border-gray-50">
+<div class="flex items-center justify-between pt-4 border-t border-surface-container/30">
 <div class="flex items-center gap-2">
-<img class="w-6 h-6 rounded-full" data-alt="portrait of a professional" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDpxaQ_kY2ExjUJ8dNCavRsXHmgIZs3c51d0qP2SvMQSIkxg9ww-RgXdp6Xg-3avA6pd61-UqNNLzzUvDd6dpJd8ErZ4cv10hy37iiK4L0LJyxm4bKUzbJTCWV9JGojJ3KcEH6U0vAzzdpJG5oaePXhDdxS681Yb8CCrTepoJDSuSOAoVpVuI_qcKsM3xW0FbshDSs8N5B3AoCMoRc73kN1dnDIB2SEbm59Cg3N_fHdtX19ORpxhRYb5UTWLusVGz_mYkwlrLwY0yv"/>
+<div class="w-6 h-6 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container text-[10px] font-bold">CS</div>
 <span class="text-xs text-on-surface-variant font-medium">Carlos Silva</span>
 </div>
-<div class="text-[10px] font-bold text-emerald-600">CONCLUÍDO</div>
+<div class="text-[10px] font-bold text-tertiary">CONCLUÍDO</div>
 </div>
 </div>
 </div>
