@@ -5,82 +5,41 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
         theme: {
           extend: {
             "colors": {
-                    "surface-container-low": "#f6f3f2",
-                    "on-primary-fixed-variant": "#594400",
-                    "on-error": "#ffffff",
-                    "on-background": "#1c1b1b",
-                    "surface-bright": "#fcf9f8",
-                    "on-primary": "#ffffff",
-                    "on-secondary-fixed-variant": "#564514",
-                    "tertiary-fixed": "#cae6ff",
-                    "inverse-surface": "#313030",
-                    "outline": "#807662",
-                    "on-tertiary-fixed-variant": "#004b6f",
-                    "error-container": "#ffdad6",
-                    "surface-container-highest": "#e5e2e1",
-                    "primary-container": "#FAC826",
-                    "secondary-container": "#fbe0a0",
-                    "on-primary-fixed": "#251a00",
-                    "tertiary-fixed-dim": "#8bceff",
-                    "surface-container-high": "#eae7e7",
-                    "on-tertiary-fixed": "#001e2f",
-                    "tertiary-container": "#78c7ff",
-                    "secondary": "#705c29",
-                    "on-secondary-container": "#76622f",
-                    "tertiary": "#006492",
-                    "primary-fixed-dim": "#f0c038",
-                    "on-tertiary-container": "#005279",
-                    "on-surface-variant": "#4e4634",
-                    "surface-tint": "#765b00",
-                    "primary": "#765b00",
-                    "secondary-fixed-dim": "#dec487",
-                    "background": "#fcf9f8",
-                    "inverse-on-surface": "#f3f0ef",
-                    "surface-container": "#f0eded",
-                    "surface-container-lowest": "#ffffff",
-                    "on-secondary-fixed": "#251a00",
-                    "outline-variant": "#d1c5ae",
-                    "inverse-primary": "#f0c038",
-                    "surface": "#fcf9f8",
-                    "on-error-container": "#93000a",
-                    "error": "#ba1a1a",
-                    "primary-fixed": "#ffdf94",
-                    "surface-variant": "#e5e2e1",
-                    "on-secondary": "#ffffff",
-                    "on-primary-container": "#614a00",
-                    "secondary-fixed": "#fbe0a0",
-                    "surface-dim": "#dcd9d9",
-                    "on-tertiary": "#ffffff",
-                    "on-surface": "#1c1b1b"
+                "primary-fixed": "#ffdf94","on-background": "#191c1e","surface-dim": "#d9dadc",
+                "surface-tint": "#765b00","on-tertiary-container": "#005b14","on-surface": "#191c1e",
+                "primary-fixed-dim": "#f0c038","on-surface-variant": "#4e4634","primary-container": "#FAC826",
+                "on-tertiary": "#ffffff","tertiary-fixed-dim": "#88d982","secondary": "#705c29",
+                "outline": "#807662","on-error-container": "#93000a","on-error": "#ffffff",
+                "error-container": "#ffdad6","surface-container-lowest": "#ffffff","on-tertiary-fixed": "#002204",
+                "on-secondary-fixed": "#251a00","on-primary-fixed": "#251a00","surface-container": "#edeef0",
+                "surface-bright": "#f8f9fb","error": "#ba1a1a","secondary-fixed-dim": "#dec487",
+                "on-primary-fixed-variant": "#594400","outline-variant": "#d1c5ae","secondary-container": "#fbe0a0",
+                "on-secondary": "#ffffff","on-secondary-fixed-variant": "#564514","tertiary-container": "#81d27c",
+                "inverse-on-surface": "#f0f1f3","surface": "#f8f9fb","surface-container-low": "#f2f4f6",
+                "background": "#f8f9fb","inverse-primary": "#f0c038","inverse-surface": "#2e3132",
+                "on-tertiary-fixed-variant": "#005312","tertiary-fixed": "#a3f69c","surface-variant": "#e1e2e4",
+                "tertiary": "#1b6d24","primary": "#765b00","surface-container-highest": "#e1e2e4",
+                "surface-container-high": "#e7e8ea","on-primary-container": "#614a00","on-primary": "#ffffff",
+                "on-secondary-container": "#76622f","secondary-fixed": "#fbe0a0"
             },
-            "borderRadius": {
-                    "DEFAULT": "0.125rem",
-                    "lg": "0.25rem",
-                    "xl": "0.5rem",
-                    "full": "0.75rem"
-            },
-            "fontFamily": {
-                    "headline": ["Raleway"],
-                    "body": ["Raleway"],
-                    "label": ["Raleway"]
-            }
+            "borderRadius": {"DEFAULT": "0.25rem","lg": "0.5rem","xl": "0.75rem","full": "9999px"},
+            "fontFamily": {"headline": ["Raleway"],"body": ["Raleway"],"label": ["Raleway"]}
           },
         },
       }
     </script>
 <style>
-        body { font-family: 'Raleway', sans-serif; }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+        body { font-family: 'Raleway', sans-serif; background-color: #f8f9fb; }
         .signature-gradient {
             background: linear-gradient(135deg, #765b00 0%, #FAC826 100%);
         }
@@ -91,45 +50,37 @@
     </style>
 </head>
 <body class="bg-background text-on-surface">
-<!-- SideNavBar Anchor -->
-<aside class="h-screen w-64 fixed left-0 top-0 bg-[#1A1A1A] flex flex-col py-8 z-50">
-<div class="px-8 mb-12">
-<img src="images/logo.png" alt="Doma Condo Logo" class="h-10 object-contain mb-2"/>
-<h1 class="text-xl font-bold tracking-tighter text-white">DOMA <span class="text-[#FAC826]">CONDO</span></h1>
-<p class="text-[10px] uppercase tracking-widest text-gray-500 mt-1">Administração Financeira</p>
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 z-40 h-screen w-72 flex flex-col border-none bg-white shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+<div class="p-8">
+<img src="images/logo.png" alt="Doma Condo Logo" class="h-10 object-contain mb-4"/>
+<h2 class="text-2xl font-semibold tracking-tight text-[#020202]" style="font-family:'Raleway',sans-serif;">DOMA CONDO</h2>
+<p class="text-[10px] text-zinc-400 mt-1 uppercase tracking-widest font-bold" style="font-family:'Raleway',sans-serif;">Assessoria e Consultoria</p>
 </div>
-<nav class="flex-1 space-y-1">
-<a class="flex items-center px-8 py-3 space-x-4 text-gray-400 hover:bg-white/10 hover:text-white transition-all scale-95 duration-150" href="dashboard.html">
-<span class="material-symbols-outlined">dashboard</span>
-<span class="font-medium tracking-wide body-md">Dashboard</span>
-</a>
-<a class="flex items-center px-8 py-3 space-x-4 text-gray-400 hover:bg-white/10 hover:text-white transition-all scale-95 duration-150" href="#">
-<span class="material-symbols-outlined">groups</span>
-<span class="font-medium tracking-wide body-md">Clientes</span>
-</a>
-<!-- Active State: Relatórios -->
-<a class="flex items-center px-8 py-3 space-x-4 text-[#FAC826] font-semibold border-r-4 border-[#FAC826] bg-white/5 transition-all scale-95 duration-150" href="#">
-<span class="material-symbols-outlined">description</span>
-<span class="font-medium tracking-wide body-md">Relatórios</span>
-</a>
-<a class="flex items-center px-8 py-3 space-x-4 text-gray-400 hover:bg-white/10 hover:text-white transition-all scale-95 duration-150" href="#">
-<span class="material-symbols-outlined">account_balance</span>
-<span class="font-medium tracking-wide body-md">Conciliação</span>
-</a>
-<a class="flex items-center px-8 py-3 space-x-4 text-gray-400 hover:bg-white/10 hover:text-white transition-all scale-95 duration-150" href="#">
-<span class="material-symbols-outlined">payments</span>
-<span class="font-medium tracking-wide body-md">Fluxo de Caixa</span>
-</a>
-<a class="flex items-center px-8 py-3 space-x-4 text-gray-400 hover:bg-white/10 hover:text-white transition-all scale-95 duration-150 mt-auto" href="settings.html">
-<span class="material-symbols-outlined">settings</span>
-<span class="font-medium tracking-wide body-md">Configurações</span>
-</a>
+<nav class="flex-1 mt-4">
+<ul class="space-y-1">
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="dashboard.html"><span class="material-symbols-outlined">dashboard</span><span>Dashboard</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="priorities.html"><span class="material-symbols-outlined">priority_high</span><span>Prioridades</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="team.html"><span class="material-symbols-outlined">group</span><span>Equipe</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="clients.html"><span class="material-symbols-outlined">business_center</span><span>Clientes</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="tasks.html"><span class="material-symbols-outlined">task_alt</span><span>Tarefas</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="work-logs.html"><span class="material-symbols-outlined">analytics</span><span>Atividades</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="messages.html"><span class="material-symbols-outlined">mail</span><span>Mensagens</span></a></li>
+<li><a class="text-[#765b00] bg-[#FAC826]/10 border-l-4 border-[#FAC826] font-bold transition-all flex items-center gap-4 px-6 py-3" href="reports.html"><span class="material-symbols-outlined">assessment</span><span>Relatórios</span></a></li>
+<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="categories.html"><span class="material-symbols-outlined">category</span><span>Categorias</span></a></li>
+</ul>
 </nav>
+<div class="mt-auto p-4 border-t border-zinc-100">
+<ul class="space-y-1">
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="settings.html"><span class="material-symbols-outlined">settings</span><span>Configurações</span></a></li>
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="login.html"><span class="material-symbols-outlined">logout</span><span>Sair</span></a></li>
+</ul>
+</div>
 </aside>
-<!-- TopAppBar Anchor -->
-<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-20 bg-[#fcf9f8] flex justify-between items-center px-10 z-40">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center pl-80 pr-12 w-full fixed top-0 z-30 h-20 bg-[#f8f9fb]/80 backdrop-blur-md">
 <div class="flex items-center space-x-8">
-<h2 class="display-sm headline-sm text-on-surface font-bold text-2xl">Relatórios</h2>
+<h2 class="text-on-surface font-bold text-2xl">Relatórios</h2>
 <div class="flex space-x-4">
 <div class="relative">
 <select class="appearance-none bg-surface-container-low border-none rounded-lg px-4 py-2 pr-10 text-sm focus:ring-1 focus:ring-primary outline-none text-on-surface-variant">
@@ -155,14 +106,11 @@
 </button>
 <div class="flex items-center space-x-4 text-on-surface-variant">
 <button class="material-symbols-outlined hover:text-primary transition-colors">notifications</button>
-<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
-<img class="h-full w-full object-cover" data-alt="professional headshot of a female financial consultant with a friendly and authoritative look" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgS0p8JAXRLFPuRhOF5WruZ169OMrKSYZ9jmZGjxuBg-OEh5pgJEGPmy4Q-u2nc1rQB-moO2ln4iFBn0Y7b_9ujFolp2GMggp1EVSMTelrmcAT3DrKQpVMRcskQRiU-dQiAty33ad2ZKG_hNxZ9UUUwDarTGyg1kInmgUfI06nN8QR-N6XwjlcGJyYbh3Pnzs9kGCFk49CrCjDtpJwdnAosqbDXgd9Axogmd4Bc00JjwJ9bfJyL8edJXW-kTbT3aT3IjE7VWlkVE7R"/>
-</div>
 </div>
 </div>
 </header>
 <!-- Main Content Canvas -->
-<main class="ml-64 pt-24 px-10 pb-12">
+<main class="pl-72 pt-24 px-10 pb-12">
 <!-- Statement Header (Editorial Impact) -->
 <div class="mb-10">
 <p class="text-on-surface-variant font-medium tracking-wide uppercase text-xs mb-2">Performance Mensal</p>
