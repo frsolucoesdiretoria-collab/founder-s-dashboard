@@ -1,13 +1,15 @@
 """
 dispatcher.py — Envia os emails da sequência outbound para dentistas
 
+Sequência ativa:
+- Email 1 (etapa 0→1): leads novos
+- Email 2 (etapa 1→2): 3 dias após email 1 — após envio, marca como 'finalizado'
+
 Regras:
-- Throttle: 30/dia semana 1, 2x a cada semana (60, 120, 240...)
-- Horário: Seg-Qui, 9h-11h (horário de Brasília)
+- Limite: 300/dia (limite Brevo)
 - Bounce rate > 3%: PARA e alerta
 - Se lead responder: para a sequência e marca como lead_quente
-- Usa SES (múltiplos senders) como primário, SMTP Brevo como fallback
-- Tracking pixel via log_id
+- Usa SES como primário, SMTP Brevo como fallback
 """
 
 import asyncio
@@ -15,7 +17,6 @@ import asyncpg
 import aiosmtplib
 import os
 import logging
-import random
 from datetime import datetime, date
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -43,61 +44,40 @@ SES_PASS = os.getenv("SES_SMTP_PASSWORD", "")
 USE_SES = bool(SES_HOST and SES_USER and SES_PASS)
 
 # Remetente oficial da campanha
-FROM_NAME = "Fabrício — Axis"
+FROM_NAME = "Fabricio - Axis"
 FROM_EMAIL = "fabricio@agendainteligentes.com"
 REPLY_TO = "fabricio@agendainteligentes.com"
 
-# Senders SES (fallback rotatório se necessário)
+# Senders SES (rotatório se necessário)
 SES_SENDERS = [s.strip() for s in os.getenv("SES_SENDERS", "").split(",") if s.strip()]
 
 # Limites
+LIMITE_DIA = 300         # Limite fixo Brevo
 BOUNCE_LIMIT = 0.03      # 3% bounce rate máximo
 BRASILIA = ZoneInfo("America/Sao_Paulo")
 
-# Dias de envio (0=Seg, 1=Ter, 2=Qua, 3=Qui)
-ENVIO_DIAS = {0, 1, 2, 3}
-ENVIO_HORA_INI = 9
-ENVIO_HORA_FIM = 11
+# Envio todos os dias da semana para cobrir 15 dias corridos
+ENVIO_DIAS = {0, 1, 2, 3, 4, 5, 6}
+ENVIO_HORA_INI = 8
+ENVIO_HORA_FIM = 18
 
 # Delay entre emails individuais (segundos)
 DELAY_ENTRE_EMAILS = 15
 
-# Intervalos entre cada email da sequência (dias)
-INTERVALO_SEQUENCIA = {
-    2: 3,   # Email 2 = 3 dias após email 1
-    3: 3,   # Email 3 = 3 dias após email 2
-    4: 4,   # Email 4 = 4 dias após email 3
-}
+# Intervalo entre E1 e E2 (dias)
+INTERVALO_E1_E2 = 3
 
 
 async def get_limite_hoje(conn: asyncpg.Connection) -> int:
-    """Retorna o limite de envios para hoje, baseado na semana de warm-up."""
+    """Registra o dia no throttle e retorna limite fixo de 300/dia."""
     hoje = date.today()
-    row = await conn.fetchrow("SELECT * FROM outbound_throttle WHERE data = $1", hoje)
-    if row:
-        return row["limite_dia"]
-
-    # Calcular qual semana de warm-up estamos
-    primeira_row = await conn.fetchrow(
-        "SELECT MIN(data) as inicio FROM outbound_throttle WHERE limite_dia IS NOT NULL"
-    )
-    if not primeira_row or not primeira_row["inicio"]:
-        # Primeira vez — começa com 30/dia
-        limite = 30
-    else:
-        dias_ativos = (hoje - primeira_row["inicio"]).days
-        semanas = dias_ativos // 7
-        limite = 30 * (2 ** semanas)   # 30 → 60 → 120 → 240...
-        limite = min(limite, 500)       # cap em 500/dia
-
     await conn.execute("""
         INSERT INTO outbound_throttle (data, emails_enviados, limite_dia)
         VALUES ($1, 0, $2)
         ON CONFLICT (data) DO NOTHING
-    """, hoje, limite)
-
-    log.info(f"[Throttle] Limite para hoje ({hoje}): {limite} emails/dia")
-    return limite
+    """, hoje, LIMITE_DIA)
+    log.info(f"[Throttle] Limite para hoje ({hoje}): {LIMITE_DIA} emails/dia")
+    return LIMITE_DIA
 
 
 async def get_enviados_hoje(conn: asyncpg.Connection) -> int:
@@ -112,9 +92,9 @@ async def incrementar_enviados(conn: asyncpg.Connection):
     hoje = date.today()
     await conn.execute("""
         INSERT INTO outbound_throttle (data, emails_enviados, limite_dia)
-        VALUES ($1, 1, 30)
+        VALUES ($1, 1, $2)
         ON CONFLICT (data) DO UPDATE SET emails_enviados = outbound_throttle.emails_enviados + 1
-    """, hoje)
+    """, hoje, LIMITE_DIA)
 
 
 async def check_bounce_rate(conn: asyncpg.Connection) -> float:
@@ -133,7 +113,7 @@ async def check_bounce_rate(conn: asyncpg.Connection) -> float:
 
 
 def is_horario_envio() -> bool:
-    """Retorna True se estamos em horário de envio (Seg-Qui 9h-11h Brasília)."""
+    """Retorna True se estamos em horário de envio (todos os dias, 8h-18h Brasília)."""
     agora = datetime.now(BRASILIA)
     if agora.weekday() not in ENVIO_DIAS:
         return False
@@ -227,13 +207,8 @@ async def marcar_etapa_enviada(conn: asyncpg.Connection, outbound_id: int,
 
 async def processar_sequencia(conn: asyncpg.Connection, dry_run: bool = False):
     """
-    Processa uma rodada de envios para a sequência outbound.
-
-    Lógica:
-    - Pega leads prontos para cada etapa
-    - Respeita throttle diário
-    - Verifica bounce rate antes de cada envio
-    - Para se bounce > 3%
+    Processa uma rodada de envios (E1 e E2 apenas — sequência de 2 emails).
+    Após E2 enviado, marca lead como 'finalizado'.
     """
     hoje = date.today()
 
@@ -241,7 +216,6 @@ async def processar_sequencia(conn: asyncpg.Connection, dry_run: bool = False):
     bounce_rate = await check_bounce_rate(conn)
     if bounce_rate > BOUNCE_LIMIT:
         log.error(f"🚨 BOUNCE RATE ALTO: {bounce_rate:.1%} > 3%. CAMPANHA PAUSADA!")
-        log.error("Verifique os bounces antes de retomar. Execute: python3 bounce_audit.py")
         return {"status": "pausado_bounce", "bounce_rate": bounce_rate}
 
     log.info(f"Bounce rate atual: {bounce_rate:.1%} ✅")
@@ -281,7 +255,7 @@ async def processar_sequencia(conn: asyncpg.Connection, dry_run: bool = False):
 
     disponiveis -= total_enviados
 
-    # ── Email 2 (etapa 1 → 2): 3 dias após email1 ─────────────────────
+    # ── Email 2 (etapa 1 → 2): 3 dias após email 1 ─────────────────────
     if disponiveis > 0:
         leads_email2 = await conn.fetch("""
             SELECT id, lead_id, email, empresa, nome
@@ -298,57 +272,11 @@ async def processar_sequencia(conn: asyncpg.Connection, dry_run: bool = False):
             if await _enviar_email_sequencia(conn, lead, 2, dry_run):
                 total_enviados += 1
                 await incrementar_enviados(conn)
-            else:
-                erros += 1
-            await asyncio.sleep(DELAY_ENTRE_EMAILS)
-
-    disponiveis = limite_dia - enviados_hoje - total_enviados
-
-    # ── Email 3 (etapa 2 → 3): 3 dias após email2 ─────────────────────
-    if disponiveis > 0:
-        leads_email3 = await conn.fetch("""
-            SELECT id, lead_id, email, empresa, nome
-            FROM outbound_dentistas
-            WHERE etapa_atual = 2 AND status = 'ativo'
-            AND email2_sent_at <= NOW() - INTERVAL '3 days'
-            ORDER BY email2_sent_at ASC
-            LIMIT $1
-        """, disponiveis)
-
-        for lead in leads_email3:
-            if total_enviados >= limite_dia - enviados_hoje:
-                break
-            if await _enviar_email_sequencia(conn, lead, 3, dry_run):
-                total_enviados += 1
-                await incrementar_enviados(conn)
-            else:
-                erros += 1
-            await asyncio.sleep(DELAY_ENTRE_EMAILS)
-
-    disponiveis = limite_dia - enviados_hoje - total_enviados
-
-    # ── Email 4 (etapa 3 → 4): 4 dias após email3 ─────────────────────
-    if disponiveis > 0:
-        leads_email4 = await conn.fetch("""
-            SELECT id, lead_id, email, empresa, nome
-            FROM outbound_dentistas
-            WHERE etapa_atual = 3 AND status = 'ativo'
-            AND email3_sent_at <= NOW() - INTERVAL '4 days'
-            ORDER BY email3_sent_at ASC
-            LIMIT $1
-        """, disponiveis)
-
-        for lead in leads_email4:
-            if total_enviados >= limite_dia - enviados_hoje:
-                break
-            if await _enviar_email_sequencia(conn, lead, 4, dry_run):
-                total_enviados += 1
-                await incrementar_enviados(conn)
-                # Email 4 = finalizar sequência
+                # E2 é o último email da sequência — finalizar
                 await conn.execute("""
                     UPDATE outbound_dentistas
                     SET status = 'finalizado', updated_at = NOW()
-                    WHERE id = $1 AND etapa_atual = 4
+                    WHERE id = $1 AND etapa_atual = 2
                 """, lead["id"])
             else:
                 erros += 1
@@ -410,8 +338,7 @@ async def status_report(conn: asyncpg.Connection):
             COUNT(CASE WHEN status = 'descadastrado' THEN 1 END) as descadastrados,
             COUNT(CASE WHEN etapa_atual = 0 THEN 1 END) as aguardando_email1,
             COUNT(CASE WHEN etapa_atual = 1 THEN 1 END) as aguardando_email2,
-            COUNT(CASE WHEN etapa_atual = 2 THEN 1 END) as aguardando_email3,
-            COUNT(CASE WHEN etapa_atual = 3 THEN 1 END) as aguardando_email4
+            COUNT(CASE WHEN etapa_atual = 2 THEN 1 END) as recebeu_email2
         FROM outbound_dentistas
     """)
 
@@ -427,14 +354,13 @@ async def status_report(conn: asyncpg.Connection):
     if stats:
         log.info(f"  Total na lista:         {stats['total']}")
         log.info(f"  Ativos (na sequência):  {stats['ativos']}")
-        log.info(f"  Finalizados (4 emails): {stats['finalizados']}")
+        log.info(f"  Finalizados (2 emails): {stats['finalizados']}")
         log.info(f"  Leads quentes:          {stats['leads_quentes']}")
         log.info(f"  Bounces:                {stats['bounces']}")
         log.info(f"  Descadastrados:         {stats['descadastrados']}")
         log.info(f"  Aguardando Email 1:     {stats['aguardando_email1']}")
         log.info(f"  Aguardando Email 2:     {stats['aguardando_email2']}")
-        log.info(f"  Aguardando Email 3:     {stats['aguardando_email3']}")
-        log.info(f"  Aguardando Email 4:     {stats['aguardando_email4']}")
+        log.info(f"  Receberam Email 2:      {stats['recebeu_email2']}")
     if throttle_hoje:
         log.info(f"  Enviados hoje:          {throttle_hoje['emails_enviados']}/{throttle_hoje['limite_dia']}")
     log.info(f"  Bounce rate (7d):       {bounce_rate:.1%}")
