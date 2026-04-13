@@ -70,8 +70,36 @@
 </ul>
 </div>
 </aside>
+<!-- TopNavBar Shell -->
+<header class="flex justify-between items-center pl-80 pr-12 w-full fixed top-0 z-30 h-20 bg-[#f8f9fb]/80 backdrop-blur-md">
+<div class="flex-1">
+<div class="relative max-w-md">
+<input class="w-full bg-surface-container-high border-none rounded-full py-2.5 px-6 focus:ring-2 focus:ring-primary/20 text-sm" placeholder="Buscar no painel..." type="text"/>
+<span class="material-symbols-outlined absolute right-4 top-2.5 text-zinc-400">search</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4">
+<button class="text-[#765b00] hover:text-[#FAC826] transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="text-[#765b00] hover:text-[#FAC826] transition-colors">
+<span class="material-symbols-outlined">support_agent</span>
+</button>
+</div>
+<div class="h-10 w-[1px] bg-outline-variant/30 mx-2"></div>
+<div class="flex items-center gap-3">
+<div class="text-right">
+<p class="text-sm font-semibold text-on-surface">Jessica Lima</p>
+<p class="text-[10px] text-zinc-500 uppercase tracking-tighter">Administradora • Doma Condo</p>
+</div>
+<div class="h-10 w-10 rounded-full bg-[#FAC826] flex items-center justify-center text-[#765b00] font-bold text-sm">JL</div>
+</div>
+</div>
+</header>
 <!-- Main Content Area -->
-<main class="pl-72 flex h-screen bg-background">
+<main class="pl-80 flex h-screen bg-background pt-20">
 <!-- Left Pane: Conversations -->
 <section class="w-[380px] bg-surface-container-low flex flex-col h-full border-r border-outline-variant/15">
 <header class="p-6 pb-2">
