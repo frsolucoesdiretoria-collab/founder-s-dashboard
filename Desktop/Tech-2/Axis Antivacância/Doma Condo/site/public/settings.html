@@ -1,56 +1,85 @@
 <!DOCTYPE html>
 
-<html lang="pt-br"><head>
+<html lang="pt-BR"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "primary-fixed": "#ffdf94","on-background": "#191c1e","surface-dim": "#d9dadc",
-                        "surface-tint": "#765b00","on-tertiary-container": "#005b14","on-surface": "#191c1e",
-                        "primary-fixed-dim": "#f0c038","on-surface-variant": "#4e4634","primary-container": "#FAC826",
-                        "on-tertiary": "#ffffff","tertiary-fixed-dim": "#88d982","secondary": "#705c29",
-                        "outline": "#807662","on-error-container": "#93000a","on-error": "#ffffff",
-                        "error-container": "#ffdad6","surface-container-lowest": "#ffffff","on-tertiary-fixed": "#002204",
-                        "on-secondary-fixed": "#251a00","on-primary-fixed": "#251a00","surface-container": "#edeef0",
-                        "surface-bright": "#f8f9fb","error": "#ba1a1a","secondary-fixed-dim": "#dec487",
-                        "on-primary-fixed-variant": "#594400","outline-variant": "#d1c5ae","secondary-container": "#fbe0a0",
-                        "on-secondary": "#ffffff","on-secondary-fixed-variant": "#564514","tertiary-container": "#81d27c",
-                        "inverse-on-surface": "#f0f1f3","surface": "#f8f9fb","surface-container-low": "#f2f4f6",
-                        "background": "#f8f9fb","inverse-primary": "#f0c038","inverse-surface": "#2e3132",
-                        "on-tertiary-fixed-variant": "#005312","tertiary-fixed": "#a3f69c","surface-variant": "#e1e2e4",
-                        "tertiary": "#1b6d24","primary": "#765b00","surface-container-highest": "#e1e2e4",
-                        "surface-container-high": "#e7e8ea","on-primary-container": "#614a00","on-primary": "#ffffff",
-                        "on-secondary-container": "#76622f","secondary-fixed": "#fbe0a0"
-                    },
-                    "borderRadius": {"DEFAULT": "0.25rem","lg": "0.5rem","xl": "0.75rem","full": "9999px"},
-                    "fontFamily": {"headline": ["Raleway"],"body": ["Raleway"],"label": ["Raleway"]}
-                },
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "primary-fixed": "#ffdf94",
+                "on-background": "#191c1e",
+                "surface-dim": "#d9dadc",
+                "surface-tint": "#765b00",
+                "on-tertiary-container": "#005b14",
+                "on-surface": "#191c1e",
+                "primary-fixed-dim": "#f0c038",
+                "on-surface-variant": "#4e4634",
+                "primary-container": "#FAC826",
+                "on-tertiary": "#ffffff",
+                "tertiary-fixed-dim": "#88d982",
+                "secondary": "#705c29",
+                "outline": "#807662",
+                "on-error-container": "#93000a",
+                "on-error": "#ffffff",
+                "error-container": "#ffdad6",
+                "surface-container-lowest": "#ffffff",
+                "on-tertiary-fixed": "#002204",
+                "on-secondary-fixed": "#251a00",
+                "on-primary-fixed": "#251a00",
+                "surface-container": "#edeef0",
+                "surface-bright": "#f8f9fb",
+                "error": "#ba1a1a",
+                "secondary-fixed-dim": "#dec487",
+                "on-primary-fixed-variant": "#594400",
+                "outline-variant": "#d1c5ae",
+                "secondary-container": "#fbe0a0",
+                "on-secondary": "#ffffff",
+                "on-secondary-fixed-variant": "#564514",
+                "tertiary-container": "#81d27c",
+                "inverse-on-surface": "#f0f1f3",
+                "surface": "#f8f9fb",
+                "surface-container-low": "#f2f4f6",
+                "background": "#f8f9fb",
+                "inverse-primary": "#f0c038",
+                "inverse-surface": "#2e3132",
+                "on-tertiary-fixed-variant": "#005312",
+                "tertiary-fixed": "#a3f69c",
+                "surface-variant": "#e1e2e4",
+                "tertiary": "#1b6d24",
+                "primary": "#765b00",
+                "surface-container-highest": "#e1e2e4",
+                "surface-container-high": "#e7e8ea",
+                "on-primary-container": "#614a00",
+                "on-primary": "#ffffff",
+                "on-secondary-container": "#76622f",
+                "secondary-fixed": "#fbe0a0"
             },
-        }
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "fontFamily": {
+                "headline": ["Raleway"],
+                "body": ["Raleway"],
+                "label": ["Raleway"]
+            }
+          },
+        },
+      }
     </script>
 <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-        .active-tab-line {
-            height: 2px;
-            background: #765b00;
-            width: 100%;
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-        }
-        body {
-            font-family: 'Raleway', sans-serif;
-            background-color: #f8f9fb;
-        }
+        body { font-family: 'Raleway', sans-serif; background-color: #f8f9fb; }
     </style>
 </head>
 <body class="bg-surface text-on-surface antialiased">
@@ -59,44 +88,54 @@
 <div class="p-8">
 <img src="images/logo.png" alt="Doma Condo Logo" class="h-10 object-contain mb-4"/>
 <h2 class="text-2xl font-semibold tracking-tight text-[#020202]" style="font-family:'Raleway',sans-serif;">DOMA CONDO</h2>
-<p class="text-[10px] text-zinc-400 mt-1 uppercase tracking-widest font-bold" style="font-family:'Raleway',sans-serif;">Assessoria e Consultoria</p>
+<p class="text-[10px] text-zinc-400 mt-1 uppercase tracking-widest font-bold">Assessoria e Consultoria</p>
 </div>
 <nav class="flex-1 mt-4">
 <ul class="space-y-1">
-<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="dashboard.html"><span class="material-symbols-outlined">dashboard</span><span>Dashboard</span></a></li>
-<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="priorities.html"><span class="material-symbols-outlined">priority_high</span><span>Prioridades</span></a></li>
-<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="team.html"><span class="material-symbols-outlined">group</span><span>Equipe</span></a></li>
-<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="clients.html"><span class="material-symbols-outlined">business_center</span><span>Clientes</span></a></li>
-<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="tasks.html"><span class="material-symbols-outlined">task_alt</span><span>Tarefas</span></a></li>
-<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="work-logs.html"><span class="material-symbols-outlined">analytics</span><span>Atividades</span></a></li>
-<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="messages.html"><span class="material-symbols-outlined">mail</span><span>Mensagens</span></a></li>
-<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="reports.html"><span class="material-symbols-outlined">assessment</span><span>Relatórios</span></a></li>
-<li><a class="text-zinc-500 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200 flex items-center gap-4 px-6 py-3" href="categories.html"><span class="material-symbols-outlined">category</span><span>Categorias</span></a></li>
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="dashboard.html"><span class="material-symbols-outlined" data-icon="dashboard">dashboard</span><span>Dashboard</span></a></li>
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="priorities.html"><span class="material-symbols-outlined" data-icon="priority_high">priority_high</span><span>Prioridades</span></a></li>
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="team.html"><span class="material-symbols-outlined" data-icon="group">group</span><span>Equipe</span></a></li>
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="clients.html"><span class="material-symbols-outlined" data-icon="business_center">business_center</span><span>Clientes</span></a></li>
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="tasks.html"><span class="material-symbols-outlined" data-icon="task_alt">task_alt</span><span>Tarefas</span></a></li>
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="work-logs.html"><span class="material-symbols-outlined" data-icon="analytics">analytics</span><span>Atividades</span></a></li>
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="messages.html"><span class="material-symbols-outlined" data-icon="mail">mail</span><span>Mensagens</span></a></li>
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="reports.html"><span class="material-symbols-outlined" data-icon="assessment">assessment</span><span>Relatórios</span></a></li>
+<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="categories.html"><span class="material-symbols-outlined" data-icon="category">category</span><span>Categorias</span></a></li>
 </ul>
 </nav>
-<div class="mt-auto p-4 border-t border-zinc-100">
+<div class="mt-auto p-4 border-t border-surface-container/50">
 <ul class="space-y-1">
-<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="settings.html"><span class="material-symbols-outlined">settings</span><span>Configurações</span></a></li>
-<li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="login.html"><span class="material-symbols-outlined">logout</span><span>Sair</span></a></li>
+<li>
+<a class="flex items-center gap-4 text-[#765b00] bg-[#FAC826]/10 border-l-4 border-[#FAC826] font-bold px-6 py-3 transition-all" href="settings.html">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Configurações</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="login.html">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>Sair</span>
+</a>
+</li>
 </ul>
 </div>
 </aside>
 <!-- TopNavBar Shell -->
-<header class="flex justify-between items-center pl-80 pr-12 w-full fixed top-0 z-30 h-20 bg-[#f8f9fb]/80 backdrop-blur-md">
+<header class="flex justify-between items-center pl-80 pr-12 w-full fixed top-0 z-30 w-full h-20 bg-[#f8f9fb]/80 backdrop-blur-md">
 <div class="flex-1">
 <div class="relative max-w-md">
 <input class="w-full bg-surface-container-high border-none rounded-full py-2.5 px-6 focus:ring-2 focus:ring-primary/20 text-sm" placeholder="Buscar no painel..." type="text"/>
-<span class="material-symbols-outlined absolute right-4 top-2.5 text-zinc-400">search</span>
+<span class="material-symbols-outlined absolute right-4 top-2.5 text-zinc-400" data-icon="search">search</span>
 </div>
 </div>
 <div class="flex items-center gap-6">
 <div class="flex items-center gap-4">
 <button class="text-[#765b00] hover:text-[#FAC826] transition-colors relative">
-<span class="material-symbols-outlined">notifications</span>
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
 <span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
 </button>
 <button class="text-[#765b00] hover:text-[#FAC826] transition-colors">
-<span class="material-symbols-outlined">support_agent</span>
+<span class="material-symbols-outlined" data-icon="support_agent">support_agent</span>
 </button>
 </div>
 <div class="h-10 w-[1px] bg-outline-variant/30 mx-2"></div>
@@ -109,10 +148,8 @@
 </div>
 </div>
 </header>
-<!-- Main Content Wrapper -->
-<main class="pl-80 pr-12 pt-28 pb-12 min-h-screen">
-<!-- Canvas Area -->
-<div class="max-w-7xl mx-auto">
+<!-- Main Content Canvas -->
+<main class="pl-80 pr-12 pt-28 pb-12">
 <!-- Page Header -->
 <header class="mb-12">
 <span class="text-[10px] font-bold tracking-[0.2em] text-primary uppercase mb-2 block">Configuração</span>
@@ -255,7 +292,6 @@
 <p class="text-sm font-light leading-relaxed italic opacity-90 relative z-10">
                             "A organização é a base da transparência financeira. Mantenha seus dados atualizados para garantir a precisão de seus relatórios de BPO."
                         </p>
-</div>
 </div>
 </div>
 </div>
