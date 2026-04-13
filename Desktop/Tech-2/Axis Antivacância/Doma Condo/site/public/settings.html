@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Raleway:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
@@ -51,7 +51,7 @@
                         "primary-fixed": "#ffdf94",
                         "secondary-fixed": "#fbe0a0",
                         "tertiary-fixed": "#cae6ff",
-                        "primary-container": "#e8b931",
+                        "primary-container": "#FAC826",
                         "tertiary": "#006492",
                         "surface-container-highest": "#e5e2e1",
                         "on-secondary-container": "#76622f",
@@ -68,7 +68,7 @@
                         "full": "0.75rem"
                     },
                     "fontFamily": {
-                        "headline": ["Plus Jakarta Sans"],
+                        "headline": ["Raleway"],
                         "body": ["Raleway"],
                         "label": ["Raleway"]
                     }
@@ -96,10 +96,11 @@
 </head>
 <body class="antialiased text-on-surface">
 <!-- SideNavBar -->
-<aside class="bg-[#1A1A1A] h-screen w-64 fixed left-0 top-0 font-plus-jakarta-sans antialiased tracking-[0.01em] flex flex-col py-8 px-6 z-50">
+<aside class="bg-[#1A1A1A] h-screen w-64 fixed left-0 top-0 font-raleway antialiased tracking-[0.01em] flex flex-col py-8 px-6 z-50">
 <div class="mb-12 flex items-center gap-2">
+<img src="images/logo.png" alt="Doma Condo Logo" class="h-10 object-contain mb-2"/>
 <span class="text-white font-bold tracking-tighter text-xl uppercase">DOMA</span>
-<span class="text-[#e8b931] font-bold tracking-tighter text-xl uppercase">CONDO</span>
+<span class="text-[#FAC826] font-bold tracking-tighter text-xl uppercase">CONDO</span>
 </div>
 <nav class="flex-1 space-y-2">
 <a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-medium hover:bg-white/10 hover:text-white transition-all scale-95 transition-transform duration-200" href="dashboard.html">
@@ -134,7 +135,7 @@
 <span class="material-symbols-outlined" data-icon="analytics">analytics</span>
 <span>Reports</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-[#e8b931] font-semibold bg-white/5 transition-all scale-95 transition-transform duration-200" href="settings.html">
+<a class="flex items-center gap-3 px-4 py-3 text-[#FAC826] font-semibold bg-white/5 transition-all scale-95 transition-transform duration-200" href="settings.html">
 <span class="material-symbols-outlined" data-icon="settings">settings</span>
 <span>Settings</span>
 </a>
@@ -151,13 +152,13 @@
 <main class="ml-64 min-h-screen">
 <!-- TopAppBar -->
 <header class="w-full h-20 flex items-center sticky top-0 bg-[#fcf9f8] dark:bg-neutral-900 px-12 z-40 justify-between tonal-shift-bg-surface-container-low">
-<h1 class="text-[#1A1A1A] font-bold text-lg font-plus-jakarta-sans text-display-sm tracking-tight">Configurações</h1>
+<h1 class="text-[#1A1A1A] font-bold text-lg font-raleway text-display-sm tracking-tight">Configurações</h1>
 <div class="flex items-center gap-6">
 <div class="flex items-center gap-4">
-<button class="text-neutral-500 hover:bg-neutral-100 p-2 rounded-full transition-colors focus-within:ring-2 focus-within:ring-[#e8b931]">
+<button class="text-neutral-500 hover:bg-neutral-100 p-2 rounded-full transition-colors focus-within:ring-2 focus-within:ring-[#FAC826]">
 <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
 </button>
-<button class="text-neutral-500 hover:bg-neutral-100 p-2 rounded-full transition-colors focus-within:ring-2 focus-within:ring-[#e8b931]">
+<button class="text-neutral-500 hover:bg-neutral-100 p-2 rounded-full transition-colors focus-within:ring-2 focus-within:ring-[#FAC826]">
 <span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
 </button>
 </div>
@@ -232,7 +233,7 @@
 </div>
 <!-- Action Button -->
 <div class="mt-12 flex justify-end">
-<button class="bg-gradient-to-br from-[#765b00] to-[#e8b931] text-white font-bold py-4 px-10 rounded-md shadow-[0_12px_24px_rgba(118,91,0,0.15)] hover:brightness-110 transition-all flex items-center gap-3">
+<button class="bg-gradient-to-br from-[#765b00] to-[#FAC826] text-white font-bold py-4 px-10 rounded-md shadow-[0_12px_24px_rgba(118,91,0,0.15)] hover:brightness-110 transition-all flex items-center gap-3">
 <span>Salvar Alterações</span>
 <span class="material-symbols-outlined text-sm" data-icon="check_circle">check_circle</span>
 </button>
@@ -309,7 +310,7 @@
 <!-- Quote/Insights Area (Editorial Touch) -->
 <div class="p-8 rounded-xl bg-gradient-to-br from-[#1A1A1A] to-[#313030] text-white relative overflow-hidden">
 <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-white/5 text-8xl" data-icon="account_balance">account_balance</span>
-<p class="text-xs font-black uppercase tracking-[0.2em] text-[#e8b931] mb-4">Financial Insight</p>
+<p class="text-xs font-black uppercase tracking-[0.2em] text-[#FAC826] mb-4">Financial Insight</p>
 <p class="text-sm font-light leading-relaxed italic opacity-90 relative z-10">
                             "A organização é a base da transparência financeira. Mantenha seus dados atualizados para garantir a precisão de seus relatórios de BPO."
                         </p>

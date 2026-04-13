@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Raleway:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
@@ -19,7 +19,7 @@
                       "on-tertiary-container": "#005279",
                       "on-primary-container": "#614a00",
                       "surface-container-highest": "#e5e2e1",
-                      "primary-container": "#e8b931",
+                      "primary-container": "#FAC826",
                       "surface-variant": "#e5e2e1",
                       "on-secondary-fixed": "#251a00",
                       "on-error-container": "#93000a",
@@ -68,7 +68,7 @@
                       "full": "0.75rem"
               },
               "fontFamily": {
-                      "headline": ["Plus Jakarta Sans"],
+                      "headline": ["Raleway"],
                       "body": ["Raleway"],
                       "label": ["Raleway"]
               }
@@ -83,12 +83,12 @@
             vertical-align: middle;
         }
         .text-gradient-primary {
-            background: linear-gradient(135deg, #765b00 0%, #e8b931 100%);
+            background: linear-gradient(135deg, #765b00 0%, #FAC826 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
           }
         .bg-gradient-primary {
-            background: linear-gradient(135deg, #765b00 0%, #e8b931 100%);
+            background: linear-gradient(135deg, #765b00 0%, #FAC826 100%);
         }
     </style>
 </head>
@@ -96,34 +96,35 @@
 <!-- SideNavBar Shell -->
 <aside class="bg-[#1A1A1A] h-full w-64 fixed left-0 top-0 flex flex-col py-8 z-50">
 <div class="px-8 mb-12">
+<img src="images/logo.png" alt="Doma Condo Logo" class="h-10 object-contain mb-2"/>
 <div class="flex items-center gap-2">
-<span class="text-2xl font-bold tracking-tighter text-white">DOMA</span>
-<span class="text-2xl font-bold tracking-tighter text-[#e8b931]">CONDO</span>
+<span class="text-2xl font-semibold tracking-tight text-white">DOMA</span>
+<span class="text-2xl font-semibold tracking-tight text-[#FAC826]">CONDO</span>
 </div>
 </div>
 <nav class="flex-1 space-y-1">
-<a class="flex items-center px-8 py-3 gap-3 text-gray-400 font-medium hover:bg-white/5 transition-colors duration-150 font-plus-jakarta-sans text-sm tracking-wide" href="dashboard.html">
+<a class="flex items-center px-8 py-3 gap-3 text-gray-400 font-medium hover:bg-white/5 transition-colors duration-150 font-raleway text-sm tracking-wide" href="dashboard.html">
 <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
 <span>Dashboard</span>
 </a>
-<a class="flex items-center px-8 py-3 gap-3 text-gray-400 font-medium hover:bg-white/5 transition-colors duration-150 font-plus-jakarta-sans text-sm tracking-wide" href="priorities.html">
+<a class="flex items-center px-8 py-3 gap-3 text-gray-400 font-medium hover:bg-white/5 transition-colors duration-150 font-raleway text-sm tracking-wide" href="priorities.html">
 <span class="material-symbols-outlined" data-icon="priority_high">priority_high</span>
 <span>Priorities</span>
 </a>
-<a class="flex items-center px-8 py-3 gap-3 text-gray-400 font-medium hover:bg-white/5 transition-colors duration-150 font-plus-jakarta-sans text-sm tracking-wide" href="team.html">
+<a class="flex items-center px-8 py-3 gap-3 text-gray-400 font-medium hover:bg-white/5 transition-colors duration-150 font-raleway text-sm tracking-wide" href="team.html">
 <span class="material-symbols-outlined" data-icon="group">group</span>
 <span>Team</span>
 </a>
 <!-- Active Navigation: Clients -->
-<a class="flex items-center px-8 py-3 gap-3 text-[#e8b931] font-bold border-r-4 border-[#e8b931] bg-surface-container-high/10 transition-colors duration-150 font-plus-jakarta-sans text-sm tracking-wide" href="clients.html">
+<a class="flex items-center px-8 py-3 gap-3 text-[#FAC826] font-bold border-r-4 border-[#FAC826] bg-surface-container-high/10 transition-colors duration-150 font-raleway text-sm tracking-wide" href="clients.html">
 <span class="material-symbols-outlined" data-icon="account_balance_wallet" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
 <span>Clients</span>
 </a>
-<a class="flex items-center px-8 py-3 gap-3 text-gray-400 font-medium hover:bg-white/5 transition-colors duration-150 font-plus-jakarta-sans text-sm tracking-wide" href="reports.html">
+<a class="flex items-center px-8 py-3 gap-3 text-gray-400 font-medium hover:bg-white/5 transition-colors duration-150 font-raleway text-sm tracking-wide" href="reports.html">
 <span class="material-symbols-outlined" data-icon="assessment">assessment</span>
 <span>Reports</span>
 </a>
-<a class="flex items-center px-8 py-3 gap-3 text-gray-400 font-medium hover:bg-white/5 transition-colors duration-150 font-plus-jakarta-sans text-sm tracking-wide" href="settings.html">
+<a class="flex items-center px-8 py-3 gap-3 text-gray-400 font-medium hover:bg-white/5 transition-colors duration-150 font-raleway text-sm tracking-wide" href="settings.html">
 <span class="material-symbols-outlined" data-icon="settings">settings</span>
 <span>Settings</span>
 </a>
@@ -140,10 +141,10 @@
 </div>
 <div class="flex items-center gap-6">
 <div class="flex items-center gap-4">
-<button class="text-on-surface-variant hover:text-[#e8b931] transition-colors">
+<button class="text-on-surface-variant hover:text-[#FAC826] transition-colors">
 <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
 </button>
-<button class="text-on-surface-variant hover:text-[#e8b931] transition-colors">
+<button class="text-on-surface-variant hover:text-[#FAC826] transition-colors">
 <span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
 </button>
 </div>

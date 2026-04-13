@@ -3,7 +3,7 @@
 <html lang="pt-BR"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Raleway:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -57,7 +57,7 @@
                         "surface-bright": "#f8f9fb",
                         "inverse-on-surface": "#f0f1f3",
                         "inverse-surface": "#2e3132",
-                        "primary-container": "#e8b931",
+                        "primary-container": "#FAC826",
                         "on-primary-fixed-variant": "#594400",
                         "surface-variant": "#e1e2e4"
                     },
@@ -68,7 +68,7 @@
                         "full": "9999px"
                     },
                     "fontFamily": {
-                        "headline": ["Plus Jakarta Sans"],
+                        "headline": ["Raleway"],
                         "body": ["Raleway"],
                         "label": ["Raleway"]
                     }
@@ -81,31 +81,32 @@
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
         body { font-family: 'Raleway', sans-serif; }
-        h1, h2, h3, .headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        h1, h2, h3, .headline { font-family: 'Raleway', sans-serif; }
     </style>
 </head>
 <body class="bg-background text-on-surface min-h-screen">
 <!-- SideNavBar (Shared Component) -->
 <aside class="fixed left-0 top-0 h-full flex flex-col z-40 h-screen w-64 border-r-0 bg-white dark:bg-gray-900 shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
 <div class="p-6">
+<img src="images/logo.png" alt="Doma Condo Logo" class="h-10 object-contain mb-4"/>
 <h1 class="text-xl font-bold tracking-tight text-yellow-700 dark:text-yellow-500">DOMA CONDO</h1>
 <p class="text-xs text-on-surface-variant/60 mt-1 font-medium">Apartment 402</p>
 </div>
 <nav class="flex-1 px-3 mt-4 space-y-1">
-<a class="flex items-center gap-3 px-4 py-3 text-gray-500 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-500 font-['Plus_Jakarta_Sans'] font-medium text-sm transition-colors duration-200" href="portal-overview.html">
+<a class="flex items-center gap-3 px-4 py-3 text-gray-500 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-500 font-['Raleway'] font-medium text-sm transition-colors duration-200" href="portal-overview.html">
 <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
                 Visão Geral
             </a>
-<a class="flex items-center gap-3 px-4 py-3 text-gray-500 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-500 font-['Plus_Jakarta_Sans'] font-medium text-sm transition-colors duration-200" href="portal.html">
+<a class="flex items-center gap-3 px-4 py-3 text-gray-500 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-500 font-['Raleway'] font-medium text-sm transition-colors duration-200" href="portal.html">
 <span class="material-symbols-outlined" data-icon="event_note">event_note</span>
                 Atividades
             </a>
-<a class="flex items-center gap-3 px-4 py-3 text-gray-500 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-500 font-['Plus_Jakarta_Sans'] font-medium text-sm transition-colors duration-200" href="portal-reports.html">
+<a class="flex items-center gap-3 px-4 py-3 text-gray-500 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-500 font-['Raleway'] font-medium text-sm transition-colors duration-200" href="portal-reports.html">
 <span class="material-symbols-outlined" data-icon="description">description</span>
                 Relatórios
             </a>
 <!-- Active State: Pendências -->
-<a class="flex items-center gap-3 px-4 py-3 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-l-4 border-yellow-600 font-semibold font-['Plus_Jakarta_Sans'] text-sm" href="portal-pending.html">
+<a class="flex items-center gap-3 px-4 py-3 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-l-4 border-yellow-600 font-semibold font-['Raleway'] text-sm" href="portal-pending.html">
 <span class="material-symbols-outlined" data-icon="pending_actions" style="font-variation-settings: 'FILL' 1;">pending_actions</span>
                 Pendências
             </a>

@@ -3,7 +3,7 @@
 <html lang="pt-BR"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Raleway:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -24,7 +24,7 @@
                     "on-background": "#1c1b1b",
                     "error": "#ba1a1a",
                     "tertiary": "#006492",
-                    "primary-container": "#e8b931",
+                    "primary-container": "#FAC826",
                     "surface-tint": "#765b00",
                     "outline-variant": "#d1c5ae",
                     "outline": "#807662",
@@ -68,7 +68,7 @@
                     "full": "0.75rem"
             },
             "fontFamily": {
-                    "headline": ["Plus Jakarta Sans"],
+                    "headline": ["Raleway"],
                     "body": ["Raleway"],
                     "label": ["Raleway"]
             }
@@ -83,57 +83,58 @@
         body { font-family: 'Raleway', sans-serif; }
         .tonal-architecture { background-color: #f6f3f2; }
         .paper-shadow { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05); }
-        .signature-font { font-family: 'Plus Jakarta Sans'; font-style: italic; font-weight: 300; }
+        .signature-font { font-family: 'Raleway'; font-style: italic; font-weight: 300; }
     </style>
 </head>
 <body class="bg-surface text-on-surface">
 <!-- SideNavBar -->
 <aside class="bg-[#1A1A1A] h-screen w-64 fixed left-0 top-0 flex flex-col h-full py-8 px-4 z-50">
 <div class="mb-10 px-2 flex items-center gap-3">
+<img src="images/logo.png" alt="Doma Condo Logo" class="h-10 object-contain mb-2"/>
 <div class="text-white font-bold text-lg uppercase tracking-widest flex items-center">
 <span>DOMA</span>
-<span class="text-[#e8b931] ml-1">CONDO</span>
+<span class="text-[#FAC826] ml-1">CONDO</span>
 </div>
 </div>
 <nav class="flex-1 space-y-1">
-<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-['Plus_Jakarta_SANS'] font-medium tracking-wide hover:text-white hover:bg-white/10 transition-colors scale-95 duration-200" href="dashboard.html">
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-['Raleway'] font-medium tracking-wide hover:text-white hover:bg-white/10 transition-colors scale-95 duration-200" href="dashboard.html">
 <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
 <span>Dashboard</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-['Plus_Jakarta_SANS'] font-medium tracking-wide hover:text-white hover:bg-white/10 transition-colors scale-95 duration-200" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-['Raleway'] font-medium tracking-wide hover:text-white hover:bg-white/10 transition-colors scale-95 duration-200" href="#">
 <span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
 <span>Lançamentos</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-[#e8b931] font-semibold bg-white/5 font-['Plus_Jakarta_SANS'] tracking-wide scale-95 duration-200" href="reports.html">
+<a class="flex items-center gap-3 px-4 py-3 text-[#FAC826] font-semibold bg-white/5 font-['Raleway'] tracking-wide scale-95 duration-200" href="reports.html">
 <span class="material-symbols-outlined" data-icon="analytics">analytics</span>
 <span>Relatórios</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-['Plus_Jakarta_SANS'] font-medium tracking-wide hover:text-white hover:bg-white/10 transition-colors scale-95 duration-200" href="settings.html">
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-['Raleway'] font-medium tracking-wide hover:text-white hover:bg-white/10 transition-colors scale-95 duration-200" href="settings.html">
 <span class="material-symbols-outlined" data-icon="settings">settings</span>
 <span>Configurações</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-['Plus_Jakarta_SANS'] font-medium tracking-wide hover:text-white hover:bg-white/10 transition-colors scale-95 duration-200" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 font-['Raleway'] font-medium tracking-wide hover:text-white hover:bg-white/10 transition-colors scale-95 duration-200" href="#">
 <span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
 <span>Auditoria</span>
 </a>
 </nav>
 <div class="mt-auto space-y-1 pt-6 border-t border-white/5">
-<button class="w-full flex items-center justify-center gap-2 bg-[#e8b931] text-[#251a00] font-bold py-3 rounded-lg mb-4 text-xs uppercase tracking-tighter">
+<button class="w-full flex items-center justify-center gap-2 bg-[#FAC826] text-[#251a00] font-bold py-3 rounded-lg mb-4 text-xs uppercase tracking-tighter">
 <span class="material-symbols-outlined text-sm" data-icon="add">add</span>
                 Novo Chamado
             </button>
-<a class="flex items-center gap-3 px-4 py-2 text-gray-400 font-['Plus_Jakarta_SANS'] font-medium tracking-wide hover:text-white hover:bg-white/10 transition-colors" href="#">
+<a class="flex items-center gap-3 px-4 py-2 text-gray-400 font-['Raleway'] font-medium tracking-wide hover:text-white hover:bg-white/10 transition-colors" href="#">
 <span class="material-symbols-outlined" data-icon="help">help</span>
 <span>Suporte</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-2 text-gray-400 font-['Plus_Jakarta_SANS'] font-medium tracking-wide hover:text-white hover:bg-white/10 transition-colors" href="#">
+<a class="flex items-center gap-3 px-4 py-2 text-gray-400 font-['Raleway'] font-medium tracking-wide hover:text-white hover:bg-white/10 transition-colors" href="#">
 <span class="material-symbols-outlined" data-icon="logout">logout</span>
 <span>Sair</span>
 </a>
 </div>
 </aside>
 <!-- TopAppBar -->
-<header class="w-full h-20 pl-72 pr-8 fixed top-0 z-40 bg-[#fcf9f8] dark:bg-neutral-900 flex justify-between items-center font-['Plus_Jakarta_SANS'] text-sm tracking-tight tonal-shift">
+<header class="w-full h-20 pl-72 pr-8 fixed top-0 z-40 bg-[#fcf9f8] dark:bg-neutral-900 flex justify-between items-center font-['Raleway'] text-sm tracking-tight tonal-shift">
 <div class="flex items-center gap-6">
 <nav class="flex items-center gap-2 text-neutral-500">
 <span>Clientes</span>
@@ -147,7 +148,7 @@
 <button class="px-5 py-2 rounded-lg border border-outline text-on-surface-variant font-medium hover:bg-surface-container-low transition-all active:opacity-80">
                 Editar
             </button>
-<button class="px-5 py-2 rounded-lg bg-gradient-to-br from-[#765b00] to-[#e8b931] text-white font-semibold hover:opacity-90 transition-all active:opacity-80 shadow-md">
+<button class="px-5 py-2 rounded-lg bg-gradient-to-br from-[#765b00] to-[#FAC826] text-white font-semibold hover:opacity-90 transition-all active:opacity-80 shadow-md">
                 Enviar ao Cliente
             </button>
 <div class="h-6 w-[1px] bg-outline-variant mx-2"></div>

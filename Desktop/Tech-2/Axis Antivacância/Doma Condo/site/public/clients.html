@@ -3,7 +3,7 @@
 <html lang="pt-BR"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Raleway:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -13,7 +13,7 @@
         theme: {
           extend: {
             "colors": {
-                    "primary-container": "#e8b931",
+                    "primary-container": "#FAC826",
                     "tertiary-fixed": "#cae6ff",
                     "secondary-fixed": "#fbe0a0",
                     "tertiary-fixed-dim": "#8bceff",
@@ -68,7 +68,7 @@
                     "full": "0.75rem"
             },
             "fontFamily": {
-                    "headline": ["Plus Jakarta Sans"],
+                    "headline": ["Raleway"],
                     "body": ["Raleway"],
                     "label": ["Raleway"]
             }
@@ -84,7 +84,7 @@
         .sidebar-active {
             background-color: rgba(255, 255, 255, 0.05);
             border-right: 2px solid #765b00;
-            color: #e8b931 !important;
+            color: #FAC826 !important;
             font-weight: 600;
         }
     </style>
@@ -93,9 +93,10 @@
 <!-- SideNavBar Component -->
 <aside class="h-screen w-64 fixed left-0 top-0 bg-[#1A1A1A] flex flex-col py-6 z-50">
 <div class="px-6 mb-10">
+<img src="images/logo.png" alt="Doma Condo Logo" class="h-10 object-contain mb-2"/>
 <div class="flex items-center gap-2">
-<span class="text-white font-bold text-xl tracking-tight">DOMA</span>
-<span class="text-[#e8b931] font-bold text-xl tracking-tight">CONDO</span>
+<span class="text-white font-semibold text-xl tracking-tight">DOMA</span>
+<span class="text-[#FAC826] font-semibold text-xl tracking-tight">CONDO</span>
 </div>
 <div class="mt-1">
 <p class="text-gray-500 text-xs font-medium tracking-widest uppercase">BPO Admin</p>
@@ -138,7 +139,7 @@
 <main class="flex-1 ml-64 min-h-screen flex flex-col">
 <!-- TopAppBar Component -->
 <header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-[#fcf9f8] flex justify-between items-center px-8 z-40">
-<div class="flex items-center bg-surface-container-low rounded-full px-4 py-2 w-96 transition-all focus-within:ring-2 ring-[#e8b931]">
+<div class="flex items-center bg-surface-container-low rounded-full px-4 py-2 w-96 transition-all focus-within:ring-2 ring-[#FAC826]">
 <span class="material-symbols-outlined text-gray-400 mr-2" data-icon="search">search</span>
 <input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-gray-400" placeholder="Buscar clientes ou condomínios..." type="text"/>
 </div>
@@ -361,7 +362,7 @@
 <div class="relative z-10">
 <h3 class="text-xl font-bold mb-2">Relatório de Performance Mensal</h3>
 <p class="text-gray-400 text-sm max-w-md">Jessica, a eficiência de processamento da Atlântica Administradora caiu 15%. Recomendamos revisar as atividades pendentes.</p>
-<button class="mt-6 border border-[#e8b931] text-[#e8b931] px-5 py-2 rounded font-bold text-sm hover:bg-[#e8b931]/10 transition-colors">
+<button class="mt-6 border border-[#FAC826] text-[#FAC826] px-5 py-2 rounded font-bold text-sm hover:bg-[#FAC826]/10 transition-colors">
                             Ver Dashboard de Atividades
                         </button>
 </div>
