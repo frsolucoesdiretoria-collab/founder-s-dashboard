@@ -151,7 +151,7 @@
 <!-- Filters Shelf -->
 <section class="bg-surface-container-low rounded-xl p-4 mb-8 flex flex-wrap items-center gap-6">
 <div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-gray-400" data-icon="calendar_today">calendar_today</span>
+<span class="material-symbols-outlined text-zinc-400" data-icon="calendar_today">calendar_today</span>
 <select class="bg-transparent border-none text-sm font-semibold text-on-surface focus:ring-0 cursor-pointer">
 <option>Este Mês (Outubro)</option>
 <option>Setembro</option>
@@ -159,7 +159,7 @@
 </select>
 </div>
 <div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-gray-400" data-icon="business">business</span>
+<span class="material-symbols-outlined text-zinc-400" data-icon="business">business</span>
 <select class="bg-transparent border-none text-sm font-semibold text-on-surface focus:ring-0 cursor-pointer">
 <option>Todos os Clientes</option>
 <option>Adm. Litoral Sul</option>
@@ -167,7 +167,7 @@
 </select>
 </div>
 <div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-gray-400" data-icon="person">person</span>
+<span class="material-symbols-outlined text-zinc-400" data-icon="person">person</span>
 <select class="bg-transparent border-none text-sm font-semibold text-on-surface focus:ring-0 cursor-pointer">
 <option>Todos Responsáveis</option>
 <option>Ana Souza</option>
@@ -175,40 +175,40 @@
 </select>
 </div>
 <div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-gray-400" data-icon="category">category</span>
+<span class="material-symbols-outlined text-zinc-400" data-icon="category">category</span>
 <select class="bg-transparent border-none text-sm font-semibold text-on-surface focus:ring-0 cursor-pointer">
 <option>Todas Categorias</option>
 <option>Financeiro</option>
 <option>Operacional</option>
 </select>
 </div>
-<button class="ml-auto flex items-center gap-2 px-4 py-2 bg-primary-container text-on-primary-container font-bold rounded-lg hover:shadow-lg transition-all">
+<button class="ml-auto flex items-center gap-2 px-4 py-2 bg-primary text-white font-bold rounded-lg shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all text-sm">
 <span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
                     Nova Atividade
                 </button>
 </section>
 <!-- Table Data View -->
-<div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-outline-variant/10">
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
 <table class="w-full text-left border-collapse">
 <thead>
-<tr class="bg-surface-container-low/50">
-<th class="px-6 py-4 text-xs font-extrabold text-on-surface-variant uppercase tracking-widest">Data</th>
-<th class="px-6 py-4 text-xs font-extrabold text-on-surface-variant uppercase tracking-widest">Cliente</th>
-<th class="px-6 py-4 text-xs font-extrabold text-on-surface-variant uppercase tracking-widest">Condomínio</th>
-<th class="px-6 py-4 text-xs font-extrabold text-on-surface-variant uppercase tracking-widest">Categoria</th>
-<th class="px-6 py-4 text-xs font-extrabold text-on-surface-variant uppercase tracking-widest">Descrição</th>
-<th class="px-6 py-4 text-xs font-extrabold text-on-surface-variant uppercase tracking-widest">Responsável</th>
-<th class="px-6 py-4 text-xs font-extrabold text-on-surface-variant uppercase tracking-widest text-right">Duração</th>
+<tr class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest border-b border-surface-container/30">
+<th class="px-6 pb-4 font-bold">Data</th>
+<th class="px-6 pb-4 font-bold">Cliente</th>
+<th class="px-6 pb-4 font-bold">Condomínio</th>
+<th class="px-6 pb-4 font-bold">Categoria</th>
+<th class="px-6 pb-4 font-bold">Descrição</th>
+<th class="px-6 pb-4 font-bold">Responsável</th>
+<th class="px-6 pb-4 font-bold text-right">Duração</th>
 </tr>
 </thead>
-<tbody class="divide-y divide-surface-container-low">
+<tbody class="divide-y divide-surface-container/20">
 <!-- Row 1 -->
 <tr class="hover:bg-surface-bright transition-colors group">
 <td class="px-6 py-4 text-sm font-medium">24/10</td>
 <td class="px-6 py-4 text-sm font-bold">Adm. Litoral Sul</td>
 <td class="px-6 py-4 text-sm text-on-surface-variant">Res. Aurora</td>
 <td class="px-6 py-4">
-<span class="px-2 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase tracking-wider">Financeiro</span>
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold uppercase tracking-wider">Financeiro</span>
 </td>
 <td class="px-6 py-4 text-sm text-on-surface-variant">Conciliação bancária Santander</td>
 <td class="px-6 py-4">
@@ -225,7 +225,7 @@
 <td class="px-6 py-4 text-sm font-bold">Prime Adm</td>
 <td class="px-6 py-4 text-sm text-on-surface-variant">Ed. Porto</td>
 <td class="px-6 py-4">
-<span class="px-2 py-1 bg-tertiary-container/30 text-tertiary text-[10px] font-bold rounded uppercase tracking-wider">Operacional</span>
+<span class="px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold uppercase tracking-wider">Operacional</span>
 </td>
 <td class="px-6 py-4 text-sm text-on-surface-variant">Emissão de boletos taxa extra</td>
 <td class="px-6 py-4">
@@ -242,7 +242,7 @@
 <td class="px-6 py-4 text-sm font-bold">BC Gestão</td>
 <td class="px-6 py-4 text-sm text-on-surface-variant">Vila Romana</td>
 <td class="px-6 py-4">
-<span class="px-2 py-1 bg-on-secondary-fixed-variant/10 text-on-secondary-fixed-variant text-[10px] font-bold rounded uppercase tracking-wider">Jurídico</span>
+<span class="px-3 py-1 bg-surface-container-highest text-zinc-500 rounded-full text-[10px] font-bold uppercase tracking-wider">Jurídico</span>
 </td>
 <td class="px-6 py-4 text-sm text-on-surface-variant">Relatório de inadimplência</td>
 <td class="px-6 py-4">
@@ -259,7 +259,7 @@
 <td class="px-6 py-4 text-sm font-bold">Catariense</td>
 <td class="px-6 py-4 text-sm text-on-surface-variant">Parque das Flores</td>
 <td class="px-6 py-4">
-<span class="px-2 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase tracking-wider">Financeiro</span>
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold uppercase tracking-wider">Financeiro</span>
 </td>
 <td class="px-6 py-4 text-sm text-on-surface-variant">Pagamento de fornecedores (manutenção)</td>
 <td class="px-6 py-4">
@@ -276,7 +276,7 @@
 <td class="px-6 py-4 text-sm font-bold">Adm. Litoral Sul</td>
 <td class="px-6 py-4 text-sm text-on-surface-variant">Res. Aurora</td>
 <td class="px-6 py-4">
-<span class="px-2 py-1 bg-secondary-fixed-dim/20 text-secondary text-[10px] font-bold rounded uppercase tracking-wider">Assembleia</span>
+<span class="px-3 py-1 bg-surface-container-highest text-zinc-500 rounded-full text-[10px] font-bold uppercase tracking-wider">Assembleia</span>
 </td>
 <td class="px-6 py-4 text-sm text-on-surface-variant">Preparação de balancete</td>
 <td class="px-6 py-4">
@@ -293,7 +293,7 @@
 <td class="px-6 py-4 text-sm font-bold">Atlântica</td>
 <td class="px-6 py-4 text-sm text-on-surface-variant">Ed. Platinum</td>
 <td class="px-6 py-4">
-<span class="px-2 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase tracking-wider">Financeiro</span>
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold uppercase tracking-wider">Financeiro</span>
 </td>
 <td class="px-6 py-4 text-sm text-on-surface-variant">Verificação de duplicidade de boletos</td>
 <td class="px-6 py-4">
@@ -310,7 +310,7 @@
 <td class="px-6 py-4 text-sm font-bold">Prime Adm</td>
 <td class="px-6 py-4 text-sm text-on-surface-variant">Ed. Porto</td>
 <td class="px-6 py-4">
-<span class="px-2 py-1 bg-tertiary-container/30 text-tertiary text-[10px] font-bold rounded uppercase tracking-wider">Operacional</span>
+<span class="px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold uppercase tracking-wider">Operacional</span>
 </td>
 <td class="px-6 py-4 text-sm text-on-surface-variant">Baixa de arquivos de retorno</td>
 <td class="px-6 py-4">
@@ -327,7 +327,7 @@
 <td class="px-6 py-4 text-sm font-bold">BC Gestão</td>
 <td class="px-6 py-4 text-sm text-on-surface-variant">Vila Romana</td>
 <td class="px-6 py-4">
-<span class="px-2 py-1 bg-error-container text-error text-[10px] font-bold rounded uppercase tracking-wider">Rh/Contábil</span>
+<span class="px-3 py-1 bg-error-container text-on-error-container rounded-full text-[10px] font-bold uppercase tracking-wider">RH/Contábil</span>
 </td>
 <td class="px-6 py-4 text-sm text-on-surface-variant">Fechamento de folha portaria</td>
 <td class="px-6 py-4">
@@ -360,32 +360,32 @@
 </div>
 <!-- Dashboard Insight Cards (Bento Style) -->
 <div class="mt-12 grid grid-cols-12 gap-6">
-<div class="col-span-8 bg-surface-container-low p-6 rounded-2xl">
-<h4 class="text-sm font-extrabold uppercase tracking-widest text-on-surface-variant mb-4">Volume por Categoria</h4>
+<div class="col-span-8 bg-surface-container-lowest p-6 rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+<h3 class="text-xl font-semibold text-primary mb-4">Volume por Categoria</h3>
 <div class="flex items-end gap-6 h-32">
 <div class="flex-1 flex flex-col items-center gap-2">
 <div class="w-full bg-primary rounded-t-lg transition-all hover:opacity-80" style="height: 80%;"></div>
-<span class="text-[10px] font-bold text-gray-500 uppercase">Fin</span>
+<span class="text-[10px] font-bold text-zinc-400 uppercase">Fin</span>
 </div>
 <div class="flex-1 flex flex-col items-center gap-2">
 <div class="w-full bg-tertiary rounded-t-lg transition-all hover:opacity-80" style="height: 45%;"></div>
-<span class="text-[10px] font-bold text-gray-500 uppercase">Ope</span>
+<span class="text-[10px] font-bold text-zinc-400 uppercase">Ope</span>
 </div>
 <div class="flex-1 flex flex-col items-center gap-2">
 <div class="w-full bg-on-secondary-fixed-variant rounded-t-lg transition-all hover:opacity-80" style="height: 30%;"></div>
-<span class="text-[10px] font-bold text-gray-500 uppercase">Jur</span>
+<span class="text-[10px] font-bold text-zinc-400 uppercase">Jur</span>
 </div>
 <div class="flex-1 flex flex-col items-center gap-2">
 <div class="w-full bg-secondary-fixed-dim rounded-t-lg transition-all hover:opacity-80" style="height: 15%;"></div>
-<span class="text-[10px] font-bold text-gray-500 uppercase">Ass</span>
+<span class="text-[10px] font-bold text-zinc-400 uppercase">Ass</span>
 </div>
 <div class="flex-1 flex flex-col items-center gap-2">
 <div class="w-full bg-error rounded-t-lg transition-all hover:opacity-80" style="height: 60%;"></div>
-<span class="text-[10px] font-bold text-gray-500 uppercase">RH</span>
+<span class="text-[10px] font-bold text-zinc-400 uppercase">RH</span>
 </div>
 </div>
 </div>
-<div class="col-span-4 bg-primary text-white p-6 rounded-2xl relative overflow-hidden group">
+<div class="col-span-4 bg-primary text-white p-6 rounded-xl relative overflow-hidden group shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
 <div class="relative z-10">
 <p class="text-xs font-bold uppercase tracking-widest opacity-70 mb-2">Total de Horas</p>
 <h4 class="text-4xl font-extrabold mb-1 tracking-tighter">142h <span class="text-xl font-normal opacity-80">/mês</span></h4>
@@ -395,7 +395,7 @@
 </div>
 </div>
 <!-- Footer Meta -->
-<footer class="px-8 py-6 flex items-center justify-between text-[10px] text-gray-400 font-medium border-t border-surface-container-low mt-12">
+<footer class="px-8 py-6 flex items-center justify-between text-[10px] text-zinc-400 font-medium border-t border-surface-container/50 mt-12">
 <p>© 2023 DOMA CONDO - Gestão Estratégica de Patrimônio</p>
 <div class="flex gap-4 uppercase tracking-tighter">
 <a class="hover:text-primary transition-colors" href="#">Termos de Uso</a>
