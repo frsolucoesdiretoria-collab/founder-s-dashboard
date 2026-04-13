@@ -6,7 +6,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -18,7 +17,7 @@
                         "secondary": "#705c29",
                         "primary-fixed": "#ffdf94",
                         "surface-container-low": "#f6f3f2",
-                        "tertiary": "#006492",
+                        "tertiary": "#1b6d24",
                         "surface-tint": "#765b00",
                         "inverse-primary": "#f0c038",
                         "error": "#ba1a1a",
@@ -27,21 +26,21 @@
                         "on-error-container": "#93000a",
                         "surface-container-high": "#eae7e7",
                         "error-container": "#ffdad6",
-                        "surface": "#fcf9f8",
+                        "surface": "#f8f9fb",
                         "surface-container-highest": "#e5e2e1",
-                        "on-background": "#1c1b1b",
+                        "on-background": "#191c1e",
                         "primary": "#765b00",
                         "on-secondary-fixed-variant": "#564514",
                         "inverse-on-surface": "#f3f0ef",
-                        "surface-bright": "#fcf9f8",
-                        "tertiary-container": "#78c7ff",
+                        "surface-bright": "#f8f9fb",
+                        "tertiary-container": "#81d27c",
                         "on-primary-fixed-variant": "#594400",
                         "on-primary-container": "#614a00",
                         "on-tertiary": "#ffffff",
                         "surface-container": "#f0eded",
-                        "on-surface": "#1c1b1b",
+                        "on-surface": "#191c1e",
                         "on-tertiary-container": "#005279",
-                        "background": "#fcf9f8",
+                        "background": "#f8f9fb",
                         "tertiary-fixed": "#cae6ff",
                         "outline-variant": "#d1c5ae",
                         "on-surface-variant": "#4e4634",
@@ -86,7 +85,7 @@
         .scrollbar-hide::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="bg-background text-on-surface overflow-hidden">
+<body class="bg-surface text-on-surface antialiased">
 <!-- SideNavBar Shell -->
 <aside class="fixed left-0 top-0 z-40 h-screen w-72 flex flex-col border-none bg-white shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
 <div class="p-8">
@@ -130,7 +129,7 @@
 <div class="flex items-center gap-3">
 <div class="text-right">
 <p class="text-sm font-semibold text-on-surface">Ana Silva</p>
-<p class="text-[10px] text-zinc-500 uppercase tracking-tighter">Colaboradora • Doma Condo</p>
+<p class="text-[10px] text-zinc-500 uppercase tracking-tighter">Colaboradora • Financeiro</p>
 </div>
 <div class="h-10 w-10 rounded-full bg-[#FAC826] flex items-center justify-center text-[#765b00] font-bold text-sm">AS</div>
 </div>
@@ -140,11 +139,11 @@
 <main class="pl-80 pr-12 pt-28 pb-12 min-h-screen flex flex-col relative">
 <!-- Content Canvas -->
 <section class="flex flex-col h-[calc(100vh-7rem)]">
-<!-- Page Eyebrow -->
-<div class="mb-8">
-<span class="text-[10px] font-bold tracking-[0.2em] text-primary uppercase mb-2 block">PORTAL DO COLABORADOR</span>
-<p class="text-on-surface-variant font-medium mt-1">Sua comunicação direta com a inteligência auxiliar da Doma Condo.</p>
-</div>
+<!-- Page Eyebrow + H1 -->
+<header class="mb-8">
+<span class="text-[10px] font-bold tracking-[0.2em] text-primary uppercase mb-2 block">Portal do Colaborador</span>
+<h1 class="text-4xl font-semibold text-primary tracking-tight">Mensagens</h1>
+</header>
 <!-- Two-Column Layout -->
 <div class="flex-1 flex gap-8 overflow-hidden">
 <!-- Left Column: Conversation List -->
