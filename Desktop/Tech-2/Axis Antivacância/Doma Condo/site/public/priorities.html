@@ -204,29 +204,31 @@
 <!-- CTA Button -->
 <div class="flex justify-end mb-6">
   <button class="bg-primary text-white font-bold py-3 px-6 rounded-lg shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm">
-    <span class="material-symbols-outlined">done_all</span>
+    <span class="material-symbols-outlined" data-icon="done_all">done_all</span>
     Marcar Todas Concluídas
   </button>
 </div>
 <!-- Bento Grid Layout for Clients -->
 <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
 <!-- Card 1: Adm. Litoral Sul -->
-<div class="bg-surface-container-lowest rounded-2xl p-6 transition-all hover:bg-surface-bright group border border-transparent hover:border-outline-variant/10">
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0px_12px_32px_rgba(25,28,30,0.04)] transition-all hover:bg-surface-bright group">
 <div class="flex justify-between items-start mb-6">
 <div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-xl bg-tertiary-container flex items-center justify-center">
-<span class="material-symbols-outlined text-on-tertiary-container">business</span>
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">business</span>
 </div>
 <div>
 <h3 class="font-bold text-lg text-on-surface">Adm. Litoral Sul</h3>
-<span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-tertiary-container text-on-tertiary-container rounded">Portfólio Azul</span>
+<span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-surface-container text-on-surface-variant rounded-full">Portfólio Azul</span>
 </div>
 </div>
 <div class="text-right">
 <span class="text-[10px] text-on-surface-variant font-bold block mb-1">RESPONSÁVEL</span>
 <div class="flex items-center gap-2">
 <span class="text-xs font-semibold">Ana</span>
-<div class="w-6 h-6 rounded-full bg-tertiary-fixed-dim border border-white"></div>
+<div class="w-6 h-6 rounded-full bg-tertiary-container flex items-center justify-center">
+<span class="text-[10px] font-bold text-on-tertiary-container">A</span>
+</div>
 </div>
 </div>
 </div>
@@ -235,35 +237,37 @@
 <input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary-container" type="checkbox"/>
 <div class="flex-1">
 <p class="text-sm font-medium">Conciliação bancária Mensal - Santander</p>
-<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-error-container text-on-error-container">URGENTE</span>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-error-container text-on-error-container">URGENTE</span>
 </div>
 </div>
 <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-container-low transition-colors">
 <input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary-container" type="checkbox"/>
 <div class="flex-1">
 <p class="text-sm font-medium">Emissão de boletos de condomínio - Ref. Nov/23</p>
-<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container">ALTA</span>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container">ALTA</span>
 </div>
 </div>
 </div>
 </div>
 <!-- Card 2: Prime Administração -->
-<div class="bg-surface-container-lowest rounded-2xl p-6 transition-all hover:bg-surface-bright group border border-transparent hover:border-outline-variant/10">
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0px_12px_32px_rgba(25,28,30,0.04)] transition-all hover:bg-surface-bright group">
 <div class="flex justify-between items-start mb-6">
 <div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
-<span class="material-symbols-outlined text-purple-700">corporate_fare</span>
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">corporate_fare</span>
 </div>
 <div>
 <h3 class="font-bold text-lg text-on-surface">Prime Administração</h3>
-<span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-purple-100 text-purple-700 rounded">Gestão VIP</span>
+<span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-secondary-container text-on-secondary-container rounded-full">Gestão VIP</span>
 </div>
 </div>
 <div class="text-right">
 <span class="text-[10px] text-on-surface-variant font-bold block mb-1">RESPONSÁVEL</span>
 <div class="flex items-center gap-2">
 <span class="text-xs font-semibold">Maria</span>
-<div class="w-6 h-6 rounded-full bg-purple-200 border border-white"></div>
+<div class="w-6 h-6 rounded-full bg-primary-container flex items-center justify-center">
+<span class="text-[10px] font-bold text-on-primary-container">M</span>
+</div>
 </div>
 </div>
 </div>
@@ -272,35 +276,37 @@
 <input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary-container" type="checkbox"/>
 <div class="flex-1">
 <p class="text-sm font-medium">Lançamento de NF de serviços - Manutenção Elevador</p>
-<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container">ALTA</span>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container">ALTA</span>
 </div>
 </div>
 <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-container-low transition-colors">
 <input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary-container" type="checkbox"/>
 <div class="flex-1">
 <p class="text-sm font-medium">Relatório de Inadimplência Semanal</p>
-<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant">NORMAL</span>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-surface-container-highest text-zinc-500">NORMAL</span>
 </div>
 </div>
 </div>
 </div>
 <!-- Card 3: Catarinense Condominial -->
-<div class="bg-surface-container-lowest rounded-2xl p-6 transition-all hover:bg-surface-bright group border border-transparent hover:border-outline-variant/10">
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0px_12px_32px_rgba(25,28,30,0.04)] transition-all hover:bg-surface-bright group">
 <div class="flex justify-between items-start mb-6">
 <div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
-<span class="material-symbols-outlined text-emerald-700">home_work</span>
+<div class="w-10 h-10 rounded-lg bg-tertiary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">home_work</span>
 </div>
 <div>
 <h3 class="font-bold text-lg text-on-surface">Catarinense Condominial</h3>
-<span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-700 rounded">Portfólio Regional</span>
+<span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-surface-container text-on-surface-variant rounded-full">Portfólio Regional</span>
 </div>
 </div>
 <div class="text-right">
 <span class="text-[10px] text-on-surface-variant font-bold block mb-1">RESPONSÁVEL</span>
 <div class="flex items-center gap-2">
 <span class="text-xs font-semibold">Ana</span>
-<div class="w-6 h-6 rounded-full bg-emerald-200 border border-white"></div>
+<div class="w-6 h-6 rounded-full bg-tertiary-container flex items-center justify-center">
+<span class="text-[10px] font-bold text-on-tertiary-container">A</span>
+</div>
 </div>
 </div>
 </div>
@@ -309,35 +315,37 @@
 <input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary-container" type="checkbox"/>
 <div class="flex-1">
 <p class="text-sm font-medium">Aprovação de pagamentos via App Bank</p>
-<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-error-container text-on-error-container">URGENTE</span>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-error-container text-on-error-container">URGENTE</span>
 </div>
 </div>
 <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-container-low transition-colors">
 <input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary-container" type="checkbox"/>
 <div class="flex-1">
 <p class="text-sm font-medium">Envio de balancete prévio para Síndico</p>
-<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant">NORMAL</span>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-surface-container-highest text-zinc-500">NORMAL</span>
 </div>
 </div>
 </div>
 </div>
 <!-- Card 4: BC Gestão -->
-<div class="bg-surface-container-lowest rounded-2xl p-6 transition-all hover:bg-surface-bright group border border-transparent hover:border-outline-variant/10">
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0px_12px_32px_rgba(25,28,30,0.04)] transition-all hover:bg-surface-bright group">
 <div class="flex justify-between items-start mb-6">
 <div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
-<span class="material-symbols-outlined text-amber-700">apartment</span>
+<div class="w-10 h-10 rounded-lg bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">apartment</span>
 </div>
 <div>
 <h3 class="font-bold text-lg text-on-surface">BC Gestão</h3>
-<span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-700 rounded">Foco Comercial</span>
+<span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-secondary-container text-on-secondary-container rounded-full">Foco Comercial</span>
 </div>
 </div>
 <div class="text-right">
 <span class="text-[10px] text-on-surface-variant font-bold block mb-1">RESPONSÁVEL</span>
 <div class="flex items-center gap-2">
 <span class="text-xs font-semibold">Maria</span>
-<div class="w-6 h-6 rounded-full bg-amber-200 border border-white"></div>
+<div class="w-6 h-6 rounded-full bg-primary-container flex items-center justify-center">
+<span class="text-[10px] font-bold text-on-primary-container">M</span>
+</div>
 </div>
 </div>
 </div>
@@ -346,51 +354,53 @@
 <input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary-container" type="checkbox"/>
 <div class="flex-1">
 <p class="text-sm font-medium">Baixa de arquivos de retorno bancário</p>
-<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container">ALTA</span>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container">ALTA</span>
 </div>
 </div>
 <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-container-low transition-colors">
 <input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary-container" type="checkbox"/>
 <div class="flex-1">
 <p class="text-sm font-medium">Verificação de duplicidade em boletos gerados</p>
-<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant">NORMAL</span>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-surface-container-highest text-zinc-500">NORMAL</span>
 </div>
 </div>
 </div>
 </div>
 <!-- Card 5: Atlântica (Full Width in Desktop Asymmetry) -->
-<div class="bg-surface-container-lowest rounded-2xl p-6 transition-all hover:bg-surface-bright group border border-transparent hover:border-outline-variant/10 xl:col-span-2">
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0px_12px_32px_rgba(25,28,30,0.04)] transition-all hover:bg-surface-bright group xl:col-span-2">
 <div class="flex justify-between items-start mb-6">
 <div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
-<span class="material-symbols-outlined text-red-700">domain</span>
+<div class="w-10 h-10 rounded-lg bg-error-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">domain</span>
 </div>
 <div>
 <h3 class="font-bold text-lg text-on-surface">Atlântica</h3>
-<span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-red-100 text-red-700 rounded">Crítico / Atendimento</span>
+<span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-error-container text-on-error-container rounded-full">Crítico / Atendimento</span>
 </div>
 </div>
 <div class="text-right">
 <span class="text-[10px] text-on-surface-variant font-bold block mb-1">RESPONSÁVEL</span>
 <div class="flex items-center gap-2">
 <span class="text-xs font-semibold">Ana</span>
-<div class="w-6 h-6 rounded-full bg-red-200 border border-white"></div>
+<div class="w-6 h-6 rounded-full bg-tertiary-container flex items-center justify-center">
+<span class="text-[10px] font-bold text-on-tertiary-container">A</span>
+</div>
 </div>
 </div>
 </div>
 <div class="grid md:grid-cols-2 gap-6">
-<div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-2xl border border-error-container/20">
+<div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-xl">
 <input class="w-6 h-6 rounded border-outline-variant text-primary focus:ring-primary-container" type="checkbox"/>
 <div class="flex-1">
 <p class="text-sm font-bold">Regularização de DARF em atraso - Urgente</p>
-<span class="text-[10px] font-black px-2 py-1 rounded bg-error text-on-error">MUITO URGENTE</span>
+<span class="text-[10px] font-bold px-2 py-1 rounded-full bg-error-container text-on-error-container">URGENTE</span>
 </div>
 </div>
-<div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-2xl">
+<div class="flex items-center gap-4 p-4 bg-surface-container-low rounded-xl">
 <input class="w-6 h-6 rounded border-outline-variant text-primary focus:ring-primary-container" type="checkbox"/>
 <div class="flex-1">
 <p class="text-sm font-bold">Atualização de fluxo de caixa projetado (Dez/23)</p>
-<span class="text-[10px] font-bold px-2 py-1 rounded bg-secondary-container text-on-secondary-container">ALTA</span>
+<span class="text-[10px] font-bold px-2 py-1 rounded-full bg-secondary-container text-on-secondary-container">ALTA</span>
 </div>
 </div>
 </div>
