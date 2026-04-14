@@ -34,6 +34,219 @@ async function loadClient(clientId) {
 
   renderClientHeader(client)
   renderClientContact(client)
+  wireEditButton(client, clientId)
+  wireNewCondoButton()
+}
+
+// ── Botão Editar Cliente ──────────────────────────────────────────────────────
+
+function wireEditButton(client, clientId) {
+  const btn = document.getElementById('btn-edit-client')
+  if (!btn) return
+
+  btn.addEventListener('click', () => openEditModal(client, clientId))
+}
+
+function openEditModal(client, clientId) {
+  // Remove modal anterior se existir
+  const existing = document.getElementById('edit-client-modal')
+  if (existing) existing.remove()
+
+  const overlay = document.createElement('div')
+  overlay.id = 'edit-client-modal'
+  overlay.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4'
+
+  overlay.innerHTML = `
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-lg">
+      <div class="flex items-center justify-between px-6 pt-6 pb-4 border-b border-surface-container/30">
+        <h2 class="text-base font-bold text-on-surface">Editar Cliente</h2>
+        <button id="edit-modal-close" class="text-zinc-400 hover:text-on-surface transition-colors">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <form id="edit-client-form" class="px-6 py-5 space-y-4">
+        <div>
+          <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1.5">Nome completo <span class="text-error">*</span></label>
+          <input
+            id="edit-nome"
+            type="text"
+            value="${escapeAttr(client.nome)}"
+            required
+            class="w-full border border-outline-variant rounded-lg px-3.5 py-2.5 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+          />
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1.5">Nome curto</label>
+          <input
+            id="edit-nome-curto"
+            type="text"
+            value="${escapeAttr(client.nome_curto)}"
+            class="w-full border border-outline-variant rounded-lg px-3.5 py-2.5 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+          />
+        </div>
+        <div class="pt-1">
+          <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-3">Contato</p>
+          <div class="space-y-3">
+            <div>
+              <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1.5">Nome do responsável</label>
+              <input
+                id="edit-contato-nome"
+                type="text"
+                value="${escapeAttr(client.contato_nome)}"
+                class="w-full border border-outline-variant rounded-lg px-3.5 py-2.5 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+              />
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1.5">E-mail</label>
+              <input
+                id="edit-contato-email"
+                type="email"
+                value="${escapeAttr(client.contato_email)}"
+                class="w-full border border-outline-variant rounded-lg px-3.5 py-2.5 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+              />
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1.5">Telefone</label>
+              <input
+                id="edit-contato-telefone"
+                type="text"
+                value="${escapeAttr(client.contato_telefone)}"
+                class="w-full border border-outline-variant rounded-lg px-3.5 py-2.5 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+              />
+            </div>
+          </div>
+        </div>
+        <div id="edit-modal-error" class="hidden text-xs text-error font-semibold"></div>
+        <div class="flex justify-end gap-3 pt-2">
+          <button type="button" id="edit-modal-cancel" class="px-5 py-2.5 text-sm font-semibold text-on-surface-variant rounded-lg hover:bg-surface-container transition-colors">
+            Cancelar
+          </button>
+          <button type="submit" id="edit-modal-save" class="flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-bold rounded-lg hover:opacity-90 transition-opacity">
+            <span class="material-symbols-outlined text-base">save</span>
+            Salvar alterações
+          </button>
+        </div>
+      </form>
+    </div>
+  `
+
+  document.body.appendChild(overlay)
+
+  // Fechar ao clicar no overlay (fora do card)
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.remove()
+  })
+  document.getElementById('edit-modal-close').addEventListener('click', () => overlay.remove())
+  document.getElementById('edit-modal-cancel').addEventListener('click', () => overlay.remove())
+
+  // Submit do form
+  document.getElementById('edit-client-form').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    await saveClientEdit(clientId, overlay)
+  })
+}
+
+async function saveClientEdit(clientId, overlay) {
+  const saveBtn = document.getElementById('edit-modal-save')
+  const errorEl = document.getElementById('edit-modal-error')
+
+  const nome = document.getElementById('edit-nome').value.trim()
+  const nomeCurto = document.getElementById('edit-nome-curto').value.trim()
+  const contatoNome = document.getElementById('edit-contato-nome').value.trim()
+  const contatoEmail = document.getElementById('edit-contato-email').value.trim()
+  const contatoTelefone = document.getElementById('edit-contato-telefone').value.trim()
+
+  if (!nome) {
+    errorEl.textContent = 'O nome completo é obrigatório.'
+    errorEl.classList.remove('hidden')
+    return
+  }
+  errorEl.classList.add('hidden')
+
+  // Estado de loading no botão
+  saveBtn.disabled = true
+  saveBtn.innerHTML = `<span class="material-symbols-outlined text-base animate-spin">progress_activity</span> Salvando...`
+
+  const { data: updated, error } = await supabase
+    .from('clients')
+    .update({
+      nome,
+      nome_curto: nomeCurto || null,
+      contato_nome: contatoNome || null,
+      contato_email: contatoEmail || null,
+      contato_telefone: contatoTelefone || null,
+    })
+    .eq('id', clientId)
+    .select()
+    .single()
+
+  if (error) {
+    saveBtn.disabled = false
+    saveBtn.innerHTML = `<span class="material-symbols-outlined text-base">save</span> Salvar alterações`
+    errorEl.textContent = 'Erro ao salvar. Tente novamente.'
+    errorEl.classList.remove('hidden')
+    return
+  }
+
+  overlay.remove()
+  renderClientHeader(updated)
+  renderClientContact(updated)
+  showToast('Cliente atualizado com sucesso!', 'success')
+}
+
+// ── Botão Novo Condomínio ─────────────────────────────────────────────────────
+
+function wireNewCondoButton() {
+  const btn = document.getElementById('btn-new-condo')
+  if (!btn) return
+
+  btn.addEventListener('click', () => {
+    showToast('Funcionalidade em desenvolvimento. Em breve disponível.', 'info')
+  })
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+
+function showToast(message, type = 'success') {
+  const existing = document.getElementById('client-detail-toast')
+  if (existing) existing.remove()
+
+  const colorMap = {
+    success: 'bg-tertiary-container text-on-tertiary-container',
+    error: 'bg-error-container text-on-error-container',
+    info: 'bg-tertiary-container text-on-tertiary-container',
+  }
+  const iconMap = {
+    success: 'check_circle',
+    error: 'error',
+    info: 'info',
+  }
+
+  const toast = document.createElement('div')
+  toast.id = 'client-detail-toast'
+  toast.className = `fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-4 rounded-xl shadow-lg text-sm font-semibold ${colorMap[type] || colorMap.success} transition-all`
+  toast.innerHTML = `
+    <span class="material-symbols-outlined text-base">${iconMap[type] || 'check_circle'}</span>
+    ${escapeHtml(message)}
+  `
+  document.body.appendChild(toast)
+
+  setTimeout(() => {
+    toast.style.opacity = '0'
+    setTimeout(() => toast.remove(), 300)
+  }, 3500)
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function escapeAttr(str) {
+  if (!str) return ''
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
 }
 
 function renderClientHeader(client) {
