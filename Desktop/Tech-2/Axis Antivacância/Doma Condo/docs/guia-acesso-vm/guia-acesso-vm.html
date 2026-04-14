@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Guia — Acesso à VM do Doma Condo</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-fixed": "#ffdf94",
+            "on-background": "#191c1e",
+            "surface-dim": "#d9dadc",
+            "surface-tint": "#765b00",
+            "on-tertiary-container": "#005b14",
+            "on-surface": "#191c1e",
+            "primary-fixed-dim": "#f0c038",
+            "on-surface-variant": "#4e4634",
+            "primary-container": "#FAC826",
+            "on-tertiary": "#ffffff",
+            "tertiary-fixed-dim": "#88d982",
+            "secondary": "#705c29",
+            "outline": "#807662",
+            "on-error-container": "#93000a",
+            "on-error": "#ffffff",
+            "error-container": "#ffdad6",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-fixed": "#002204",
+            "on-secondary-fixed": "#251a00",
+            "on-primary-fixed": "#251a00",
+            "surface-container": "#edeef0",
+            "surface-bright": "#f8f9fb",
+            "error": "#ba1a1a",
+            "secondary-fixed-dim": "#dec487",
+            "on-primary-fixed-variant": "#594400",
+            "outline-variant": "#d1c5ae",
+            "secondary-container": "#fbe0a0",
+            "on-secondary": "#ffffff",
+            "on-secondary-fixed-variant": "#564514",
+            "tertiary-container": "#81d27c",
+            "inverse-on-surface": "#f0f1f3",
+            "surface": "#f8f9fb",
+            "surface-container-low": "#f2f4f6",
+            "background": "#f8f9fb",
+            "inverse-primary": "#f0c038",
+            "inverse-surface": "#2e3132",
+            "on-tertiary-fixed-variant": "#005312",
+            "tertiary-fixed": "#a3f69c",
+            "surface-variant": "#e1e2e4",
+            "tertiary": "#1b6d24",
+            "primary": "#765b00",
+            "surface-container-highest": "#e1e2e4",
+            "surface-container-high": "#e7e8ea",
+            "on-primary-container": "#614a00",
+            "on-primary": "#ffffff",
+            "on-secondary-container": "#76622f",
+            "secondary-fixed": "#fbe0a0"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "fontFamily": {
+            "headline": ["Raleway"],
+            "body": ["Raleway"],
+            "label": ["Raleway"]
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body { font-family: 'Raleway', sans-serif; background-color: #f8f9fb; }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+
+  <div class="max-w-3xl mx-auto px-6 py-12">
+
+    <!-- LOGO + HEADER -->
+    <div class="mb-10">
+      <p class="text-[10px] font-bold tracking-[0.2em] text-primary uppercase mb-2 block">DOMA CONDO — ASSESSORIA E CONSULTORIA</p>
+      <h1 class="text-4xl font-semibold text-primary tracking-tight mb-3">Acesso à VM</h1>
+      <p class="text-sm text-on-surface-variant leading-relaxed">
+        Passo a passo para liberar o acesso da equipe de desenvolvimento à máquina virtual no Google Cloud. Tempo estimado: <strong class="text-primary">5 minutos.</strong>
+      </p>
+    </div>
+
+    <!-- INFO CARD -->
+    <div class="bg-secondary-container rounded-xl p-5 mb-8 flex gap-4 items-start shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+      <span class="material-symbols-outlined text-on-secondary-container mt-0.5" data-icon="info">info</span>
+      <div>
+        <p class="text-sm font-semibold text-on-secondary-container mb-1">O que você vai fazer</p>
+        <p class="text-sm text-on-secondary-container leading-relaxed">
+          Dar permissão de acesso SSH à VM <code class="bg-surface-container-lowest/60 px-1.5 py-0.5 rounded text-xs font-bold">domacondo-axis-1</code> para o e-mail
+          <span class="font-bold">frsolucoes.diretoria@gmail.com</span>.
+          Esse acesso é necessário para instalar os sistemas do Doma Condo no servidor.
+        </p>
+      </div>
+    </div>
+
+    <!-- PASSO 1 -->
+    <div class="bg-surface-container-lowest rounded-xl p-8 mb-6 shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+      <div class="flex items-center gap-4 mb-5">
+        <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm flex-shrink-0">1</div>
+        <h3 class="text-xl font-semibold text-primary">Acesse o Google Cloud Console</h3>
+      </div>
+      <p class="text-sm text-on-surface-variant leading-relaxed mb-5">
+        Abra o seu navegador e clique no link abaixo. Ele já abre direto na página certa do seu projeto.
+        Faça login com a sua conta Google caso seja solicitado.
+      </p>
+
+      <!-- Link destaque -->
+      <div class="bg-surface-container-low border border-outline-variant rounded-xl p-4 mb-5">
+        <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Link de acesso direto</p>
+        <a href="https://console.cloud.google.com/iam-admin/iam?project=project-3d0a6e55-019e-4072-b1b"
+           target="_blank"
+           class="text-sm font-semibold text-primary hover:underline break-all">
+          console.cloud.google.com/iam-admin/iam?project=project-3d0a6e55-019e-4072-b1b
+        </a>
+      </div>
+
+      <!-- Mockup browser -->
+      <div class="border border-outline-variant rounded-xl overflow-hidden">
+        <div class="bg-surface-container-high px-4 py-2.5 flex items-center gap-3 border-b border-outline-variant">
+          <div class="flex gap-1.5">
+            <div class="w-2.5 h-2.5 rounded-full bg-error"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-secondary-fixed-dim"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-tertiary-container"></div>
+          </div>
+          <div class="bg-surface-container-lowest rounded-full px-4 py-1 text-xs text-on-surface-variant font-medium flex-1">
+            🔒 console.cloud.google.com
+          </div>
+        </div>
+        <div class="bg-[#202124] px-5 py-3 flex items-center gap-4">
+          <span class="text-white font-bold text-sm">Google Cloud</span>
+          <span class="bg-white/10 text-white text-xs px-3 py-1 rounded">📁 Doma Condo ▾</span>
+        </div>
+        <div class="bg-surface-container-low px-6 py-5">
+          <p class="text-xs text-zinc-400 uppercase tracking-widest font-bold mb-1">IAM e Administrador</p>
+          <p class="text-lg font-semibold text-on-surface">Permissões</p>
+          <p class="text-xs text-zinc-400 mt-1">Gerencie as permissões dos membros do seu projeto</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASSO 2 -->
+    <div class="bg-surface-container-lowest rounded-xl p-8 mb-6 shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+      <div class="flex items-center gap-4 mb-5">
+        <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm flex-shrink-0">2</div>
+        <h3 class="text-xl font-semibold text-primary">Clique em "Conceder acesso"</h3>
+      </div>
+      <p class="text-sm text-on-surface-variant leading-relaxed mb-5">
+        Na página de IAM, localize e clique no botão <strong class="text-on-surface">"Conceder acesso"</strong> — fica no topo da lista de membros, à esquerda.
+      </p>
+
+      <!-- Mockup botão -->
+      <div class="border border-outline-variant rounded-xl overflow-hidden">
+        <div class="bg-surface-container-high px-4 py-2.5 flex items-center gap-3 border-b border-outline-variant">
+          <div class="flex gap-1.5">
+            <div class="w-2.5 h-2.5 rounded-full bg-error"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-secondary-fixed-dim"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-tertiary-container"></div>
+          </div>
+          <div class="bg-surface-container-lowest rounded-full px-4 py-1 text-xs text-on-surface-variant font-medium flex-1">
+            🔒 console.cloud.google.com/iam-admin/iam
+          </div>
+        </div>
+        <div class="p-6 bg-surface-container-low">
+          <p class="text-lg font-semibold text-on-surface mb-4">IAM — Permissões</p>
+          <div class="flex gap-3 mb-5">
+            <button class="bg-[#FAC826] text-[#765b00] font-bold py-2 px-5 rounded-lg text-sm flex items-center gap-2 ring-4 ring-[#FAC826]/40">
+              <span class="material-symbols-outlined text-base" data-icon="add">add</span>
+              Conceder acesso
+            </button>
+            <button class="bg-surface-container-lowest border border-outline-variant text-on-surface-variant font-medium py-2 px-5 rounded-lg text-sm">
+              Remover acesso
+            </button>
+          </div>
+          <div class="bg-surface-container-lowest rounded-lg border border-outline-variant overflow-hidden">
+            <div class="px-4 py-3 bg-surface-container border-b border-outline-variant">
+              <div class="flex gap-12 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
+                <span>Principal</span>
+                <span>Função</span>
+              </div>
+            </div>
+            <div class="px-4 py-3 text-sm text-on-surface-variant flex gap-12">
+              <span>jessica@exemplo.com</span>
+              <span>Proprietário</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 flex items-start gap-2 bg-secondary-container rounded-lg p-3">
+        <span class="material-symbols-outlined text-on-secondary-container text-base mt-0.5" data-icon="touch_app">touch_app</span>
+        <p class="text-xs text-on-secondary-container font-medium">Clique no botão dourado <strong>"Conceder acesso"</strong> destacado na imagem acima.</p>
+      </div>
+    </div>
+
+    <!-- PASSO 3 -->
+    <div class="bg-surface-container-lowest rounded-xl p-8 mb-6 shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+      <div class="flex items-center gap-4 mb-5">
+        <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm flex-shrink-0">3</div>
+        <h3 class="text-xl font-semibold text-primary">Cole o e-mail no campo "Novos principais"</h3>
+      </div>
+      <p class="text-sm text-on-surface-variant leading-relaxed mb-5">
+        Uma janela vai abrir no lado direito da tela. No campo <strong class="text-on-surface">"Novos principais"</strong>, cole exatamente o e-mail abaixo:
+      </p>
+
+      <!-- Email destaque -->
+      <div class="bg-surface-container-low border-2 border-[#FAC826] rounded-xl p-4 mb-5 flex items-center gap-3">
+        <span class="material-symbols-outlined text-primary" data-icon="mail">mail</span>
+        <div>
+          <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-0.5">Copie este e-mail</p>
+          <p class="text-base font-bold text-primary">frsolucoes.diretoria@gmail.com</p>
+        </div>
+      </div>
+
+      <!-- Mockup painel lateral -->
+      <div class="border border-outline-variant rounded-xl overflow-hidden">
+        <div class="bg-surface-container-high px-4 py-2.5 flex items-center gap-3 border-b border-outline-variant">
+          <div class="flex gap-1.5">
+            <div class="w-2.5 h-2.5 rounded-full bg-error"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-secondary-fixed-dim"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-tertiary-container"></div>
+          </div>
+          <div class="bg-surface-container-lowest rounded-full px-4 py-1 text-xs text-on-surface-variant font-medium flex-1">
+            🔒 console.cloud.google.com/iam-admin/iam
+          </div>
+        </div>
+        <div class="p-6 bg-surface-container-low">
+          <p class="text-base font-semibold text-on-surface mb-5">Conceder acesso ao "Doma Condo"</p>
+          <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Novos principais *</p>
+          <div class="border-2 border-primary rounded-lg px-3 py-2.5 bg-surface-container-lowest mb-1 flex items-center gap-2">
+            <p class="text-sm font-semibold text-primary flex-1">frsolucoes.diretoria@gmail.com</p>
+            <span class="material-symbols-outlined text-tertiary text-sm" data-icon="check_circle">check_circle</span>
+          </div>
+          <p class="text-xs text-tertiary font-semibold mb-5 flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm" data-icon="check">check</span>
+            Conta encontrada
+          </p>
+          <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Atribuir função</p>
+          <div class="border border-outline-variant rounded-lg px-3 py-2.5 bg-surface-container-lowest text-sm text-zinc-400 italic">
+            Selecione uma função...
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 flex items-start gap-2 bg-secondary-container rounded-lg p-3">
+        <span class="material-symbols-outlined text-on-secondary-container text-base mt-0.5" data-icon="content_paste">content_paste</span>
+        <p class="text-xs text-on-secondary-container font-medium">Aguarde aparecer a mensagem <strong>"Conta encontrada"</strong> em verde antes de continuar.</p>
+      </div>
+    </div>
+
+    <!-- PASSO 4 -->
+    <div class="bg-surface-container-lowest rounded-xl p-8 mb-6 shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+      <div class="flex items-center gap-4 mb-5">
+        <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm flex-shrink-0">4</div>
+        <h3 class="text-xl font-semibold text-primary">Adicione as duas funções (permissões)</h3>
+      </div>
+      <p class="text-sm text-on-surface-variant leading-relaxed mb-5">
+        No campo <strong class="text-on-surface">"Atribuir função"</strong>, clique e busque as duas funções abaixo. Adicione as duas.
+      </p>
+
+      <!-- Funções -->
+      <div class="grid grid-cols-2 gap-4 mb-5">
+        <div class="bg-surface-container-low border-2 border-[#FAC826] rounded-xl p-4">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-primary text-base" data-icon="key">key</span>
+            <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Função 1</p>
+          </div>
+          <p class="text-sm font-bold text-primary">Compute OS Login</p>
+          <p class="text-xs text-zinc-400 mt-1">Permite acesso SSH à máquina virtual</p>
+        </div>
+        <div class="bg-surface-container-low border-2 border-[#FAC826] rounded-xl p-4">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-primary text-base" data-icon="visibility">visibility</span>
+            <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Função 2</p>
+          </div>
+          <p class="text-sm font-bold text-primary">Viewer (Leitor)</p>
+          <p class="text-xs text-zinc-400 mt-1">Permite visualizar os recursos do projeto</p>
+        </div>
+      </div>
+
+      <!-- Como adicionar -->
+      <div class="bg-surface-container-low rounded-xl p-5 mb-5">
+        <p class="text-sm font-semibold text-on-surface mb-3">Como adicionar as duas funções:</p>
+        <ol class="space-y-2">
+          <li class="flex gap-3 text-sm text-on-surface-variant">
+            <span class="w-5 h-5 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold flex-shrink-0 mt-0.5">1</span>
+            <span>Clique em <strong class="text-on-surface">"Selecione uma função"</strong> → no campo de busca, digite <strong class="text-primary">Compute OS Login</strong> → clique para selecionar</span>
+          </li>
+          <li class="flex gap-3 text-sm text-on-surface-variant">
+            <span class="w-5 h-5 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold flex-shrink-0 mt-0.5">2</span>
+            <span>Clique em <strong class="text-on-surface">"+ Adicionar outra função"</strong> (link azul que aparece logo abaixo)</span>
+          </li>
+          <li class="flex gap-3 text-sm text-on-surface-variant">
+            <span class="w-5 h-5 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold flex-shrink-0 mt-0.5">3</span>
+            <span>No novo campo, busque <strong class="text-primary">Viewer</strong> → clique para selecionar</span>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Mockup com funções selecionadas -->
+      <div class="border border-outline-variant rounded-xl overflow-hidden">
+        <div class="bg-surface-container-high px-4 py-2.5 border-b border-outline-variant">
+          <p class="text-xs text-zinc-400 font-medium">Aparência após selecionar as duas funções:</p>
+        </div>
+        <div class="p-5 bg-surface-container-low">
+          <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Funções atribuídas</p>
+          <div class="flex gap-2 flex-wrap">
+            <span class="px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs" data-icon="check">check</span>
+              Compute OS Login
+            </span>
+            <span class="px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs" data-icon="check">check</span>
+              Viewer
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASSO 5 -->
+    <div class="bg-surface-container-lowest rounded-xl p-8 mb-6 shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+      <div class="flex items-center gap-4 mb-5">
+        <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm flex-shrink-0">5</div>
+        <h3 class="text-xl font-semibold text-primary">Clique em "Salvar"</h3>
+      </div>
+      <p class="text-sm text-on-surface-variant leading-relaxed mb-5">
+        Após adicionar o e-mail e as duas funções, clique no botão <strong class="text-on-surface">"Salvar"</strong> no final da janela. Aguarde alguns segundos — o novo membro aparecerá na lista.
+      </p>
+
+      <!-- Mockup botão salvar -->
+      <div class="border border-outline-variant rounded-xl overflow-hidden">
+        <div class="p-5 bg-surface-container-low">
+          <p class="text-base font-semibold text-on-surface mb-4">Conceder acesso ao "Doma Condo"</p>
+          <div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-3 mb-3">
+            <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Principal</p>
+            <p class="text-sm font-semibold text-primary">frsolucoes.diretoria@gmail.com</p>
+          </div>
+          <div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-3 mb-5">
+            <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Funções</p>
+            <div class="flex gap-2 flex-wrap">
+              <span class="px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold uppercase tracking-wider">Compute OS Login</span>
+              <span class="px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold uppercase tracking-wider">Viewer</span>
+            </div>
+          </div>
+          <div class="flex justify-end gap-3">
+            <button class="border border-outline-variant text-on-surface-variant font-medium py-2 px-5 rounded-lg text-sm">Cancelar</button>
+            <button class="bg-[#FAC826] text-[#765b00] font-bold py-2 px-6 rounded-lg text-sm flex items-center gap-2 ring-4 ring-[#FAC826]/40">
+              <span class="material-symbols-outlined text-base" data-icon="save">save</span>
+              Salvar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 flex items-start gap-2 bg-secondary-container rounded-lg p-3">
+        <span class="material-symbols-outlined text-on-secondary-container text-base mt-0.5" data-icon="touch_app">touch_app</span>
+        <p class="text-xs text-on-secondary-container font-medium">Clique no botão dourado <strong>"Salvar"</strong> no canto inferior direito da janela.</p>
+      </div>
+    </div>
+
+    <!-- SUCESSO -->
+    <div class="bg-tertiary-container rounded-xl p-6 mb-10 flex gap-4 items-start shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+      <span class="material-symbols-outlined text-on-tertiary-container text-3xl mt-0.5" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+      <div>
+        <p class="text-base font-bold text-on-tertiary-container mb-1">Pronto! Após salvar, me avise.</p>
+        <p class="text-sm text-on-tertiary-container leading-relaxed">
+          Assim que você salvar, a equipe de desenvolvimento já consegue se conectar à VM e iniciar a instalação dos sistemas do Doma Condo.
+          O acesso costuma ativar em menos de <strong>1 minuto</strong>.
+        </p>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="text-center">
+      <p class="text-[10px] font-bold tracking-[0.2em] text-zinc-400 uppercase">Doma Condo — Assessoria e Consultoria · 2026</p>
+    </div>
+
+  </div>
+</body>
+</html>
