@@ -1,6 +1,8 @@
 # Sessão: Commit dos Arquivos do Protótipo Frontend
 
 **Data:** 2026-04-12
+**Relacionado:** [[2026-04-12-prototipo-frontend-21-paginas]] · [[INDEX]]
+
 **Objetivo:** Garantir que todos os arquivos criados na sessão anterior (protótipo 21 páginas) fossem commitados no git, já que a sessão anterior foi encerrada sem commit.
 
 ---

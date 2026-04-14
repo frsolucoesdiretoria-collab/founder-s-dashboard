@@ -1,5 +1,7 @@
 # Doma Condo — Brand Guide & Constituição Visual do App
 
+**Relacionado:** [[DOMA-CONDO-FRONTEND-BIBLE]] · [[2026-04-13-doma-condo-frontend-standardization-design]] · [[problemas-frontend-domacondo]] · [[INDEX]]
+
 > **FONTE ÚNICA DE VERDADE.** Este documento define as leis invioláveis de identidade visual, estrutura HTML e padrões de código do app Doma Condo.
 > O arquivo `portal-overview.html` é o **padrão ouro** de referência visual. Toda página nova ou editada deve ser visualmente idêntica ao shell desse arquivo.
 

@@ -1,0 +1,18 @@
+{
+  "name": "doma-gather-bot",
+  "version": "1.0.0",
+  "description": "Bot Gather para coleta de dados Doma Condo",
+  "main": "gather-bot.js",
+  "scripts": {
+    "start": "node gather-bot.js",
+    "dev": "node --watch gather-bot.js"
+  },
+  "dependencies": {
+    "@gathertown/gather-game-client": "^0.3.0",
+    "express": "^4.18.2",
+    "axios": "^1.6.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

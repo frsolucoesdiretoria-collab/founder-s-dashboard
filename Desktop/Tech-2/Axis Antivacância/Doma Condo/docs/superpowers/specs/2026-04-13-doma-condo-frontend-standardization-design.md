@@ -3,6 +3,8 @@
 **Status:** Approved
 **Reference page:** `site/public/portal-overview.html`
 
+**Relacionado:** [[brand-guide-domacondo]] · [[DOMA-CONDO-FRONTEND-BIBLE]] · [[problemas-frontend-domacondo]] · [[INDEX]]
+
 ---
 
 ## Goal

@@ -1,5 +1,7 @@
 ## SEGUNDO CÉREBRO — Vault Obsidian
 
+**Relacionado:** [[INDEX]] · [[brand-guide-domacondo]] · [[escopo-de-entrega]] · [[2026-04-14-backend-architecture]]
+
 **Vault:** `/Users/fabricio/Documents/Obsidian Vault/`
 **Pasta deste projeto:** `Projetos/Doma Condo/`
 **Índice:** `Projetos/Doma Condo/INDEX.md`

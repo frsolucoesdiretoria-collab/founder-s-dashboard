@@ -1,6 +1,8 @@
 # Sessão: Protótipo Frontend Completo — 21 Páginas Doma Condo
 
 **Data:** 2026-04-12
+**Relacionado:** [[brand-guide-domacondo]] · [[DOMA-CONDO-FRONTEND-BIBLE]] · [[2026-04-12-commit-arquivos-prototipo]] · [[2026-04-13-doma-condo-frontend-standardization-design]] · [[INDEX]]
+
 **Objetivo:** Criar todas as páginas de frontend descritas na DOMA-CONDO-FRONTEND-BIBLE.md usando o Stitch (ferramenta de design de UI do Google), para apresentação à cliente Jéssica na segunda-feira.
 
 ---
