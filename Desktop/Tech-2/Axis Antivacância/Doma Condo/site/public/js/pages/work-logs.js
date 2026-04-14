@@ -430,5 +430,3 @@ async function openNewActivityModal(tbody) {
 }
 
 init()
-
-init()

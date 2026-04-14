@@ -353,5 +353,3 @@ function openEditModal(id, nomeAtual, tbody) {
 }
 
 init()
-
-init()

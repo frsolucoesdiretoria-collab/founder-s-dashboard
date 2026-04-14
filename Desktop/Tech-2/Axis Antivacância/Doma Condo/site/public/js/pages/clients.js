@@ -123,13 +123,8 @@ function escapeHtml(str) {
 // ─── Novo Cliente ─────────────────────────────────────────────────────────────
 
 function wireNewClientButton() {
-  const btns = document.querySelectorAll('button')
-  for (const btn of btns) {
-    if (btn.textContent.includes('Novo Cliente')) {
-      btn.addEventListener('click', openNewClientModal)
-      break
-    }
-  }
+  const btn = document.getElementById('btn-new-client')
+  if (btn) btn.addEventListener('click', openNewClientModal)
 }
 
 function openNewClientModal() {
