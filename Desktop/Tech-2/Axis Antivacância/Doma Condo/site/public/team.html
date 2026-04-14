@@ -193,11 +193,16 @@
 </div>
 </div>
 </div>
-<button class="mt-8 w-full py-3 bg-primary text-white rounded-lg font-bold text-xs hover:scale-[1.02] active:scale-[0.98] transition-all uppercase tracking-widest">
+<button id="btn-ver-calendario" class="mt-8 w-full py-3 bg-primary text-white rounded-lg font-bold text-xs hover:scale-[1.02] active:scale-[0.98] transition-all uppercase tracking-widest">
                     Ver Calendário Completo
                 </button>
 </div>
 </section>
 </main>
 <script type="module" src="js/pages/team.js"></script>
+<script>
+  document.getElementById('btn-ver-calendario').addEventListener('click', function () {
+    window.location.href = 'work-logs.html'
+  })
+</script>
 </body></html>

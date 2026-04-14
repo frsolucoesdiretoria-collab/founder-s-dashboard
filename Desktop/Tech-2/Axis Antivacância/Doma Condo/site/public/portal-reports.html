@@ -353,4 +353,68 @@
 <span class="material-symbols-outlined text-3xl" data-icon="chat_bubble" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
 </button>
 <script type="module" src="js/pages/portal-reports.js"></script>
+<script>
+  // ── Toast helper ──────────────────────────────────────────────────────────
+  function showPortalReportsToast(message, type) {
+    var existing = document.getElementById('portal-reports-toast')
+    if (existing) existing.remove()
+    var colorMap = {
+      success: 'background:#81d27c;color:#005b14',
+      error: 'background:#ffdad6;color:#93000a',
+      info: 'background:#fbe0a0;color:#76622f'
+    }
+    var iconMap = { success: 'check_circle', error: 'error', info: 'info' }
+    var t = type || 'info'
+    var toast = document.createElement('div')
+    toast.id = 'portal-reports-toast'
+    toast.setAttribute('style',
+      'position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;align-items:center;' +
+      'gap:0.75rem;padding:1rem 1.25rem;border-radius:0.75rem;box-shadow:0 8px 32px rgba(25,28,30,.12);' +
+      'font-size:0.875rem;font-weight:600;font-family:Raleway,sans-serif;' + (colorMap[t] || colorMap.info))
+    toast.innerHTML =
+      '<span class="material-symbols-outlined" style="font-size:1.1rem">' + (iconMap[t] || 'info') + '</span>' +
+      message
+    document.body.appendChild(toast)
+    setTimeout(function () {
+      toast.style.transition = 'opacity 0.3s'
+      toast.style.opacity = '0'
+      setTimeout(function () { toast.remove() }, 300)
+    }, 3500)
+  }
+
+  // ── Wire broken buttons ───────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', function () {
+    var mainEl = document.querySelector('main')
+    if (!mainEl) return
+
+    var buttons = mainEl.querySelectorAll('button')
+    buttons.forEach(function (btn) {
+      // Skip buttons that already have a real onclick handler
+      if (btn.getAttribute('onclick')) return
+      // Skip buttons inside <a> tags with valid href navigation
+      var parentA = btn.closest('a[href]')
+      if (parentA && parentA.getAttribute('href') && parentA.getAttribute('href') !== '#') return
+
+      btn.addEventListener('click', function (e) {
+        e.preventDefault()
+        // Download PDF buttons get a more specific message
+        var icon = btn.querySelector('.material-symbols-outlined')
+        if (icon && icon.textContent.trim() === 'download') {
+          showPortalReportsToast('Download de PDF em desenvolvimento. Em breve disponível.', 'info')
+        } else {
+          showPortalReportsToast('Módulo em desenvolvimento. Em breve disponível.', 'info')
+        }
+      })
+    })
+
+    // Wire pagination chevron buttons (disabled ones already have disabled attr)
+    // Wire the FAB button (outside main)
+    var fab = document.querySelector('button.fixed.bottom-10.right-10')
+    if (fab) {
+      fab.addEventListener('click', function () {
+        showPortalReportsToast('Chat com concierge em desenvolvimento. Em breve disponível.', 'info')
+      })
+    }
+  })
+</script>
 </body></html>
