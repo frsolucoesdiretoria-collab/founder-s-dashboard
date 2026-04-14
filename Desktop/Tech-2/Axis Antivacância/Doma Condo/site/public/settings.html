@@ -162,21 +162,21 @@
 <div class="col-span-12 lg:col-span-8 space-y-8">
 <!-- Horizontal Tabs -->
 <div class="flex border-b border-outline-variant/20 mb-8">
-<button class="px-8 py-4 text-sm font-semibold text-primary border-b-2 border-primary">
+<button data-tab="organizacao" class="px-8 py-4 text-sm font-semibold text-primary border-b-2 border-primary">
                             Organização
 </button>
-<button class="px-8 py-4 text-sm font-medium text-zinc-500 hover:text-on-surface transition-colors">
+<button data-tab="whatsapp" class="px-8 py-4 text-sm font-medium text-zinc-500 hover:text-on-surface transition-colors">
                             WhatsApp
                         </button>
-<button class="px-8 py-4 text-sm font-medium text-zinc-500 hover:text-on-surface transition-colors">
+<button data-tab="google-drive" class="px-8 py-4 text-sm font-medium text-zinc-500 hover:text-on-surface transition-colors">
                             Google Drive
                         </button>
-<button class="px-8 py-4 text-sm font-medium text-zinc-500 hover:text-on-surface transition-colors">
+<button data-tab="usuarios" class="px-8 py-4 text-sm font-medium text-zinc-500 hover:text-on-surface transition-colors">
                             Usuários
                         </button>
 </div>
 <!-- Organization Form Card -->
-<section class="bg-surface-container-lowest rounded-xl p-8 shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+<section id="tab-panel-organizacao" class="bg-surface-container-lowest rounded-xl p-8 shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
 <div class="grid grid-cols-2 gap-x-8 gap-y-6">
 <div class="col-span-2 md:col-span-1">
 <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">Nome da Empresa</label>
@@ -216,6 +216,27 @@
 </button>
 </div>
 </section>
+<section id="tab-panel-whatsapp" class="hidden bg-surface-container-lowest rounded-xl p-8 shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+  <div class="flex flex-col items-center justify-center py-16 text-on-surface-variant">
+    <span class="material-symbols-outlined text-5xl mb-4 opacity-40">whatsapp</span>
+    <p class="text-base font-semibold text-on-surface">Integração WhatsApp</p>
+    <p class="text-sm mt-2 opacity-70">Em desenvolvimento. Em breve disponível.</p>
+  </div>
+</section>
+<section id="tab-panel-google-drive" class="hidden bg-surface-container-lowest rounded-xl p-8 shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+  <div class="flex flex-col items-center justify-center py-16 text-on-surface-variant">
+    <span class="material-symbols-outlined text-5xl mb-4 opacity-40">folder</span>
+    <p class="text-base font-semibold text-on-surface">Google Drive</p>
+    <p class="text-sm mt-2 opacity-70">Em desenvolvimento. Em breve disponível.</p>
+  </div>
+</section>
+<section id="tab-panel-usuarios" class="hidden bg-surface-container-lowest rounded-xl p-8 shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+  <div class="flex flex-col items-center justify-center py-16 text-on-surface-variant">
+    <span class="material-symbols-outlined text-5xl mb-4 opacity-40">manage_accounts</span>
+    <p class="text-base font-semibold text-on-surface">Gestão de Usuários</p>
+    <p class="text-sm mt-2 opacity-70">Em desenvolvimento. Em breve disponível.</p>
+  </div>
+</section>
 </div>
 <!-- Right Column: Sidebar Info Cards -->
 <div class="col-span-12 lg:col-span-4 space-y-8">
@@ -238,7 +259,7 @@
 <span class="text-on-surface font-bold">12/10/2026</span>
 </div>
 </div>
-<button class="w-full mt-6 py-3 text-on-surface font-bold text-sm border border-outline-variant rounded-lg hover:bg-surface-container-low transition-colors">
+<button id="btn-manage-plan" class="w-full mt-6 py-3 text-on-surface font-bold text-sm border border-outline-variant rounded-lg hover:bg-surface-container-low transition-colors">
                             Gerenciar Assinatura
                         </button>
 </section>
@@ -271,7 +292,7 @@
 <p class="text-xs text-on-surface-variant">Notificar transações críticas.</p>
 </div>
 <label class="relative inline-flex items-center cursor-pointer">
-<input checked="" class="sr-only peer" type="checkbox"/>
+<input id="toggle-email" checked="" class="sr-only peer" type="checkbox"/>
 <div class="w-11 h-6 bg-surface-container-high rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
 </label>
 </div>
@@ -282,7 +303,7 @@
 <p class="text-xs text-on-surface-variant">Alertas em tempo real no app.</p>
 </div>
 <label class="relative inline-flex items-center cursor-pointer">
-<input checked="" class="sr-only peer" type="checkbox"/>
+<input id="toggle-push" checked="" class="sr-only peer" type="checkbox"/>
 <div class="w-11 h-6 bg-surface-container-high rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
 </label>
 </div>
@@ -293,7 +314,7 @@
 <p class="text-xs text-on-surface-variant">Resumo financeiro matinal.</p>
 </div>
 <label class="relative inline-flex items-center cursor-pointer">
-<input class="sr-only peer" type="checkbox"/>
+<input id="toggle-daily" class="sr-only peer" type="checkbox"/>
 <div class="w-11 h-6 bg-surface-container-high rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
 </label>
 </div>
@@ -310,5 +331,5 @@
 </div>
 </div>
 </main>
-<script type="module" src="js/pages/settings.js"></script>
+<script type="module" src="js/pages/settings.js?v=2"></script>
 </body></html>

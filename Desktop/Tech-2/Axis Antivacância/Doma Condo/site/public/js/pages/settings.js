@@ -9,6 +9,9 @@ async function init() {
     loadTeamMembers(),
   ])
   bindSaveButton()
+  initTabs()
+  initNotificationToggles()
+  bindManagePlanButton()
 }
 
 async function loadOrganization() {
@@ -166,6 +169,55 @@ function escapeHtml(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
+}
+
+function initTabs() {
+  const tabBtns = document.querySelectorAll('[data-tab]')
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab
+      // Update button styles
+      tabBtns.forEach(b => {
+        b.className = b === btn
+          ? 'px-8 py-4 text-sm font-semibold text-primary border-b-2 border-primary'
+          : 'px-8 py-4 text-sm font-medium text-zinc-500 hover:text-on-surface transition-colors'
+      })
+      // Show/hide panels
+      document.querySelectorAll('[id^="tab-panel-"]').forEach(panel => {
+        panel.classList.toggle('hidden', panel.id !== `tab-panel-${tab}`)
+      })
+    })
+  })
+}
+
+function initNotificationToggles() {
+  const toggles = [
+    { id: 'toggle-email', key: 'notif_email' },
+    { id: 'toggle-push',  key: 'notif_push' },
+    { id: 'toggle-daily', key: 'notif_daily' },
+  ]
+
+  toggles.forEach(({ id, key }) => {
+    const el = document.getElementById(id)
+    if (!el) return
+
+    const stored = localStorage.getItem(key)
+    if (stored !== null) {
+      el.checked = stored === 'true'
+    }
+
+    el.addEventListener('change', () => {
+      localStorage.setItem(key, String(el.checked))
+    })
+  })
+}
+
+function bindManagePlanButton() {
+  const btn = document.getElementById('btn-manage-plan')
+  if (!btn) return
+  btn.addEventListener('click', () => {
+    showToast('Gerenciamento de assinatura em desenvolvimento. Em breve disponível.', 'success')
+  })
 }
 
 init()
