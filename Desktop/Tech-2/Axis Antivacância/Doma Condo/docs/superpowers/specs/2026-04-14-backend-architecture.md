@@ -3,908 +3,567 @@
 **Data:** 2026-04-14
 **Status:** Planejamento aprovado para implementação
 **Projeto:** Doma Condo — BPO Financeiro para Administradoras de Condomínios
-**Relacionado:** [[2026-04-12-agente-whatsapp-design]], [[2026-04-13-doma-condo-frontend-standardization-design]]
+**Relacionado:** [[2026-04-13-doma-condo-frontend-standardization-design]], [[2026-04-14-database-schema]], [[2026-04-14-api-integrations]]
 
 ---
 
 ## 1. Visão Geral da Arquitetura
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                          GOOGLE CLOUD VM                                    │
-│                      (domacondo-axis-1 · 146.148.107.228)                   │
-│                                                                             │
-│  ┌───────────────────┐          ┌────────────────────────────────────────┐  │
-│  │   Evolution API   │◄────────►│               N8N                      │  │
-│  │   (WhatsApp)      │  webhook │  (Orquestração / Workflows / Crons)    │  │
-│  │   porta: 8080     │          │  porta: 5678                           │  │
-│  └───────────────────┘          └────────────────┬───────────────────────┘  │
-│                                                  │                          │
-│  ┌───────────────────┐                           │ HTTP/REST                │
-│  │   Frontend        │                           │                          │
-│  │   HTML/CSS/JS     │                           ▼                          │
-│  │   estático        │          ┌────────────────────────────────────────┐  │
-│  │   (nginx)         │          │         Backend API                    │  │
-│  │   porta: 80/443   │◄────────►│    (Express.js / Node.js)              │  │
-│  └───────────────────┘   REST   │    porta: 3000                         │  │
-│                          JSON   └────────────────┬───────────────────────┘  │
-└─────────────────────────────────────────────────┼───────────────────────────┘
-                                                  │
-                    ┌─────────────────────────────┼───────────────────────────┐
-                    │         SERVIÇOS EXTERNOS   │                           │
-                    │                             │                           │
-                    │  ┌──────────────────┐       │  ┌──────────────────────┐ │
-                    │  │   Supabase       │◄──────┴─►│   Gemini API         │ │
-                    │  │   PostgreSQL     │          │   (Google AI)        │ │
-                    │  │   (banco de      │          │   LLM + Áudio        │ │
-                    │  │    dados)        │          └──────────────────────┘ │
-                    │  └──────────────────┘                                   │
-                    │                                                          │
-                    │  ┌──────────────────┐       ┌──────────────────────┐   │
-                    │  │   Trello API     │       │   Google Drive API   │   │
-                    │  │   (tarefas)      │       │   (documentos)       │   │
-                    │  └──────────────────┘       └──────────────────────┘   │
-                    └─────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────────────────────────┐
+│                            GOOGLE CLOUD VM                                        │
+│                       domacondo-axis-1 · 146.148.107.228                          │
+│                                                                                   │
+│  ┌─────────────────────┐    WebSocket    ┌──────────────────────────────────────┐ │
+│  │   GATHER BOT        │◄───────────────►│         gather.town                  │ │
+│  │   (Node.js / PM2)   │  (playerChats)  │   Espaço virtual Doma Condo          │ │
+│  │   porta: 3001       │                 │   Funcionária 1 e Funcionária 2      │ │
+│  └──────────┬──────────┘                 └──────────────────────────────────────┘ │
+│             │ HTTP POST (webhook)                                                  │
+│             ▼                                                                      │
+│  ┌─────────────────────┐                 ┌──────────────────────────────────────┐ │
+│  │       N8N           │◄───────────────►│     Evolution API (WhatsApp)         │ │
+│  │  Orquestração       │  HTTP (REST)    │     porta: 8080                      │ │
+│  │  Crons / Workflows  │                 │     Envia PDF para a Jéssica         │ │
+│  │  porta: 5678        │                 └──────────────────────────────────────┘ │
+│  └──────────┬──────────┘                                                          │
+│             │ chamadas HTTP                                                        │
+│             ▼                                                                      │
+│  ┌─────────────────────┐                 ┌──────────────────────────────────────┐ │
+│  │   Frontend          │                 │     Nginx (proxy reverso)            │ │
+│  │   HTML/CSS/JS       │◄───────────────►│     porta: 80 / 443 (HTTPS)         │ │
+│  │   estático          │  arquivos       │     domacondo.com.br                 │ │
+│  └─────────────────────┘                 └──────────────────────────────────────┘ │
+└───────────────────────────────────────────────────────────────────────────────────┘
+                         │
+        ┌────────────────┼──────────────────────────────────┐
+        │   SERVIÇOS EXTERNOS                               │
+        │                                                   │
+        │  ┌────────────────────┐   ┌──────────────────────┐│
+        │  │   Supabase         │   │   Gemini API         ││
+        │  │   PostgreSQL       │   │   (Google AI)        ││
+        │  │   Auth + Storage   │◄──┤   LLM — extração,    ││
+        │  │   REST API auto-   │   │   narrativa, PDF     ││
+        │  │   gerada           │   └──────────────────────┘│
+        │  └────────────────────┘                           │
+        │                                                   │
+        │  ┌────────────────────┐   ┌──────────────────────┐│
+        │  │   Trello API       │   │   Google Drive API   ││
+        │  │   Tarefas previstas│   │   Documentos e NFs   ││
+        │  │   do dia           │   │   dos clientes       ││
+        │  └────────────────────┘   └──────────────────────┘│
+        └───────────────────────────────────────────────────┘
 ```
 
-### Resumo dos fluxos principais
+### Resumo dos canais
 
-**Fluxo de entrada (agente WhatsApp → banco):**
-```
-Funcionária (WhatsApp)
-  → Evolution API (recebe mensagem)
-  → N8N (webhook trigger)
-  → Gemini (processa texto/áudio, extrai dados)
-  → N8N (orquestra confirmação)
-  → Supabase (salva após confirmação)
-```
-
-**Fluxo de exibição (banco → app web):**
-```
-Frontend (browser)
-  → Backend API (Express + Node.js na VM)
-  → Supabase (consulta PostgreSQL)
-  → JSON de volta para o frontend
-  → Renderiza na tela
-```
-
-**Fluxo de relatórios (cron → PDF → WhatsApp):**
-```
-N8N Cron (17:30 / segunda 8h / fim de mês)
-  → Supabase (busca dados do período)
-  → Gemini (gera narrativa estruturada)
-  → N8N (gera PDF via biblioteca)
-  → Evolution API (envia PDF para Jéssica / Clientes)
-```
+| Canal | Direção | Para quem | Tecnologia |
+|---|---|---|---|
+| Gather (DM) | Bot ↔ Funcionárias | Funcionária 1, Funcionária 2 | WebSocket SDK `@gathertown/gather-game-client` |
+| WhatsApp (PDF) | Bot → Jéssica | Jéssica (gestora) | Evolution API REST |
+| App web | Frontend → Supabase | Jéssica + clientes (portal) | Supabase REST API |
+| Cron interno | N8N → serviços | Sistêmico | N8N workflows |
 
 ---
 
 ## 2. Componentes e Responsabilidades
 
-### 2.1 Evolution API (WhatsApp Gateway)
-- **O que faz:** Ponto de entrada e saída de todas as mensagens WhatsApp
-- **Responsabilidades:**
-  - Receber mensagens das funcionárias (texto e áudio)
-  - Enviar mensagens do agente para as funcionárias
-  - Enviar PDFs de relatório para Jéssica e clientes
-  - Disparar webhook para o N8N a cada mensagem recebida
-- **Configuração:** Uma instância por número de telefone do agente
-- **Porta:** 8080 na VM
-- **Autenticação:** API Key configurada no `.env`
+### 2.1 Gather Bot (Node.js)
 
-### 2.2 N8N (Orquestrador de Workflows)
-- **O que faz:** Cérebro da automação — coordena todos os passos do agente
-- **Responsabilidades:**
-  - Executar crons (11:30, 17:00, 17:30, segunda 8h, fim de mês)
-  - Receber webhooks da Evolution API
-  - Chamar a API do Gemini com o contexto certo
-  - Consultar e atualizar o Supabase
-  - Chamar Trello API para buscar tarefas do dia
-  - Gerar PDFs e enviá-los via Evolution API
-  - Gerenciar estado da conversa (qual etapa cada funcionária está)
-- **Porta:** 5678 na VM
-- **Dados de estado:** Tabela `conversation_sessions` no Supabase
+- **Função:** único ponto de contato com as funcionárias. Envia perguntas, recebe respostas e repassa ao N8N via HTTP.
+- **Runtime:** Node.js 20 LTS, gerenciado pelo PM2 (processo persistente)
+- **Porta local:** 3001 (servidor HTTP interno para receber comandos do N8N)
+- **SDK:** `@gathertown/gather-game-client` (npm)
+- **Autenticação:** variável de ambiente `GATHER_API_KEY`
+- **Arquivo principal:** `/home/fabricio/domacondo/gather-bot/index.js`
 
-### 2.3 Gemini API (Inteligência)
-- **O que faz:** Processa toda inteligência do agente — linguagem e áudio
-- **Responsabilidades:**
-  - Transcrever mensagens de áudio das funcionárias
-  - Extrair atividades estruturadas do relato livre
-  - Identificar cliente, categoria, duração, status de cada atividade
-  - Cruzar o relato com as tarefas do Trello
-  - Formular perguntas de cobrança sobre tarefas não mencionadas
-  - Gerar resumo de confirmação para a funcionária
-  - Gerar narrativa para relatórios PDF
-- **Modelo:** `gemini-2.0-flash` para coleta (rápido), `gemini-1.5-pro` para relatórios mensais (qualidade)
-- **Acesso:** Via N8N usando nó HTTP Request com API Key do Google AI Studio
+### 2.2 N8N
 
-### 2.4 Supabase (Banco de Dados)
-- **O que faz:** Armazena todos os dados do sistema — compartilhado entre agente e app web
-- **Responsabilidades:**
-  - Persistir registros de trabalho confirmados pelas funcionárias
-  - Armazenar clientes, funcionárias, categorias de atividade
-  - Guardar estado das conversas em andamento
-  - Expor dados via REST API para o backend da VM
-  - Armazenar pendências, observações e metadados
-- **Acesso pelo N8N:** Via Supabase API Key (service_role) — escrita e leitura total
-- **Acesso pelo Backend API:** Via Supabase API Key (anon) + Row Level Security
+- **Função:** orquestrador central. Dispara crons, coordena o fluxo entre Gather Bot, Gemini, Supabase, Trello e Evolution API.
+- **Porta:** 5678
+- **Processo:** Docker container (já em execução na VM)
+- **Webhooks internos:** recebe eventos do Gather Bot via HTTP POST
 
-### 2.5 Backend API (Express.js na VM)
-- **O que faz:** Camada de serviço entre o frontend HTML estático e o Supabase
-- **Responsabilidades:**
-  - Autenticar requisições do frontend (verificar JWT)
-  - Consultar Supabase e retornar dados formatados para o frontend
-  - Agrupar, filtrar e formatar dados (ex: totais por cliente, por período)
-  - Proteger dados sensíveis (não expor API Keys do Supabase diretamente no frontend)
-  - Fornecer endpoints REST simples que o frontend chama via `fetch()`
-- **Tecnologia:** Node.js + Express (leve, sem framework pesado)
-- **Porta:** 3000 na VM (exposta via nginx como `/api`)
-- **Autenticação:** JWT assinado com secret local — Jéssica e funcionárias fazem login uma vez
+### 2.3 Gemini API (Google AI)
 
-### 2.6 Frontend HTML/CSS/JS (Estático)
-- **O que faz:** Interface visual do app — painéis, relatórios, visão do cliente
-- **Responsabilidades:**
-  - Exibir dados buscados do Backend API
-  - Permitir navegação entre as telas do painel
-  - Mostrar work logs, tarefas, relatórios, detalhes de cliente
-- **Hospedagem:** nginx na VM, servindo arquivos estáticos da pasta `/var/www/domacondo/`
-- **Comunicação:** `fetch()` para o Backend API em `/api/*`
+- **Função:** cérebro do agente. Recebe o texto da funcionária (transcrito pelo Gather Bot), extrai atividades estruturadas, identifica lacunas, cruza com o Trello e gera a narrativa dos relatórios.
+- **Modelo:** `gemini-1.5-pro` (ou `gemini-2.0-flash` para respostas rápidas)
+- **Integração:** chamada HTTP via N8N (HTTP Request node) com `Authorization: Bearer API_KEY`
+- **Nota:** O Gather não suporta áudio via API. Toda entrada é texto puro — Gemini processa apenas texto neste contexto.
 
-### 2.7 Trello API (Tarefas Planejadas)
-- **O que faz:** Fonte de verdade das tarefas que as funcionárias deveriam ter feito no dia
-- **Acesso:** Somente leitura via API Key + Token do Trello
-- **Uso:** Chamado pelo N8N antes de cada coleta (11:30 e 17:00) para buscar cards do dia
+### 2.4 Evolution API (WhatsApp)
 
-### 2.8 Google Drive API (Documentos)
-- **O que faz:** Repositório de documentos dos clientes (contratos, planilhas, etc.)
-- **Acesso:** Somente leitura via Google Service Account
-- **Uso:** Chamado pelo N8N quando a funcionária menciona um documento específico — Gemini usa como contexto
+- **Função:** envio de PDFs de relatórios para a Jéssica. NÃO é usado para conversar com funcionárias.
+- **Porta:** 8080
+- **Processo:** Docker container na VM
+- **Uso:** apenas chamada REST do N8N para enviar mensagem com mídia (PDF em base64 ou URL)
 
-### 2.9 Nginx (Reverse Proxy)
-- **O que faz:** Porta de entrada de toda a VM para o mundo externo
-- **Responsabilidades:**
-  - Servir os arquivos HTML/CSS/JS estáticos do frontend
-  - Rotear `/api/*` para o Backend API (porta 3000)
-  - Rotear `/webhook/*` para o N8N (porta 5678)
-  - Gerenciar certificado SSL (HTTPS)
-- **Config:** `/etc/nginx/sites-available/domacondo`
+### 2.5 Supabase
+
+- **Função:** banco de dados principal do app web. Armazena work_logs, tarefas, clientes, relatórios e usuários.
+- **Acesso frontend:** Supabase JS Client (`@supabase/supabase-js`) direto do browser (RLS habilitado)
+- **Acesso agente:** Supabase REST API via N8N (com `service_role` key para bypass de RLS quando necessário)
+- **Auth:** Supabase Auth (magic link / email+senha)
+
+### 2.6 Trello API
+
+- **Função:** fonte de verdade das tarefas previstas para o dia. O agente consulta antes de perguntar às funcionárias o que fizeram, para identificar divergências.
+- **Integração:** N8N HTTP Request com API Key do Trello
+- **Fluxo:** N8N busca os cards com due date = hoje antes de iniciar a coleta
+
+### 2.7 Google Drive API
+
+- **Função:** repositório de documentos dos clientes (NFs, extratos, planilhas). O Gemini pode ser alimentado com contexto desses documentos ao gerar relatórios detalhados.
+- **Integração:** N8N (Google Drive node nativo ou HTTP Request com OAuth2)
+
+### 2.8 Nginx
+
+- **Função:** proxy reverso e servidor de arquivos estáticos do frontend.
+- **Portas:** 80 (HTTP, redireciona para HTTPS) e 443 (HTTPS com certificado Let's Encrypt)
+- **Configuração:** `/etc/nginx/sites-enabled/domacondo`
 
 ---
 
-## 3. Schema do Banco de Dados (Supabase)
+## 3. Gather Bot — Especificação Técnica Detalhada
 
-### Tabela: `employees` (Funcionárias)
-```sql
-CREATE TABLE employees (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name VARCHAR(100) NOT NULL,
-  whatsapp_phone VARCHAR(20) NOT NULL UNIQUE,  -- ex: "5511999999999"
-  role VARCHAR(50) DEFAULT 'operacional',      -- 'operacional' | 'gestora'
-  active BOOLEAN DEFAULT true,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
+### 3.1 Como o bot funciona
+
+O bot abre uma conexão WebSocket persistente ao espaço Gather da Doma Condo usando o SDK oficial. Ele age como um "usuário invisível" dentro do espaço.
+
+```js
+// Inicialização da conexão
+const { Game } = require("@gathertown/gather-game-client");
+const game = new Game("GATHER_API_KEY", "SPACE_ID\SPACE_NAME");
+
+game.connect();
+game.subscribeToConnection((connected) => {
+  console.log("Gather bot conectado:", connected);
+});
 ```
 
-### Tabela: `clients` (Clientes — Administradoras)
-```sql
-CREATE TABLE clients (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name VARCHAR(200) NOT NULL,
-  contact_name VARCHAR(100),
-  contact_whatsapp VARCHAR(20),
-  contact_email VARCHAR(200),
-  active BOOLEAN DEFAULT true,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-```
+### 3.2 Recebendo mensagens das funcionárias
 
-### Tabela: `activity_categories` (Categorias)
-```sql
-CREATE TABLE activity_categories (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name VARCHAR(100) NOT NULL UNIQUE,  -- 'Conciliação Bancária', 'Lançamento de NFs', etc.
-  color VARCHAR(7),                   -- hex color para UI
-  active BOOLEAN DEFAULT true
-);
-```
-
-### Tabela: `work_logs` (Registros de Trabalho)
-```sql
-CREATE TABLE work_logs (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  employee_id UUID NOT NULL REFERENCES employees(id),
-  client_id UUID NOT NULL REFERENCES clients(id),
-  category_id UUID REFERENCES activity_categories(id),
-  description TEXT NOT NULL,           -- relato com as palavras da funcionária
-  work_date DATE NOT NULL,             -- data em que o trabalho foi executado
-  shift VARCHAR(10) NOT NULL,          -- 'manha' | 'tarde'
-  duration_minutes INT,                -- duração estimada em minutos
-  status VARCHAR(20) NOT NULL,         -- 'concluido' | 'parcial' | 'pendente'
-  observations TEXT,                   -- problemas, bloqueios
-  source VARCHAR(20) DEFAULT 'whatsapp',
-  confirmed_at TIMESTAMPTZ,            -- quando a funcionária confirmou
-  created_at TIMESTAMPTZ DEFAULT now(),
-  updated_at TIMESTAMPTZ DEFAULT now()
-);
-```
-
-### Tabela: `pending_tasks` (Pendências)
-```sql
-CREATE TABLE pending_tasks (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  work_log_id UUID NOT NULL REFERENCES work_logs(id) ON DELETE CASCADE,
-  client_id UUID NOT NULL REFERENCES clients(id),
-  employee_id UUID NOT NULL REFERENCES employees(id),
-  description TEXT NOT NULL,           -- o que ainda falta fazer
-  due_date DATE,                        -- previsão de conclusão (opcional)
-  resolved BOOLEAN DEFAULT false,
-  resolved_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-```
-
-### Tabela: `conversation_sessions` (Estado das Conversas)
-```sql
-CREATE TABLE conversation_sessions (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  employee_id UUID NOT NULL REFERENCES employees(id),
-  session_date DATE NOT NULL,
-  shift VARCHAR(10) NOT NULL,            -- 'manha' | 'tarde'
-  status VARCHAR(30) NOT NULL,           -- 'iniciada' | 'aguardando_relato' | 'processando'
-                                         -- | 'aguardando_trello' | 'aguardando_confirmacao'
-                                         -- | 'confirmada' | 'cancelada'
-  raw_messages JSONB DEFAULT '[]',       -- histórico bruto da conversa
-  extracted_activities JSONB,            -- atividades extraídas pelo Gemini (antes da confirmação)
-  trello_tasks JSONB,                    -- tarefas Trello do dia (buscadas no início)
-  gemini_context JSONB,                  -- contexto acumulado do Gemini
-  started_at TIMESTAMPTZ DEFAULT now(),
-  confirmed_at TIMESTAMPTZ,
-  expires_at TIMESTAMPTZ                 -- sessão expira 4h após início
-);
-```
-
-### Tabela: `pdf_reports` (Relatórios Gerados)
-```sql
-CREATE TABLE pdf_reports (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  report_type VARCHAR(20) NOT NULL,     -- 'diario' | 'semanal' | 'mensal'
-  period_start DATE NOT NULL,
-  period_end DATE NOT NULL,
-  employee_id UUID REFERENCES employees(id),  -- NULL para relatórios por cliente
-  client_id UUID REFERENCES clients(id),       -- NULL para relatórios por funcionária
-  file_path TEXT,                               -- caminho na VM ou URL Drive
-  sent_to_whatsapp BOOLEAN DEFAULT false,
-  sent_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-```
-
-### Tabela: `system_config` (Configurações)
-```sql
-CREATE TABLE system_config (
-  key VARCHAR(100) PRIMARY KEY,
-  value TEXT NOT NULL,
-  updated_at TIMESTAMPTZ DEFAULT now()
-);
--- Exemplos de chaves:
--- 'morning_shift_time' = '11:30'
--- 'afternoon_shift_time' = '17:00'
--- 'daily_report_time' = '17:30'
--- 'jessica_whatsapp' = '5511999999999'
-```
-
-### Tabela: `users` (Acesso ao App Web)
-```sql
-CREATE TABLE users (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name VARCHAR(100) NOT NULL,
-  email VARCHAR(200) NOT NULL UNIQUE,
-  password_hash VARCHAR(255) NOT NULL,
-  role VARCHAR(20) NOT NULL,        -- 'gestora' | 'funcionaria' | 'cliente'
-  employee_id UUID REFERENCES employees(id),  -- se for funcionária
-  client_id UUID REFERENCES clients(id),       -- se for cliente (portal)
-  active BOOLEAN DEFAULT true,
-  last_login TIMESTAMPTZ,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-```
-
----
-
-## 4. API Endpoints do Backend
-
-O Backend API roda em Node.js + Express na porta 3000, acessível via nginx em `/api`.
-
-**Base URL:** `https://domacondo.com.br/api`
-
----
-
-### 4.1 Autenticação
-
-#### `POST /api/auth/login`
-Login de usuário (Jéssica, funcionárias, clientes).
-
-**Request:**
-```json
-{
-  "email": "jessica@domacondo.com.br",
-  "password": "senha123"
-}
-```
-
-**Response:**
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": "uuid",
-    "name": "Jéssica",
-    "role": "gestora"
+```js
+// Subscrição ao evento de chat
+game.subscribeToEvent("playerChats", (data, context) => {
+  const { senderId, contents, recipient } = data.playerChats;
+  
+  // Só processa DMs direcionadas ao bot
+  if (recipient === BOT_PLAYER_ID) {
+    handleFuncionariaMessage(senderId, contents);
   }
+});
+```
+
+### 3.3 Enviando mensagens para as funcionárias
+
+```js
+// Envio de DM para uma funcionária
+function sendDM(memberId, message) {
+  game.chat("DM", [memberId], CURRENT_MAP_ID, message);
 }
 ```
 
-#### `POST /api/auth/logout`
-Invalida o token da sessão.
+### 3.4 Comunicação Gather Bot ↔ N8N
 
-#### `GET /api/auth/me`
-Retorna dados do usuário autenticado.
+O bot expõe um servidor HTTP local (porta 3001) para receber comandos do N8N:
 
----
+**Endpoints do Gather Bot (recebe do N8N):**
 
-### 4.2 Dashboard
+| Método | Rota | Função |
+|---|---|---|
+| POST | `/bot/send-dm` | N8N ordena o bot a enviar DM para funcionária |
+| POST | `/bot/start-session` | N8N inicia uma sessão de coleta com funcionária X |
+| GET | `/bot/status` | N8N verifica se o bot está online |
 
-#### `GET /api/dashboard/summary`
-Resumo geral para a tela `dashboard.html`.
+**Webhook do N8N (bot envia para o N8N):**
 
-**Query params:** `date` (opcional, default = hoje)
+| Evento | URL | Payload |
+|---|---|---|
+| Mensagem recebida | `http://localhost:5678/webhook/gather-message` | `{ funcionaria_id, mensagem, timestamp }` |
+| Sessão concluída | `http://localhost:5678/webhook/gather-session-done` | `{ funcionaria_id, mensagens[], timestamp }` |
 
-**Response:**
-```json
-{
-  "date": "2026-04-14",
-  "total_hours_today": 14.5,
-  "total_tasks_completed": 23,
-  "total_tasks_pending": 4,
-  "active_clients": 5,
-  "employees_active_today": 2,
-  "collection_status": {
-    "morning": {
-      "employee1": "confirmada",
-      "employee2": "aguardando_confirmacao"
-    },
-    "afternoon": {
-      "employee1": "nao_iniciada",
-      "employee2": "nao_iniciada"
-    }
+### 3.5 Gerenciamento de sessão de conversa
+
+O bot mantém um objeto de estado em memória por funcionária:
+
+```js
+const sessions = {
+  "PLAYER_ID_FUNC_1": {
+    ativa: true,
+    etapa: "aguardando_resposta", // | "confirmacao" | "concluida"
+    mensagens: [],
+    iniciada_em: "2026-04-14T11:30:00Z"
   }
-}
+};
 ```
 
-#### `GET /api/dashboard/recent-activity`
-Últimos 20 registros de trabalho (todas as funcionárias).
+- Sessões expiram após 30 minutos sem resposta (timeout com `setTimeout`)
+- Se a funcionária demorar, o bot reenvia um lembrete educado via DM
+- Apenas uma sessão por funcionária pode estar ativa ao mesmo tempo
 
----
+### 3.6 Variáveis de ambiente do Gather Bot
 
-### 4.3 Work Logs (Registros de Trabalho)
-
-#### `GET /api/work-logs`
-Lista de registros de trabalho com filtros.
-
-**Query params:**
-- `date` — data específica (YYYY-MM-DD)
-- `date_from` / `date_to` — intervalo de datas
-- `employee_id` — filtrar por funcionária
-- `client_id` — filtrar por cliente
-- `status` — `concluido` | `parcial` | `pendente`
-- `category_id` — filtrar por categoria
-- `shift` — `manha` | `tarde`
-- `page` — paginação (default: 1)
-- `per_page` — itens por página (default: 50)
-
-**Response:**
-```json
-{
-  "data": [
-    {
-      "id": "uuid",
-      "employee": { "id": "uuid", "name": "Ana" },
-      "client": { "id": "uuid", "name": "Condomínio Bela Vista" },
-      "category": { "id": "uuid", "name": "Conciliação Bancária" },
-      "description": "Conciliei o extrato de março...",
-      "work_date": "2026-04-14",
-      "shift": "manha",
-      "duration_minutes": 45,
-      "status": "concluido",
-      "observations": null,
-      "confirmed_at": "2026-04-14T11:47:22Z"
-    }
-  ],
-  "pagination": {
-    "total": 128,
-    "page": 1,
-    "per_page": 50,
-    "total_pages": 3
-  }
-}
-```
-
-#### `GET /api/work-logs/:id`
-Detalhes de um registro específico.
-
-#### `GET /api/work-logs/summary`
-Totalizadores agrupados.
-
-**Query params:** mesmos filtros acima
-
-**Response:**
-```json
-{
-  "total_duration_minutes": 480,
-  "total_tasks": 12,
-  "by_status": {
-    "concluido": 9,
-    "parcial": 2,
-    "pendente": 1
-  },
-  "by_client": [
-    { "client_id": "uuid", "client_name": "Bela Vista", "duration_minutes": 120, "tasks": 3 }
-  ],
-  "by_category": [
-    { "category_id": "uuid", "category_name": "Conciliação Bancária", "duration_minutes": 90, "tasks": 2 }
-  ]
-}
+```env
+GATHER_API_KEY=xxxxx
+GATHER_SPACE_ID=xxxxx\doma-condo
+GATHER_MAP_ID=blank (ou o mapa padrão do espaço)
+GATHER_BOT_PLAYER_ID=xxxxx
+FUNCIONARIA_1_PLAYER_ID=xxxxx
+FUNCIONARIA_2_PLAYER_ID=xxxxx
+N8N_WEBHOOK_BASE=http://localhost:5678/webhook
+BOT_HTTP_PORT=3001
 ```
 
 ---
 
-### 4.4 Clientes
+## 4. API Endpoints — Frontend → Supabase
 
-#### `GET /api/clients`
-Lista todos os clientes ativos.
+O frontend (páginas HTML estáticas) consome dados diretamente do Supabase via REST API com o client JS. Abaixo estão as queries principais por página.
 
-**Response:**
-```json
-{
-  "data": [
-    {
-      "id": "uuid",
-      "name": "Condomínio Bela Vista",
-      "contact_name": "Roberto Alves",
-      "contact_email": "roberto@belavista.com.br",
-      "stats": {
-        "total_hours_this_month": 32.5,
-        "pending_tasks": 2,
-        "last_activity_date": "2026-04-14"
-      }
-    }
-  ]
-}
+### 4.1 dashboard.html
+
+```js
+// KPIs do período atual
+supabase.from("work_logs").select("duration_minutes, client_id, status")
+  .gte("date", startOfMonth).lte("date", today);
+
+// Tarefas pendentes
+supabase.from("tasks").select("*").eq("status", "pending").limit(5);
+
+// Último relatório gerado
+supabase.from("reports").select("*").order("created_at", { ascending: false }).limit(1);
 ```
 
-#### `GET /api/clients/:id`
-Detalhes de um cliente específico — alimenta `client-detail.html`.
+### 4.2 work-logs.html
 
-**Response:**
-```json
-{
-  "id": "uuid",
-  "name": "Condomínio Bela Vista",
-  "contact_name": "Roberto Alves",
-  "contact_email": "roberto@belavista.com.br",
-  "stats": {
-    "total_hours_this_month": 32.5,
-    "total_hours_last_month": 28.0,
-    "total_tasks_this_month": 18,
-    "pending_tasks": 2,
-    "categories_breakdown": [
-      { "category": "Conciliação Bancária", "hours": 12.0, "tasks": 6 },
-      { "category": "Lançamento de NFs", "hours": 8.5, "tasks": 5 }
-    ]
-  },
-  "recent_work_logs": []
-}
+```js
+// Listagem de registros com filtros
+supabase.from("work_logs")
+  .select("*, clients(name), team_members(name)")
+  .gte("date", filterStart)
+  .lte("date", filterEnd)
+  .order("date", { ascending: false });
 ```
 
-#### `GET /api/clients/:id/work-logs`
-Registros de trabalho de um cliente específico (com filtros de data).
+### 4.3 tasks.html
 
----
-
-### 4.5 Pendências
-
-#### `GET /api/pending-tasks`
-Lista de pendências abertas.
-
-**Query params:** `client_id`, `employee_id`, `resolved` (true|false)
-
-**Response:**
-```json
-{
-  "data": [
-    {
-      "id": "uuid",
-      "description": "Faltam 3 NFs do mês de março para lançar",
-      "client": { "id": "uuid", "name": "Bela Vista" },
-      "employee": { "id": "uuid", "name": "Ana" },
-      "due_date": "2026-04-15",
-      "resolved": false,
-      "created_at": "2026-04-14T11:47:22Z"
-    }
-  ]
-}
+```js
+// Tarefas abertas agrupadas por cliente
+supabase.from("tasks")
+  .select("*, clients(name)")
+  .in("status", ["pending", "in_progress"])
+  .order("due_date");
 ```
 
-#### `GET /api/pending-tasks/:id`
-Detalhes de uma pendência.
+### 4.4 clients.html
 
----
+```js
+// Lista de clientes com horas do mês
+supabase.from("clients").select("*").eq("active", true);
 
-### 4.6 Equipe
-
-#### `GET /api/team`
-Lista todas as funcionárias — alimenta `team.html`.
-
-**Response:**
-```json
-{
-  "data": [
-    {
-      "id": "uuid",
-      "name": "Ana",
-      "role": "operacional",
-      "stats": {
-        "total_hours_today": 3.75,
-        "total_hours_this_week": 18.0,
-        "total_tasks_this_month": 45,
-        "collection_status_today": {
-          "morning": "confirmada",
-          "afternoon": "nao_iniciada"
-        }
-      }
-    }
-  ]
-}
+// Horas por cliente no mês
+supabase.from("work_logs")
+  .select("client_id, duration_minutes")
+  .gte("date", startOfMonth);
 ```
 
-#### `GET /api/team/:id`
-Detalhes de uma funcionária — alimenta `team-detail.html`.
+### 4.5 client-detail.html
 
-#### `GET /api/team/:id/work-logs`
-Registros de trabalho de uma funcionária (com filtros de data).
+```js
+// Dados do cliente específico
+supabase.from("clients").select("*").eq("id", clientId).single();
 
----
+// Histórico de work_logs do cliente
+supabase.from("work_logs")
+  .select("*, team_members(name)")
+  .eq("client_id", clientId)
+  .order("date", { ascending: false })
+  .limit(50);
 
-### 4.7 Categorias
-
-#### `GET /api/categories`
-Lista categorias de atividade — alimenta `categories.html`.
-
-**Response:**
-```json
-{
-  "data": [
-    {
-      "id": "uuid",
-      "name": "Conciliação Bancária",
-      "color": "#4F46E5",
-      "stats": {
-        "total_tasks_this_month": 24,
-        "total_hours_this_month": 48.0
-      }
-    }
-  ]
-}
+// Tarefas do cliente
+supabase.from("tasks").select("*").eq("client_id", clientId);
 ```
 
----
+### 4.6 team.html / team-detail.html
 
-### 4.8 Relatórios
+```js
+// Todas as funcionárias
+supabase.from("team_members").select("*").eq("active", true);
 
-#### `GET /api/reports`
-Lista de relatórios PDF gerados.
-
-**Query params:** `type` (`diario`|`semanal`|`mensal`), `date_from`, `date_to`
-
-#### `GET /api/reports/:id`
-Metadados de um relatório específico.
-
-#### `GET /api/reports/summary`
-Dados consolidados para `reports.html`.
-
-**Query params:** `period` (`week`|`month`|`quarter`), `client_id`
-
-**Response:**
-```json
-{
-  "period": "2026-04",
-  "total_hours": 280.5,
-  "by_client": [],
-  "by_employee": [],
-  "by_category": [],
-  "pending_tasks_open": 7,
-  "pending_tasks_resolved": 31
-}
+// Work logs da funcionária
+supabase.from("work_logs")
+  .select("*, clients(name)")
+  .eq("team_member_id", memberId)
+  .gte("date", startOfMonth);
 ```
 
----
+### 4.7 reports.html
 
-### 4.9 Portal do Cliente
+```js
+// Lista de relatórios gerados
+supabase.from("reports")
+  .select("*, clients(name)")
+  .order("created_at", { ascending: false });
 
-Os endpoints do portal são idênticos aos acima, mas filtrados automaticamente pelo `client_id` do usuário autenticado (Role: `cliente`). O backend aplica esse filtro no middleware antes de qualquer consulta.
+// Busca relatório específico por ID para download
+supabase.from("reports").select("pdf_url, content").eq("id", reportId).single();
+```
 
-#### `GET /api/portal/overview`
-Alimenta `portal-overview.html`. Retorna sumário do cliente autenticado.
+### 4.8 portal-overview.html / portal-reports.html (acesso restrito ao cliente)
 
-#### `GET /api/portal/reports`
-Lista relatórios do cliente autenticado — alimenta `portal-reports.html`.
+```js
+// RLS garante que o cliente só vê seus próprios dados
+// A política de RLS filtra por auth.uid() = clients.portal_user_id
 
-#### `GET /api/portal/pending`
-Pendências do cliente autenticado — alimenta `portal-pending.html`.
-
----
-
-### 4.10 My Work (Funcionária)
-
-Endpoints filtrados automaticamente pelo `employee_id` da funcionária autenticada.
-
-#### `GET /api/my-work/today`
-Tudo que a funcionária registrou hoje — alimenta `my-work.html`.
-
-#### `GET /api/my-tasks`
-Pendências abertas da funcionária autenticada — alimenta `my-tasks.html`.
-
-#### `GET /api/my-messages`
-Histórico das conversas WhatsApp da funcionária (da tabela `conversation_sessions`) — alimenta `my-messages.html`.
-
----
-
-### 4.11 Agente / N8N (Endpoints internos)
-
-Estes endpoints são chamados pelo N8N, não pelo frontend. Protegidos por API Key interna.
-
-#### `POST /api/internal/work-logs`
-N8N cria um registro de trabalho após confirmação da funcionária.
-
-**Header:** `X-Internal-Key: {INTERNAL_API_KEY}`
-
-#### `POST /api/internal/pending-tasks`
-N8N cria uma pendência.
-
-#### `PUT /api/internal/conversation-sessions/:id`
-N8N atualiza o estado de uma sessão de conversa.
-
-#### `POST /api/internal/conversation-sessions`
-N8N inicia uma nova sessão de conversa.
+supabase.from("work_logs").select("*").eq("client_id", clientId);
+supabase.from("reports").select("*").eq("client_id", clientId);
+```
 
 ---
 
 ## 5. Fluxo de Dados Completo
 
-### 5.1 Fluxo de Coleta (WhatsApp → Supabase)
+### 5.1 Fluxo de Coleta via Gather (2x ao dia: 11:30 e 17:00)
 
 ```
-1. N8N Cron dispara às 11:30
-   ↓
-2. N8N busca tarefas Trello do dia para cada funcionária
-   ↓
-3. N8N cria sessão de conversa no Supabase
-   (status: 'iniciada')
-   ↓
-4. N8N instrui Evolution API a enviar mensagem de abertura
-   para o número da funcionária via WhatsApp
-   ↓
-5. Funcionária responde (texto ou áudio)
-   ↓
-6. Evolution API recebe a mensagem
-   → dispara webhook para N8N (POST /webhook/whatsapp)
-   ↓
-7. N8N recebe o webhook
-   → identifica a funcionária pelo número de telefone
-   → identifica a sessão ativa (busca conversation_sessions)
-   → atualiza sessão com a nova mensagem (raw_messages)
-   ↓
-8. N8N envia para Gemini:
-   - Mensagem da funcionária (texto ou áudio base64)
-   - Contexto: clientes ativos, categorias, tarefas do Trello do dia
-   - Instrução: extrair atividades estruturadas
-   ↓
-9. Gemini retorna JSON estruturado com atividades extraídas:
-   [{ cliente, categoria, descrição, duração, status, observações }]
-   ↓
-10. N8N salva extracted_activities na sessão
-    ↓
-11. N8N compara atividades com tarefas do Trello
-    → identifica tarefas não mencionadas
-    ↓
-12. Se há lacunas: N8N envia pergunta de cobrança via Evolution API
-    → Aguarda resposta → repete o ciclo (volta ao passo 5)
-    ↓
-13. Quando tudo cobrado: N8N pede ao Gemini que gere resumo de confirmação
-    ↓
-14. N8N envia resumo via Evolution API para a funcionária confirmar
-    ↓
-15. Funcionária responde "sim" ou corrige
-    ↓
-16. Se correção: N8N processa a correção, atualiza extracted_activities
-    → volta ao passo 13
-    ↓
-17. Se confirmação: N8N salva cada atividade como work_log no Supabase
-    → cria pending_tasks para status 'parcial' e 'pendente'
-    → atualiza sessão (status: 'confirmada', confirmed_at: agora)
-    ↓
-18. Dados disponíveis imediatamente no app web via Backend API
+PASSO 1 — N8N Cron dispara (11:30 ou 17:00)
+  → N8N busca na Trello API os cards com due date = hoje
+  → N8N monta a lista de tarefas previstas em formato texto
+
+PASSO 2 — Coleta com Funcionária 1
+  → N8N envia POST para http://localhost:3001/bot/start-session
+     { funcionaria_id: "PLAYER_ID_FUNC_1", contexto_trello: "..." }
+  → Gather Bot envia DM para Funcionária 1:
+     "Olá! Me conta o que você fez hoje (ou nesta manhã).
+      Pode incluir: cliente, atividade, tempo aproximado e se concluiu."
+  → Funcionária 1 responde via DM no Gather (texto livre)
+  → Gather Bot recebe o evento playerChats
+  → Gather Bot envia POST para N8N webhook:
+     { funcionaria_id, mensagem: "texto da resposta", timestamp }
+
+PASSO 3 — Processamento Gemini
+  → N8N chama Gemini API com:
+     - Mensagem da funcionária
+     - Contexto: lista de tarefas Trello do dia
+     - Prompt: extrair cliente, categoria, atividade, duração, status
+  → Gemini retorna JSON estruturado:
+     [
+       { cliente: "Cond. X", categoria: "conciliacao", atividade: "...", duracao: 90, status: "concluido" },
+       { cliente: "Cond. Y", categoria: "pagamento", atividade: "...", duracao: 45, status: "pendente" }
+     ]
+
+PASSO 4 — Identificação de lacunas
+  → N8N compara o JSON do Gemini com as tarefas Trello
+  → Se houver tarefa prevista sem correspondência:
+     N8N envia POST para /bot/send-dm com pergunta de cobrança
+     → Gather Bot envia DM: "Vi que tinha X previsto para o Condomínio Y.
+        Você chegou a fazer? Se não, posso registrar como pendente."
+  → Funcionária responde → loop volta ao Passo 2 (Gather Bot → N8N webhook → Gemini)
+
+PASSO 5 — Confirmação
+  → N8N manda o Gather Bot enviar resumo de confirmação via DM:
+     "Vou registrar assim:
+      ✓ Cond. X — Conciliação bancária (1h30)
+      ✓ Cond. Y — Pagamento de boleto (45min) — PENDENTE
+      Está certo?"
+  → Funcionária responde "sim" / "não" / correções
+  → Se "sim": N8N salva os registros no Supabase (tabela work_logs)
+  → Se "não" / correção: N8N reinicia o loop de extração com Gemini
+
+PASSO 6 — Repete para Funcionária 2
+  → Mesmo fluxo do Passo 2 ao 5 com FUNCIONARIA_2_PLAYER_ID
 ```
 
-### 5.2 Fluxo de Exibição (App Web → Dados)
+### 5.2 Fluxo de Geração e Envio de Relatório PDF via WhatsApp
 
 ```
-1. Usuário abre dashboard.html no browser
-   ↓
-2. JavaScript na página faz:
-   fetch('/api/dashboard/summary', {
-     headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
-   })
-   ↓
-3. Backend API (Express) recebe a requisição
-   → valida JWT
-   → identifica usuário e role
-   → monta query para o Supabase
-   ↓
-4. Supabase executa a query no PostgreSQL
-   → retorna dados brutos
-   ↓
-5. Backend API formata os dados em JSON
-   → aplica filtros de role (gestora vê tudo, cliente vê só os seus)
-   ↓
-6. Frontend recebe o JSON
-   → renderiza os cards, gráficos e tabelas na tela
-```
+PASSO 1 — N8N Cron dispara (17:30 diário, ou segundo-feira para semanal, ou 1º do mês)
 
-### 5.3 Fluxo de Relatório PDF
+PASSO 2 — Busca de dados
+  → N8N busca no Supabase todos os work_logs do período (dia / semana / mês)
+  → N8N busca os dados dos clientes e equipe relacionados
+  → N8N busca documentos complementares no Google Drive (se necessário)
 
-```
-1. N8N Cron dispara às 17:30
-   ↓
-2. N8N busca work_logs do dia de cada funcionária no Supabase
-   (SQL: SELECT * FROM work_logs WHERE work_date = hoje)
-   ↓
-3. N8N envia para Gemini:
-   - Dados estruturados das atividades do dia
-   - Template de relatório diário
-   - Instrução: gerar narrativa profissional de fechamento do dia
-   ↓
-4. Gemini retorna conteúdo formatado em Markdown / HTML
-   ↓
-5. N8N usa biblioteca de PDF (Puppeteer ou pdfkit via HTTP Function)
-   para gerar o arquivo PDF
-   ↓
-6. N8N salva metadados do PDF na tabela pdf_reports no Supabase
-   ↓
-7. N8N instrui Evolution API a enviar o PDF para o WhatsApp da Jéssica
-   ↓
-8. Jéssica recebe o PDF no WhatsApp
+PASSO 3 — Geração de narrativa com Gemini
+  → N8N chama Gemini com os dados estruturados + prompt de relatório
+  → Gemini gera:
+     - Resumo executivo
+     - Horas por cliente e categoria
+     - Pendências identificadas
+     - Observações relevantes
+
+PASSO 4 — Geração do PDF
+  → N8N usa um node de geração de PDF (html-pdf ou Puppeteer via HTTP)
+  → Template HTML pré-formatado com a identidade visual da Doma Condo
+  → PDF gerado é salvo no Supabase Storage (bucket: relatórios)
+  → URL pública do PDF é salva na tabela reports do Supabase
+
+PASSO 5 — Envio via WhatsApp para Jéssica
+  → N8N chama Evolution API:
+     POST http://localhost:8080/message/sendMedia/doma-condo-instance
+     {
+       "number": "5511XXXXXXXXX",
+       "mediatype": "document",
+       "mimetype": "application/pdf",
+       "caption": "Relatório Doma Condo — 14/04/2026",
+       "media": "https://supabase-url/storage/relatorios/rel-2026-04-14.pdf"
+     }
+  → Jéssica recebe o PDF no WhatsApp
+
+PASSO 6 — Registro
+  → N8N atualiza o registro na tabela reports com:
+     { status: "enviado", sent_at: now(), whatsapp_message_id: "..." }
 ```
 
 ---
 
 ## 6. Autenticação e Segurança
 
-### 6.1 Modelo de Roles
+### 6.1 Perfis de acesso
 
-| Role | Quem | O que acessa |
+| Perfil | Quem | Nível de acesso |
 |---|---|---|
-| `gestora` | Jéssica | Tudo — todas as funcionárias, todos os clientes, todas as configurações |
-| `funcionaria` | Ana, Maria | Apenas seus próprios work logs, suas tarefas, suas mensagens |
-| `cliente` | Administradoras | Apenas dados do seu condomínio (portal) — via portal-overview, portal-reports, portal-pending |
+| Admin | Jéssica | Acesso total: todos os clientes, relatórios, configurações |
+| Funcionária | Funcionária 1 / 2 | Acesso ao app web somente para visualização dos próprios registros |
+| Cliente | Administradoras (5 clientes) | Portal restrito: vê apenas seus próprios dados |
+| Agente (bot) | N8N / Gather Bot | service_role key — acesso total ao Supabase via backend |
 
-### 6.2 Autenticação no Frontend
+### 6.2 Row Level Security (RLS) no Supabase
 
-- Usuário faz login via `POST /api/auth/login`
-- Backend valida email/senha (bcrypt) na tabela `users` do Supabase
-- Backend gera JWT assinado com `JWT_SECRET` (secret na VM, nunca no GitHub)
-- JWT tem validade de 8 horas
-- Frontend guarda o token no `localStorage`
-- Toda requisição envia `Authorization: Bearer {token}` no header
-- Backend valida o JWT antes de qualquer operação
+Políticas obrigatórias:
 
-### 6.3 Proteção dos Endpoints
+```sql
+-- work_logs: funcionária só vê os próprios registros
+CREATE POLICY "funcionaria_proprios_logs" ON work_logs
+  FOR SELECT USING (
+    auth.uid() = team_member_id
+    OR EXISTS (SELECT 1 FROM users WHERE id = auth.uid() AND role = 'admin')
+  );
 
+-- work_logs: clientes só veem os logs do seu client_id
+CREATE POLICY "cliente_proprios_logs" ON work_logs
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM clients
+      WHERE id = work_logs.client_id
+      AND portal_user_id = auth.uid()
+    )
+  );
+
+-- reports: cliente só vê os próprios relatórios
+CREATE POLICY "cliente_proprios_relatorios" ON reports
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM clients
+      WHERE id = reports.client_id
+      AND portal_user_id = auth.uid()
+    )
+  );
 ```
-Middleware de autenticação (aplicado em todas as rotas /api/* exceto /api/auth/login):
-  1. Verifica presença do header Authorization
-  2. Valida assinatura do JWT
-  3. Verifica expiração
-  4. Anexa user.id, user.role, user.employee_id, user.client_id ao request
-  5. Passa para o próximo middleware
 
-Middleware de role (aplicado onde necessário):
-  requireRole('gestora')       → bloqueia se role !== 'gestora'
-  requireRole('funcionaria')   → bloqueia se role não for funcionaria ou gestora
-  requireClientAccess()        → garante que cliente só vê seus próprios dados
-```
+### 6.3 Autenticação do app web
 
-### 6.4 Endpoints Internos (N8N → Backend)
+- **Jéssica e funcionárias:** Supabase Auth com email+senha
+- **Clientes (portal):** Supabase Auth com magic link (email) ou email+senha
+- **JWT:** gerenciado automaticamente pelo Supabase JS Client
+- **Sessão:** persistida no localStorage, renovada automaticamente
 
-Os endpoints `/api/internal/*` são protegidos por uma API Key diferente do JWT.
-- Header: `X-Internal-Key: {INTERNAL_API_KEY}`
-- `INTERNAL_API_KEY` definida no `.env` da VM
-- N8N tem essa chave configurada como credencial
-- Esses endpoints NUNCA são expostos ao frontend
+### 6.4 Segurança do Gather Bot
 
-### 6.5 Supabase — Row Level Security
+- `GATHER_API_KEY` armazenada apenas em variável de ambiente na VM (arquivo `.env` fora do git)
+- Servidor HTTP do bot (porta 3001) acessível apenas em `localhost` — nunca exposto externamente
+- N8N e bot comunicam-se internamente na VM via `127.0.0.1`
 
-O Backend API usa a `SERVICE_ROLE_KEY` do Supabase (que ignora RLS) para todas as operações. O frontend nunca tem acesso direto ao Supabase — sempre passa pelo Backend API. Isso garante que toda a lógica de permissão está centralizada no Backend.
+### 6.5 Segurança da Evolution API
 
-### 6.6 Variáveis de Ambiente (apenas na VM, nunca no GitHub)
-
-```env
-# Backend API (.env na VM)
-JWT_SECRET=<string aleatória 64 chars>
-INTERNAL_API_KEY=<string aleatória 32 chars>
-SUPABASE_URL=https://xxxx.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=<chave service role>
-PORT=3000
-
-# N8N (configurado via interface N8N)
-EVOLUTION_API_URL=http://localhost:8080
-EVOLUTION_API_KEY=<chave evolution>
-GEMINI_API_KEY=<chave google ai studio>
-TRELLO_API_KEY=<chave trello>
-TRELLO_TOKEN=<token trello>
-GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON=<json da service account>
-SUPABASE_URL=https://xxxx.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=<chave service role>
-JESSICA_WHATSAPP=5511999999999
-```
+- Porta 8080 não exposta externamente (nginx não faz proxy dessa porta)
+- API Key da Evolution armazenada como variável de ambiente no N8N
+- Acesso apenas via rede interna da VM
 
 ---
 
-## 7. Hosting e Deploy na VM
+## 7. Hosting e Deploy
 
 ### 7.1 Estrutura de diretórios na VM
 
 ```
 /home/fabricio/domacondo/
-├── frontend/               ← Arquivos HTML/CSS/JS copiados do GitHub
+├── gather-bot/               # Gather Bot Node.js
+│   ├── index.js              # Ponto de entrada principal
+│   ├── handlers/
+│   │   ├── messageHandler.js # Processa playerChats
+│   │   └── sessionManager.js # Gerencia estado das sessões
+│   ├── server.js             # Servidor HTTP interno (porta 3001)
+│   ├── .env                  # Variáveis de ambiente (não sobe pro git)
+│   └── package.json
+├── frontend/                 # Arquivos HTML/CSS/JS estáticos
 │   ├── dashboard.html
 │   ├── work-logs.html
-│   ├── clients.html
-│   └── ... (todas as páginas)
-├── backend/                ← Backend API Node.js
-│   ├── src/
-│   │   ├── index.js        ← Entry point Express
-│   │   ├── middleware/
-│   │   │   ├── auth.js     ← Validação JWT
-│   │   │   └── role.js     ← Controle de roles
-│   │   ├── routes/
-│   │   │   ├── auth.js
-│   │   │   ├── dashboard.js
-│   │   │   ├── work-logs.js
-│   │   │   ├── clients.js
-│   │   │   ├── team.js
-│   │   │   ├── categories.js
-│   │   │   ├── reports.js
-│   │   │   ├── pending-tasks.js
-│   │   │   ├── portal.js
-│   │   │   ├── my-work.js
-│   │   │   └── internal.js
-│   │   └── lib/
-│   │       └── supabase.js ← Cliente Supabase configurado
-│   ├── package.json
-│   └── .env                ← NUNCA vai para o GitHub
-└── logs/
-    └── backend.log
+│   └── ...
+├── n8n-data/                 # Volume persistente do N8N (Docker)
+├── docker-compose.yml        # N8N + Evolution API
+└── nginx/
+    └── domacondo.conf        # Configuração do Nginx
 ```
 
-### 7.2 Configuração Nginx
+### 7.2 PM2 — Gerenciamento do Gather Bot
+
+```bash
+# Instalação inicial
+npm install -g pm2
+cd /home/fabricio/domacondo/gather-bot
+pm2 start index.js --name "doma-gather-bot"
+pm2 save
+pm2 startup  # garante que reinicia automaticamente na VM
+
+# Comandos úteis
+pm2 status              # ver se está rodando
+pm2 logs doma-gather-bot   # ver logs em tempo real
+pm2 restart doma-gather-bot  # reiniciar após atualização
+```
+
+### 7.3 Docker Compose (N8N + Evolution API)
+
+```yaml
+# /home/fabricio/domacondo/docker-compose.yml
+version: "3.8"
+services:
+  n8n:
+    image: n8nio/n8n
+    ports:
+      - "127.0.0.1:5678:5678"  # apenas localhost
+    volumes:
+      - ./n8n-data:/home/node/.n8n
+    environment:
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - WEBHOOK_URL=http://localhost:5678
+    restart: always
+
+  evolution:
+    image: atendai/evolution-api
+    ports:
+      - "127.0.0.1:8080:8080"  # apenas localhost
+    environment:
+      - AUTHENTICATION_API_KEY=${EVOLUTION_API_KEY}
+    restart: always
+```
+
+### 7.4 Nginx — Configuração do Proxy Reverso
 
 ```nginx
+# /etc/nginx/sites-enabled/domacondo
+server {
+    listen 80;
+    server_name domacondo.com.br www.domacondo.com.br;
+    return 301 https://$host$request_uri;
+}
+
 server {
     listen 443 ssl;
-    server_name domacondo.com.br;
+    server_name domacondo.com.br www.domacondo.com.br;
 
-    # SSL (Let's Encrypt via Certbot)
     ssl_certificate /etc/letsencrypt/live/domacondo.com.br/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/domacondo.com.br/privkey.pem;
 
@@ -916,48 +575,16 @@ server {
         try_files $uri $uri/ /dashboard.html;
     }
 
-    # Backend API
-    location /api/ {
-        proxy_pass http://localhost:3000/;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-
-    # N8N Webhooks (somente webhooks, não expõe o painel N8N)
-    location /webhook/ {
-        proxy_pass http://localhost:5678/webhook/;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-    }
-}
-
-# Redirect HTTP → HTTPS
-server {
-    listen 80;
-    server_name domacondo.com.br;
-    return 301 https://$host$request_uri;
+    # N8N não exposto externamente — acesso apenas via VM interna
 }
 ```
 
-### 7.3 Gerenciamento de Processos (PM2)
-
-O Backend API roda sob PM2 para garantir que reinicia automaticamente se cair.
-
-```bash
-# Iniciar o backend
-cd /home/fabricio/domacondo/backend
-pm2 start src/index.js --name "domacondo-api"
-pm2 save
-pm2 startup  # configura para reiniciar no boot da VM
-```
-
-### 7.4 Deploy via GitHub Actions
+### 7.5 GitHub Actions — Deploy Automático
 
 ```yaml
 # .github/workflows/deploy-domacondo.yml
+name: Deploy Doma Condo
+
 on:
   push:
     branches: [main]
@@ -968,171 +595,115 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Deploy para VM
-        uses: appleboy/ssh-action@master
+      - uses: actions/checkout@v4
+
+      - name: Deploy para VM via SSH
+        uses: appleboy/ssh-action@v1
         with:
           host: 146.148.107.228
           username: fabricio
           key: ${{ secrets.GCP_SSH_KEY }}
           script: |
-            # Copia frontend
-            cp -r /home/fabricio/repo/Doma\ Condo/frontend/* /home/fabricio/domacondo/frontend/
-            # Copia backend (sem .env)
-            rsync -av --exclude='.env' /home/fabricio/repo/Doma\ Condo/backend/ /home/fabricio/domacondo/backend/
-            cd /home/fabricio/domacondo/backend
+            cd /home/fabricio/domacondo
+            git pull origin main
+            
+            # Atualiza o Gather Bot
+            cd gather-bot
             npm install --production
-            pm2 restart domacondo-api
+            pm2 restart doma-gather-bot
+            
+            # Copia frontend estático
+            cp -r /home/fabricio/domacondo/frontend/* /var/www/domacondo/
+            
+            # Recarrega nginx se config mudou
+            sudo nginx -t && sudo systemctl reload nginx
 ```
 
 ---
 
 ## 8. Fases de Implementação
 
-### Fase 0 — Infraestrutura Base (1-2 dias)
-**Objetivo:** VM pronta para receber tudo.
+### Fase 1 — Gather Bot (PRIORIDADE MÁXIMA)
 
-- [ ] Criar estrutura de pastas na VM (`/home/fabricio/domacondo/`)
-- [ ] Instalar Node.js, PM2, nginx na VM
-- [ ] Configurar nginx (frontend estático + proxy para porta 3000)
-- [ ] Configurar SSL com Let's Encrypt (Certbot)
-- [ ] Criar projeto no Supabase e apontar domínio
-- [ ] Configurar Evolution API (instância WhatsApp do agente)
-- [ ] Configurar N8N (instalado via Docker na VM)
+**O que é:** implementar o bot Node.js que conecta ao Gather e se comunica com o N8N.
 
-**Critério de conclusão:** Acessar `https://domacondo.com.br` e ver o `dashboard.html` carregando.
+**Entregáveis:**
+1. Projeto Node.js criado em `/home/fabricio/domacondo/gather-bot/`
+2. Conexão WebSocket funcionando com o espaço Gather da Doma Condo
+3. Bot recebe DMs das funcionárias e repassa ao N8N via webhook
+4. N8N consegue enviar DMs para funcionárias via HTTP POST no bot
+5. PM2 configurado — bot reinicia automaticamente se cair
+6. Teste manual: funcionária manda mensagem no Gather → N8N recebe → N8N manda resposta → funcionária recebe
 
----
-
-### Fase 1 — Banco de Dados (2-3 dias)
-**Objetivo:** Schema completo criado e populado com dados iniciais.
-
-- [ ] Criar todas as tabelas no Supabase (SQL das seções acima)
-- [ ] Inserir dados iniciais: 2 funcionárias, 5 clientes, categorias de atividade
-- [ ] Inserir usuário inicial da Jéssica (gestora)
-- [ ] Testar queries básicas via Supabase Dashboard
-
-**Critério de conclusão:** Consultar `work_logs` via Supabase Dashboard e ver dados de teste.
+**Critério de sucesso:** o bot fica online 24/7 sem intervenção manual, e a comunicação DM ↔ N8N funciona de ponta a ponta.
 
 ---
 
-### Fase 2 — Backend API (3-5 dias)
-**Objetivo:** Todos os endpoints funcionando e retornando dados reais.
+### Fase 2 — Workflow N8N de Coleta
 
-- [ ] Criar projeto Node.js + Express no repositório
-- [ ] Implementar middleware de autenticação (JWT)
-- [ ] Implementar middleware de roles
-- [ ] Implementar endpoints de autenticação (`/api/auth/*`)
-- [ ] Implementar endpoints de dashboard
-- [ ] Implementar endpoints de work-logs (com filtros e paginação)
-- [ ] Implementar endpoints de clients
-- [ ] Implementar endpoints de team
-- [ ] Implementar endpoints de categories
-- [ ] Implementar endpoints de pending-tasks
-- [ ] Implementar endpoints de portal (filtrado por cliente)
-- [ ] Implementar endpoints de my-work (filtrado por funcionária)
-- [ ] Implementar endpoints internos (`/api/internal/*`)
-- [ ] Deploy na VM com PM2
+**O que é:** construir o workflow no N8N que usa o Gather Bot para fazer a coleta 2x ao dia.
 
-**Critério de conclusão:** Testar cada endpoint via Postman/Insomnia com token JWT válido e receber dados reais do Supabase.
+**Entregáveis:**
+1. Cron configurado para 11:30 e 17:00 (horário de Brasília)
+2. Integração com Trello API para buscar tarefas do dia
+3. Integração com Gemini para extrair dados estruturados das respostas
+4. Lógica de lacunas: identifica tarefas do Trello sem correspondência
+5. Fluxo de confirmação via Gather Bot
+6. Gravação dos registros confirmados no Supabase (tabela work_logs)
+
+**Critério de sucesso:** ao final do ciclo, os work_logs aparecem corretamente no app web.
 
 ---
 
-### Fase 3 — Frontend Conectado ao Backend (3-4 dias)
-**Objetivo:** App web mostrando dados reais em todas as telas.
+### Fase 3 — Relatórios PDF via WhatsApp
 
-- [ ] Criar `js/api.js` — módulo central com fetch autenticado
-- [ ] Criar `js/auth.js` — tela de login, guarda token, redireciona
-- [ ] Conectar `dashboard.html` ao endpoint `/api/dashboard/summary`
-- [ ] Conectar `work-logs.html` ao endpoint `/api/work-logs`
-- [ ] Conectar `clients.html` ao endpoint `/api/clients`
-- [ ] Conectar `client-detail.html` ao endpoint `/api/clients/:id`
-- [ ] Conectar `team.html` ao endpoint `/api/team`
-- [ ] Conectar `team-detail.html` ao endpoint `/api/team/:id`
-- [ ] Conectar `categories.html` ao endpoint `/api/categories`
-- [ ] Conectar `reports.html` ao endpoint `/api/reports/summary`
-- [ ] Conectar `my-work.html` ao endpoint `/api/my-work/today`
-- [ ] Conectar `my-tasks.html` ao endpoint `/api/my-tasks`
-- [ ] Conectar `my-messages.html` ao endpoint `/api/my-messages`
-- [ ] Conectar `portal-overview.html` ao endpoint `/api/portal/overview`
-- [ ] Conectar `portal-reports.html` ao endpoint `/api/portal/reports`
-- [ ] Conectar `portal-pending.html` ao endpoint `/api/portal/pending`
+**O que é:** workflow N8N que gera PDF com Gemini e envia para Jéssica via WhatsApp.
 
-**Critério de conclusão:** Jéssica consegue abrir o app, fazer login e ver dados reais de todas as telas.
+**Entregáveis:**
+1. Template HTML de relatório com identidade visual Doma Condo
+2. Geração de PDF a partir do HTML (Puppeteer ou html-pdf via container)
+3. Upload do PDF para Supabase Storage
+4. Envio via Evolution API (WhatsApp) para o número da Jéssica
+5. Crons: diário (17:30), semanal (segunda, 08:00) e mensal (1º do mês, 08:00)
+
+**Critério de sucesso:** Jéssica recebe o PDF no WhatsApp nos horários corretos, com dados reais do Supabase.
 
 ---
 
-### Fase 4 — Agente WhatsApp (5-7 dias)
-**Objetivo:** Agente coletando dados automaticamente 2x por dia.
+### Fase 4 — Portal do Cliente
 
-- [ ] Configurar instância Evolution API com o número do agente
-- [ ] Criar Workflow N8N 1 — Coleta Manhã (Cron 11:30)
-  - [ ] Busca Trello do dia
-  - [ ] Cria sessão no Supabase
-  - [ ] Envia mensagem de abertura via Evolution API
-  - [ ] Recebe resposta (webhook)
-  - [ ] Chama Gemini para extrair atividades
-  - [ ] Cruza com Trello, faz cobrança
-  - [ ] Envia resumo para confirmação
-  - [ ] Salva no Supabase após confirmação
-- [ ] Criar Workflow N8N 2 — Coleta Tarde (Cron 17:00, idêntico)
-- [ ] Testar fluxo completo com mensagem real de uma funcionária
+**O que é:** acesso restrito para as 5 administradoras de condomínio visualizarem seus próprios dados.
 
-**Critério de conclusão:** Funcionária recebe mensagem às 11:30, responde, confirma, e o work log aparece no app web.
+**Entregáveis:**
+1. Fluxo de login via magic link (email) para os clientes
+2. RLS no Supabase garantindo isolamento total de dados
+3. Páginas portal-overview.html e portal-reports.html funcionando com dados reais
+4. Download de PDF dos relatórios pelo portal
+
+**Critério de sucesso:** cada cliente loga e vê apenas seus próprios dados — sem acesso aos dados de outros clientes.
 
 ---
 
-### Fase 5 — Relatórios PDF (3-4 dias)
-**Objetivo:** PDFs gerados e enviados automaticamente.
+### Fase 5 — Automações complementares
 
-- [ ] Criar Workflow N8N 3 — PDF Diário (Cron 17:30)
-- [ ] Criar Workflow N8N 4 — PDF Semanal (Cron segunda 8h)
-- [ ] Criar Workflow N8N 5 — PDF Mensal (Cron último dia útil)
-- [ ] Integrar geração de PDF (Puppeteer via endpoint HTTP ou serviço externo)
-- [ ] Testar envio de PDF para WhatsApp da Jéssica
+**O que é:** integrações secundárias para enriquecer o contexto do agente.
 
-**Critério de conclusão:** Jéssica recebe PDF diário no WhatsApp às 17:30.
+**Entregáveis:**
+1. Integração com Google Drive API para contexto documental no Gemini
+2. Alertas automáticos via WhatsApp para Jéssica quando houver anomalias (muitas pendências, horas abaixo do esperado)
+3. Dashboard de produtividade com métricas semanais e mensais
 
 ---
 
-### Fase 6 — Portal do Cliente (2-3 dias)
-**Objetivo:** Cada cliente acessa seu próprio portal.
+## 9. Referências e Documentação
 
-- [ ] Criar usuários no sistema para cada um dos 5 clientes (role: `cliente`)
-- [ ] Testar acesso ao portal — verificar que cliente A só vê dados do cliente A
-- [ ] Verificar portal-overview.html, portal-reports.html, portal-pending.html
-
-**Critério de conclusão:** Cliente faz login e vê apenas seus dados.
-
----
-
-## 9. Dependências e Riscos
-
-### Dependências Externas Críticas
-| Dependência | Risco | Mitigação |
-|---|---|---|
-| Evolution API | Instabilidade ou banimento do número WhatsApp | Manter número no warm-up, não enviar spam |
-| Gemini API | Latência alta em áudios longos | Timeout de 60s no N8N, retry automático |
-| Supabase | Limite de requisições no plano gratuito | Monitorar uso, migrar para plano pago se necessário |
-| Trello API | Rate limit (300 req/10min) | Cachear tarefas do dia por 1h no Supabase |
-
-### Riscos de Implementação
-| Risco | Impacto | Mitigação |
-|---|---|---|
-| Funcionária não responder no horário | Sessão fica pendente indefinidamente | `expires_at` na sessão — expirar após 4h, Jéssica recebe alerta |
-| Gemini extrai cliente errado | Dados salvos no cliente errado | Sempre confirmar com a funcionária antes de salvar |
-| N8N perde o estado da conversa | Sessão reinicia do zero | Estado da sessão sempre no Supabase, nunca apenas em memória N8N |
-| VM reinicia durante uma conversa | Sessão perdida | PM2 reinicia o backend, N8N reinicia automático, sessão continua do Supabase |
-
----
-
-## 10. Decisões de Arquitetura Registradas
-
-| Decisão | Alternativa considerada | Motivo da escolha |
-|---|---|---|
-| Backend API separado (Express) em vez de Supabase direto no frontend | Expor Supabase diretamente com RLS | Evita vazar API Keys no browser, centraliza lógica de permissão, mais seguro |
-| N8N como orquestrador do agente em vez de script Python/Node | FastAPI como orquestrador | N8N é visual, mais fácil de debugar e manter, Gemini é o cérebro real |
-| Estado da conversa no Supabase em vez de memória do N8N | Variáveis em memória no workflow N8N | Persistente entre reinicializações, rastreável, auditável |
-| JWT assinado localmente em vez de Supabase Auth | Supabase Auth nativo | Simplicidade — não precisa de OAuth, apenas login simples email/senha |
-| PDF gerado no N8N em vez de serviço separado | Serviço Python de geração de PDF | Menos infraestrutura, N8N tem nós de HTTP que podem chamar Puppeteer ou serviço de PDF externo |
-| Gemini 2.0 Flash para coleta, Gemini 1.5 Pro para relatórios mensais | Usar um único modelo | Flash é mais rápido e barato para conversas em tempo real; Pro tem qualidade superior para narrativas longas |
+| Recurso | URL |
+|---|---|
+| Gather SDK (@gathertown/gather-game-client) | https://github.com/gathertown/gather-game-client |
+| Gather API Docs | https://gathertown.notion.site/Gather-HTTP-API |
+| N8N Docs | https://docs.n8n.io |
+| Supabase Docs | https://supabase.com/docs |
+| Evolution API Docs | https://doc.evolution-api.com |
+| Gemini API Docs | https://ai.google.dev/docs |
+| Trello API Docs | https://developer.atlassian.com/cloud/trello/rest |
+| Google Drive API Docs | https://developers.google.com/drive/api/reference/rest/v3 |
