@@ -330,3 +330,5 @@ async function init() {
 
   initForm(employeeId)
 }
+
+init()
