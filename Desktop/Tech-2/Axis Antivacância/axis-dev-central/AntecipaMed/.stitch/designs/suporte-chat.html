@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#ffffff",
+                    "surface-bright": "#f7f9fb",
+                    "on-primary-fixed-variant": "#004882",
+                    "on-secondary": "#ffffff",
+                    "inverse-primary": "#a3c9ff",
+                    "primary-fixed": "#d3e4ff",
+                    "on-background": "#191c1e",
+                    "primary": "#003664",
+                    "on-tertiary-fixed-variant": "#334a56",
+                    "surface-container-highest": "#e0e3e5",
+                    "primary-fixed-dim": "#a3c9ff",
+                    "on-primary-container": "#90bfff",
+                    "on-tertiary-container": "#a8c0cf",
+                    "surface-variant": "#e0e3e5",
+                    "surface-container": "#eceef0",
+                    "on-primary-fixed": "#001c38",
+                    "tertiary": "#213844",
+                    "on-tertiary-fixed": "#051e29",
+                    "surface-dim": "#d8dadc",
+                    "on-secondary-fixed-variant": "#004e60",
+                    "tertiary-fixed-dim": "#b2cad9",
+                    "surface-container-high": "#e6e8ea",
+                    "on-error": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#4cd6ff",
+                    "primary-container": "#054d89",
+                    "surface-tint": "#27609d",
+                    "surface": "#f7f9fb",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed": "#cde6f5",
+                    "inverse-on-surface": "#eff1f3",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed": "#001f28",
+                    "inverse-surface": "#2d3133",
+                    "background": "#f7f9fb",
+                    "on-surface-variant": "#434652",
+                    "secondary-container": "#00ccf9",
+                    "on-secondary-container": "#005266",
+                    "on-surface": "#191c1e",
+                    "surface-container-low": "#f2f4f6",
+                    "outline-variant": "#c3c6d4",
+                    "secondary": "#00677f",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed": "#b7eaff",
+                    "error": "#ba1a1a",
+                    "tertiary-container": "#384f5b",
+                    "outline": "#737783"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .chat-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .chat-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-scroll::-webkit-scrollbar-thumb {
+            background: #e0e3e5;
+            border-radius: 10px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-40 bg-slate-50 dark:bg-slate-900 shadow-sm dark:shadow-none flex items-center justify-between px-6 py-4">
+<div class="flex items-center gap-4">
+<button class="text-blue-900 dark:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors p-2 rounded-full active:opacity-70 duration-150">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-plus-jakarta-sans text-lg font-semibold tracking-tight text-blue-900 dark:text-blue-400">AntecipaMed</h1>
+</div>
+<div class="relative">
+<img alt="User profile photo" class="w-10 h-10 rounded-full object-cover border-2 border-surface-container" data-alt="Close up portrait of a professional male doctor in a clinical setting with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoHJZGiZ-K1sY-Kxo1Y5a7EU99suBj4f1MOM592N4P7Gav1-_trSMydd4FhLD87zxP0YLytKDisJFu10CZCPtDwrYz8mnBJyrBbbgRii7tW8FPorKkN_fu_-VChZOzmdutJjwDHiCyQ3rEAQNeKcvvLjnjL4L2yH7wh9-8HMO_GTQngp7XgBiWLAVlnyB6FfH8ofKIQjF0Ei1JJ4Qo0r_R33HLQSIpWtlBV6RygyJFIEMSUNReZRccirjUiZ22_b8B10urRtnh6HU"/>
+</div>
+</header>
+<!-- Content Canvas -->
+<main class="flex-grow flex flex-col max-w-4xl mx-auto w-full px-4 md:px-6 pt-4 pb-32">
+<!-- Support Concierge Header -->
+<section class="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 mb-6 transition-colors shadow-[0_12px_32px_-4px_rgba(0,54,100,0.06)]">
+<div class="relative">
+<img alt="Concierge Digital" class="w-16 h-16 rounded-full object-cover grayscale-[20%] brightness-110" data-alt="Professional female medical assistant wearing a headset in a bright clinical office environment with blue accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyyJAwPwN4PAg8s8fFWBRddRY6fpGpwtxYwfyF4JsYx9WFyGtVRtOYj-HKkQtKcXT-l8hdSH66C81sjYXr7NEALHtYkUJnFUpecwT4Udkdvi6iaU9x3zUgcG5RpfG7OCi_83M-vXzLEDL4Kfegzww0YHNbft3mjpV5uUCqfNxd8c1EXWaySCcuZmiYuwNi-z-2BY-iIC-KncQHk6xs99525iOANRRfyN4kE0uWQIWmTKf6hdcKecPhC_pmHRNYgyqPl7sIARkthqM"/>
+<div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+</div>
+<div>
+<h2 class="font-headline font-bold text-primary text-xl leading-tight">Concierge Digital</h2>
+<p class="text-on-surface-variant text-sm flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+                    Online agora para te ajudar
+                </p>
+</div>
+</section>
+<!-- Chat Area -->
+<div class="flex-grow flex flex-col space-y-6 chat-scroll overflow-y-auto mb-6 pr-2">
+<!-- System Message -->
+<div class="flex flex-col items-start max-w-[85%]">
+<div class="bg-surface-container-high text-on-surface p-4 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl">
+<p class="text-sm leading-relaxed">Olá! Sou sua assistente AntecipaMed. Como posso facilitar sua jornada financeira hoje?</p>
+</div>
+<span class="text-[10px] text-outline mt-1 ml-1 font-medium">14:20</span>
+</div>
+<!-- User Message -->
+<div class="flex flex-col items-end max-w-[85%] ml-auto">
+<div class="bg-[#0F2B3C] text-white p-4 rounded-tl-2xl rounded-br-2xl rounded-bl-2xl shadow-sm">
+<p class="text-sm leading-relaxed">Gostaria de saber sobre o status da minha última solicitação de antecipação.</p>
+</div>
+<div class="flex items-center gap-1 mt-1 mr-1">
+<span class="text-[10px] text-outline font-medium">14:22</span>
+<span class="material-symbols-outlined text-[14px] text-secondary" style="font-variation-settings: 'FILL' 1;">done_all</span>
+</div>
+</div>
+<!-- System Message with Data -->
+<div class="flex flex-col items-start max-w-[85%]">
+<div class="bg-surface-container-high text-on-surface p-4 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl">
+<p class="text-sm leading-relaxed">Identifiquei sua solicitação de <span class="font-semibold">R$ 12.450,00</span>. Ela já foi aprovada e está em fase de processamento bancário.</p>
+<div class="mt-3 p-3 bg-white/50 rounded-lg flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="receipt_long">receipt_long</span>
+<div>
+<p class="text-xs font-bold text-primary">Protocolo #88291</p>
+<p class="text-[11px] text-on-surface-variant">Previsão: Hoje até às 18h</p>
+</div>
+</div>
+</div>
+<span class="text-[10px] text-outline mt-1 ml-1 font-medium">14:23</span>
+</div>
+</div>
+<!-- Suggestion Pills -->
+<div class="flex gap-2 overflow-x-auto pb-4 no-scrollbar">
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface-container-lowest text-primary text-xs font-semibold border border-outline-variant/30 hover:bg-primary hover:text-white transition-all duration-200">
+                Dúvida sobre antecipação
+            </button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface-container-lowest text-primary text-xs font-semibold border border-outline-variant/30 hover:bg-primary hover:text-white transition-all duration-200">
+                Prazo de depósito
+            </button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface-container-lowest text-primary text-xs font-semibold border border-outline-variant/30 hover:bg-primary hover:text-white transition-all duration-200">
+                Taxas e Tarifas
+            </button>
+</div>
+<!-- Input Area -->
+<div class="sticky bottom-24 w-full">
+<div class="bg-surface-container-lowest rounded-2xl p-2 shadow-[0_-4px_24px_rgba(0,54,100,0.08)] flex items-center gap-2">
+<button class="p-2 text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="attach_file">attach_file</span>
+</button>
+<input class="flex-grow bg-transparent border-none focus:ring-0 text-sm py-3 px-2 placeholder:text-outline" placeholder="Digite sua mensagem..." type="text"/>
+<button class="bg-primary text-white w-10 h-10 rounded-xl flex items-center justify-center hover:bg-primary-container transition-all active:scale-95 shadow-md">
+<span class="material-symbols-outlined" data-icon="send" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl shadow-[0_-4px_20px_rgba(13,71,161,0.05)] rounded-t-2xl border-t border-slate-100 dark:border-slate-800">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-3 py-1.5 hover:text-blue-700 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-inter text-[11px] font-medium tracking-wide">Início</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-3 py-1.5 hover:text-blue-700 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-inter text-[11px] font-medium tracking-wide">Antecipar</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-3 py-1.5 hover:text-blue-700 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-inter text-[11px] font-medium tracking-wide">Histórico</span>
+</a>
+<!-- ACTIVE NAVIGATION: Suporte -->
+<a class="flex flex-col items-center justify-center bg-blue-50 dark:bg-blue-900/30 text-blue-900 dark:text-blue-200 rounded-xl px-3 py-1.5 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="support_agent" style="font-variation-settings: 'FILL' 1;">support_agent</span>
+<span class="font-inter text-[11px] font-medium tracking-wide">Suporte</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-3 py-1.5 hover:text-blue-700 transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-inter text-[11px] font-medium tracking-wide">Perfil</span>
+</a>
+</nav>
+</body></html>

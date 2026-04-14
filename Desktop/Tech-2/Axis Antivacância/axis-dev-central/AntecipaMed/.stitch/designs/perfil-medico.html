@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#ffffff",
+                    "surface-bright": "#f7f9fb",
+                    "on-primary-fixed-variant": "#004882",
+                    "on-secondary": "#ffffff",
+                    "inverse-primary": "#a3c9ff",
+                    "primary-fixed": "#d3e4ff",
+                    "on-background": "#191c1e",
+                    "primary": "#003664",
+                    "on-tertiary-fixed-variant": "#334a56",
+                    "surface-container-highest": "#e0e3e5",
+                    "primary-fixed-dim": "#a3c9ff",
+                    "on-primary-container": "#90bfff",
+                    "on-tertiary-container": "#a8c0cf",
+                    "surface-variant": "#e0e3e5",
+                    "surface-container": "#eceef0",
+                    "on-primary-fixed": "#001c38",
+                    "tertiary": "#213844",
+                    "on-tertiary-fixed": "#051e29",
+                    "surface-dim": "#d8dadc",
+                    "on-secondary-fixed-variant": "#004e60",
+                    "tertiary-fixed-dim": "#b2cad9",
+                    "surface-container-high": "#e6e8ea",
+                    "on-error": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#4cd6ff",
+                    "primary-container": "#054d89",
+                    "surface-tint": "#27609d",
+                    "surface": "#f7f9fb",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed": "#cde6f5",
+                    "inverse-on-surface": "#eff1f3",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed": "#001f28",
+                    "inverse-surface": "#2d3133",
+                    "background": "#f7f9fb",
+                    "on-surface-variant": "#434652",
+                    "secondary-container": "#00ccf9",
+                    "on-secondary-container": "#005266",
+                    "on-surface": "#191c1e",
+                    "surface-container-low": "#f2f4f6",
+                    "outline-variant": "#c3c6d4",
+                    "secondary": "#00677f",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed": "#b7eaff",
+                    "error": "#ba1a1a",
+                    "tertiary-container": "#384f5b",
+                    "outline": "#737783"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.5rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .vitals-glass {
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.7);
+        }
+        .clinical-gradient {
+            background: linear-gradient(135deg, #003664 0%, #054d89 100%);
+        }
+        .ghost-border {
+            border-bottom: 2px solid rgba(115, 119, 131, 0.15);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface selection:bg-secondary-fixed">
+<!-- Top Navigation -->
+<nav class="bg-slate-50 dark:bg-slate-900 shadow-sm dark:shadow-none w-full top-0 sticky z-50">
+<div class="flex items-center justify-between px-6 py-4 w-full">
+<div class="flex items-center gap-4">
+<button class="text-blue-900 dark:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:opacity-70 duration-150 p-2 rounded-full">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-plus-jakarta-sans text-xl font-bold tracking-tight text-blue-900 dark:text-blue-100">AntecipaMed</h1>
+</div>
+<div class="h-10 w-10 rounded-full overflow-hidden bg-surface-container-highest ring-2 ring-primary/10">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="portrait of a professional male doctor in a white coat smiling in a modern medical clinic setting with soft clinical lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcjrA6fgI_HJZrJuxhHnhq8DTGtg90LE_8f5sjSLQatbhITLMFZRJco7zYf_h35sCzKJddl3poqNYQUmpcBsw0lvnMgRSA7VNB4VTBcORmIzjMGW3MxRRffrpK2rR2RSkglY5i-WMZNO-71k5bTK-qC4Smf6CC1kLFr_ni6sRUI0LJNBhn7lN6CcL5pqP1allPVose482XY0is0RieDzlF_Lbb5HbGotKS8NVGWCsfPl8Y-LAdUQYi12ZAVcCExEwLPc0U1qMF-1g"/>
+</div>
+</div>
+<div class="bg-slate-100 dark:bg-slate-800 h-[1px] w-full"></div>
+</nav>
+<main class="max-w-4xl mx-auto px-6 py-10 pb-32">
+<!-- Hero Section -->
+<header class="relative mb-12 flex flex-col md:flex-row items-center md:items-end gap-8">
+<div class="relative group">
+<div class="w-40 h-40 rounded-3xl overflow-hidden ring-4 ring-surface-container-lowest shadow-lg">
+<img alt="RM Profile" class="w-full h-full object-cover" data-alt="professional portrait of a senior male doctor with grey hair and glasses in a clinical environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3-rF517znwy1ci1jR1WIlSGdRbdTmLk5hQ-Oocz8gjVy-UQIqAULtTk0nSRYW_ORh7awPv3RaNY7bbFrLZa_11HQGzpxDB1tMN8QBwZidoevJA1n64EVFL6A8q-D5kkCe0ieY1fcM4msySmK1WK8Xyb5mNjg07AVejFXeKroa38a3kgNoJVe3LZftBWtPyjlSg2xqDTkNnrm8bv5INX1beoDElVkqPysoRgOv9lrABGuiMW6ZwZXYRSYWGD1BshfOSojeSUumDbs"/>
+</div>
+<div class="absolute -bottom-2 -right-2 clinical-gradient text-white w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg shadow-md">
+                    RM
+                </div>
+</div>
+<div class="flex-1 text-center md:text-left space-y-2">
+<div class="flex flex-wrap items-center justify-center md:justify-start gap-3">
+<h2 class="font-headline text-3xl font-extrabold text-primary tracking-tight">Dr. Ricardo Martins</h2>
+<div class="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full vitals-glass">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                        Verificado
+                    </div>
+</div>
+<p class="text-on-surface-variant font-medium text-lg">Cardiologista • CRM-SP 123456</p>
+<div class="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-2">
+<div class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-secondary">mail</span>
+                        ricardo.martins@exemplo.med.br
+                    </div>
+<div class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-secondary">location_on</span>
+                        São Paulo, SP
+                    </div>
+</div>
+</div>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Personal Data Card -->
+<section class="lg:col-span-2 bg-surface-container-lowest rounded-xl p-8 shadow-[0_12px_32px_-4px_rgba(0,54,100,0.04)] relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary"></div>
+<div class="flex justify-between items-center mb-8">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">person</span>
+<h3 class="font-headline text-xl font-bold text-primary">Dados Pessoais</h3>
+</div>
+<button class="text-secondary font-semibold text-sm hover:underline">Editar</button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-y-8 gap-x-12">
+<div class="space-y-1 ghost-border pb-2">
+<label class="text-[11px] font-bold uppercase tracking-wider text-outline">Nome Completo</label>
+<p class="font-medium text-on-surface">Ricardo Mendonça Martins</p>
+</div>
+<div class="space-y-1 ghost-border pb-2">
+<label class="text-[11px] font-bold uppercase tracking-wider text-outline">CPF</label>
+<p class="font-medium text-on-surface">123.456.789-00</p>
+</div>
+<div class="space-y-1 ghost-border pb-2">
+<label class="text-[11px] font-bold uppercase tracking-wider text-outline">Data de Nascimento</label>
+<p class="font-medium text-on-surface">15 de Maio, 1978</p>
+</div>
+<div class="space-y-1 ghost-border pb-2">
+<label class="text-[11px] font-bold uppercase tracking-wider text-outline">Especialidade Principal</label>
+<p class="font-medium text-on-surface">Cardiologia Clínica</p>
+</div>
+</div>
+</section>
+<!-- Status & Vitals Card -->
+<section class="bg-surface-container-low rounded-xl p-8 flex flex-col justify-between">
+<div>
+<h3 class="font-headline text-lg font-bold text-primary mb-6">Status da Conta</h3>
+<div class="space-y-4">
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between">
+<span class="text-sm font-medium">Perfil Biométrico</span>
+<span class="px-3 py-1 bg-green-50 text-green-700 text-[11px] font-bold rounded-lg border border-green-100">ATIVO</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between">
+<span class="text-sm font-medium">Contrato Digital</span>
+<span class="px-3 py-1 bg-yellow-50 text-yellow-700 text-[11px] font-bold rounded-lg border border-yellow-100">PENDENTE</span>
+</div>
+</div>
+</div>
+<div class="mt-8">
+<button class="w-full clinical-gradient text-white py-3 rounded-xl font-bold text-sm shadow-md active:scale-95 transition-transform">
+                        Completar Cadastro
+                    </button>
+</div>
+</section>
+<!-- Banking Info Card -->
+<section class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_12px_32px_-4px_rgba(0,54,100,0.04)] lg:col-span-1">
+<div class="flex items-center gap-3 mb-8">
+<span class="material-symbols-outlined text-primary">account_balance</span>
+<h3 class="font-headline text-xl font-bold text-primary">Dados Bancários</h3>
+</div>
+<div class="space-y-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container flex items-center justify-center rounded-xl">
+<span class="material-symbols-outlined text-outline">payments</span>
+</div>
+<div>
+<p class="text-xs font-bold text-outline uppercase tracking-tight">Banco Itaú (341)</p>
+<p class="font-medium text-on-surface">Agência 0810 • CC 45678-9</p>
+</div>
+</div>
+<div class="p-4 bg-surface-container-low rounded-xl border-l-4 border-secondary">
+<p class="text-xs text-on-surface-variant leading-relaxed">
+                            Esta conta será utilizada para todos os recebimentos de antecipação.
+                        </p>
+</div>
+</div>
+</section>
+<!-- Documents Card -->
+<section class="lg:col-span-2 bg-surface-container-lowest rounded-xl p-8 shadow-[0_12px_32px_-4px_rgba(0,54,100,0.04)]">
+<div class="flex justify-between items-center mb-8">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">description</span>
+<h3 class="font-headline text-xl font-bold text-primary">Documentos</h3>
+</div>
+<span class="px-3 py-1 bg-surface-container text-on-surface-variant text-[11px] font-bold rounded-full">3 ARQUIVOS</span>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-4 bg-surface hover:bg-surface-container-low transition-colors rounded-xl group cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 flex items-center justify-center bg-blue-50 rounded-lg text-primary">
+<span class="material-symbols-outlined">badge</span>
+</div>
+<div>
+<p class="text-sm font-semibold">Carteira do CRM (Frente e Verso)</p>
+<p class="text-xs text-on-surface-variant">Validado em 12/01/2024</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-secondary opacity-0 group-hover:opacity-100 transition-opacity">download</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface hover:bg-surface-container-low transition-colors rounded-xl group cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 flex items-center justify-center bg-blue-50 rounded-lg text-primary">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div>
+<p class="text-sm font-semibold">Comprovante de Residência</p>
+<p class="text-xs text-on-surface-variant">Validado em 10/01/2024</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-secondary opacity-0 group-hover:opacity-100 transition-opacity">download</span>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface hover:bg-surface-container-low transition-colors rounded-xl border border-dashed border-outline-variant group cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 flex items-center justify-center bg-yellow-50 rounded-lg text-yellow-700">
+<span class="material-symbols-outlined">pending</span>
+</div>
+<div>
+<p class="text-sm font-semibold text-on-surface">Certificado de Especialista</p>
+<p class="text-xs text-yellow-700 font-medium italic">Aguardando análise</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">more_vert</span>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<footer class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl rounded-t-2xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-4px_20px_rgba(13,71,161,0.05)]">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-3 py-1.5 hover:text-blue-700 dark:hover:text-blue-300 transition-transform duration-200 scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-inter text-[11px] font-medium tracking-wide">Início</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-3 py-1.5 hover:text-blue-700 dark:hover:text-blue-300 transition-transform duration-200 scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-inter text-[11px] font-medium tracking-wide">Antecipar</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-3 py-1.5 hover:text-blue-700 dark:hover:text-blue-300 transition-transform duration-200 scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-inter text-[11px] font-medium tracking-wide">Histórico</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-3 py-1.5 hover:text-blue-700 dark:hover:text-blue-300 transition-transform duration-200 scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined">support_agent</span>
+<span class="font-inter text-[11px] font-medium tracking-wide">Suporte</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-blue-50 dark:bg-blue-900/30 text-blue-900 dark:text-blue-200 rounded-xl px-3 py-1.5 transition-transform duration-200 scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-inter text-[11px] font-medium tracking-wide">Perfil</span>
+</a>
+</footer>
+</body></html>
