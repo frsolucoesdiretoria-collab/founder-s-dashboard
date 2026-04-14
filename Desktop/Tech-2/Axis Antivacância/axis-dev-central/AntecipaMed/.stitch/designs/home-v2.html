@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AntecipaMed Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed-dim": "#b4c5ff",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "surface-bright": "#f7f9fb",
+                    "on-error-container": "#93000a",
+                    "on-secondary-container": "#00714d",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "on-error": "#ffffff",
+                    "secondary-container": "#6cf8bb",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-high": "#e6e8ea",
+                    "primary-container": "#2563eb",
+                    "on-surface-variant": "#434655",
+                    "secondary": "#006c49",
+                    "on-secondary-fixed": "#002113",
+                    "on-tertiary": "#ffffff",
+                    "tertiary": "#943700",
+                    "inverse-on-surface": "#eff1f3",
+                    "on-background": "#191c1e",
+                    "surface-variant": "#e0e3e5",
+                    "surface-tint": "#0053db",
+                    "inverse-surface": "#2d3133",
+                    "on-primary-fixed": "#00174b",
+                    "on-tertiary-container": "#ffede6",
+                    "outline": "#737686",
+                    "on-primary": "#ffffff",
+                    "surface-dim": "#d8dadc",
+                    "surface": "#f7f9fb",
+                    "background": "#f7f9fb",
+                    "on-secondary-fixed-variant": "#005236",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed": "#ffdbcd",
+                    "primary": "#004ac6",
+                    "on-secondary": "#ffffff",
+                    "surface-container-highest": "#e0e3e5",
+                    "surface-container": "#eceef0",
+                    "on-surface": "#191c1e",
+                    "tertiary-container": "#bc4800",
+                    "primary-fixed": "#dbe1ff",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed-dim": "#4edea3",
+                    "inverse-primary": "#b4c5ff",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "secondary-fixed": "#6ffbbe",
+                    "on-tertiary-fixed": "#360f00",
+                    "outline-variant": "#c3c6d7",
+                    "surface-container-low": "#f2f4f6",
+                    "on-primary-container": "#eeefff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "1.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      .tonal-depth-shift { background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(242,244,246,1) 100%); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface antialiased flex justify-center min-h-screen">
+<main class="w-[390px] bg-surface min-h-screen pb-32 relative overflow-x-hidden">
+<!-- Status Bar Mockup -->
+<div class="flex justify-between items-center px-8 pt-4 pb-2 text-[13px] font-semibold tracking-tight">
+<span>10:21</span>
+<div class="flex gap-1.5 items-center">
+<span class="material-symbols-outlined text-[16px]">signal_cellular_alt</span>
+<span class="material-symbols-outlined text-[16px]">wifi</span>
+<span class="material-symbols-outlined text-[16px]">battery_very_low</span>
+</div>
+</div>
+<!-- TopAppBar (Shared Component Logic) -->
+<header class="w-full pt-4 pb-2 flex justify-between items-center px-6 max-w-md mx-auto bg-surface">
+<div>
+<p class="text-slate-500 text-sm font-medium">Bom dia,</p>
+<h1 class="font-headline font-extrabold text-xl text-primary">Dr. Ricardo Mendes</h1>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative hover:opacity-80 transition-opacity cursor-pointer">
+<span class="material-symbols-outlined text-slate-600" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border border-white"></span>
+</div>
+<div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                    RM
+                </div>
+</div>
+</header>
+<!-- Hero Card (The Advance Slider Context) -->
+<section class="px-6 mt-4">
+<div class="bg-gradient-to-br from-[#1E40AF] to-[#2563EB] rounded-xl p-6 text-white shadow-lg relative overflow-hidden">
+<!-- Decorative element -->
+<div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+<p class="text-sm font-medium opacity-90 mb-2">Saldo disponível para antecipação</p>
+<h2 class="font-headline text-4xl font-extrabold tracking-tight mb-4 tabular-nums">R$ 18.400,00</h2>
+<div class="flex items-center gap-2 mb-6 bg-white/10 w-fit px-3 py-1.5 rounded-full backdrop-blur-md">
+<span class="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span>
+<span class="text-xs font-semibold">4 plantões elegíveis</span>
+</div>
+<button class="w-full bg-surface-container-lowest text-primary font-bold py-4 rounded-full flex items-center justify-center gap-2 active:scale-95 transition-transform duration-150 shadow-md">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                    Antecipar Agora
+                </button>
+</div>
+</section>
+<!-- Próximos Plantões (Horizontal Scroll) -->
+<section class="mt-8">
+<div class="px-6 flex justify-between items-end mb-4">
+<h3 class="font-headline font-bold text-lg">Próximos Plantões</h3>
+<span class="text-primary text-xs font-bold uppercase tracking-wider cursor-pointer">Ver tudo</span>
+</div>
+<div class="flex overflow-x-auto gap-4 px-6 no-scrollbar snap-x">
+<!-- Card 1 -->
+<div class="min-w-[240px] snap-start bg-surface-container-low p-5 rounded-xl flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<span class="text-xs font-bold text-secondary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                            Elegível
+                        </span>
+<span class="material-symbols-outlined text-slate-400 text-lg">more_horiz</span>
+</div>
+<div>
+<p class="text-slate-500 text-xs font-medium uppercase tracking-tighter">Hospital</p>
+<h4 class="font-headline font-bold text-on-surface">Sírio-Libanês</h4>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="text-xs text-slate-400">R$</span>
+<span class="font-headline font-extrabold text-xl">4.200</span>
+</div>
+<div class="flex items-center gap-2 text-slate-500 text-xs mt-1">
+<span class="material-symbols-outlined text-[14px]">event</span>
+<span>18 abr · 19:00</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="min-w-[240px] snap-start bg-surface-container-low p-5 rounded-xl flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<span class="text-xs font-bold text-secondary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                            Elegível
+                        </span>
+<span class="material-symbols-outlined text-slate-400 text-lg">more_horiz</span>
+</div>
+<div>
+<p class="text-slate-500 text-xs font-medium uppercase tracking-tighter">Hospital</p>
+<h4 class="font-headline font-bold text-on-surface">Albert Einstein</h4>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="text-xs text-slate-400">R$</span>
+<span class="font-headline font-extrabold text-xl">5.100</span>
+</div>
+<div class="flex items-center gap-2 text-slate-500 text-xs mt-1">
+<span class="material-symbols-outlined text-[14px]">event</span>
+<span>20 abr · 07:00</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Últimas Antecipações (List) -->
+<section class="mt-10 px-6">
+<h3 class="font-headline font-bold text-lg mb-4">Últimas Antecipações</h3>
+<div class="space-y-3">
+<!-- Row 1 -->
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between border border-outline-variant/10">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[20px]">trending_up</span>
+</div>
+<div>
+<p class="font-bold text-sm">R$ 3.780 <span class="text-slate-400 font-normal">líquido</span></p>
+<p class="text-[11px] text-slate-500">10 abr · spread 10%</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-blue-50 text-primary text-[10px] font-bold rounded-full uppercase">Em andamento</span>
+</div>
+<!-- Row 2 -->
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between border border-outline-variant/10">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[20px]">trending_up</span>
+</div>
+<div>
+<p class="font-bold text-sm">R$ 4.840 <span class="text-slate-400 font-normal">líquido</span></p>
+<p class="text-[11px] text-slate-500">08 abr · spread 12%</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-blue-50 text-primary text-[10px] font-bold rounded-full uppercase">Em andamento</span>
+</div>
+<!-- Row 3 -->
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between border border-outline-variant/10">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-[20px]">check_circle</span>
+</div>
+<div>
+<p class="font-bold text-sm">R$ 3.496 <span class="text-slate-400 font-normal">líquido</span></p>
+<p class="text-[11px] text-slate-500">05 abr · spread 8%</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-secondary-container/30 text-secondary text-[10px] font-bold rounded-full uppercase">Concluída</span>
+</div>
+</div>
+</section>
+<!-- Resumo do Mês (Mini Cards Grid) -->
+<section class="mt-10 px-6 mb-12">
+<h3 class="font-headline font-bold text-lg mb-4">Resumo do Mês</h3>
+<div class="grid grid-cols-3 gap-3">
+<div class="bg-surface-container p-4 rounded-xl flex flex-col gap-2">
+<span class="text-[10px] font-bold text-slate-500 uppercase leading-none">Recebido</span>
+<p class="font-headline font-extrabold text-sm text-primary">R$ 7.000</p>
+</div>
+<div class="bg-surface-container p-4 rounded-xl flex flex-col gap-2">
+<span class="text-[10px] font-bold text-slate-500 uppercase leading-none">Antecipado</span>
+<p class="font-headline font-extrabold text-sm text-primary">R$ 47.500</p>
+</div>
+<div class="bg-surface-container p-4 rounded-xl flex flex-col gap-2">
+<span class="text-[10px] font-bold text-slate-500 uppercase leading-none">Economia</span>
+<p class="font-headline font-extrabold text-sm text-secondary">38 dias</p>
+</div>
+</div>
+</section>
+<!-- BottomNavBar (Shared Component Execution) -->
+<nav class="fixed bottom-0 left-0 w-full h-20 flex justify-around items-center px-4 pb-safe bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl z-50 rounded-t-[24px] shadow-[0px_-12px_32px_rgba(25,28,30,0.04)]">
+<!-- Home (Active) -->
+<a class="flex flex-col items-center justify-center text-[#004ac6] dark:text-blue-400 font-bold hover:text-blue-500 transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-['Inter'] text-[10px] font-medium tracking-tight mt-1">Home</span>
+</a>
+<!-- Plantões -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-blue-500 transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]" data-icon="calendar_today">calendar_today</span>
+<span class="font-['Inter'] text-[10px] font-medium tracking-tight mt-1">Plantões</span>
+</a>
+<!-- Antecipar (Special Central Action) -->
+<div class="relative -top-6">
+<div class="bg-primary p-4 rounded-full shadow-lg shadow-primary/30 active:scale-90 transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined text-white text-[32px]" data-icon="add_box" style="font-variation-settings: 'FILL' 1;">add_box</span>
+</div>
+<span class="font-['Inter'] text-[10px] font-bold tracking-tight text-primary flex justify-center mt-2">Antecipar</span>
+</div>
+<!-- Histórico -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-blue-500 transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]" data-icon="history">history</span>
+<span class="font-['Inter'] text-[10px] font-medium tracking-tight mt-1">Histórico</span>
+</a>
+<!-- Perfil -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-blue-500 transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]" data-icon="person">person</span>
+<span class="font-['Inter'] text-[10px] font-medium tracking-tight mt-1">Perfil</span>
+</a>
+</nav>
+</main>
+</body></html>

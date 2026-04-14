@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-mono-data { font-family: 'JetBrains Mono', monospace; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "outline": "#737686",
+                "on-primary-container": "#eeefff",
+                "surface-container-high": "#e6e8ea",
+                "primary-container": "#2563eb",
+                "tertiary": "#943700",
+                "surface-container-highest": "#e0e3e5",
+                "on-tertiary-fixed-variant": "#7d2d00",
+                "surface-variant": "#e0e3e5",
+                "on-secondary-fixed-variant": "#005236",
+                "surface-container": "#eceef0",
+                "on-surface-variant": "#434655",
+                "on-surface": "#191c1e",
+                "on-tertiary": "#ffffff",
+                "secondary-fixed": "#6ffbbe",
+                "inverse-surface": "#2d3133",
+                "background": "#f7f9fb",
+                "secondary-fixed-dim": "#4edea3",
+                "primary": "#004ac6",
+                "primary-fixed-dim": "#b4c5ff",
+                "inverse-primary": "#b4c5ff",
+                "error": "#ba1a1a",
+                "surface": "#f7f9fb",
+                "on-background": "#191c1e",
+                "tertiary-fixed-dim": "#ffb596",
+                "outline-variant": "#c3c6d7",
+                "surface-dim": "#d8dadc",
+                "on-secondary": "#ffffff",
+                "inverse-on-surface": "#eff1f3",
+                "on-tertiary-container": "#ffede6",
+                "on-error": "#ffffff",
+                "surface-container-low": "#f2f4f6",
+                "on-primary-fixed": "#00174b",
+                "surface-container-lowest": "#ffffff",
+                "secondary-container": "#6cf8bb",
+                "primary-fixed": "#dbe1ff",
+                "on-primary": "#ffffff",
+                "on-secondary-container": "#00714d",
+                "tertiary-container": "#bc4800",
+                "surface-tint": "#0053db",
+                "on-error-container": "#93000a",
+                "on-secondary-fixed": "#002113",
+                "on-primary-fixed-variant": "#003ea8",
+                "secondary": "#006c49",
+                "error-container": "#ffdad6",
+                "on-tertiary-fixed": "#360f00",
+                "tertiary-fixed": "#ffdbcd",
+                "surface-bright": "#f7f9fb"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "1.5rem",
+                "full": "9999px"
+            }
+          }
+        }
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-6 w-full h-16 bg-[#f7f9fb] dark:bg-slate-900 sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<button class="hover:bg-slate-200 dark:hover:bg-slate-800 p-2 rounded-full transition-transform duration-200 active:scale-95">
+<span class="material-symbols-outlined text-[#004ac6] dark:text-blue-400">arrow_back</span>
+</button>
+<h1 class="Plus Jakarta Sans extrabold headline-sm font-bold text-blue-700 dark:text-blue-400">Perfil</h1>
+</div>
+<button class="hover:bg-slate-200 dark:hover:bg-slate-800 p-2 rounded-full transition-transform duration-200 active:scale-95">
+<span class="material-symbols-outlined text-[#004ac6] dark:text-blue-400">settings</span>
+</button>
+</header>
+<main class="px-6 space-y-8 max-w-2xl mx-auto">
+<!-- Profile Hero -->
+<section class="flex flex-col items-center mt-6">
+<div class="relative">
+<div class="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center shadow-xl border-4 border-surface-container-lowest">
+<span class="text-on-primary font-headline text-3xl font-extrabold tracking-tight">DR</span>
+</div>
+<div class="absolute bottom-0 right-0 bg-secondary text-on-secondary rounded-full p-1 border-2 border-surface-container-lowest">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<div class="text-center mt-4">
+<h2 class="font-headline text-2xl font-extrabold text-on-surface tracking-tight">Dr. Carlos Mendes</h2>
+<p class="text-outline font-medium">CRM-SP 123456</p>
+</div>
+</section>
+<!-- Stats Bento Grid -->
+<section class="grid grid-cols-2 md:grid-cols-3 gap-4">
+<div class="col-span-2 md:col-span-1 bg-surface-container-lowest p-5 rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+<p class="text-outline text-xs font-bold uppercase tracking-wider mb-2">Total Antecipado</p>
+<div class="flex items-baseline gap-1">
+<span class="text-primary font-headline font-extrabold text-2xl tracking-tight">R$ 42.000</span>
+</div>
+<p class="text-secondary text-xs font-semibold mt-1">+12% este mês</p>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+<p class="text-outline text-xs font-bold uppercase tracking-wider mb-2">Plantões</p>
+<span class="text-on-surface font-headline font-extrabold text-2xl">18</span>
+<p class="text-outline text-xs mt-1">Concluídos</p>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+<p class="text-outline text-xs font-bold uppercase tracking-wider mb-2">Aprovação</p>
+<span class="text-secondary font-headline font-extrabold text-2xl">98%</span>
+<p class="text-outline text-xs mt-1">Score Clínico</p>
+</div>
+</section>
+<!-- Personal Data Card -->
+<section class="bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] overflow-hidden">
+<div class="p-6 border-b border-surface-container">
+<h3 class="font-headline text-lg font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">person</span>
+                    Dados Pessoais
+                </h3>
+</div>
+<div class="p-6 space-y-4">
+<div class="flex flex-col gap-1">
+<span class="text-outline text-xs font-medium">CPF</span>
+<span class="font-mono-data text-on-surface">***.452.188-**</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-outline text-xs font-medium">E-mail</span>
+<span class="font-medium text-on-surface">carlos.mendes@hospital.com.br</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-outline text-xs font-medium">Telefone</span>
+<span class="font-mono-data text-on-surface">(11) 98765-4321</span>
+</div>
+</div>
+</section>
+<!-- Banking Details -->
+<section class="bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] overflow-hidden">
+<div class="p-6 border-b border-surface-container">
+<h3 class="font-headline text-lg font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">account_balance</span>
+                    Dados Bancários
+                </h3>
+</div>
+<div class="p-6">
+<div class="flex items-center gap-4 bg-surface-container-low p-4 rounded-xl">
+<div class="w-12 h-12 bg-[#820ad1] rounded-lg flex items-center justify-center text-white font-extrabold text-xl">Nu</div>
+<div class="flex-1">
+<p class="font-bold text-on-surface">NuBank S.A.</p>
+<p class="text-outline text-sm font-mono-data">Ag: 0001 • CC: 1234567-8</p>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Documents Checklist -->
+<section class="bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] overflow-hidden">
+<div class="p-6 border-b border-surface-container">
+<h3 class="font-headline text-lg font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">description</span>
+                    Documentos
+                </h3>
+</div>
+<div class="p-6 space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-on-surface font-medium">Identidade Médica (CRM)</span>
+</div>
+<span class="text-xs font-bold text-secondary bg-secondary-container/20 px-2 py-1 rounded-full uppercase tracking-tighter">Validado</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-on-surface font-medium">Diploma de Graduação</span>
+</div>
+<span class="text-xs font-bold text-secondary bg-secondary-container/20 px-2 py-1 rounded-full uppercase tracking-tighter">Validado</span>
+</div>
+<div class="flex items-center justify-between opacity-60">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-outline">pending</span>
+<span class="text-on-surface font-medium">Certificado de Especialidade</span>
+</div>
+<span class="text-xs font-bold text-outline bg-surface-container/50 px-2 py-1 rounded-full uppercase tracking-tighter">Em Análise</span>
+</div>
+</div>
+</section>
+<!-- Settings Toggles -->
+<section class="bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] overflow-hidden">
+<div class="p-6 border-b border-surface-container">
+<h3 class="font-headline text-lg font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">tune</span>
+                    Configurações
+                </h3>
+</div>
+<div class="p-6 space-y-6">
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-on-surface font-semibold">Notificações de Plantão</span>
+<span class="text-outline text-xs">Alertas de novas oportunidades</span>
+</div>
+<div class="w-12 h-6 bg-primary rounded-full relative transition-colors duration-200 cursor-pointer">
+<div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-on-surface font-semibold">Biometria / FaceID</span>
+<span class="text-outline text-xs">Acesso rápido e seguro</span>
+</div>
+<div class="w-12 h-6 bg-primary rounded-full relative transition-colors duration-200 cursor-pointer">
+<div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-on-surface font-semibold">Modo Escuro</span>
+<span class="text-outline text-xs">Conforto visual noturno</span>
+</div>
+<div class="w-12 h-6 bg-surface-container-highest rounded-full relative transition-colors duration-200 cursor-pointer">
+<div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Logout Button -->
+<button class="w-full flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-error text-error font-bold font-headline hover:bg-error/5 transition-colors active:scale-[0.98] mb-8">
+<span class="material-symbols-outlined">logout</span>
+            Sair da Conta
+        </button>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl shadow-[0px_-12px_32px_rgba(25,28,30,0.04)] rounded-t-[24px]">
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-4 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all active:scale-90 tap-highlight-none">
+<span class="material-symbols-outlined">home</span>
+<span class="Plus Jakarta Sans label-sm font-bold text-[10px] mt-1">Início</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-4 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all active:scale-90 tap-highlight-none">
+<span class="material-symbols-outlined">medical_services</span>
+<span class="Plus Jakarta Sans label-sm font-bold text-[10px] mt-1">Plantões</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-4 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all active:scale-90 tap-highlight-none">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="Plus Jakarta Sans label-sm font-bold text-[10px] mt-1">Carteira</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#2563eb]/10 text-[#004ac6] dark:text-blue-300 rounded-2xl px-4 py-1.5 transition-all active:scale-90 tap-highlight-none">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="Plus Jakarta Sans label-sm font-bold text-[10px] mt-1">Perfil</span>
+</div>
+</nav>
+</body></html>

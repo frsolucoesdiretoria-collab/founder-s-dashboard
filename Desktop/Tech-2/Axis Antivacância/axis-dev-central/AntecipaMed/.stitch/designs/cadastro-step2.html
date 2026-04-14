@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-br"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AntecipaMed - Cadastro Passo 2</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@300;400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f7f9fb",
+                        "on-primary-fixed-variant": "#004882",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#a3c9ff",
+                        "primary-fixed": "#d3e4ff",
+                        "on-background": "#191c1e",
+                        "primary": "#003664",
+                        "on-tertiary-fixed-variant": "#334a56",
+                        "surface-container-highest": "#e0e3e5",
+                        "primary-fixed-dim": "#a3c9ff",
+                        "on-primary-container": "#90bfff",
+                        "on-tertiary-container": "#a8c0cf",
+                        "surface-variant": "#e0e3e5",
+                        "surface-container": "#eceef0",
+                        "on-primary-fixed": "#001c38",
+                        "tertiary": "#213844",
+                        "on-tertiary-fixed": "#051e29",
+                        "surface-dim": "#d8dadc",
+                        "on-secondary-fixed-variant": "#004e60",
+                        "tertiary-fixed-dim": "#b2cad9",
+                        "surface-container-high": "#e6e8ea",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#4cd6ff",
+                        "primary-container": "#054d89",
+                        "surface-tint": "#27609d",
+                        "surface": "#f7f9fb",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#cde6f5",
+                        "inverse-on-surface": "#eff1f3",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed": "#001f28",
+                        "inverse-surface": "#2d3133",
+                        "background": "#f7f9fb",
+                        "on-surface-variant": "#434652",
+                        "secondary-container": "#00ccf9",
+                        "on-secondary-container": "#005266",
+                        "on-surface": "#191c1e",
+                        "surface-container-low": "#f2f4f6",
+                        "outline-variant": "#c3c6d4",
+                        "secondary": "#00677f",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#b7eaff",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#384f5b",
+                        "outline": "#737783"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .clinical-gradient {
+            background: linear-gradient(135deg, #003664 0%, #054d89 100%);
+        }
+        .medical-glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface antialiased min-h-screen flex flex-col">
+<!-- TopAppBar Execution -->
+<header class="bg-slate-50 dark:bg-slate-900 shadow-sm dark:shadow-none w-full top-0 sticky z-50">
+<div class="flex items-center justify-between px-6 py-4 w-full">
+<div class="flex items-center gap-4">
+<button class="hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:opacity-70 duration-150 p-2 rounded-full">
+<span class="material-symbols-outlined text-blue-900 dark:text-blue-400">arrow_back</span>
+</button>
+<h1 class="font-plus-jakarta-sans text-lg font-semibold tracking-tight text-blue-900 dark:text-blue-400">Cadastro</h1>
+</div>
+<div class="text-xl font-bold text-blue-900 dark:text-blue-100">AntecipaMed</div>
+</div>
+<div class="bg-slate-100 dark:bg-slate-800 h-[1px] w-full"></div>
+</header>
+<main class="flex-grow container mx-auto px-6 py-12 max-w-2xl">
+<!-- Progress Section -->
+<div class="mb-12">
+<div class="flex justify-between items-end mb-4">
+<div class="space-y-1">
+<p class="text-sm font-medium text-secondary tracking-wide uppercase">Informações de Contato</p>
+<h2 class="font-headline text-3xl font-bold text-primary tracking-tight">Quase lá</h2>
+</div>
+<div class="text-right">
+<span class="text-2xl font-bold text-primary">66%</span>
+<p class="text-xs text-outline font-medium">PASSO 2 DE 3</p>
+</div>
+</div>
+<div class="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary transition-all duration-500 ease-out rounded-full" style="width: 66%;"></div>
+</div>
+</div>
+<!-- Form Section -->
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_12px_32px_-4px_rgba(0,54,100,0.06)] space-y-8">
+<div class="space-y-6">
+<!-- E-mail Professional -->
+<div class="group">
+<label class="block text-sm font-semibold text-on-surface-variant mb-2" for="email">E-mail profissional</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-0 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-secondary transition-colors pl-3">mail</span>
+<input class="w-full bg-surface-container-low border-0 border-b-2 border-outline focus:border-secondary focus:ring-0 pl-12 py-4 transition-all placeholder:text-outline-variant font-medium" id="email" placeholder="nome@hospital.com.br" type="email"/>
+</div>
+</div>
+<!-- Phone (Masked Style) -->
+<div class="group">
+<label class="block text-sm font-semibold text-on-surface-variant mb-2" for="phone">Telefone celular</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-0 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-secondary transition-colors pl-3">call</span>
+<input class="w-full bg-surface-container-low border-0 border-b-2 border-outline focus:border-secondary focus:ring-0 pl-12 py-4 transition-all placeholder:text-outline-variant font-medium" id="phone" placeholder="(11) 90000-0000" type="tel"/>
+</div>
+</div>
+<!-- Hospital Select -->
+<div class="group">
+<label class="block text-sm font-semibold text-on-surface-variant mb-2" for="hospital">Hospital de atuação</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-0 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-secondary transition-colors pl-3">local_hospital</span>
+<select class="w-full bg-surface-container-low border-0 border-b-2 border-outline focus:border-secondary focus:ring-0 pl-12 py-4 appearance-none transition-all font-medium text-on-surface" id="hospital">
+<option disabled="" selected="" value="">Selecione seu hospital principal</option>
+<option value="sirio">Sírio-Libanês</option>
+<option value="einstein">Albert Einstein</option>
+<option value="hc">Hospital das Clínicas (HC)</option>
+<option value="saoluiz">São Luiz</option>
+<option value="samaritano">Samaritano</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-outline">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Action Area -->
+<div class="pt-6">
+<button class="w-full clinical-gradient text-white font-headline font-bold py-5 rounded-lg active:scale-[0.98] transition-transform flex items-center justify-center gap-2 group shadow-lg shadow-primary/20">
+<span>Próximo</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<p class="text-center mt-6 text-sm text-outline-variant">
+                    Suas informações estão seguras sob nossa <a class="text-secondary font-medium hover:underline" href="#">Política de Privacidade</a>.
+                </p>
+</div>
+</div>
+<!-- Asymmetric Decorative Element -->
+<div class="mt-12 flex items-center gap-6 opacity-60 grayscale hover:grayscale-0 transition-all duration-700">
+<div class="flex-shrink-0 w-24 h-24 rounded-2xl overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Modern high-tech clinical research laboratory with blue ambient lighting and clean medical equipment reflecting soft light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJX3lsGsBCFCgRqPA4nS6QJ5LRn4-DoBN67akM2TADo_Vb0-PsUcj6J0ldG_iyuu3oPp0h7hdYwyYUYDuIflJzC9D8AQs8LsGNXhjyCsZ4ylQltYAXL69eV7nhcW13faQXl4ZtPl3mYaNny6R_7OtIR92jeROUhzriT7Ti286HfV4HI9IbuFTwax-k694MYBvFAPJM_JqVNykATz3ms0ybb8r_lPm3nMeDC6Liw4kk7NGxc3eodVFmKhNOcrUNcL-mUeaYmwI9Dzg"/>
+</div>
+<div class="text-xs text-on-surface-variant max-w-[200px]">
+<p class="font-bold uppercase tracking-widest text-[10px] mb-1">Tecnologia Certificada</p>
+<p>Nossa plataforma utiliza criptografia de ponta a ponta para proteger suas antecipações financeiras.</p>
+</div>
+</div>
+</main>
+<!-- BottomNavBar Suppressed for Transactional flow (Cadastro) as per "The Destination Rule" and "Automatic Suppression" -->
+</body></html>

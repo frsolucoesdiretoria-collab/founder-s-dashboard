@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Solicitar Antecipação - AntecipaMed</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#dbe1ff",
+                        "background": "#f7f9fb",
+                        "surface-bright": "#f7f9fb",
+                        "on-secondary-container": "#00714d",
+                        "outline": "#737686",
+                        "surface-tint": "#0053db",
+                        "tertiary-container": "#bc4800",
+                        "on-tertiary-fixed": "#360f00",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#434655",
+                        "inverse-surface": "#2d3133",
+                        "secondary-fixed-dim": "#4edea3",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "inverse-primary": "#b4c5ff",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-tertiary": "#ffffff",
+                        "secondary": "#006c49",
+                        "on-primary": "#ffffff",
+                        "surface": "#f7f9fb",
+                        "surface-dim": "#d8dadc",
+                        "surface-container-low": "#f2f4f6",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-secondary-fixed-variant": "#005236",
+                        "on-surface": "#191c1e",
+                        "on-primary-fixed": "#00174b",
+                        "surface-container-highest": "#e0e3e5",
+                        "surface-container-high": "#e6e8ea",
+                        "on-background": "#191c1e",
+                        "outline-variant": "#c3c6d7",
+                        "tertiary": "#943700",
+                        "surface-container": "#eceef0",
+                        "primary": "#004ac6",
+                        "on-secondary-fixed": "#002113",
+                        "surface-variant": "#e0e3e5",
+                        "primary-container": "#2563eb",
+                        "secondary-fixed": "#6ffbbe",
+                        "tertiary-fixed": "#ffdbcd",
+                        "secondary-container": "#6cf8bb",
+                        "on-primary-container": "#eeefff",
+                        "on-tertiary-container": "#ffede6",
+                        "inverse-on-surface": "#eff1f3",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#ffb596"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "1.5rem",
+                        "24px": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- Status Bar Mockup -->
+<div class="fixed top-0 w-full z-[60] bg-surface flex justify-between items-center px-8 pt-2 h-8 text-sm font-semibold">
+<span>10:21</span>
+<div class="flex gap-1.5 items-center">
+<span class="material-symbols-outlined text-[16px]">signal_cellular_alt</span>
+<span class="material-symbols-outlined text-[16px]">wifi</span>
+<span class="material-symbols-outlined text-[16px]">battery_full</span>
+</div>
+</div>
+<!-- TopAppBar -->
+<header class="fixed top-8 w-full z-50 bg-surface/80 backdrop-blur-md">
+<div class="flex items-center px-6 h-16 w-full max-w-7xl mx-auto">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-200/50 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-[#004ac6] dark:text-[#2563eb]" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="flex-1 text-center font-['Plus_Jakarta_Sans'] font-extrabold text-xl tracking-tight text-[#004ac6] dark:text-[#2563eb]">
+                Solicitar Antecipação
+            </h1>
+<div class="w-10"></div> <!-- Spacer for centering -->
+</div>
+</header>
+<main class="pt-28 px-6 max-w-2xl mx-auto space-y-8">
+<!-- Selection Section -->
+<section class="space-y-4">
+<div class="flex justify-between items-end px-2">
+<h2 class="text-headline font-bold text-lg text-on-surface">Selecione os plantões</h2>
+<span class="text-label text-sm text-outline">2 selecionados</span>
+</div>
+<div class="space-y-3">
+<!-- Card 1: Checked -->
+<div class="bg-surface-container-lowest rounded-24px p-5 flex items-center justify-between shadow-[0px_12px_32px_rgba(25,28,30,0.04)] active:scale-[0.98] transition-transform cursor-pointer">
+<div class="space-y-1">
+<p class="font-bold text-on-surface">Hospital Sírio-Libanês</p>
+<p class="text-sm text-outline">18 abr · 19:00-07:00</p>
+<p class="text-xl font-extrabold text-primary font-headline pt-1">R$ 4.200,00</p>
+</div>
+<div class="w-7 h-7 rounded-full bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[20px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+<!-- Card 2: Checked -->
+<div class="bg-surface-container-lowest rounded-24px p-5 flex items-center justify-between shadow-[0px_12px_32px_rgba(25,28,30,0.04)] active:scale-[0.98] transition-transform cursor-pointer">
+<div class="space-y-1">
+<p class="font-bold text-on-surface">Hospital Albert Einstein</p>
+<p class="text-sm text-outline">20 abr · 07:00-19:00</p>
+<p class="text-xl font-extrabold text-primary font-headline pt-1">R$ 5.100,00</p>
+</div>
+<div class="w-7 h-7 rounded-full bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[20px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+<!-- Card 3: Unchecked -->
+<div class="bg-surface-container-lowest rounded-24px p-5 flex items-center justify-between shadow-[0px_12px_32px_rgba(25,28,30,0.04)] opacity-70 active:scale-[0.98] transition-transform cursor-pointer">
+<div class="space-y-1">
+<p class="font-bold text-on-surface">Hospital Sírio-Libanês</p>
+<p class="text-sm text-outline">22 abr · 19:00-07:00</p>
+<p class="text-xl font-extrabold text-primary font-headline pt-1">R$ 4.200,00</p>
+</div>
+<div class="w-7 h-7 rounded-full border-2 border-outline-variant flex items-center justify-center">
+</div>
+</div>
+</div>
+</section>
+<!-- Summary Section -->
+<section class="space-y-4">
+<h2 class="text-headline font-bold text-lg px-2">Resumo da Operação</h2>
+<div class="bg-surface-container-lowest rounded-24px p-6 shadow-[0px_12px_32px_rgba(25,28,30,0.04)] space-y-4 relative overflow-hidden">
+<!-- Subtle background decorative element -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface">Valor bruto total</span>
+<span class="font-bold text-on-surface">R$ 9.300,00</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-outline">Spread aplicado (10%)</span>
+<span class="font-medium text-error">- R$ 930,00</span>
+</div>
+<div class="h-[1px] bg-surface-container-highest w-full"></div>
+<div class="flex justify-between items-center">
+<span class="font-bold text-on-surface">Você recebe (líquido)</span>
+<span class="text-2xl font-extrabold text-on-secondary-container font-headline">R$ 8.370,00</span>
+</div>
+<div class="flex items-center gap-2 text-sm text-on-secondary-container font-medium pt-2">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+<span>Prazo de recebimento: <span class="font-bold">até 24 horas</span></span>
+</div>
+</div>
+</section>
+<!-- PIX Destination -->
+<section class="space-y-4 pb-8">
+<h2 class="text-headline font-bold text-lg px-2">Chave PIX de destino</h2>
+<div class="bg-surface-container-lowest rounded-24px p-5 flex items-center justify-between shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">badge</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">123.456.789-00</p>
+<p class="text-sm text-outline">Nubank</p>
+</div>
+</div>
+<button class="text-primary font-bold text-sm px-4 py-2 rounded-full hover:bg-primary-fixed/30 transition-colors">
+                    Alterar
+                </button>
+</div>
+</section>
+</main>
+<!-- Fixed Bottom Action Bar -->
+<footer class="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-xl px-6 pt-4 pb-8 z-50 border-t border-slate-100/50">
+<div class="max-w-2xl mx-auto">
+<button class="w-full bg-[#10B981] hover:bg-[#059669] text-white font-bold h-16 rounded-full shadow-lg shadow-[#10B981]/20 flex items-center justify-center gap-3 active:scale-[0.97] transition-all duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                Confirmar Antecipação
+            </button>
+</div>
+</footer>
+<!-- Persistent Bottom Nav (Suppress for Task Focus - but using it for visual context as per rules) -->
+<!-- The prompt implies a focused journey "Success/Task-Focused", so we follow the SUPPRESSION mandate from instructions -->
+<!-- However, providing a visual anchor if needed, but per rule: "hide the shell to prioritize the content canvas" during task flows -->
+</body></html>

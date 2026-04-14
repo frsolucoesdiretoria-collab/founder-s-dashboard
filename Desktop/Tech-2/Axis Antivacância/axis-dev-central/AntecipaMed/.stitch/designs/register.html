@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Registro AntecipaMed</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-surface": "#2d3133",
+                    "outline-variant": "#c3c6d7",
+                    "secondary-fixed-dim": "#4edea3",
+                    "primary-container": "#2563eb",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "secondary-fixed": "#6ffbbe",
+                    "on-error": "#ffffff",
+                    "surface-bright": "#f7f9fb",
+                    "on-tertiary-container": "#ffede6",
+                    "surface-container-highest": "#e0e3e5",
+                    "inverse-primary": "#b4c5ff",
+                    "error-container": "#ffdad6",
+                    "surface-tint": "#0053db",
+                    "outline": "#737686",
+                    "tertiary": "#943700",
+                    "on-tertiary": "#ffffff",
+                    "on-surface": "#191c1e",
+                    "on-tertiary-fixed": "#360f00",
+                    "surface-container-low": "#f2f4f6",
+                    "on-secondary-container": "#00714d",
+                    "inverse-on-surface": "#eff1f3",
+                    "primary-fixed": "#dbe1ff",
+                    "tertiary-container": "#bc4800",
+                    "secondary-container": "#6cf8bb",
+                    "primary": "#004ac6",
+                    "on-background": "#191c1e",
+                    "error": "#ba1a1a",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed": "#ffdbcd",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "on-error-container": "#93000a",
+                    "surface": "#f7f9fb",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed": "#00174b",
+                    "on-primary-container": "#eeefff",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "surface-container-high": "#e6e8ea",
+                    "surface-container": "#eceef0",
+                    "background": "#f7f9fb",
+                    "on-secondary-fixed": "#002113",
+                    "on-primary": "#ffffff",
+                    "on-surface-variant": "#434655",
+                    "surface-dim": "#d8dadc",
+                    "surface-variant": "#e0e3e5",
+                    "on-secondary-fixed-variant": "#005236",
+                    "secondary": "#006c49"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "1rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col items-center">
+<!-- TopAppBar Fragmented into HTML based on JSON -->
+<header class="fixed top-0 w-full z-50 flex items-center px-6 h-16 w-full bg-slate-50 dark:bg-slate-950">
+<div class="flex items-center gap-4 transition-transform duration-200 active:scale-95 cursor-pointer">
+<span class="material-symbols-outlined text-blue-700 dark:text-blue-400">arrow_back</span>
+<h1 class="text-blue-700 dark:text-blue-400 font-plus-jakarta text-lg font-extrabold">Criar conta</h1>
+</div>
+</header>
+<main class="w-full max-w-md px-6 pt-24 pb-32 flex flex-col gap-8">
+<!-- Progress Stepper -->
+<section class="flex flex-col gap-4">
+<div class="flex justify-between items-center px-1">
+<div class="flex flex-col items-center gap-1.5">
+<span class="text-[11px] font-bold tracking-wider text-primary uppercase">Dados pessoais</span>
+</div>
+<div class="flex flex-col items-center gap-1.5">
+<span class="text-[11px] font-bold tracking-wider text-outline uppercase">Contato</span>
+</div>
+<div class="flex flex-col items-center gap-1.5">
+<span class="text-[11px] font-bold tracking-wider text-outline uppercase">Banco</span>
+</div>
+</div>
+<div class="flex w-full h-1.5 gap-2 px-1">
+<div class="flex-1 bg-primary rounded-full"></div>
+<div class="flex-1 bg-surface-container-highest rounded-full"></div>
+<div class="flex-1 bg-surface-container-highest rounded-full"></div>
+</div>
+</section>
+<!-- Main Form Card -->
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_12px_32px_rgba(25,28,30,0.04)]">
+<div class="mb-8">
+<h2 class="text-2xl font-extrabold tracking-tight text-on-surface leading-tight">Dados pessoais</h2>
+<p class="text-on-surface-variant text-sm mt-2">Preencha suas informações profissionais para iniciar a análise de crédito.</p>
+</div>
+<form class="space-y-5">
+<div class="flex flex-col gap-2">
+<label class="text-[12px] font-bold text-on-surface-variant uppercase tracking-wide px-1">Nome completo</label>
+<input class="w-full h-14 px-5 bg-surface-container-high border-none rounded-xl focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all placeholder:text-outline-variant" placeholder="Como no CRM" type="text"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-[12px] font-bold text-on-surface-variant uppercase tracking-wide px-1">CPF</label>
+<input class="w-full h-14 px-5 bg-surface-container-high border-none rounded-xl focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all placeholder:text-outline-variant" placeholder="000.000.000-00" type="text"/>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<div class="flex flex-col gap-2">
+<label class="text-[12px] font-bold text-on-surface-variant uppercase tracking-wide px-1">CRM</label>
+<input class="w-full h-14 px-5 bg-surface-container-high border-none rounded-xl focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all placeholder:text-outline-variant" placeholder="123456-SP" type="text"/>
+</div>
+<div class="flex flex-col gap-2 relative">
+<label class="text-[12px] font-bold text-on-surface-variant uppercase tracking-wide px-1">Especialidade</label>
+<div class="relative">
+<select class="appearance-none w-full h-14 pl-5 pr-10 bg-surface-container-high border-none rounded-xl focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all text-on-surface">
+<option disabled="" selected="" value="">Selecione</option>
+<option>Cardiologia</option>
+<option>Dermatologia</option>
+<option>Pediatria</option>
+<option>Clínica Médica</option>
+<option>Outros</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-outline">expand_more</span>
+</div>
+</div>
+</div>
+<div class="pt-4">
+<button class="w-full h-14 bg-primary text-on-primary rounded-full font-bold flex items-center justify-center gap-2 transition-all active:scale-[0.98] hover:bg-primary/90 shadow-lg shadow-primary/20" type="submit">
+                        Próximo
+                        <span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+</div>
+</form>
+</div>
+<!-- Trust Badge -->
+<div class="flex items-center justify-center gap-2 text-outline">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="text-xs font-medium">Seus dados estão protegidos sob criptografia militar</span>
+</div>
+</main>
+<!-- BottomNavBar Implementation based on JSON -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl z-50 rounded-t-3xl shadow-[0_-12px_32px_rgba(25,28,30,0.04)]">
+<!-- Active: Personal (Registration context) -->
+<a class="flex flex-col items-center justify-center bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-2xl px-5 py-2 tap-highlight-none transition-all duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-inter text-[11px] font-medium tracking-tight">Personal</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-300 ease-out" href="#">
+<span class="material-symbols-outlined">medical_services</span>
+<span class="font-inter text-[11px] font-medium tracking-tight">Professional</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-300 ease-out" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+<span class="font-inter text-[11px] font-medium tracking-tight">Security</span>
+</a>
+</nav>
+</body></html>

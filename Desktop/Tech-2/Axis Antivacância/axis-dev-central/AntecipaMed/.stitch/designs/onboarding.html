@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AntecipaMed - Onboarding</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-container": "#ffede6",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed-variant": "#7d2d00",
+                    "on-error-container": "#93000a",
+                    "primary-fixed": "#dbe1ff",
+                    "on-tertiary": "#ffffff",
+                    "on-surface-variant": "#434655",
+                    "surface-tint": "#0053db",
+                    "tertiary": "#943700",
+                    "surface-dim": "#d8dadc",
+                    "surface-bright": "#f7f9fb",
+                    "outline": "#737686",
+                    "on-background": "#191c1e",
+                    "secondary-fixed-dim": "#4edea3",
+                    "inverse-primary": "#b4c5ff",
+                    "on-secondary-fixed-variant": "#005236",
+                    "on-error": "#ffffff",
+                    "inverse-surface": "#2d3133",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-tertiary-fixed": "#360f00",
+                    "background": "#f7f9fb",
+                    "surface-container": "#eceef0",
+                    "on-primary": "#ffffff",
+                    "secondary-container": "#6cf8bb",
+                    "primary-container": "#2563eb",
+                    "surface-container-low": "#f2f4f6",
+                    "tertiary-fixed-dim": "#ffb596",
+                    "surface": "#f7f9fb",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed": "#ffdbcd",
+                    "on-secondary-container": "#00714d",
+                    "tertiary-container": "#bc4800",
+                    "primary": "#004ac6",
+                    "on-secondary-fixed": "#002113",
+                    "surface-variant": "#e0e3e5",
+                    "on-primary-container": "#eeefff",
+                    "error-container": "#ffdad6",
+                    "on-surface": "#191c1e",
+                    "surface-container-high": "#e6e8ea",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed": "#6ffbbe",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "on-primary-fixed": "#00174b",
+                    "secondary": "#006c49",
+                    "inverse-on-surface": "#eff1f3",
+                    "outline-variant": "#c3c6d7"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "2xl": "1.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex items-center justify-center p-4">
+<!-- Mobile Device Frame Wrapper -->
+<div class="w-full max-w-md h-[844px] bg-gradient-to-b from-[#EFF6FF] to-white rounded-[40px] shadow-2xl relative overflow-hidden flex flex-col border-[8px] border-surface-container-highest">
+<!-- 1. Status bar mockup -->
+<div class="flex justify-between items-center px-8 py-4 w-full z-10">
+<span class="text-[14px] font-bold font-headline">10:21</span>
+<div class="flex gap-1.5 items-center">
+<span class="material-symbols-outlined text-[18px]">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[18px]">wifi</span>
+<span class="material-symbols-outlined text-[18px]">battery_very_low</span>
+</div>
+</div>
+<div class="flex-1 flex flex-col items-center px-6 pt-8 pb-10 overflow-y-auto no-scrollbar">
+<!-- 3. Center top: Logo & Branding -->
+<div class="flex flex-col items-center mb-12">
+<div class="w-20 h-20 bg-gradient-to-br from-primary to-primary-container rounded-[20px] flex items-center justify-center shadow-lg shadow-primary/20 mb-6 transform rotate-3">
+<div class="relative flex flex-col items-center">
+<span class="material-symbols-outlined text-white text-4xl" data-weight="fill">ecg_heart</span>
+<span class="material-symbols-outlined text-white text-xl absolute -bottom-1 -right-2 bg-secondary rounded-full p-0.5 border-2 border-primary-container">attach_money</span>
+</div>
+</div>
+<h1 class="text-3xl font-headline font-extrabold text-primary tracking-tight mb-2">AntecipaMed</h1>
+<p class="text-on-surface-variant font-medium text-center max-w-[200px] leading-tight">
+                    Seu plantão, seu dinheiro. Agora.
+                </p>
+</div>
+<!-- 4. Three feature cards -->
+<div class="w-full space-y-4 mb-10">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex items-center gap-4 shadow-[0px_12px_32px_rgba(25,28,30,0.04)] transition-transform active:scale-95 duration-150">
+<div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary" data-weight="fill">bolt</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-on-surface">Antecipação em 24h</h3>
+<p class="text-sm text-on-surface-variant">Receba o valor do seu plantão no mesmo dia</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex items-center gap-4 shadow-[0px_12px_32px_rgba(25,28,30,0.04)] transition-transform active:scale-95 duration-150">
+<div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary" data-weight="fill">payments</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-on-surface">Spread transparente</h3>
+<p class="text-sm text-on-surface-variant">8 a 15% sobre o valor bruto, sem surpresas</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex items-center gap-4 shadow-[0px_12px_32px_rgba(25,28,30,0.04)] transition-transform active:scale-95 duration-150">
+<div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant" data-weight="fill">domain</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-on-surface">Hospitais parceiros</h3>
+<p class="text-sm text-on-surface-variant">Integrado com os maiores hospitais do Brasil</p>
+</div>
+</div>
+</div>
+<!-- 5. Pagination dots -->
+<div class="flex gap-2 items-center mb-10">
+<div class="w-8 h-2 bg-primary rounded-full"></div>
+<div class="w-2 h-2 bg-outline-variant rounded-full"></div>
+<div class="w-2 h-2 bg-outline-variant rounded-full"></div>
+</div>
+<!-- Decorative Visual Aspect -->
+<div class="relative w-full h-24 mb-auto">
+<div class="absolute inset-0 opacity-10 flex justify-around">
+<span class="material-symbols-outlined text-6xl text-primary">medical_services</span>
+<span class="material-symbols-outlined text-6xl text-primary">account_balance</span>
+<span class="material-symbols-outlined text-6xl text-primary">stethoscope</span>
+</div>
+</div>
+<!-- 6. Bottom: Action Button -->
+<button class="w-full bg-primary text-on-primary py-4 rounded-full font-headline font-bold text-lg shadow-xl shadow-primary/20 active:scale-95 transition-all duration-150 mb-6">
+                Começar
+            </button>
+<!-- 7. Below button: Login link -->
+<p class="text-on-surface-variant font-medium text-sm">
+                Já tenho conta · <span class="text-primary font-bold cursor-pointer hover:underline">Entrar</span>
+</p>
+</div>
+<!-- Subtle indicator at the very bottom -->
+<div class="w-32 h-1.5 bg-on-surface/10 rounded-full mx-auto mb-2 shrink-0"></div>
+</div>
+</body></html>

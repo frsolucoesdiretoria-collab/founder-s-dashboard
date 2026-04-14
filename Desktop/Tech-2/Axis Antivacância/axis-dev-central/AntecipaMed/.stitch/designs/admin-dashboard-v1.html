@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#ffffff",
+                        "background": "#f7f9fb",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-tertiary-fixed": "#360f00",
+                        "on-secondary-fixed-variant": "#005236",
+                        "secondary-fixed-dim": "#4edea3",
+                        "on-primary-fixed": "#00174b",
+                        "primary": "#004ac6",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "surface-container-high": "#e6e8ea",
+                        "inverse-on-surface": "#eff1f3",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "secondary": "#006c49",
+                        "primary-fixed": "#dbe1ff",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "outline-variant": "#c3c6d7",
+                        "tertiary-fixed": "#ffdbcd",
+                        "surface-container": "#eceef0",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#ffede6",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#6cf8bb",
+                        "on-surface-variant": "#434655",
+                        "on-background": "#191c1e",
+                        "on-primary-container": "#eeefff",
+                        "on-error-container": "#93000a",
+                        "surface-container-low": "#f2f4f6",
+                        "secondary-fixed": "#6ffbbe",
+                        "tertiary-container": "#bc4800",
+                        "on-secondary-container": "#00714d",
+                        "on-surface": "#191c1e",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#b4c5ff",
+                        "surface": "#f7f9fb",
+                        "surface-variant": "#e0e3e5",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "surface-dim": "#d8dadc",
+                        "surface-tint": "#0053db",
+                        "on-secondary-fixed": "#002113",
+                        "inverse-surface": "#2d3133",
+                        "surface-bright": "#f7f9fb",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#943700",
+                        "outline": "#737686",
+                        "primary-container": "#2563eb",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-background antialiased selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- SIDE BAR ANCHOR -->
+<aside class="h-screen w-[240px] fixed left-0 top-0 flex flex-col bg-white dark:bg-slate-950 border-r border-slate-100 dark:border-slate-800 shadow-[12px_0_32px_rgba(25,28,30,0.04)] z-50">
+<div class="px-6 py-8">
+<span class="text-2xl font-extrabold tracking-tighter text-blue-700 dark:text-blue-400">AntecipaMed</span>
+<p class="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold mt-1">Clinical Architect Admin</p>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<!-- Active: Dashboard -->
+<a class="flex items-center gap-3 px-4 py-3 text-blue-700 dark:text-blue-400 font-bold border-r-4 border-blue-700 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-sm">Médicos</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="text-sm">Operações</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">calculate</span>
+<span class="text-sm">Simulador</span>
+</a>
+</nav>
+<div class="p-4 mt-auto space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm">Configurações</span>
+</a>
+<div class="pt-4 mt-4 border-t border-slate-100">
+<div class="flex items-center gap-3 px-4 py-3">
+<img alt="AntecipaMed Admin" class="w-10 h-10 rounded-full object-cover shadow-sm" data-alt="Professional portrait of a male medical administrator in a white coat with modern glasses and clean studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3aBr6dE1YbCXcpGekpa5U-UwbtQx9lBJ7NtQoiDzjHHxlGb8Qj-FnmGk2ccSvQHAxA2BeTW949dBJgIzCCIhQO_dXa5kGigP1lmhDO3l7NHQezFRPAqLmEkSRUdgotmqSjPWBk1r99tmVZlXVA4WVj_0kmvz1x8UUiX7iULcFAlZqNGcwoiJTwUmAxpEEVO3BhFLLVgvjcydMbEhsxlri991q3IZehbvx9SYsqVLDmqxmzqkKcf3_aY9GqyKgefMMyAOpJpQCeAg"/>
+<div class="overflow-hidden">
+<p class="text-xs font-bold truncate">Admin AntecipaMed</p>
+<p class="text-[10px] text-slate-400 truncate">Sair da conta</p>
+</div>
+<span class="material-symbols-outlined text-slate-400 ml-auto cursor-pointer">logout</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- TOP BAR ANCHOR -->
+<header class="fixed top-0 right-0 w-[calc(100%-240px)] h-16 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl flex justify-between items-center px-8 z-40 shadow-sm dark:shadow-none">
+<div class="flex items-center gap-4 bg-surface-container-high px-4 py-2 rounded-full w-96">
+<span class="material-symbols-outlined text-slate-400 text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full text-on-surface" placeholder="Buscar operações ou médicos..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative text-slate-600 hover:text-blue-600 transition-all duration-300">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="text-slate-600 hover:text-blue-600 transition-all duration-300">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="h-8 w-[1px] bg-slate-200"></div>
+<div class="flex items-center gap-2">
+<span class="text-xs font-medium text-slate-600">14 de abril, 2026</span>
+</div>
+</div>
+</header>
+<!-- MAIN CANVAS -->
+<main class="ml-[240px] pt-24 px-8 pb-12 min-h-screen">
+<!-- Header Section -->
+<section class="mb-10">
+<h1 class="text-3xl font-extrabold text-on-surface tracking-tight">Dashboard</h1>
+<p class="text-slate-500 font-medium">Visão geral das operações financeiras clínicas</p>
+</section>
+<!-- KPI Grid -->
+<section class="grid grid-cols-4 gap-6 mb-8">
+<!-- KPI 1 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-primary-fixed text-primary rounded-lg">
+<span class="material-symbols-outlined">account_balance</span>
+</div>
+<span class="text-xs font-bold text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">trending_up</span> +12%
+                    </span>
+</div>
+<p class="text-slate-500 text-xs font-semibold mb-1">Capital em Operação</p>
+<h3 class="text-2xl font-extrabold headline text-on-surface tracking-tight">R$ 147.600</h3>
+</div>
+<!-- KPI 2 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-secondary-container text-on-secondary-container rounded-lg">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<span class="text-xs font-bold text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">trending_up</span> +8%
+                    </span>
+</div>
+<p class="text-slate-500 text-xs font-semibold mb-1">Receita de Spread</p>
+<h3 class="text-2xl font-extrabold headline text-on-surface tracking-tight">R$ 18.420</h3>
+</div>
+<!-- KPI 3 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-tertiary-fixed text-tertiary rounded-lg">
+<span class="material-symbols-outlined">percent</span>
+</div>
+<span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-1 rounded-full">Estável</span>
+</div>
+<p class="text-slate-500 text-xs font-semibold mb-1">Spread Médio</p>
+<h3 class="text-2xl font-extrabold headline text-on-surface tracking-tight">10,4%</h3>
+</div>
+<!-- KPI 4 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-blue-100 text-blue-700 rounded-lg">
+<span class="material-symbols-outlined">medical_information</span>
+</div>
+<span class="text-xs font-bold text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">add</span> 3 novos
+                    </span>
+</div>
+<p class="text-slate-500 text-xs font-semibold mb-1">Médicos Ativos</p>
+<h3 class="text-2xl font-extrabold headline text-on-surface tracking-tight">47</h3>
+</div>
+</section>
+<!-- Main Insights Split -->
+<section class="grid grid-cols-10 gap-6 mb-8">
+<!-- Left: Bar Chart Visualization -->
+<div class="col-span-6 bg-surface-container-lowest p-8 rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+<div class="flex justify-between items-center mb-10">
+<div>
+<h4 class="text-lg font-bold tracking-tight">Operações por Semana</h4>
+<p class="text-xs text-slate-400 font-medium">Volume de solicitações nos últimos 30 dias</p>
+</div>
+<button class="text-xs font-bold text-primary flex items-center gap-1">
+                        Ver detalhes <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="flex items-end justify-between h-48 gap-8 px-4">
+<div class="flex flex-col items-center flex-1 gap-4">
+<div class="w-full bg-surface-container-high rounded-t-lg relative group h-[40%]">
+<div class="absolute inset-0 bg-gradient-to-t from-primary to-primary-container rounded-t-lg transition-all duration-300 group-hover:opacity-80"></div>
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">8 ops</div>
+</div>
+<span class="text-[10px] font-bold text-slate-400 uppercase">Semana 1</span>
+</div>
+<div class="flex flex-col items-center flex-1 gap-4">
+<div class="w-full bg-surface-container-high rounded-t-lg relative group h-[65%]">
+<div class="absolute inset-0 bg-gradient-to-t from-primary to-primary-container rounded-t-lg transition-all duration-300 group-hover:opacity-80"></div>
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">12 ops</div>
+</div>
+<span class="text-[10px] font-bold text-slate-400 uppercase">Semana 2</span>
+</div>
+<div class="flex flex-col items-center flex-1 gap-4">
+<div class="w-full bg-surface-container-high rounded-t-lg relative group h-[85%]">
+<div class="absolute inset-0 bg-gradient-to-t from-primary to-primary-container rounded-t-lg transition-all duration-300 group-hover:opacity-80"></div>
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">15 ops</div>
+</div>
+<span class="text-[10px] font-bold text-slate-400 uppercase">Semana 3</span>
+</div>
+<div class="flex flex-col items-center flex-1 gap-4">
+<div class="w-full bg-surface-container-high rounded-t-lg relative group h-[60%]">
+<div class="absolute inset-0 bg-gradient-to-t from-primary to-primary-container rounded-t-lg transition-all duration-300 group-hover:opacity-80"></div>
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">11 ops</div>
+</div>
+<span class="text-[10px] font-bold text-slate-400 uppercase">Semana 4</span>
+</div>
+</div>
+</div>
+<!-- Right: Alerts -->
+<div class="col-span-4 bg-surface-container-lowest p-8 rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+<div class="flex justify-between items-center mb-6">
+<h4 class="text-lg font-bold tracking-tight">Alertas de Vencimento</h4>
+<span class="bg-error-container text-on-error-container text-[10px] font-bold px-2 py-1 rounded-full">3 críticos</span>
+</div>
+<div class="space-y-4">
+<!-- Alert Row 1 -->
+<div class="flex items-center gap-4 p-4 rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-xl">priority_high</span>
+</div>
+<div class="flex-1 overflow-hidden">
+<h5 class="text-sm font-bold text-on-surface truncate">Juliana Alves</h5>
+<p class="text-[11px] text-slate-500 font-medium">OP-2026-005 • Expira em 2h</p>
+</div>
+<span class="material-symbols-outlined text-slate-300">chevron_right</span>
+</div>
+<!-- Alert Row 2 -->
+<div class="flex items-center gap-4 p-4 rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-xl">priority_high</span>
+</div>
+<div class="flex-1 overflow-hidden">
+<h5 class="text-sm font-bold text-on-surface truncate">Felipe Torres</h5>
+<p class="text-[11px] text-slate-500 font-medium">OP-2026-004 • Expira amanhã</p>
+</div>
+<span class="material-symbols-outlined text-slate-300">chevron_right</span>
+</div>
+<!-- Alert Row 3 -->
+<div class="flex items-center gap-4 p-4 rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+<span class="material-symbols-outlined text-xl">warning</span>
+</div>
+<div class="flex-1 overflow-hidden">
+<h5 class="text-sm font-bold text-on-surface truncate">André Bastos</h5>
+<p class="text-[11px] text-slate-500 font-medium">OP-2026-003 • Vence em 3 dias</p>
+</div>
+<span class="material-symbols-outlined text-slate-300">chevron_right</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Data Table: Recent Operations -->
+<section class="bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] overflow-hidden">
+<div class="px-8 py-6 border-b border-slate-50 flex justify-between items-center">
+<h4 class="text-lg font-bold tracking-tight">Operações Recentes</h4>
+<div class="flex gap-2">
+<button class="bg-surface-container px-4 py-2 rounded-full text-xs font-bold text-on-surface-variant hover:bg-surface-container-high transition-colors">Exportar CSV</button>
+<button class="bg-primary text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-blue-700 transition-colors">Nova Operação</button>
+</div>
+</div>
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low">
+<tr>
+<th class="px-8 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">ID</th>
+<th class="px-4 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Médico</th>
+<th class="px-4 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Hospital</th>
+<th class="px-4 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Plantão</th>
+<th class="px-4 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Vencimento</th>
+<th class="px-4 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-right">Bruto</th>
+<th class="px-4 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-right">Spread</th>
+<th class="px-4 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-right">Líquido</th>
+<th class="px-8 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<!-- Row 1 -->
+<tr class="hover:bg-slate-50/50 transition-colors group">
+<td class="px-8 py-5 text-xs font-bold text-primary">#OP-2650</td>
+<td class="px-4 py-5">
+<div class="flex items-center gap-3">
+<img class="w-7 h-7 rounded-full object-cover" data-alt="Closeup of a smiling male doctor in professional medical attire with stethoscope" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRizaZ3p9QfxUm24TLy0XYuOrqZbGF31J1lI4LJstQMYO9efYszFK7iSHKB44tGao8os1kadfVe-ZgjGjy9TezkaKWSpItB7K1Gpn_8nGiD_vw2_LQfebMqMp-mheM2QwarFajfWbns0gB-KcgOgPReYK1ptJvSMwAhOllsrdhivIR4-YJ4FZCUKdZi_QHSZMaZ2Oymi0mbknmTnd_LKm3iW_si_naNCBq98fWFlUA_klfMfuGXWsmQdZ_5ixeM-x3UGUjYzLmmsQ"/>
+<span class="text-xs font-bold text-on-surface">Dr. Ricardo Silva</span>
+</div>
+</td>
+<td class="px-4 py-5 text-xs font-medium text-slate-600">Hospital Albert Einstein</td>
+<td class="px-4 py-5 text-xs font-medium text-slate-600">UTI Adulto</td>
+<td class="px-4 py-5 text-xs font-medium text-slate-600">20/04/2026</td>
+<td class="px-4 py-5 text-xs font-bold text-on-surface text-right">R$ 4.200,00</td>
+<td class="px-4 py-5 text-xs font-bold text-amber-600 text-right">10,5%</td>
+<td class="px-4 py-5 text-xs font-extrabold text-secondary text-right">R$ 3.759,00</td>
+<td class="px-8 py-5 text-center">
+<span class="inline-flex px-3 py-1 rounded-full text-[10px] font-bold bg-secondary-container text-on-secondary-container">Aprovado</span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-slate-50/50 transition-colors group">
+<td class="px-8 py-5 text-xs font-bold text-primary">#OP-2649</td>
+<td class="px-4 py-5">
+<div class="flex items-center gap-3">
+<img class="w-7 h-7 rounded-full object-cover" data-alt="Professional portrait of a female doctor in a modern clinical setting with soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvI7k2zo6HS_RQ8uIMgK5RGi9W5pmPDNS-3DITsJuq40zJVcQNKcuj4nkjZ12zDm9LdevS0hTtJPUzHYyh49qUUbatiJcM8cXodgvbce6c2nyP2xNFBVF9zU1dNSoKT9yN_2qe1xctGQDeqE9VYq9hQb4HGK7wZZN1a6zsoUs-whXfi_yGeKUuvJzlJIOThn5UeqTA7wGENk1ooDoQgSBhuKuOsueGvL5T4yIgUYAqRJIHdCDWT4N_2XJjXqyf0QWpY_RT_QabFWI"/>
+<span class="text-xs font-bold text-on-surface">Dra. Amanda Costa</span>
+</div>
+</td>
+<td class="px-4 py-5 text-xs font-medium text-slate-600">Hospital Sírio-Libanês</td>
+<td class="px-4 py-5 text-xs font-medium text-slate-600">Emergência</td>
+<td class="px-4 py-5 text-xs font-medium text-slate-600">18/04/2026</td>
+<td class="px-4 py-5 text-xs font-bold text-on-surface text-right">R$ 3.850,00</td>
+<td class="px-4 py-5 text-xs font-bold text-amber-600 text-right">10,2%</td>
+<td class="px-4 py-5 text-xs font-extrabold text-secondary text-right">R$ 3.457,30</td>
+<td class="px-8 py-5 text-center">
+<span class="inline-flex px-3 py-1 rounded-full text-[10px] font-bold bg-primary-fixed text-on-primary-fixed-variant">Processando</span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-slate-50/50 transition-colors group">
+<td class="px-8 py-5 text-xs font-bold text-primary">#OP-2648</td>
+<td class="px-4 py-5">
+<div class="flex items-center gap-3">
+<img class="w-7 h-7 rounded-full object-cover" data-alt="Headshot of a middle-aged male physician with a warm expression in a professional studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4GYDxOEgDRy7lONm9RX1rLSelLnmEIUQM8ll8QeIyKOpt3DLeVO-NNHTcMGiQQB-rfBIOMi3nsI8BABc9ub5fERjEHWrNs6HmXUVTp4wl0bge3i46bCPEzT6gIHb-Wy5X8Dj0kTAE74Yc-ZGk7-iAgSRDpBPTHpIsDo6GBIxLdxi5_JOZupL9eJbdEXCmQ3wxMfLUeK-DNjJXTlEKv2Upjd6FLAezBalHwQJZqsIAio9kBCNose0HopmnBxI6_aFuKwcksIxkvmY"/>
+<span class="text-xs font-bold text-on-surface">Dr. Paulo Menezes</span>
+</div>
+</td>
+<td class="px-4 py-5 text-xs font-medium text-slate-600">Rede D'Or São Luiz</td>
+<td class="px-4 py-5 text-xs font-medium text-slate-600">Cardiologia</td>
+<td class="px-4 py-5 text-xs font-medium text-slate-600">22/04/2026</td>
+<td class="px-4 py-5 text-xs font-bold text-on-surface text-right">R$ 5.100,00</td>
+<td class="px-4 py-5 text-xs font-bold text-amber-600 text-right">11,0%</td>
+<td class="px-4 py-5 text-xs font-extrabold text-secondary text-right">R$ 4.539,00</td>
+<td class="px-8 py-5 text-center">
+<span class="inline-flex px-3 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700">Pendente</span>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-slate-50/50 transition-colors group">
+<td class="px-8 py-5 text-xs font-bold text-primary">#OP-2647</td>
+<td class="px-4 py-5">
+<div class="flex items-center gap-3">
+<img class="w-7 h-7 rounded-full object-cover" data-alt="Young professional female doctor wearing scrubs and a white coat, high-end medical branding style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2kLXfAt11VOUmuqLT5hgx2UIkvst85IaPXaRDFWQADbUr7kyGU-Att41Nj28hlQ4wuuj_REfW3OHj44BB8U2Q3Ddy7SlHsZik_YUAGQkHwO_5EQbN9zN6W58huC0uiusuchiQnHRzX9Ywy7_2o9XFU25XJLQhE4P6my1atzBT-XxK5uPDC2dK7di5ip0EmSwBGMhPHI18LoUOZ4rJTAolmcf7J89GH3UkM1Zy_1TEYT9MZO60SIvc4-2OJKxCojLS7KaZMyN5yXQ"/>
+<span class="text-xs font-bold text-on-surface">Dra. Beatriz Rocha</span>
+</div>
+</td>
+<td class="px-4 py-5 text-xs font-medium text-slate-600">Hospital Santa Joana</td>
+<td class="px-4 py-5 text-xs font-medium text-slate-600">Obstetrícia</td>
+<td class="px-4 py-5 text-xs font-medium text-slate-600">15/04/2026</td>
+<td class="px-4 py-5 text-xs font-bold text-on-surface text-right">R$ 2.900,00</td>
+<td class="px-4 py-5 text-xs font-bold text-amber-600 text-right">9,8%</td>
+<td class="px-4 py-5 text-xs font-extrabold text-secondary text-right">R$ 2.615,80</td>
+<td class="px-8 py-5 text-center">
+<span class="inline-flex px-3 py-1 rounded-full text-[10px] font-bold bg-secondary-container text-on-secondary-container">Aprovado</span>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-slate-50/50 transition-colors group">
+<td class="px-8 py-5 text-xs font-bold text-primary">#OP-2646</td>
+<td class="px-4 py-5">
+<div class="flex items-center gap-3">
+<img class="w-7 h-7 rounded-full object-cover" data-alt="Close up of a senior male physician with gray hair and glasses, sophisticated lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJi8La83MHacsOlNNEH4Uk3-pI-DpwvDKKppgopJMosM94LMCKgmXY2iB1J58sR6ENG4h5EeRE7dKZXGGxfPgVdGnXo-XffTgw-21HAnRZB3jQIQ2n8udquSwv6RhS_21ef5c6Wj13srXL6OjjoTQCMl9VT_XogEstBfv2CrSdhw43xWC2RnJ8suUl89W-bQaCovtbVRPHeWXh3E0yiPvwu4L_izo8lSZOL26OG42Qmll_ws8VsFX6OUdSu9hEVIvfRGztU9Z-emE"/>
+<span class="text-xs font-bold text-on-surface">Dr. Marcos Viana</span>
+</div>
+</td>
+<td class="px-4 py-5 text-xs font-medium text-slate-600">Hospital Samaritano</td>
+<td class="px-4 py-5 text-xs font-medium text-slate-600">Ortopedia</td>
+<td class="px-4 py-5 text-xs font-medium text-slate-600">25/04/2026</td>
+<td class="px-4 py-5 text-xs font-bold text-on-surface text-right">R$ 6.400,00</td>
+<td class="px-4 py-5 text-xs font-bold text-amber-600 text-right">10,8%</td>
+<td class="px-4 py-5 text-xs font-extrabold text-secondary text-right">R$ 5.708,80</td>
+<td class="px-8 py-5 text-center">
+<span class="inline-flex px-3 py-1 rounded-full text-[10px] font-bold bg-secondary-container text-on-secondary-container">Aprovado</span>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="px-8 py-4 bg-surface-container-low flex justify-between items-center">
+<span class="text-[10px] font-bold text-slate-400">Exibindo 5 de 124 operações</span>
+<div class="flex gap-1">
+<button class="w-8 h-8 rounded-lg bg-surface-container-lowest flex items-center justify-center text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white text-[10px] font-bold">1</button>
+<button class="w-8 h-8 rounded-lg bg-surface-container-lowest flex items-center justify-center text-slate-400 hover:text-primary transition-colors text-[10px] font-bold">2</button>
+<button class="w-8 h-8 rounded-lg bg-surface-container-lowest flex items-center justify-center text-slate-400 hover:text-primary transition-colors text-[10px] font-bold">3</button>
+<button class="w-8 h-8 rounded-lg bg-surface-container-lowest flex items-center justify-center text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+</body></html>

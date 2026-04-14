@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Transfer Confirmation - AntecipaMed</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed": "#d3e4ff",
+                    "inverse-primary": "#a3c9ff",
+                    "outline-variant": "#c3c6d4",
+                    "on-error": "#ffffff",
+                    "surface-tint": "#27609d",
+                    "tertiary-fixed-dim": "#b2cad9",
+                    "on-secondary-container": "#005266",
+                    "background": "#f7f9fb",
+                    "on-tertiary-container": "#a8c0cf",
+                    "surface": "#f7f9fb",
+                    "secondary-container": "#00ccf9",
+                    "tertiary-fixed": "#cde6f5",
+                    "on-error-container": "#93000a",
+                    "primary-container": "#054d89",
+                    "tertiary": "#213844",
+                    "on-secondary-fixed-variant": "#004e60",
+                    "tertiary-container": "#384f5b",
+                    "on-surface": "#191c1e",
+                    "inverse-surface": "#2d3133",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed": "#051e29",
+                    "primary": "#003664",
+                    "surface-variant": "#e0e3e5",
+                    "surface-container-high": "#e6e8ea",
+                    "error": "#ba1a1a",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-background": "#191c1e",
+                    "surface-container-low": "#f2f4f6",
+                    "on-primary-fixed-variant": "#004882",
+                    "primary-fixed-dim": "#a3c9ff",
+                    "on-tertiary-fixed-variant": "#334a56",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed-dim": "#4cd6ff",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed": "#001c38",
+                    "surface-bright": "#f7f9fb",
+                    "secondary": "#00677f",
+                    "error-container": "#ffdad6",
+                    "surface-container": "#eceef0",
+                    "on-primary-container": "#90bfff",
+                    "on-surface-variant": "#434652",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-dim": "#d8dadc",
+                    "outline": "#737783",
+                    "secondary-fixed": "#b7eaff",
+                    "on-secondary-fixed": "#001f28",
+                    "on-secondary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .success-glow {
+            box-shadow: 0 0 30px rgba(0, 108, 73, 0.25);
+        }
+        .medical-glow {
+            box-shadow: 0 12px 32px -4px rgba(0, 54, 100, 0.06);
+        }
+        .custom-green-success {
+            background-color: #006c49;
+        }
+        .custom-text-success {
+            color: #006c49;
+        }
+        .custom-brand-blue {
+            background-color: #004ac6;
+        }
+        .custom-brand-blue-text {
+            color: #004ac6;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface min-h-screen flex justify-center items-start text-on-surface">
+<!-- Mobile Container (390px simulated) -->
+<main class="w-full max-w-[390px] min-h-screen bg-background relative flex flex-col pb-12 overflow-x-hidden">
+<!-- TopAppBar (From JSON - Transactional logic hides nav, but uses TopAppBar structure) -->
+<header class="w-full top-0 sticky bg-slate-50 flex items-center justify-between px-6 py-4 z-50">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-slate-200 transition-all active:opacity-80 scale-95">
+<span class="material-symbols-outlined text-blue-900" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] font-light tracking-tight text-blue-900">Transfer Confirmation</h1>
+<div class="w-10"></div> <!-- Spacer for centering -->
+</header>
+<!-- Hero Success Section -->
+<section class="flex flex-col items-center pt-10 pb-8 px-6 text-center">
+<div class="w-20 h-20 custom-green-success rounded-full flex items-center justify-center success-glow mb-6">
+<span class="material-symbols-outlined text-white text-5xl font-bold" data-icon="check" style="font-variation-settings: 'wght' 600;">check</span>
+</div>
+<h2 class="font-headline font-extrabold text-2xl text-on-surface mb-2 tracking-tight">Antecipação Solicitada!</h2>
+<p class="text-sm text-[#737686] font-body leading-relaxed max-w-[240px]">Seu pagamento será processado em até 24 horas</p>
+</section>
+<!-- Summary Card -->
+<section class="px-6 mb-10">
+<div class="bg-surface-container-lowest rounded-[24px] medical-glow p-6 flex flex-col overflow-hidden">
+<!-- Data Rows -->
+<div class="space-y-5 mb-6">
+<div class="flex justify-between items-center">
+<span class="text-sm text-on-surface-variant font-medium">Plantões selecionados</span>
+<span class="text-sm text-on-surface font-semibold">2 plantões</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm text-on-surface-variant font-medium">Valor bruto</span>
+<span class="text-sm text-on-surface font-semibold">R$ 9.300,00</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm text-on-surface-variant font-medium">Spread</span>
+<span class="text-sm text-on-surface font-semibold">10%</span>
+</div>
+</div>
+<!-- Highlighted Net Value -->
+<div class="bg-surface-container-low -mx-6 px-6 py-5 mb-6 flex justify-between items-center">
+<span class="font-headline font-bold text-sm text-on-surface">Valor líquido</span>
+<span class="font-headline font-bold text-lg custom-text-success">R$ 8.370,00</span>
+</div>
+<!-- Footer Rows -->
+<div class="space-y-5">
+<div class="flex justify-between items-start">
+<span class="text-sm text-on-surface-variant font-medium">Chave PIX</span>
+<span class="text-sm text-on-surface font-semibold text-right max-w-[150px]">CPF •••.456.789-00</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm text-on-surface-variant font-medium">Protocolo</span>
+<div class="px-3 py-1 custom-brand-blue rounded-full">
+<span class="text-[10px] font-bold text-white tracking-wider">#ANT-2026-0042</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Action Section -->
+<section class="px-6 mt-auto flex flex-col items-center space-y-4">
+<button class="w-full h-[56px] custom-brand-blue text-white rounded-full font-headline font-bold text-base shadow-lg shadow-blue-900/10 active:scale-[0.98] transition-all">
+                Voltar para Home
+            </button>
+<button class="py-2 px-4 transition-colors">
+<span class="custom-brand-blue-text font-body font-semibold text-sm">Ver no Histórico</span>
+</button>
+</section>
+<!-- Visual Embellishment (Asymmetric Background Element) -->
+<div class="absolute -bottom-10 -right-20 w-64 h-64 bg-primary-fixed opacity-10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute top-40 -left-10 w-40 h-40 bg-secondary-fixed opacity-5 rounded-full blur-2xl pointer-events-none"></div>
+</main>
+</body></html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=390, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-tertiary-container": "#a8c0cf",
+                        "tertiary-container": "#384f5b",
+                        "surface-container-highest": "#e0e3e5",
+                        "outline": "#737783",
+                        "on-tertiary-fixed": "#051e29",
+                        "on-surface-variant": "#434652",
+                        "background": "#f7f9fb",
+                        "tertiary-fixed-dim": "#b2cad9",
+                        "on-tertiary-fixed-variant": "#334a56",
+                        "on-primary-fixed-variant": "#004882",
+                        "surface-container-high": "#e6e8ea",
+                        "surface": "#f7f9fb",
+                        "on-surface": "#191c1e",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#213844",
+                        "secondary-container": "#00ccf9",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#d3e4ff",
+                        "inverse-on-surface": "#eff1f3",
+                        "secondary-fixed-dim": "#4cd6ff",
+                        "tertiary-fixed": "#cde6f5",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#005266",
+                        "surface-bright": "#f7f9fb",
+                        "primary-fixed-dim": "#a3c9ff",
+                        "surface-tint": "#27609d",
+                        "error-container": "#ffdad6",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#a3c9ff",
+                        "secondary-fixed": "#b7eaff",
+                        "secondary": "#00677f",
+                        "on-primary-container": "#90bfff",
+                        "primary-container": "#054d89",
+                        "surface-variant": "#e0e3e5",
+                        "primary": "#003664",
+                        "surface-container-low": "#f2f4f6",
+                        "surface-dim": "#d8dadc",
+                        "surface-container-lowest": "#ffffff",
+                        "on-background": "#191c1e",
+                        "inverse-surface": "#2d3133",
+                        "on-secondary-fixed": "#001f28",
+                        "on-secondary-fixed-variant": "#004e60",
+                        "on-primary-fixed": "#001c38",
+                        "error": "#ba1a1a",
+                        "surface-container": "#eceef0",
+                        "outline-variant": "#c3c6d4",
+                        "custom-green": "#006c49",
+                        "custom-blue-header": "#004ac6"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "3xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    boxShadow: {
+                        "medical": "0px 12px 32px rgba(25,28,30,0.04)",
+                        "blue-glow": "0 8px 24px rgba(0, 74, 198, 0.3)"
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="bg-custom-blue-header dark:bg-blue-900 text-white font-plus-jakarta-sans font-medium text-lg leading-relaxed docked full-width top-0 rounded-b-3xl h-[56px] shadow-lg dark:shadow-none flex items-center justify-between px-6 w-full max-w-screen-xl mx-auto z-50 sticky top-0">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-white">menu</span>
+<span class="font-bold text-xl tracking-tight text-white">Solicitar Antecipação</span>
+</div>
+<div class="w-6"></div> <!-- Spacer for leading balance -->
+</header>
+<main class="px-6 py-8">
+<!-- Section: Welcome -->
+<div class="mb-8">
+<p class="text-on-surface-variant text-sm font-medium mb-1">Olá, Dr. Ricardo Mendes</p>
+<h2 class="text-primary font-headline font-bold text-2xl tracking-tight">Selecione os plantões</h2>
+</div>
+<!-- Shift Cards Grid -->
+<div class="space-y-4 mb-10">
+<!-- Card 1 (SELECTED) -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl shadow-medical flex items-start gap-4 ring-2 ring-primary/10 relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary"></div>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check_box</span>
+<div class="flex-1">
+<h3 class="font-headline font-bold text-on-surface text-base">Hospital Sírio-Libanês</h3>
+<p class="text-on-surface-variant text-xs mt-1">18 Abr, 19h–07h</p>
+<div class="mt-3 flex justify-between items-end">
+<span class="text-custom-green font-bold text-lg">R$ 4.200,00</span>
+<span class="bg-primary/5 text-primary text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Plantão Realizado</span>
+</div>
+</div>
+</div>
+<!-- Card 2 (SELECTED) -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl shadow-medical flex items-start gap-4 ring-2 ring-primary/10 relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary"></div>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check_box</span>
+<div class="flex-1">
+<h3 class="font-headline font-bold text-on-surface text-base">Albert Einstein</h3>
+<p class="text-on-surface-variant text-xs mt-1">20 Abr, 07h–19h</p>
+<div class="mt-3 flex justify-between items-end">
+<span class="text-custom-green font-bold text-lg">R$ 5.100,00</span>
+<span class="bg-primary/5 text-primary text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Plantão Realizado</span>
+</div>
+</div>
+</div>
+<!-- Card 3 (UNSELECTED) -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl shadow-medical flex items-start gap-4 opacity-70">
+<span class="material-symbols-outlined text-outline">check_box_outline_blank</span>
+<div class="flex-1">
+<h3 class="font-headline font-bold text-on-surface text-base">Hospital Sírio-Libanês</h3>
+<p class="text-on-surface-variant text-xs mt-1">22 Abr, 19h–07h</p>
+<div class="mt-3 flex justify-between items-end">
+<span class="text-custom-green font-bold text-lg">R$ 4.200,00</span>
+</div>
+</div>
+</div>
+<!-- Card 4 (UNSELECTED) -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl shadow-medical flex items-start gap-4 opacity-70">
+<span class="material-symbols-outlined text-outline">check_box_outline_blank</span>
+<div class="flex-1">
+<h3 class="font-headline font-bold text-on-surface text-base">Albert Einstein</h3>
+<p class="text-on-surface-variant text-xs mt-1">25 Abr, 07h–19h</p>
+<div class="mt-3 flex justify-between items-end">
+<span class="text-custom-green font-bold text-lg">R$ 4.900,00</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section: Summary -->
+<div class="mb-6">
+<h2 class="text-primary font-headline font-bold text-xl tracking-tight mb-4">Resumo da Antecipação</h2>
+<div class="bg-surface-container-lowest p-6 rounded-3xl shadow-medical">
+<div class="space-y-3 mb-6">
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant">Valor bruto total</span>
+<span class="text-on-surface font-semibold">R$ 9.300,00</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant">Spread aplicado</span>
+<span class="text-error font-semibold">10%</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-5 rounded-2xl text-center mb-6">
+<p class="text-on-surface-variant text-xs uppercase tracking-widest font-bold mb-1">Você recebe</p>
+<p class="text-custom-green font-headline font-extrabold text-[28px]">R$ 8.370,00</p>
+</div>
+<div class="flex items-center gap-3 mb-6 bg-secondary-fixed/30 p-3 rounded-xl">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<p class="text-on-secondary-fixed-variant text-xs font-semibold">Depósito via PIX em até 24 horas</p>
+</div>
+<div class="flex justify-between items-center border-t border-surface-container pt-4">
+<div class="flex flex-col">
+<span class="text-[10px] text-on-surface-variant uppercase font-bold">Chave PIX</span>
+<span class="text-xs font-mono text-on-surface font-medium">CPF •••.456.789-00</span>
+</div>
+<button class="text-custom-blue-header text-sm font-bold hover:underline">Alterar</button>
+</div>
+</div>
+</div>
+<!-- CTA Button -->
+<button class="w-full bg-custom-green text-white font-headline font-bold py-5 rounded-full shadow-lg shadow-custom-green/20 flex items-center justify-center gap-2 active:scale-[0.98] transition-transform duration-150 mt-4 mb-8">
+            Confirmar Antecipação 
+            <span class="material-symbols-outlined text-lg">check_circle</span>
+</button>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-end pb-4 px-2 bg-white dark:bg-slate-900 shadow-[0_-4px_20px_rgba(13,71,161,0.08)] rounded-t-2xl">
+<div class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 p-2 hover:text-blue-600">
+<span class="material-symbols-outlined">home</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-wider mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 p-2 hover:text-blue-600">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-wider mt-1">Plantões</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-custom-blue-header text-white rounded-full w-14 h-14 -mt-8 shadow-blue-glow transition-all active:scale-110 duration-300 ease-out">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 p-2 hover:text-blue-600">
+<span class="material-symbols-outlined">history</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-wider mt-1">Histórico</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 p-2 hover:text-blue-600">
+<span class="material-symbols-outlined">person</span>
+<span class="font-inter text-[11px] font-semibold uppercase tracking-wider mt-1">Perfil</span>
+</div>
+</nav>
+</body></html>

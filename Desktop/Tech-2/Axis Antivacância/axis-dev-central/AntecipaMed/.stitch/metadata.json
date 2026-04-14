@@ -1,0 +1,38 @@
+{
+  "name": "projects/4020170065932518287",
+  "projectId": "4020170065932518287",
+  "title": "AntecipaMed — Fintech Plantões Médicos",
+  "visibility": "PRIVATE",
+  "deviceType": "MOBILE",
+  "designTheme": {
+    "colorMode": "LIGHT",
+    "font": "PLUS_JAKARTA_SANS",
+    "roundness": "ROUND_EIGHT",
+    "customColor": "#2563EB"
+  },
+  "screens": {
+    "dashboard": {
+      "id": "101b2bc6c13c456dadefd264be94a9b8",
+      "sourceScreen": "projects/4020170065932518287/screens/101b2bc6c13c456dadefd264be94a9b8",
+      "x": 1024, "y": 27876, "width": 390, "height": 1524
+    },
+    "historico": {
+      "id": "1bbacfe17b854f0db777349a88915d32",
+      "sourceScreen": "projects/4020170065932518287/screens/1bbacfe17b854f0db777349a88915d32",
+      "x": 2386, "y": 27876, "width": 390, "height": 1567
+    },
+    "plantoes": {
+      "id": "95c839114a8848a2b542e822115b20b3",
+      "sourceScreen": "projects/4020170065932518287/screens/95c839114a8848a2b542e822115b20b3",
+      "x": 1478, "y": 27876, "width": 390, "height": 1396
+    },
+    "login": {
+      "id": "b6b7a2a4287846cdb4389bccc6fbe786",
+      "sourceScreen": "projects/4020170065932518287/screens/b6b7a2a4287846cdb4389bccc6fbe786",
+      "x": 1932, "y": 27876, "width": 390, "height": 884
+    }
+  },
+  "metadata": {
+    "userRole": "OWNER"
+  }
+}
