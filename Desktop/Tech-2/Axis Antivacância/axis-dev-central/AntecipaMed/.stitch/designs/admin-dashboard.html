@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f7f9fb",
+                        "on-primary-fixed-variant": "#004882",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#a3c9ff",
+                        "primary-fixed": "#d3e4ff",
+                        "on-background": "#191c1e",
+                        "primary": "#003664",
+                        "on-tertiary-fixed-variant": "#334a56",
+                        "surface-container-highest": "#e0e3e5",
+                        "primary-fixed-dim": "#a3c9ff",
+                        "on-primary-container": "#90bfff",
+                        "on-tertiary-container": "#a8c0cf",
+                        "surface-variant": "#e0e3e5",
+                        "surface-container": "#eceef0",
+                        "on-primary-fixed": "#001c38",
+                        "tertiary": "#213844",
+                        "on-tertiary-fixed": "#051e29",
+                        "surface-dim": "#d8dadc",
+                        "on-secondary-fixed-variant": "#004e60",
+                        "tertiary-fixed-dim": "#b2cad9",
+                        "surface-container-high": "#e6e8ea",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#4cd6ff",
+                        "primary-container": "#054d89",
+                        "surface-tint": "#27609d",
+                        "surface": "#f7f9fb",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#cde6f5",
+                        "inverse-on-surface": "#eff1f3",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed": "#001f28",
+                        "inverse-surface": "#2d3133",
+                        "background": "#f7f9fb",
+                        "on-surface-variant": "#434652",
+                        "secondary-container": "#00ccf9",
+                        "on-secondary-container": "#005266",
+                        "on-surface": "#191c1e",
+                        "surface-container-low": "#f2f4f6",
+                        "outline-variant": "#c3c6d4",
+                        "secondary": "#00677f",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#b7eaff",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#384f5b",
+                        "outline": "#737783"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- SideNavBar Component -->
+<aside class="h-screen w-72 flex flex-col fixed left-0 top-0 bg-[#0F2B3C] dark:bg-slate-950 shadow-[0_12px_32px_-4px_rgba(0,54,100,0.06)] z-50">
+<div class="text-xl font-bold text-white tracking-tight px-6 py-8">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-secondary-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container" data-icon="medical_services">medical_services</span>
+</div>
+<div>
+<div class="leading-none">AntecipaMed</div>
+<div class="text-[10px] font-medium text-slate-400 mt-1 uppercase tracking-widest">Clinical Architect v1.0</div>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-4 mt-4">
+<!-- Active Navigation -->
+<a class="bg-white/10 text-white rounded-lg mb-2 flex items-center px-4 py-3 border-l-4 border-cyan-500 font-['Plus_Jakarta_Sans'] font-medium text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="text-slate-400 hover:text-white hover:bg-white/5 transition-all mb-2 flex items-center px-4 py-3 rounded-lg font-['Plus_Jakarta_Sans'] font-medium text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="medical_services">medical_services</span>
+                Médicos
+            </a>
+<a class="text-slate-400 hover:text-white hover:bg-white/5 transition-all mb-2 flex items-center px-4 py-3 rounded-lg font-['Plus_Jakarta_Sans'] font-medium text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="account_balance_wallet">account_balance_wallet</span>
+                Operações
+            </a>
+<a class="text-slate-400 hover:text-white hover:bg-white/5 transition-all mb-2 flex items-center px-4 py-3 rounded-lg font-['Plus_Jakarta_Sans'] font-medium text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="calculate">calculate</span>
+                Simulador
+            </a>
+</nav>
+<div class="px-4 py-8 border-t border-white/5">
+<a class="text-slate-400 hover:text-white transition-all mb-2 flex items-center px-4 py-2 font-['Plus_Jakarta_Sans'] font-medium text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="settings">settings</span>
+                Configurações
+            </a>
+<a class="text-slate-400 hover:text-white transition-all flex items-center px-4 py-2 font-['Plus_Jakarta_Sans'] font-medium text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="logout">logout</span>
+                Sair
+            </a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-72 min-h-screen">
+<!-- TopAppBar Component -->
+<header class="h-20 w-full sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl flex justify-between items-center px-8">
+<div class="flex items-center gap-4">
+<div class="bg-surface-container-low px-4 py-2 rounded-full flex items-center gap-3">
+<span class="material-symbols-outlined text-outline" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-64 placeholder:text-outline" placeholder="Buscar operações ou médicos..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 text-slate-600">
+<span class="material-symbols-outlined cursor-pointer hover:text-primary transition-colors" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary transition-colors" data-icon="help_outline">help_outline</span>
+</div>
+<button class="bg-gradient-to-r from-primary to-primary-container text-white px-6 py-2.5 rounded-lg text-sm font-semibold hover:shadow-lg transition-all active:scale-[0.98]">
+                    Novo Relatório
+                </button>
+<div class="flex items-center gap-3 pl-6 border-l border-surface-container-high">
+<div class="text-right">
+<p class="text-sm font-bold text-on-surface">Dr. Admin</p>
+<p class="text-[11px] text-on-surface-variant font-medium">Gestor Senior</p>
+</div>
+<img alt="Admin Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-surface-container-highest" data-alt="Close-up portrait of a professional healthcare administrator in a clean modern clinic setting, warm natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCElJR79-HY4PMMhz3T6TBCXobKMMVflKGJWE0_tX8hmPRz_RgxAIBXOjYPkXsUjC8FsmzCNH-j-sG4bzwqIlbo2DQtMHiftUwXr__Ay6NcKTzT5vEbXUOxQOTM5ovDtrDbrkZUmrG-KihHIdwcLFvBBMT13SBUaA9NyL4KPYSpNXoEyojSBu1K_wexwMi1EjP6ImPKRKPUvJh7gD44kOI17zvA5mnrfSLn2BqaZPHxxAE3Z0KgBYzpwN-5tGFr1CNGC0y1EyJ9u6s"/>
+</div>
+</div>
+</header>
+<div class="p-8 max-w-7xl mx-auto">
+<!-- Header Section -->
+<div class="mb-10">
+<h1 class="text-3xl font-extrabold text-primary tracking-tight">Visão Geral</h1>
+<p class="text-on-surface-variant mt-1 font-medium">Bem-vindo à arquitetura clínica da AntecipaMed.</p>
+</div>
+<!-- KPI Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_12px_32px_-4px_rgba(0,54,100,0.06)] border-l-4 border-secondary transition-transform hover:scale-[1.02]">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-secondary bg-secondary/10 p-2 rounded-lg" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">+12%</span>
+</div>
+<p class="text-on-surface-variant text-xs font-bold uppercase tracking-wider">Capital em Operação</p>
+<h3 class="text-2xl font-extrabold text-primary mt-1">R$ 21.686,00</h3>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_12px_32px_-4px_rgba(0,54,100,0.06)] border-l-4 border-primary-container transition-transform hover:scale-[1.02]">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-primary-container bg-primary-container/10 p-2 rounded-lg" data-icon="payments">payments</span>
+<span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">+8.4%</span>
+</div>
+<p class="text-on-surface-variant text-xs font-bold uppercase tracking-wider">Receita de Spread</p>
+<h3 class="text-2xl font-extrabold text-primary mt-1">R$ 3.594,00</h3>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_12px_32px_-4px_rgba(0,54,100,0.06)] border-l-4 border-secondary-container transition-transform hover:scale-[1.02]">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-secondary-container bg-secondary-container/10 p-2 rounded-lg" data-icon="trending_up">trending_up</span>
+<span class="text-xs font-bold text-secondary-container bg-secondary-container/5 px-2 py-1 rounded-full">Meta: 12%</span>
+</div>
+<p class="text-on-surface-variant text-xs font-bold uppercase tracking-wider">Spread Médio</p>
+<h3 class="text-2xl font-extrabold text-primary mt-1">10.4%</h3>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_12px_32px_-4px_rgba(0,54,100,0.06)] border-l-4 border-tertiary transition-transform hover:scale-[1.02]">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-tertiary bg-tertiary/10 p-2 rounded-lg" data-icon="group">group</span>
+<span class="text-xs font-bold text-primary bg-primary/5 px-2 py-1 rounded-full">Ativos</span>
+</div>
+<p class="text-on-surface-variant text-xs font-bold uppercase tracking-wider">Médicos Ativos</p>
+<h3 class="text-2xl font-extrabold text-primary mt-1">5</h3>
+</div>
+</div>
+<!-- Chart and Details Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+<!-- Volume Chart Card -->
+<div class="lg:col-span-2 bg-surface-container-lowest rounded-xl shadow-[0_12px_32px_-4px_rgba(0,54,100,0.06)] p-8">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h2 class="text-xl font-bold text-primary">Volume de Operações</h2>
+<p class="text-on-surface-variant text-sm">Monitoramento de fluxo mensal de capital</p>
+</div>
+<select class="bg-surface-container-low border-none rounded-lg text-sm font-semibold text-primary px-4 py-2">
+<option>Últimos 6 meses</option>
+<option>Último ano</option>
+</select>
+</div>
+<!-- Mock Bar Chart -->
+<div class="h-64 flex items-end justify-between gap-4 px-2">
+<div class="flex-1 flex flex-col items-center gap-3">
+<div class="w-full bg-primary-container/20 rounded-t-lg h-32 hover:bg-primary-container transition-colors relative group">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">R$ 12k</div>
+</div>
+<span class="text-[10px] font-bold text-on-surface-variant">JAN</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-3">
+<div class="w-full bg-primary-container/20 rounded-t-lg h-48 hover:bg-primary-container transition-colors relative group">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">R$ 18k</div>
+</div>
+<span class="text-[10px] font-bold text-on-surface-variant">FEV</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-3">
+<div class="w-full bg-primary rounded-t-lg h-56 relative group">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] py-1 px-2 rounded opacity-100">R$ 21k</div>
+</div>
+<span class="text-[10px] font-bold text-primary">MAR</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-3">
+<div class="w-full bg-primary-container/20 rounded-t-lg h-40 hover:bg-primary-container transition-colors relative group">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">R$ 15k</div>
+</div>
+<span class="text-[10px] font-bold text-on-surface-variant">ABR</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-3">
+<div class="w-full bg-primary-container/20 rounded-t-lg h-44 hover:bg-primary-container transition-colors relative group">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">R$ 16k</div>
+</div>
+<span class="text-[10px] font-bold text-on-surface-variant">MAI</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-3">
+<div class="w-full bg-primary-container/20 rounded-t-lg h-52 hover:bg-primary-container transition-colors relative group">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">R$ 19k</div>
+</div>
+<span class="text-[10px] font-bold text-on-surface-variant">JUN</span>
+</div>
+</div>
+</div>
+<!-- Snapshot Widget -->
+<div class="bg-gradient-to-br from-primary to-primary-container rounded-xl p-8 text-white flex flex-col justify-between overflow-hidden relative">
+<div class="relative z-10">
+<h2 class="text-xl font-bold mb-2">Resumo Operacional</h2>
+<p class="text-primary-fixed/80 text-sm leading-relaxed">Você atingiu 84% da sua meta mensal de desembolso até o momento.</p>
+</div>
+<div class="mt-8 relative z-10">
+<div class="flex justify-between items-end mb-2">
+<span class="text-3xl font-bold">R$ 124k</span>
+<span class="text-xs font-medium text-primary-fixed">Volume Total 2024</span>
+</div>
+<div class="w-full bg-white/10 h-2 rounded-full overflow-hidden">
+<div class="w-[84%] bg-secondary-container h-full"></div>
+</div>
+</div>
+<!-- Decorative Glass Element -->
+<div class="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+<div class="absolute -top-10 -left-10 w-32 h-32 bg-secondary-container/20 rounded-full blur-2xl"></div>
+</div>
+</div>
+<!-- Recent Operations Table -->
+<section class="bg-surface-container-lowest rounded-xl shadow-[0_12px_32px_-4px_rgba(0,54,100,0.06)] overflow-hidden">
+<div class="p-8 flex justify-between items-center">
+<div>
+<h2 class="text-xl font-bold text-primary">Operações Recentes</h2>
+<p class="text-on-surface-variant text-sm">Acompanhamento em tempo real das antecipações</p>
+</div>
+<button class="text-secondary font-bold text-sm hover:underline">Ver todas</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full border-collapse">
+<thead class="bg-surface-container-low text-left">
+<tr>
+<th class="px-8 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Médico</th>
+<th class="px-8 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Status</th>
+<th class="px-8 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Valor Bruto</th>
+<th class="px-8 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Spread</th>
+<th class="px-8 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider text-right">Data</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed text-xs font-bold">RS</div>
+<span class="text-sm font-semibold text-on-surface">Ricardo Santos</span>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-[11px] font-bold rounded-full border border-emerald-200">Aprovado</span>
+</td>
+<td class="px-8 py-5 text-sm font-medium text-on-surface">R$ 5.420,00</td>
+<td class="px-8 py-5 text-sm font-medium text-secondary">10.5%</td>
+<td class="px-8 py-5 text-sm text-on-surface-variant text-right">Hoje, 09:42</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed text-xs font-bold">CO</div>
+<span class="text-sm font-semibold text-on-surface">Camila Oliveira</span>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 bg-amber-100 text-amber-700 text-[11px] font-bold rounded-full border border-amber-200">Em Análise</span>
+</td>
+<td class="px-8 py-5 text-sm font-medium text-on-surface">R$ 3.850,00</td>
+<td class="px-8 py-5 text-sm font-medium text-secondary">11.2%</td>
+<td class="px-8 py-5 text-sm text-on-surface-variant text-right">Hoje, 08:15</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed text-xs font-bold">AS</div>
+<span class="text-sm font-semibold text-on-surface">André Silva</span>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-[11px] font-bold rounded-full border border-emerald-200">Aprovado</span>
+</td>
+<td class="px-8 py-5 text-sm font-medium text-on-surface">R$ 7.200,00</td>
+<td class="px-8 py-5 text-sm font-medium text-secondary">9.8%</td>
+<td class="px-8 py-5 text-sm text-on-surface-variant text-right">Ontem</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant text-xs font-bold">FM</div>
+<span class="text-sm font-semibold text-on-surface">Felipe Moraes</span>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-[11px] font-bold rounded-full border border-emerald-200">Aprovado</span>
+</td>
+<td class="px-8 py-5 text-sm font-medium text-on-surface">R$ 2.100,00</td>
+<td class="px-8 py-5 text-sm font-medium text-secondary">10.4%</td>
+<td class="px-8 py-5 text-sm text-on-surface-variant text-right">Ontem</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed text-xs font-bold">JR</div>
+<span class="text-sm font-semibold text-on-surface">Juliana Rocha</span>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 bg-surface-container-highest text-on-surface-variant text-[11px] font-bold rounded-full border border-outline-variant">Pendente</span>
+</td>
+<td class="px-8 py-5 text-sm font-medium text-on-surface">R$ 3.116,00</td>
+<td class="px-8 py-5 text-sm font-medium text-secondary">10.1%</td>
+<td class="px-8 py-5 text-sm text-on-surface-variant text-right">Ontem</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</main>
+</body></html>

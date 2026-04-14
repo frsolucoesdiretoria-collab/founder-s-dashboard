@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#ffffff",
+                    "surface-bright": "#f7f9fb",
+                    "on-primary-fixed-variant": "#004882",
+                    "on-secondary": "#ffffff",
+                    "inverse-primary": "#a3c9ff",
+                    "primary-fixed": "#d3e4ff",
+                    "on-background": "#191c1e",
+                    "primary": "#003664",
+                    "on-tertiary-fixed-variant": "#334a56",
+                    "surface-container-highest": "#e0e3e5",
+                    "primary-fixed-dim": "#a3c9ff",
+                    "on-primary-container": "#90bfff",
+                    "on-tertiary-container": "#a8c0cf",
+                    "surface-variant": "#e0e3e5",
+                    "surface-container": "#eceef0",
+                    "on-primary-fixed": "#001c38",
+                    "tertiary": "#213844",
+                    "on-tertiary-fixed": "#051e29",
+                    "surface-dim": "#d8dadc",
+                    "on-secondary-fixed-variant": "#004e60",
+                    "tertiary-fixed-dim": "#b2cad9",
+                    "surface-container-high": "#e6e8ea",
+                    "on-error": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#4cd6ff",
+                    "primary-container": "#054d89",
+                    "surface-tint": "#27609d",
+                    "surface": "#f7f9fb",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed": "#cde6f5",
+                    "inverse-on-surface": "#eff1f3",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed": "#001f28",
+                    "inverse-surface": "#2d3133",
+                    "background": "#f7f9fb",
+                    "on-surface-variant": "#434652",
+                    "secondary-container": "#00ccf9",
+                    "on-secondary-container": "#005266",
+                    "on-surface": "#191c1e",
+                    "surface-container-low": "#f2f4f6",
+                    "outline-variant": "#c3c6d4",
+                    "secondary": "#00677f",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed": "#b7eaff",
+                    "error": "#ba1a1a",
+                    "tertiary-container": "#384f5b",
+                    "outline": "#737783"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.5rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        .vitals-chip {
+            backdrop-filter: blur(8px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body">
+<!-- SideNavBar Shell -->
+<aside class="h-screen w-72 flex flex-col fixed left-0 top-0 bg-[#0F2B3C] dark:bg-slate-950 font-['Plus_Jakarta_Sans'] font-medium text-sm tracking-wide shadow-[0_12px_32px_-4px_rgba(0,54,100,0.06)] z-50">
+<div class="text-xl font-bold text-white tracking-tight px-6 py-8">
+            AntecipaMed
+            <div class="text-[10px] font-normal text-slate-400 mt-1 uppercase tracking-widest">Clinical Architect v1.0</div>
+</div>
+<nav class="flex flex-col h-full">
+<div class="flex-grow">
+<a class="text-slate-400 hover:text-white hover:bg-white/5 transition-all mx-4 mb-2 flex items-center px-4 py-3 rounded-lg" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+                    Dashboard
+                </a>
+<a class="bg-white/10 text-white rounded-lg mx-4 mb-2 flex items-center px-4 py-3 border-l-4 border-cyan-500" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="medical_services">medical_services</span>
+                    Médicos
+                </a>
+<a class="text-slate-400 hover:text-white hover:bg-white/5 transition-all mx-4 mb-2 flex items-center px-4 py-3 rounded-lg" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="account_balance_wallet">account_balance_wallet</span>
+                    Operações
+                </a>
+<a class="text-slate-400 hover:text-white hover:bg-white/5 transition-all mx-4 mb-2 flex items-center px-4 py-3 rounded-lg" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="calculate">calculate</span>
+                    Simulador
+                </a>
+</div>
+<div class="mt-auto mb-6">
+<a class="text-slate-400 hover:text-white hover:bg-white/5 transition-all mx-4 mb-2 flex items-center px-4 py-3 rounded-lg" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="settings">settings</span>
+                    Configurações
+                </a>
+<a class="text-slate-400 hover:text-white hover:bg-white/5 transition-all mx-4 mb-2 flex items-center px-4 py-3 rounded-lg" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="logout">logout</span>
+                    Sair
+                </a>
+</div>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-72 min-h-screen">
+<!-- TopAppBar Shell -->
+<header class="h-20 w-full sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl flex justify-between items-center px-8 transition-all">
+<div class="flex items-center gap-4">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-secondary transition-colors" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-high border-none rounded-lg text-sm w-80 focus:ring-2 focus:ring-secondary/20 focus:bg-white transition-all" placeholder="Pesquisar médicos..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant"></div>
+<div class="flex items-center gap-3">
+<div class="text-right">
+<p class="text-sm font-semibold text-on-surface">Admin AntecipaMed</p>
+<p class="text-xs text-on-surface-variant">Gestor de Operações</p>
+</div>
+<img alt="Admin Avatar" class="w-10 h-10 rounded-full border-2 border-surface-container-highest" data-alt="professional portrait of a hospital administrator in business attire with a clean modern aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKUXF3eKsGe9tyMMLXgGsaBhHiX7vr0C9rmbR2TMyWfDHb8PNk-Q_MSAIVCUotQ7Hb8dAxZoxv8P8afIKmpKqewl7SA2SkEhXp5pTSmMeAmLA06m3PckehMCB0rnKMzuHjjxgAdUrWrBu7ljTzzyQpOkO-gsvMBlVj9tmsKFn142UvIWzCKSvl3O24GMu6AOMG1NuBms7YZhcRTgq_cWqLRIaBaMp1NBs6rp02eN7FJhWhLmm4hZx4N3MeqXxGQ2mRrVsoKsav4G4"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-10 max-w-[1400px] mx-auto">
+<!-- Header Section -->
+<div class="flex justify-between items-end mb-12">
+<div>
+<h1 class="font-headline text-4xl font-light text-primary tracking-tight mb-2">Corpo Clínico</h1>
+<p class="text-on-surface-variant text-lg">Gerencie os profissionais credenciados e seus status operacionais.</p>
+</div>
+<button class="bg-gradient-to-br from-primary to-primary-container text-white px-6 py-3 rounded-lg flex items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-primary/10">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span class="font-semibold">Novo Médico</span>
+</button>
+</div>
+<!-- Filters & Stats Bento Grid -->
+<div class="grid grid-cols-12 gap-6 mb-10">
+<div class="col-span-8 bg-surface-container-low p-6 rounded-xl flex items-center gap-6">
+<div class="flex flex-col gap-1 flex-1">
+<label class="text-xs font-bold text-outline uppercase tracking-widest px-1">Especialidade</label>
+<select class="bg-surface-container-lowest border-none rounded-lg text-sm focus:ring-secondary/20 shadow-sm">
+<option>Todas as Especialidades</option>
+<option>Cardiologia</option>
+<option>Ortopedia</option>
+<option>Cirurgia Geral</option>
+<option>Anestesiologia</option>
+</select>
+</div>
+<div class="flex flex-col gap-1 flex-1">
+<label class="text-xs font-bold text-outline uppercase tracking-widest px-1">Status Operacional</label>
+<select class="bg-surface-container-lowest border-none rounded-lg text-sm focus:ring-secondary/20 shadow-sm">
+<option>Todos os Status</option>
+<option>Ativo</option>
+<option>Em Cirurgia</option>
+<option>Folga</option>
+</select>
+</div>
+<div class="flex items-end h-full">
+<button class="bg-surface-container-lowest text-primary p-3 rounded-lg hover:bg-white transition-all shadow-sm">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+</button>
+</div>
+</div>
+<div class="col-span-4 bg-secondary p-6 rounded-xl text-white flex items-center justify-between shadow-lg shadow-secondary/20">
+<div>
+<p class="text-secondary-fixed/80 text-sm font-medium">Médicos Ativos</p>
+<h3 class="text-4xl font-bold font-headline mt-1">128</h3>
+</div>
+<span class="material-symbols-outlined text-5xl opacity-20" data-icon="groups">groups</span>
+</div>
+</div>
+<!-- Doctor Directory - Medical Journal Style -->
+<div class="bg-surface-container-low rounded-2xl overflow-hidden">
+<div class="grid grid-cols-12 px-8 py-4 bg-surface-container-high/50 text-xs font-bold text-outline uppercase tracking-widest">
+<div class="col-span-4">Nome &amp; Perfil</div>
+<div class="col-span-2">CRM</div>
+<div class="col-span-3">Especialidade</div>
+<div class="col-span-2 text-center">Status</div>
+<div class="col-span-1 text-right">Ações</div>
+</div>
+<div class="flex flex-col">
+<!-- Row: Ricardo Mendes -->
+<div class="grid grid-cols-12 px-8 py-6 items-center hover:bg-surface-container-lowest transition-all group">
+<div class="col-span-4 flex items-center gap-4">
+<img alt="Ricardo Mendes" class="w-14 h-14 rounded-full object-cover ring-2 ring-white" data-alt="close-up of a middle-aged male doctor with glasses and a kind expression in a clinical setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAf2ae1Fpn2zNbwBkYDrQbbX8YrC99733ixB7PyR9og89z1DcpsQEfXzKvo5DFhjFJfLC5HmddvAUvZh0IdRj9G2v1_NK00I0lPnAdOCF-stpR8cIx2kML0yuEnE6hUJAOVA-qEBotLKl7W33iRH6BdiPhcc2eNgXFeoYlC9w8hKkMc6D1Osub3EB5IFBpizbx9xhuun97C3LL7qUL0Hq_gQ4Ea0Iw4cuzGtgN_LBMVyntubHSFoR12jnJVPzMi70O42ghEPKyh5dQ"/>
+<div>
+<h4 class="font-bold text-primary text-lg">Ricardo Mendes</h4>
+<p class="text-xs text-on-surface-variant font-medium">Cadastrado em: 12/05/2022</p>
+</div>
+</div>
+<div class="col-span-2 font-mono text-sm text-on-surface">CRM-SP 45892</div>
+<div class="col-span-3 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary/40"></span>
+<span class="font-semibold text-primary">Cardiologia</span>
+</div>
+<div class="col-span-2 flex justify-center">
+<span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full vitals-chip flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                ATIVO
+                            </span>
+</div>
+<div class="col-span-1 flex justify-end">
+<button class="p-2 text-outline hover:text-primary rounded-lg transition-colors group-hover:bg-surface-container-low">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Row: Camila Ferreira -->
+<div class="grid grid-cols-12 px-8 py-6 items-center bg-surface-container-lowest/30 hover:bg-surface-container-lowest transition-all group">
+<div class="col-span-4 flex items-center gap-4">
+<img alt="Camila Ferreira" class="w-14 h-14 rounded-full object-cover ring-2 ring-white" data-alt="professional female doctor with dark hair tied back wearing a white lab coat and stethoscope around neck" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjqoAFMRt86RIJ_TsAQWaVhfU2ygsfrQA7A5iw2HSvpCJiX912-Ou3SCYJO_lbz6WiHebWQnZicRFhXu4M4gqO5WeGjdCgkYJx8WVkk7l4zweav0tZhDl6U_0B5zJVy5DJmnAOKhn5hpdJSGStkuhTJm1Fpf6SLhrqQP_daUxcYzHUAa8QtTMvi_Nu6kbGMbZTw0g1qM9XmLERbcjvBPbuMBz83xvyrQlib_RXY-18Q-Km4rdvXQo2u-FbWOWlO5Q595eXefJt5fo"/>
+<div>
+<h4 class="font-bold text-primary text-lg">Camila Ferreira</h4>
+<p class="text-xs text-on-surface-variant font-medium">Cadastrado em: 18/01/2023</p>
+</div>
+</div>
+<div class="col-span-2 font-mono text-sm text-on-surface">CRM-SP 99210</div>
+<div class="col-span-3 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary/40"></span>
+<span class="font-semibold text-primary">Ortopedia</span>
+</div>
+<div class="col-span-2 flex justify-center">
+<span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full vitals-chip flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                                EM CIRURGIA
+                            </span>
+</div>
+<div class="col-span-1 flex justify-end">
+<button class="p-2 text-outline hover:text-primary rounded-lg transition-colors group-hover:bg-surface-container-low">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Row: André Bastos -->
+<div class="grid grid-cols-12 px-8 py-6 items-center hover:bg-surface-container-lowest transition-all group border-l-4 border-secondary/40">
+<div class="col-span-4 flex items-center gap-4">
+<img alt="André Bastos" class="w-14 h-14 rounded-full object-cover ring-2 ring-white" data-alt="portrait of a focused male surgeon in blue scrubs with soft medical background lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmrcvDKo2mzowgyXXMM7DphLsLiMnzGbb_YZm945qWsE9fswc1S02-zYlAmHvt5epOg3-Rkv2ghHgxZd4A5vb04Xt4msnfC0oOHRv3kw6FnFCoU-JwK6pZ6ZPmj9TEKuKSm9Kxb0CQpjwGCbsM3aPHSYpOBITd2-nKSogmWcZQBYCe_dAzvrWlJ4KhMQBwQEos3A5_MWwhjV-iS4y8oCe191oks9WdV58rfXgRLFoSYKWPXBlv1jIryeKpnpm-fLw5jlxlIYZNLlw"/>
+<div>
+<h4 class="font-bold text-primary text-lg">André Bastos</h4>
+<p class="text-xs text-on-surface-variant font-medium">Cadastrado em: 05/11/2021</p>
+</div>
+</div>
+<div class="col-span-2 font-mono text-sm text-on-surface">CRM-SP 77412</div>
+<div class="col-span-3 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary/40"></span>
+<span class="font-semibold text-primary">Cirurgia Geral</span>
+</div>
+<div class="col-span-2 flex justify-center">
+<span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full vitals-chip flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                ATIVO
+                            </span>
+</div>
+<div class="col-span-1 flex justify-end">
+<button class="p-2 text-outline hover:text-primary rounded-lg transition-colors group-hover:bg-surface-container-low">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Row: Juliana Alves -->
+<div class="grid grid-cols-12 px-8 py-6 items-center bg-surface-container-lowest/30 hover:bg-surface-container-lowest transition-all group">
+<div class="col-span-4 flex items-center gap-4">
+<img alt="Juliana Alves" class="w-14 h-14 rounded-full object-cover ring-2 ring-white" data-alt="professional female anesthesiologist looking serene and focused with clean medical office environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_8QbvTiyCZ5R1CU0TV6aX3ZJ_I20NPxrAEeJxBFwOu-m8aZRs14ExkM3ihC2SSqc1avoCbW77Ic78pcs6oPlWAt0GpF9X8Cr-LFTFqhf9sdh33Wes7LIgm9n44nGY7yFhSFvLX691OpY3R0hfeMQf6H3NLt7iSbmfRJUYY6dYJHVkTAuZtf_tU5rmIAqzExhSiwRX74fBvMBMVwm2tY0KhBgizx1UxMSK3gbrkbD1IRzieGYFxigrQ7Um7k-ueeIppqkfzuVJk-A"/>
+<div>
+<h4 class="font-bold text-primary text-lg">Juliana Alves</h4>
+<p class="text-xs text-on-surface-variant font-medium">Cadastrado em: 22/09/2022</p>
+</div>
+</div>
+<div class="col-span-2 font-mono text-sm text-on-surface">CRM-SP 12344</div>
+<div class="col-span-3 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary/40"></span>
+<span class="font-semibold text-primary">Anestesiologia</span>
+</div>
+<div class="col-span-2 flex justify-center">
+<span class="px-3 py-1 bg-surface-container-highest text-on-surface-variant text-xs font-bold rounded-full vitals-chip flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+                                FOLGA
+                            </span>
+</div>
+<div class="col-span-1 flex justify-end">
+<button class="p-2 text-outline hover:text-primary rounded-lg transition-colors group-hover:bg-surface-container-low">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Row: Felipe Torres -->
+<div class="grid grid-cols-12 px-8 py-6 items-center hover:bg-surface-container-lowest transition-all group">
+<div class="col-span-4 flex items-center gap-4">
+<img alt="Felipe Torres" class="w-14 h-14 rounded-full object-cover ring-2 ring-white" data-alt="young male emergency doctor in medical uniform looking energetic and professional in a hospital setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOLwsCEj6UJcBwKsKaP6niS2H9ENf0eY5ejk4ResAuRaItfDIuECThOKhwWpjBq69aCqpVivlFCdpdKV1I6Rf9bw2ozgH0KxokahkrvOEhbqNB4sNZveLh-3Ws-3qTn8euioXGDjBKWNPDYYed-Zqix3hBMCV5dIioTtuA-geWJjztuzuZHdhl6feGYyVGhMf-M-hu8xBAilD5EuKlHrRT0Ah_vktRh15nLvDSKXPSXwIimaiM-unYEI5DtRLBWbd-3ZewHLSwlrE"/>
+<div>
+<h4 class="font-bold text-primary text-lg">Felipe Torres</h4>
+<p class="text-xs text-on-surface-variant font-medium">Cadastrado em: 30/03/2023</p>
+</div>
+</div>
+<div class="col-span-2 font-mono text-sm text-on-surface">CRM-SP 88129</div>
+<div class="col-span-3 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary/40"></span>
+<span class="font-semibold text-primary">Emergência</span>
+</div>
+<div class="col-span-2 flex justify-center">
+<span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full vitals-chip flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                ATIVO
+                            </span>
+</div>
+<div class="col-span-1 flex justify-end">
+<button class="p-2 text-outline hover:text-primary rounded-lg transition-colors group-hover:bg-surface-container-low">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Footer Pagination -->
+<div class="px-8 py-6 bg-surface-container flex items-center justify-between">
+<p class="text-sm text-on-surface-variant">Mostrando <span class="font-bold text-on-surface">5</span> de <span class="font-bold text-on-surface">128</span> profissionais</p>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border-2 border-outline-variant text-outline hover:bg-white transition-all">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-white font-bold shadow-md shadow-primary/20">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white transition-all text-on-surface-variant font-medium">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white transition-all text-on-surface-variant font-medium">3</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border-2 border-outline-variant text-outline hover:bg-white transition-all">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Contextual Insight Card (Asymmetry) -->
+<div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="glass-panel p-8 rounded-2xl border-l-8 border-secondary relative overflow-hidden shadow-xl">
+<div class="relative z-10">
+<h3 class="font-headline text-2xl font-bold text-primary mb-4 italic">Análise de Plantão</h3>
+<p class="text-on-surface-variant mb-6 leading-relaxed">
+                            O corpo clínico atual apresenta uma cobertura de <span class="text-secondary font-bold">92%</span> para cirurgias eletivas agendadas nesta semana. Recomenda-se o credenciamento de mais um anestesista para o turno noturno.
+                        </p>
+<button class="text-secondary font-bold flex items-center gap-1 group">
+                            Visualizar Relatório Detalhado
+                            <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-9xl opacity-5 text-secondary" data-icon="analytics">analytics</span>
+</div>
+<div class="bg-gradient-to-br from-[#0F2B3C] to-[#1a4a66] p-8 rounded-2xl text-white shadow-xl flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-secondary-container" data-icon="verified_user">verified_user</span>
+<span class="text-xs font-bold tracking-[0.2em] uppercase">Compliance Clínico</span>
+</div>
+<h3 class="font-headline text-2xl font-light leading-snug">Documentação em dia para <span class="font-bold text-secondary-container">100%</span> dos médicos selecionados.</h3>
+</div>
+<div class="mt-8 flex gap-4">
+<div class="px-4 py-2 bg-white/10 rounded-lg text-xs font-medium">CRM Validado</div>
+<div class="px-4 py-2 bg-white/10 rounded-lg text-xs font-medium">Seguro Profissional Ativo</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
