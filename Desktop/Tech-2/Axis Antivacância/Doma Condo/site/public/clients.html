@@ -156,7 +156,7 @@ Novo Cliente
 <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
 <div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
 <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Total de Clientes</p>
-<p class="text-3xl font-bold text-primary mt-1">24</p>
+<p class="text-3xl font-bold text-primary mt-1" id="kpi-total-clients">—</p>
 <div class="mt-4 flex items-center gap-1 text-tertiary text-xs font-bold">
 <span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
 +12% este mês
@@ -184,147 +184,23 @@ Novo Cliente
 <thead>
 <tr class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest border-b border-surface-container/30">
 <th class="px-8 pb-4 pt-6 font-bold">Cliente</th>
-<th class="px-6 pb-4 pt-6 font-bold">Condomínios</th>
-<th class="px-6 pb-4 pt-6 font-bold">Atividades/mês</th>
+<th class="px-6 pb-4 pt-6 font-bold">Contato</th>
 <th class="px-6 pb-4 pt-6 font-bold text-center">Status</th>
 <th class="px-8 pb-4 pt-6 font-bold text-right">Ações</th>
 </tr>
 </thead>
-<tbody class="divide-y divide-surface-container/20">
-<!-- Row 1 -->
-<tr class="group hover:bg-surface-container-low/30 transition-colors">
-<td class="px-8 py-5">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-primary">
-<span class="material-symbols-outlined" data-icon="apartment">apartment</span>
-</div>
-<div>
-<p class="text-sm font-medium text-on-surface">Adm. Litoral Sul</p>
-<p class="text-xs text-zinc-400">ID: #LS-001</p>
-</div>
-</div>
-</td>
-<td class="py-5 px-6">
-<span class="bg-surface-container text-on-surface-variant px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">3 unidades</span>
-</td>
-<td class="py-5 px-6 text-sm font-medium text-on-surface">45 atividades</td>
-<td class="py-5 px-6 text-center">
-<span class="bg-tertiary-container text-on-tertiary-container text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">Ativo</span>
-</td>
-<td class="px-8 py-5 text-right">
-<button class="text-primary hover:text-primary-container transition-colors">
-<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
-</button>
-</td>
-</tr>
-<!-- Row 2 -->
-<tr class="group hover:bg-surface-container-low/30 transition-colors">
-<td class="px-8 py-5">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-primary">
-<span class="material-symbols-outlined" data-icon="apartment">apartment</span>
-</div>
-<div>
-<p class="text-sm font-medium text-on-surface">Prime Administração</p>
-<p class="text-xs text-zinc-400">ID: #PA-005</p>
-</div>
-</div>
-</td>
-<td class="py-5 px-6">
-<span class="bg-surface-container text-on-surface-variant px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">5 unidades</span>
-</td>
-<td class="py-5 px-6 text-sm font-medium text-on-surface">78 atividades</td>
-<td class="py-5 px-6 text-center">
-<span class="bg-tertiary-container text-on-tertiary-container text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">Ativo</span>
-</td>
-<td class="px-8 py-5 text-right">
-<button class="text-primary hover:text-primary-container transition-colors">
-<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
-</button>
-</td>
-</tr>
-<!-- Row 3 -->
-<tr class="group hover:bg-surface-container-low/30 transition-colors">
-<td class="px-8 py-5">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-primary">
-<span class="material-symbols-outlined" data-icon="apartment">apartment</span>
-</div>
-<div>
-<p class="text-sm font-medium text-on-surface">Catarinense Condominial</p>
-<p class="text-xs text-zinc-400">ID: #CC-002</p>
-</div>
-</div>
-</td>
-<td class="py-5 px-6">
-<span class="bg-surface-container text-on-surface-variant px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">2 unidades</span>
-</td>
-<td class="py-5 px-6 text-sm font-medium text-on-surface">32 atividades</td>
-<td class="py-5 px-6 text-center">
-<span class="bg-tertiary-container text-on-tertiary-container text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">Ativo</span>
-</td>
-<td class="px-8 py-5 text-right">
-<button class="text-primary hover:text-primary-container transition-colors">
-<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
-</button>
-</td>
-</tr>
-<!-- Row 4 -->
-<tr class="group hover:bg-surface-container-low/30 transition-colors">
-<td class="px-8 py-5">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-primary">
-<span class="material-symbols-outlined" data-icon="apartment">apartment</span>
-</div>
-<div>
-<p class="text-sm font-medium text-on-surface">BC Gestão</p>
-<p class="text-xs text-zinc-400">ID: #BC-004</p>
-</div>
-</div>
-</td>
-<td class="py-5 px-6">
-<span class="bg-surface-container text-on-surface-variant px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">4 unidades</span>
-</td>
-<td class="py-5 px-6 text-sm font-medium text-on-surface">56 atividades</td>
-<td class="py-5 px-6 text-center">
-<span class="bg-tertiary-container text-on-tertiary-container text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">Ativo</span>
-</td>
-<td class="px-8 py-5 text-right">
-<button class="text-primary hover:text-primary-container transition-colors">
-<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
-</button>
-</td>
-</tr>
-<!-- Row 5 -->
-<tr class="group hover:bg-surface-container-low/30 transition-colors">
-<td class="px-8 py-5">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-primary">
-<span class="material-symbols-outlined" data-icon="apartment">apartment</span>
-</div>
-<div>
-<p class="text-sm font-medium text-on-surface">Atlântica Administradora</p>
-<p class="text-xs text-zinc-400">ID: #AA-012</p>
-</div>
-</div>
-</td>
-<td class="py-5 px-6">
-<span class="bg-surface-container text-on-surface-variant px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">1 unidade</span>
-</td>
-<td class="py-5 px-6 text-sm font-medium text-on-surface">12 atividades</td>
-<td class="py-5 px-6 text-center">
-<span class="bg-secondary-container text-on-secondary-container text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">Pendente</span>
-</td>
-<td class="px-8 py-5 text-right">
-<button class="text-primary hover:text-primary-container transition-colors">
-<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
-</button>
-</td>
+<tbody id="clients-tbody" class="divide-y divide-surface-container/20">
+<tr>
+  <td colspan="4" class="px-8 py-12 text-center">
+    <div class="flex items-center justify-center">
+      <div class="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
+    </div>
+  </td>
 </tr>
 </tbody>
 </table>
 <div class="px-8 py-4 bg-surface-container-low flex justify-between items-center">
-<p class="text-xs text-on-surface-variant font-medium">Exibindo 5 de 24 clientes</p>
+<p class="text-xs text-on-surface-variant font-medium" id="clients-count">Carregando...</p>
 <div class="flex gap-2">
 <button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant/20 text-on-surface-variant hover:bg-surface-container-highest transition-colors">
 <span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
@@ -366,4 +242,5 @@ Ver Dashboard de Atividades
 </div>
 </footer>
 </main>
+<script type="module" src="./js/pages/clients.js"></script>
 </body></html>

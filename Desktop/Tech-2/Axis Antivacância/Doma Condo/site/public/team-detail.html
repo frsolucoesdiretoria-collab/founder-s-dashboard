@@ -158,20 +158,20 @@
 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
 <div class="flex items-center gap-8">
 <div class="relative">
-<div class="w-24 h-24 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container text-3xl font-bold tracking-tighter">
-  AS
+<div id="emp-avatar" class="w-24 h-24 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container text-3xl font-bold tracking-tighter">
+  —
 </div>
 <div class="absolute -bottom-1 -right-1 w-8 h-8 bg-white rounded-full flex items-center justify-center border-4 border-background">
-<div class="w-3 h-3 bg-tertiary rounded-full"></div>
+<div id="emp-status-indicator" class="w-3 h-3 bg-tertiary rounded-full"></div>
 </div>
 </div>
 <div>
 <div class="flex items-center gap-4 mb-2">
-<p class="text-2xl font-bold text-on-surface tracking-tight">Ana Souza</p>
-<span class="px-3 py-1 bg-surface-container text-on-surface-variant rounded-full text-[10px] font-bold uppercase tracking-wider">Analista Financeiro</span>
-<span class="px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold uppercase tracking-wider">ATIVO</span>
+<p id="emp-nome" class="text-2xl font-bold text-on-surface tracking-tight">—</p>
+<span id="emp-cargo" class="px-3 py-1 bg-surface-container text-on-surface-variant rounded-full text-[10px] font-bold uppercase tracking-wider">—</span>
+<span id="emp-status-badge" class="px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold uppercase tracking-wider">—</span>
 </div>
-<p class="text-sm text-on-surface-variant font-medium tracking-wide">BPO Specialist • Doma Condo</p>
+<p id="emp-subtitle" class="text-sm text-on-surface-variant font-medium tracking-wide">— • Doma Condo</p>
 </div>
 </div>
 </div>
@@ -180,22 +180,22 @@
 <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
 <div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
 <p class="text-label-sm font-bold text-zinc-400 mb-2">Volume Mensal</p>
-<p class="text-2xl font-bold text-primary">47</p>
+<p id="kpi-volume" class="text-2xl font-bold text-primary">—</p>
 <div class="mt-4 flex items-center gap-1 text-tertiary text-xs font-bold">
-<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
-+12% vs mês anterior
+<span class="material-symbols-outlined text-sm" data-icon="analytics">analytics</span>
+Atividades este mês
 </div>
 </div>
 <div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
 <p class="text-label-sm font-bold text-zinc-400 mb-2">Atenção Requerida</p>
-<p class="text-2xl font-bold text-primary">12</p>
-<p class="mt-4 text-xs text-zinc-400 font-medium">Prazo médio: 2.4 dias</p>
+<p id="kpi-pendentes" class="text-2xl font-bold text-primary">—</p>
+<p class="mt-4 text-xs text-zinc-400 font-medium">Atividades pendentes</p>
 </div>
 <div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
 <p class="text-label-sm font-bold text-zinc-400 mb-2">Performance</p>
-<p class="text-2xl font-bold text-primary">94%</p>
+<p id="kpi-performance" class="text-2xl font-bold text-primary">—</p>
 <div class="mt-5 h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
-<div class="h-full bg-primary w-[94%]"></div>
+<div id="kpi-performance-bar" class="h-full bg-primary" style="width: 0%"></div>
 </div>
 <p class="mt-4 text-xs text-zinc-400 font-medium text-right">Taxa de conclusão</p>
 </div>
@@ -219,57 +219,19 @@
 <th class="px-8 py-5 pb-4 font-bold text-right">Duração</th>
 </tr>
 </thead>
-<tbody class="divide-y divide-surface-container/20">
-<tr class="group hover:bg-surface-container-low/30 transition-colors">
-<td class="px-8 py-5 text-sm font-medium text-on-surface">15 Mai</td>
-<td class="px-8 py-5 text-sm font-medium text-on-surface">Condomínio Solar</td>
-<td class="px-8 py-5 text-sm font-medium text-on-surface">Conciliação bancária mensal</td>
-<td class="px-8 py-5">
-<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold uppercase tracking-wider">Financeiro</span>
-</td>
-<td class="px-8 py-5 text-sm font-medium text-on-surface text-right">45 min</td>
-</tr>
-<tr class="group hover:bg-surface-container-low/30 transition-colors">
-<td class="px-8 py-5 text-sm font-medium text-on-surface">14 Mai</td>
-<td class="px-8 py-5 text-sm font-medium text-on-surface">Edifício Aurora</td>
-<td class="px-8 py-5 text-sm font-medium text-on-surface">Emissão de boletos de cota extra</td>
-<td class="px-8 py-5">
-<span class="px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold uppercase tracking-wider">Operacional</span>
-</td>
-<td class="px-8 py-5 text-sm font-medium text-on-surface text-right">1h 20min</td>
-</tr>
-<tr class="group hover:bg-surface-container-low/30 transition-colors">
-<td class="px-8 py-5 text-sm font-medium text-on-surface">14 Mai</td>
-<td class="px-8 py-5 text-sm font-medium text-on-surface">Parque das Flores</td>
-<td class="px-8 py-5 text-sm font-medium text-on-surface">Análise de inadimplência Q1</td>
-<td class="px-8 py-5">
-<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold uppercase tracking-wider">Financeiro</span>
-</td>
-<td class="px-8 py-5 text-sm font-medium text-on-surface text-right">2h 10min</td>
-</tr>
-<tr class="group hover:bg-surface-container-low/30 transition-colors">
-<td class="px-8 py-5 text-sm font-medium text-on-surface">13 Mai</td>
-<td class="px-8 py-5 text-sm font-medium text-on-surface">Residencial Porto</td>
-<td class="px-8 py-5 text-sm font-medium text-on-surface">Fechamento de folha de pagamento</td>
-<td class="px-8 py-5">
-<span class="px-3 py-1 bg-error-container text-on-error-container rounded-full text-[10px] font-bold uppercase tracking-wider">RH / Contábil</span>
-</td>
-<td class="px-8 py-5 text-sm font-medium text-on-surface text-right">3h 45min</td>
-</tr>
-<tr class="group hover:bg-surface-container-low/30 transition-colors">
-<td class="px-8 py-5 text-sm font-medium text-on-surface">12 Mai</td>
-<td class="px-8 py-5 text-sm font-medium text-on-surface">Vila Romana</td>
-<td class="px-8 py-5 text-sm font-medium text-on-surface">Revisão de contratos de fornecedores</td>
-<td class="px-8 py-5">
-<span class="px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold uppercase tracking-wider">Operacional</span>
-</td>
-<td class="px-8 py-5 text-sm font-medium text-on-surface text-right">55 min</td>
+<tbody id="worklogs-tbody" class="divide-y divide-surface-container/20">
+<tr>
+  <td colspan="5" class="px-8 py-12 text-center">
+    <div class="flex items-center justify-center">
+      <div class="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
+    </div>
+  </td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="flex justify-between items-center px-4">
-<p class="text-xs text-on-surface-variant">Mostrando 5 de 47 atividades este mês</p>
+<p id="worklogs-count" class="text-xs text-on-surface-variant">Carregando...</p>
 <div class="flex gap-2">
 <button class="w-10 h-10 rounded-lg flex items-center justify-center border border-outline-variant hover:bg-surface-container transition-colors text-on-surface-variant">
 <span class="material-symbols-outlined text-base" data-icon="chevron_left">chevron_left</span>
@@ -282,6 +244,18 @@
 </div>
 </div>
 </section>
+<!-- Sessions Card -->
+<section class="bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] p-8">
+  <h3 class="text-lg font-semibold text-primary mb-6 flex items-center gap-2">
+    <span class="material-symbols-outlined text-base" data-icon="schedule">schedule</span>
+    Sessões — Última Semana
+  </h3>
+  <div id="sessions-list" class="divide-y divide-surface-container/20">
+    <div class="flex items-center justify-center py-8">
+      <div class="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent"></div>
+    </div>
+  </div>
+</section>
 </div>
 </main>
 <!-- Background Decoration -->
@@ -289,4 +263,5 @@
 <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full blur-[120px] bg-primary-container/20"></div>
 <div class="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] rounded-full blur-[100px] bg-tertiary-container/10"></div>
 </div>
+<script type="module" src="js/pages/team-detail.js"></script>
 </body></html>

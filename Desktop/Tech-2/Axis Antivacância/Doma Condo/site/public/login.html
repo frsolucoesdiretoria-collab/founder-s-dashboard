@@ -203,4 +203,77 @@
 </div>
 </section>
 </main>
+
+<script type="module">
+  import { supabase, getCurrentUser } from './js/supabase-client.js'
+
+  // Se já está logado, redireciona para o destino correto
+  getCurrentUser().then(user => {
+    if (!user) return
+    const role = user.app_metadata?.role
+    if (role === 'client') {
+      window.location.href = '/portal-overview.html'
+    } else {
+      window.location.href = '/dashboard.html'
+    }
+  })
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('form')
+    if (!form) return
+
+    const emailInput    = document.getElementById('email')
+    const passwordInput = document.getElementById('password')
+    const submitBtn     = form.querySelector('button[type="submit"]')
+
+    // Cria elemento de erro reutilizável logo acima do botão
+    const errEl = document.createElement('p')
+    errEl.id = 'login-error'
+    errEl.className = 'text-sm font-semibold text-error hidden'
+    submitBtn.parentNode.insertBefore(errEl, submitBtn)
+
+    function showErr(msg) {
+      errEl.textContent = msg
+      errEl.classList.remove('hidden')
+    }
+
+    function hideErr() {
+      errEl.classList.add('hidden')
+      errEl.textContent = ''
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      hideErr()
+
+      const email    = emailInput?.value?.trim()
+      const password = passwordInput?.value
+
+      if (!email || !password) {
+        showErr('Preencha o email e a senha.')
+        return
+      }
+
+      const originalContent = submitBtn.innerHTML
+      submitBtn.innerHTML   = 'Entrando...'
+      submitBtn.disabled    = true
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+
+      if (error) {
+        showErr('Email ou senha incorretos.')
+        submitBtn.innerHTML  = originalContent
+        submitBtn.disabled   = false
+        return
+      }
+
+      const role = data.user?.app_metadata?.role
+      if (role === 'client') {
+        window.location.href = '/portal-overview.html'
+      } else {
+        window.location.href = '/dashboard.html'
+      }
+    })
+  })
+</script>
 </body></html>

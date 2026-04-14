@@ -105,10 +105,9 @@
 <div class="flex justify-between items-end">
   <div>
     <span class="text-[10px] font-bold tracking-[0.2em] text-primary uppercase mb-2 block">PAINEL ADMINISTRATIVO</span>
-    <h1 class="text-4xl font-semibold text-primary tracking-tight">Adm. Litoral Sul</h1>
+    <h1 class="text-4xl font-semibold text-primary tracking-tight" id="client-name">Carregando...</h1>
     <div class="flex items-center gap-3 mt-2">
-      <span class="px-3 py-1 bg-secondary-container text-on-secondary-container text-[10px] font-bold tracking-widest uppercase rounded-full">PORTFÓLIO AZUL</span>
-      <span class="px-3 py-1 bg-tertiary-container text-on-tertiary-container text-[10px] font-bold tracking-widest uppercase rounded-full">ATIVO</span>
+      <span id="client-status" class="px-3 py-1 bg-tertiary-container text-on-tertiary-container text-[10px] font-bold tracking-widest uppercase rounded-full">—</span>
     </div>
   </div>
 <div class="flex gap-3">
@@ -147,145 +146,59 @@
 </div>
 </div>
 </section>
+<!-- Contact Info -->
+<section class="mb-8 bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] p-6">
+<h3 class="text-sm font-bold text-zinc-400 uppercase tracking-widest mb-4">Informações de Contato</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div>
+    <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Responsável</p>
+    <p class="text-sm font-medium text-on-surface" id="contact-name">—</p>
+  </div>
+  <div>
+    <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">E-mail</p>
+    <p class="text-sm font-medium text-on-surface" id="contact-email">—</p>
+  </div>
+  <div>
+    <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Telefone</p>
+    <p class="text-sm font-medium text-on-surface" id="contact-phone">—</p>
+  </div>
+</div>
+</section>
 <!-- Tabs Navigation -->
 <section class="mb-8">
 <div class="flex gap-10 border-b border-outline-variant/15">
-<button class="pb-4 text-sm font-bold border-b-2 border-primary text-primary">Condomínios</button>
-<button class="pb-4 text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">Atividades</button>
-<button class="pb-4 text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">Tarefas</button>
-<button class="pb-4 text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">Relatórios</button>
+<button class="pb-4 text-sm font-bold border-b-2 border-primary text-primary" data-tab="atividades" onclick="switchTab('atividades')">Atividades</button>
+<button class="pb-4 text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors" data-tab="tarefas" onclick="switchTab('tarefas')">Tarefas</button>
 </div>
 </section>
-<!-- Condominium Grid (The Canvas) -->
-<section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-<!-- Card 1 -->
-<div class="group bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] p-6 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5">
-<div class="flex justify-between items-start mb-6">
-<div class="w-12 h-12 bg-surface-container-low rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-<span class="material-symbols-outlined text-3xl" data-icon="apartment">apartment</span>
-</div>
-<button class="text-on-surface-variant hover:text-primary">
-<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
-</button>
-</div>
-<h3 class="text-xl font-semibold text-primary mb-1">Residencial Aurora</h3>
-<p class="text-sm text-on-surface-variant mb-6 flex items-center gap-1">
-<span class="material-symbols-outlined text-base" data-icon="location_on">location_on</span>
-                    Av. Beira Mar, 1200 - Centro
-                </p>
-<div class="space-y-4 pt-6 border-t border-outline-variant/10">
-<div class="flex justify-between">
-<span class="text-xs font-bold text-on-surface-variant tracking-wide uppercase">Unidades</span>
-<span class="text-sm font-bold text-on-surface">144 Apartamentos</span>
-</div>
-<div class="flex justify-between">
-<span class="text-xs font-bold text-on-surface-variant tracking-wide uppercase">Síndico</span>
-<span class="text-sm font-medium text-on-surface">Marco Aurélio</span>
-</div>
-<div class="flex justify-between">
-<span class="text-xs font-bold text-on-surface-variant tracking-wide uppercase">Última Atividade</span>
-<span class="text-sm font-medium text-on-surface">Hoje, 10:45</span>
-</div>
-</div>
-</div>
-<!-- Card 2 -->
-<div class="group bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] p-6 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5">
-<div class="flex justify-between items-start mb-6">
-<div class="w-12 h-12 bg-surface-container-low rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-<span class="material-symbols-outlined text-3xl" data-icon="corporate_fare">corporate_fare</span>
-</div>
-<button class="text-on-surface-variant hover:text-primary">
-<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
-</button>
-</div>
-<h3 class="text-xl font-semibold text-primary mb-1">Edifício Porto</h3>
-<p class="text-sm text-on-surface-variant mb-6 flex items-center gap-1">
-<span class="material-symbols-outlined text-base" data-icon="location_on">location_on</span>
-                    Rua dos Pescadores, 45 - Marina
-                </p>
-<div class="space-y-4 pt-6 border-t border-outline-variant/10">
-<div class="flex justify-between">
-<span class="text-xs font-bold text-on-surface-variant tracking-wide uppercase">Unidades</span>
-<span class="text-sm font-bold text-on-surface">82 Apartamentos</span>
-</div>
-<div class="flex justify-between">
-<span class="text-xs font-bold text-on-surface-variant tracking-wide uppercase">Síndico</span>
-<span class="text-sm font-medium text-on-surface">Cláudia Souza</span>
-</div>
-<div class="flex justify-between">
-<span class="text-xs font-bold text-on-surface-variant tracking-wide uppercase">Última Atividade</span>
-<span class="text-sm font-medium text-on-surface">Ontem, 16:20</span>
-</div>
-</div>
-</div>
-<!-- Card 3 -->
-<div class="group bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] p-6 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5">
-<div class="flex justify-between items-start mb-6">
-<div class="w-12 h-12 bg-surface-container-low rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-<span class="material-symbols-outlined text-3xl" data-icon="villa">villa</span>
-</div>
-<button class="text-on-surface-variant hover:text-primary">
-<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
-</button>
-</div>
-<h3 class="text-xl font-semibold text-primary mb-1">Vila Romana</h3>
-<p class="text-sm text-on-surface-variant mb-6 flex items-center gap-1">
-<span class="material-symbols-outlined text-base" data-icon="location_on">location_on</span>
-                    Al. dos Jatobás, S/N - Reserva
-                </p>
-<div class="space-y-4 pt-6 border-t border-outline-variant/10">
-<div class="flex justify-between">
-<span class="text-xs font-bold text-on-surface-variant tracking-wide uppercase">Unidades</span>
-<span class="text-sm font-bold text-on-surface">24 Casas</span>
-</div>
-<div class="flex justify-between">
-<span class="text-xs font-bold text-on-surface-variant tracking-wide uppercase">Síndico</span>
-<span class="text-sm font-medium text-on-surface">Ricardo Silva</span>
-</div>
-<div class="flex justify-between">
-<span class="text-xs font-bold text-on-surface-variant tracking-wide uppercase">Última Atividade</span>
-<span class="text-sm font-medium text-on-surface">02 Nov, 09:00</span>
-</div>
-</div>
+<!-- Tab: Atividades -->
+<section id="tab-atividades" class="bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] overflow-hidden">
+<div id="work-logs-container">
+  <div class="flex items-center justify-center py-12">
+    <div class="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
+  </div>
 </div>
 </section>
-<!-- Asymmetric Insight Panel -->
-<section class="mt-12 grid grid-cols-1 lg:grid-cols-4 gap-8">
-<div class="lg:col-span-3 bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] p-8">
-<div class="flex justify-between items-center mb-6">
-<h3 class="text-xl font-semibold text-primary">Fluxo de Caixa Consolidado</h3>
-<span class="text-xs font-bold text-on-surface-variant bg-surface-container-highest px-3 py-1 rounded-full">ÚLTIMOS 30 DIAS</span>
-</div>
-<div class="h-48 flex items-end justify-between gap-4">
-<div class="flex-1 bg-primary/20 rounded-t-lg" style="height: 60%"></div>
-<div class="flex-1 bg-primary/20 rounded-t-lg" style="height: 80%"></div>
-<div class="flex-1 bg-primary/20 rounded-t-lg" style="height: 45%"></div>
-<div class="flex-1 bg-primary rounded-t-lg" style="height: 95%"></div>
-<div class="flex-1 bg-primary/20 rounded-t-lg" style="height: 70%"></div>
-<div class="flex-1 bg-primary/20 rounded-t-lg" style="height: 85%"></div>
-<div class="flex-1 bg-primary/20 rounded-t-lg" style="height: 55%"></div>
-</div>
-</div>
-<div class="lg:col-span-1 space-y-6">
-<div class="bg-[#1A1A1A] rounded-xl p-6 text-white">
-<p class="text-[10px] font-bold text-primary-container tracking-widest uppercase mb-4">Ação Necessária</p>
-<h4 class="text-lg font-bold mb-2">Relatório de Inadimplência</h4>
-<p class="text-sm text-gray-400 mb-6">O relatório consolidado de Outubro para 'Residencial Aurora' está pronto para revisão.</p>
-<button class="w-full py-3 bg-primary text-white font-bold rounded-lg text-sm hover:bg-primary-fixed-dim transition-colors">Revisar Agora</button>
-</div>
-<div class="bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] p-6 border border-outline-variant/15">
-<p class="text-[10px] font-bold text-on-surface-variant tracking-widest uppercase mb-4">Atendimento</p>
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden">
-<img alt="Account Manager" data-alt="Portrait of a friendly female financial advisor with a professional look, soft office lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmHmpci59bBxbwQlbtqXOtmX0ncvxZbmNbB3-yI6xQw5a-F8tkFulTrk0OfkJXwld13ZJmGbsbmuHaenD4W0hbYnuU5oU74vWWk69I55wXm6yqJoTIw1xb9lUtgUUdjJnS9g7hwCkIndmE5mzBxKWeDxWAtjrnBmhqXYu09ihibzU9Ej41jpcQykamR0TakryWOpkoV6x8pirTZokNofaFhpvwRFJx5yPuwRoe3FtTitKBI6WwKcn34ncwknDy76Kmk4xufGXy6qhf"/>
-</div>
-<div>
-<p class="text-sm font-bold text-on-surface">Sofia Mendes</p>
-<p class="text-xs text-on-surface-variant">Gerente de Conta</p>
-</div>
-</div>
-</div>
+<!-- Tab: Tarefas -->
+<section id="tab-tarefas" class="hidden bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] p-6">
+<div id="tasks-container">
+  <div class="flex items-center justify-center py-12">
+    <div class="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
+  </div>
 </div>
 </section>
+<script>
+function switchTab(tab) {
+  document.getElementById('tab-atividades').classList.toggle('hidden', tab !== 'atividades')
+  document.getElementById('tab-tarefas').classList.toggle('hidden', tab !== 'tarefas')
+  document.querySelectorAll('[data-tab]').forEach(btn => {
+    const active = btn.dataset.tab === tab
+    btn.className = active
+      ? 'pb-4 text-sm font-bold border-b-2 border-primary text-primary'
+      : 'pb-4 text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors'
+  })
+}
+</script>
 </main>
+<script type="module" src="./js/pages/client-detail.js"></script>
 </body></html>
