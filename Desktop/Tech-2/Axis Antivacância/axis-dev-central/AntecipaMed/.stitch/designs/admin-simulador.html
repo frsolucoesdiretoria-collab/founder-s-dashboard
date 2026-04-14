@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>AntecipaMed Admin — Simulador de Operação</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: #f7f9fb; display: flex; min-height: 100vh; width: 1280px; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 240px; min-height: 100vh; background: #004ac6;
+    display: flex; flex-direction: column; padding: 28px 16px; flex-shrink: 0;
+  }
+  .sidebar-logo {
+    font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 18px;
+    color: #ffffff; margin-bottom: 36px; padding: 0 8px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+    border-radius: 12px; color: rgba(255,255,255,0.75); font-size: 14px;
+    font-weight: 500; cursor: pointer; margin-bottom: 4px; text-decoration: none;
+  }
+  .nav-item.active { background: #2563eb; color: #ffffff; font-weight: 600; }
+  .nav-icon { width: 20px; height: 20px; flex-shrink: 0; }
+
+  /* MAIN */
+  .main { flex: 1; padding: 32px; overflow: auto; }
+
+  /* TOP BAR */
+  .topbar { margin-bottom: 28px; }
+  .page-title {
+    font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800;
+    font-size: 26px; color: #1a1c1e; margin-bottom: 4px;
+  }
+  .page-sub { font-size: 14px; color: #6b7280; }
+
+  /* TWO-COLUMN LAYOUT */
+  .two-col { display: grid; grid-template-columns: 60fr 40fr; gap: 24px; align-items: start; }
+
+  /* CARD */
+  .card {
+    background: #fff; border-radius: 24px; padding: 32px;
+    box-shadow: 0px 12px 32px rgba(25,28,30,0.04);
+  }
+  .card-title {
+    font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+    font-size: 16px; color: #1a1c1e; margin-bottom: 28px;
+  }
+
+  /* SLIDERS */
+  .slider-group { margin-bottom: 32px; }
+  .slider-group:last-child { margin-bottom: 0; }
+  .slider-header {
+    display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px;
+  }
+  .slider-label { font-size: 14px; font-weight: 500; color: #374151; }
+  .slider-value {
+    font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+    font-size: 22px; color: #004ac6;
+  }
+  .slider-track {
+    position: relative; height: 8px; background: #e5e7eb; border-radius: 100px; margin-bottom: 10px;
+  }
+  .slider-fill {
+    position: absolute; left: 0; top: 0; height: 100%;
+    background: #004ac6; border-radius: 100px;
+  }
+  .slider-thumb {
+    position: absolute; top: 50%; transform: translate(-50%, -50%);
+    width: 24px; height: 24px; background: #fff; border: 3px solid #004ac6;
+    border-radius: 50%; box-shadow: 0 2px 8px rgba(0,74,198,0.3); cursor: pointer;
+  }
+  .slider-range {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: #9ca3af;
+  }
+  .slider-note {
+    margin-top: 24px; padding: 12px 16px; background: #f7f9fb;
+    border-radius: 12px; font-size: 12px; color: #6b7280;
+    border: 1px solid #e8eaec;
+  }
+
+  /* RESULT CARD */
+  .result-card {
+    background: #fff; border-radius: 24px; padding: 24px;
+    box-shadow: 0px 12px 32px rgba(25,28,30,0.04);
+    border-top: 4px solid #006c49;
+    margin-bottom: 16px;
+  }
+  .result-title {
+    font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+    font-size: 16px; color: #1a1c1e; margin-bottom: 18px;
+  }
+  .result-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; color: #374151; font-size: 14px;
+  }
+  .result-row + .result-row { border-top: 1px solid #f2f4f6; }
+  .result-amount { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; color: #1a1c1e; font-size: 15px; }
+  .result-amount.green { color: #006c49; }
+  .result-amount.red { color: #ba1a1a; }
+  .result-divider { height: 2px; background: #f2f4f6; margin: 14px 0; }
+  .result-hero {
+    display: flex; justify-content: space-between; align-items: center; padding: 8px 0;
+  }
+  .result-hero-label { font-size: 16px; font-weight: 600; color: #1a1c1e; }
+  .result-hero-value {
+    font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800;
+    font-size: 32px; color: #006c49;
+  }
+  .result-margin { font-size: 13px; color: #6b7280; text-align: right; margin-top: 4px; }
+
+  /* SCALE CARD */
+  .scale-card {
+    background: #fff; border-radius: 24px; padding: 24px;
+    box-shadow: 0px 12px 32px rgba(25,28,30,0.04);
+  }
+  .scale-title {
+    font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+    font-size: 16px; color: #1a1c1e; margin-bottom: 4px;
+  }
+  .scale-sub { font-size: 13px; color: #6b7280; margin-bottom: 20px; }
+  .scale-row { margin-bottom: 20px; }
+  .scale-row-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
+  }
+  .scale-label { font-size: 14px; font-weight: 600; color: #1a1c1e; }
+  .scale-amounts { font-size: 12px; color: #6b7280; }
+  .scale-amounts strong { color: #006c49; }
+  .progress-bar {
+    height: 8px; background: #e5e7eb; border-radius: 100px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; border-radius: 100px; }
+  .fill-50 { background: #2563eb; width: 50%; }
+  .fill-100 { background: #004ac6; width: 100%; }
+  .fill-goal { background: #006c49; width: 100%; }
+  .scale-meta {
+    margin-top: 20px; padding: 12px 14px; background: #f0fdf4;
+    border-radius: 12px; border: 1px solid #d1fae5;
+  }
+  .scale-meta-text { font-size: 12px; color: #006c49; font-weight: 500; margin-bottom: 8px; }
+  .meta-bar { height: 6px; background: #d1fae5; border-radius: 100px; overflow: hidden; }
+  .meta-fill { height: 100%; width: 10%; background: #006c49; border-radius: 100px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <rect width="28" height="28" rx="8" fill="rgba(255,255,255,0.2)"/>
+      <path d="M14 6L20 11V22H8V11L14 6Z" fill="white" opacity="0.9"/>
+      <rect x="11" y="16" width="6" height="6" fill="#2563eb"/>
+    </svg>
+    AntecipaMed
+  </div>
+  <nav>
+    <a class="nav-item" href="#">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-item" href="#">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/></svg>
+      Médicos
+    </a>
+    <a class="nav-item" href="#">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+      Operações
+    </a>
+    <a class="nav-item active" href="#">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
+      Simulador
+    </a>
+    <a class="nav-item" href="#">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm2 10a1 1 0 10-2 0v3a1 1 0 102 0v-3zm2-3a1 1 0 011 1v5a1 1 0 11-2 0v-5a1 1 0 011-1zm4-1a1 1 0 10-2 0v7a1 1 0 102 0V8z" clip-rule="evenodd"/></svg>
+      Relatórios
+    </a>
+    <a class="nav-item" href="#">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg>
+      Configurações
+    </a>
+  </nav>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <h1 class="page-title">Simulador de Operação</h1>
+    <p class="page-sub">Calcule a rentabilidade antes de aprovar uma operação</p>
+  </div>
+
+  <!-- TWO-COLUMN LAYOUT -->
+  <div class="two-col">
+
+    <!-- LEFT — INPUTS -->
+    <div class="card">
+      <div class="card-title">Parâmetros da Operação</div>
+
+      <!-- SLIDER 1: Valor do Plantão -->
+      <div class="slider-group">
+        <div class="slider-header">
+          <span class="slider-label">Valor do Plantão</span>
+          <span class="slider-value">R$ 5.000,00</span>
+        </div>
+        <div class="slider-track">
+          <div class="slider-fill" style="width: 21%;"></div>
+          <div class="slider-thumb" style="left: 21%;"></div>
+        </div>
+        <div class="slider-range">
+          <span>R$ 1.000</span>
+          <span>R$ 20.000</span>
+        </div>
+      </div>
+
+      <!-- SLIDER 2: Spread -->
+      <div class="slider-group">
+        <div class="slider-header">
+          <span class="slider-label">Spread Aplicado</span>
+          <span class="slider-value">10%</span>
+        </div>
+        <div class="slider-track">
+          <div class="slider-fill" style="width: 33%;"></div>
+          <div class="slider-thumb" style="left: 33%;"></div>
+        </div>
+        <div class="slider-range">
+          <span>5%</span>
+          <span>20%</span>
+        </div>
+      </div>
+
+      <!-- SLIDER 3: Prazo -->
+      <div class="slider-group">
+        <div class="slider-header">
+          <span class="slider-label">Prazo de Recebimento</span>
+          <span class="slider-value">45 dias</span>
+        </div>
+        <div class="slider-track">
+          <div class="slider-fill" style="width: 67%;"></div>
+          <div class="slider-thumb" style="left: 67%;"></div>
+        </div>
+        <div class="slider-range">
+          <span>15 dias</span>
+          <span>60 dias</span>
+        </div>
+      </div>
+
+      <div class="slider-note">
+        Custo de capital estimado: <strong>1,2% ao mês</strong> — baseado no CDI atual
+      </div>
+    </div>
+
+    <!-- RIGHT — RESULTS -->
+    <div>
+
+      <!-- RESULT CARD -->
+      <div class="result-card">
+        <div class="result-title">Resultado da Operação</div>
+
+        <div class="result-row">
+          <span>Capital desembolsado</span>
+          <span class="result-amount">R$ 4.500,00</span>
+        </div>
+        <div class="result-row">
+          <span>Receita de spread</span>
+          <span class="result-amount green">R$ 500,00</span>
+        </div>
+        <div class="result-row">
+          <span>Custo de capital (1,2%/mês × 45d)</span>
+          <span class="result-amount red">−R$ 81,00</span>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <div class="result-hero">
+          <span class="result-hero-label">Lucro líquido</span>
+          <span class="result-hero-value">R$ 419,00</span>
+        </div>
+        <div class="result-margin">Margem: <strong style="color:#006c49;">9,3%</strong></div>
+      </div>
+
+      <!-- SCALE CARD -->
+      <div class="scale-card">
+        <div class="scale-title">Projeção de Escala</div>
+        <div class="scale-sub">Com este ticket médio:</div>
+
+        <div class="scale-row">
+          <div class="scale-row-header">
+            <span class="scale-label">50 médicos/mês</span>
+            <span class="scale-amounts">Receita: R$ 25.000 · Lucro: <strong>R$ 20.950</strong></span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill fill-50"></div>
+          </div>
+        </div>
+
+        <div class="scale-row">
+          <div class="scale-row-header">
+            <span class="scale-label">100 médicos/mês</span>
+            <span class="scale-amounts">Receita: R$ 50.000 · Lucro: <strong>R$ 41.900</strong></span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill fill-100"></div>
+          </div>
+        </div>
+
+        <div class="scale-row" style="margin-bottom:16px;">
+          <div class="scale-row-header">
+            <span class="scale-label" style="color:#006c49;">200 médicos/mês</span>
+            <span class="scale-amounts">Receita: R$ 100.000 · Lucro: <strong>R$ 83.800</strong></span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill fill-goal"></div>
+          </div>
+        </div>
+
+        <div class="scale-meta">
+          <div class="scale-meta-text">Meta atual: 50 médicos ativos — Progresso: 5/50 (10%)</div>
+          <div class="meta-bar">
+            <div class="meta-fill"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+</body>
+</html>
