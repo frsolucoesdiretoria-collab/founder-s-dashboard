@@ -281,6 +281,54 @@ async function initForm(employeeId) {
   })
 }
 
+// ─── Gravação de Voz ──────────────────────────────────────────────────────────
+
+function initVoiceInput(textareaId, btnId) {
+  const textarea = document.getElementById(textareaId)
+  const btn = document.getElementById(btnId)
+  if (!textarea || !btn) return
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+  if (!SpeechRecognition) {
+    btn.style.display = 'none'
+    return
+  }
+
+  const recognition = new SpeechRecognition()
+  recognition.lang = 'pt-BR'
+  recognition.interimResults = false
+  recognition.maxAlternatives = 1
+
+  let listening = false
+
+  btn.addEventListener('click', () => {
+    if (listening) { recognition.stop(); return }
+    recognition.start()
+  })
+
+  recognition.onstart = () => {
+    listening = true
+    btn.innerHTML = '<span class="material-symbols-outlined text-base" style="color:#ef4444">mic</span> <span style="color:#ef4444">Ouvindo...</span>'
+  }
+
+  recognition.onresult = (e) => {
+    const transcript = e.results[0][0].transcript
+    textarea.value = textarea.value ? textarea.value + ' ' + transcript : transcript
+    textarea.dispatchEvent(new Event('input', { bubbles: true }))
+  }
+
+  recognition.onend = () => {
+    listening = false
+    btn.innerHTML = '<span class="material-symbols-outlined text-base">mic</span> Falar'
+  }
+
+  recognition.onerror = (e) => {
+    listening = false
+    btn.innerHTML = '<span class="material-symbols-outlined text-base">mic</span> Falar'
+    console.error('[voice] erro:', e.error)
+  }
+}
+
 async function init() {
   const user = await requireAuth()
   if (!user) return
@@ -331,4 +379,5 @@ async function init() {
   initForm(employeeId)
 }
 
+initVoiceInput('log-descricao', 'btn-voice-log')
 init()
