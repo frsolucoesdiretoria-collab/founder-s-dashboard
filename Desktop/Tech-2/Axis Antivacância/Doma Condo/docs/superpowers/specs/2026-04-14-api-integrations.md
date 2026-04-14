@@ -1,524 +1,637 @@
-# Planejamento de Integrações de API — Doma Condo
+# Integrações de API — Doma Condo
 
 **Data:** 2026-04-14
 **Projeto:** Doma Condo — BPO Financeiro de Condomínios
 **Autor:** Agente Claude Code
-**Status:** Especificação inicial — pronta para implementação
+**Status:** Revisão completa — Gather como canal principal (substitui versão anterior)
 
 ---
 
-## Visão Geral do Sistema
+## Visão Geral
 
-O sistema Doma Condo funciona com os seguintes componentes que se comunicam entre si:
+O Doma Condo usa uma arquitetura de bot + orquestrador para que o agente de IA converse com as funcionárias pelo Gather (chat interno) e envie relatórios para a Jéssica via WhatsApp.
 
-```
-Trello (tarefas do dia)
-        ↓
-   N8N (orquestrador)  ←→  Google Drive (contexto de documentos)
-        ↓
-   Gemini (IA da conversa)
-        ↓
-   Evolution API (WhatsApp)
-        ↓
-   Supabase (banco de dados)
-        ↓
-   Frontend Web (dashboard)
-```
+**Prioridades:**
 
-O agente WhatsApp é acionado às **11:30** e às **17:00** para coleta de dados das funcionárias. Antes de iniciar cada coleta, o N8N busca as tarefas do Trello para contextualizar a conversa. Durante a conversa, o Gemini pode buscar documentos do Google Drive quando precisar de contexto específico de um cliente.
+| # | Sistema | Papel |
+|---|---|---|
+| 1 | Gather WebSocket Bot | Conversa do agente com as funcionárias |
+| 1 | Gemini API | LLM que processa conversas e gera relatórios |
+| 1 | Supabase | Banco de dados (histórico, sessões, dados dos clientes) |
+| 1 | N8N | Orquestrador de todos os fluxos |
+| 2 | Evolution API (WhatsApp) | Envio de PDFs de relatório para a Jéssica |
+| 3 | Trello API | Leitura das tarefas do dia antes de cada coleta |
+| 4 | Google Drive API | Contexto de documentos dos clientes para o Gemini |
 
 ---
 
-## Diagrama de Uso — Quando Cada Integração é Chamada
+## 1. Gather WebSocket Bot (PRIORIDADE 1 — CRÍTICO)
 
-```
-11:30 / 17:00 — Disparo agendado (N8N Schedule Trigger)
-│
-├── 1. [TRELLO] Buscar cards do dia para cada funcionária
-│   └── Retorna: lista de tarefas planejadas com título, descrição, prazo
-│
-├── 2. Iniciar conversa no WhatsApp via Evolution API
-│   └── Mensagem inclui contexto das tarefas do Trello
-│
-├── 3. Funcionária responde sobre o que fez
-│   ↓
-├── 4. [GOOGLE DRIVE] Se Gemini precisar de contexto do cliente
-│   └── Buscar documentos (planilhas, NFs, etc.) daquele cliente
-│
-├── 5. Gemini processa resposta com contexto completo
-│
-└── 6. Dados salvos no Supabase
+### O que é e qual o papel
 
-[GATHER] — Uso paralelo, independente do fluxo de coleta
-└── Notificações de status / presença da equipe (uso futuro)
+O Gather é uma plataforma de escritório virtual onde as funcionárias já trabalham. O bot é um processo Node.js rodando continuamente na VM, conectado ao espaço Gather via WebSocket. Ele escuta DMs das funcionárias, encaminha para o N8N (onde o Gemini processa), e devolve a resposta como DM no Gather.
+
+O bot também expõe um endpoint HTTP simples para que o N8N possa enviar respostas de volta.
+
+### Instalação
+
+```bash
+npm install @gathertown/gather-game-client express
 ```
 
----
+### Código completo do bot (`gather-bot.js`)
 
-## 1. Trello API
+```javascript
+const { Game } = require("@gathertown/gather-game-client");
+const express = require("express");
+const axios = require("axios");
 
-### O que é e qual o papel no sistema
+// ─── Configuração ───────────────────────────────────────────
+const GATHER_API_KEY = process.env.GATHER_API_KEY;
+const GATHER_SPACE_ID = process.env.GATHER_SPACE_ID;
+// Formato do SPACE_ID: "ABC123\\nome-do-espaco"
+// Exemplo: "xKj9mN\\doma-condo"
 
-O Trello é onde a Jéssica e sua equipe planejam as tarefas do dia para cada cliente (condomínio). Cada funcionária tem cards atribuídos a ela no quadro do Trello.
+const N8N_WEBHOOK_URL = process.env.N8N_WEBHOOK_URL;
+// URL do webhook do N8N que recebe mensagens das funcionárias
 
-**Papel:** Antes de cada coleta (11:30 e 17:00), o N8N busca os cards do dia atribuídos à funcionária e usa essa lista para contextualizar a conversa. Isso evita que o agente pergunte do zero — ele já sabe o que estava planejado e pergunta como foi a execução.
+const BOT_HTTP_PORT = process.env.BOT_HTTP_PORT || 3500;
+// Porta onde o bot escuta respostas do N8N
 
-### Autenticação
+// ─── Conectar ao Gather ──────────────────────────────────────
+const game = new Game(
+  GATHER_SPACE_ID,
+  () => Promise.resolve({ apiKey: GATHER_API_KEY })
+);
 
-O Trello usa **API Key + Token** — o método mais simples, sem OAuth. Funciona assim:
+game.connect();
 
-1. Acesse [https://trello.com/app-key](https://trello.com/app-key) com a conta da Jéssica
-2. Crie um Power-Up (pode ser um Power-Up pessoal/privado) para obter a **API Key**
-3. Gere o **Token** clicando em "Generate a token" na mesma página
-4. Ambos são passados como query params em toda requisição:
-   `?key=API_KEY&token=API_TOKEN`
+// Confirmar conexão
+game.subscribeToEvent("ready", () => {
+  console.log("[Gather Bot] Conectado ao espaço com sucesso.");
+});
 
-Não há expiração do Token se gerado sem prazo definido (opção "Never Expires").
+// ─── Receber DMs das funcionárias ────────────────────────────
+game.subscribeToEvent("playerChats", async (data, context) => {
+  const chat = data.playerChats;
 
-### Endpoints que serão usados
+  // Filtrar apenas mensagens diretas (DM)
+  // messageType "DM" indica mensagem privada
+  if (chat.messageType !== "DM") return;
 
-#### a) Listar boards do workspace
+  const remetenteId = chat.senderId;     // ID do jogador que enviou
+  const mensagem = chat.contents;        // Texto da mensagem
+  const mapaId = context.spaceId;        // ID do espaço/mapa atual
 
-```
-GET https://api.trello.com/1/members/me/boards
-  ?key={API_KEY}
-  &token={API_TOKEN}
-  &fields=id,name
-```
+  console.log(`[Gather Bot] DM recebida de ${remetenteId}: ${mensagem}`);
 
-**Uso:** Executar uma vez para descobrir o ID do board principal da Doma Condo.
+  // Montar payload para o N8N
+  const payload = {
+    funcionaria_id: remetenteId,
+    mensagem: mensagem,
+    sessao_id: `${remetenteId}-${Date.now()}`,
+    mapa_id: mapaId,
+    timestamp: new Date().toISOString(),
+  };
 
-#### b) Listar listas (colunas) do board
+  try {
+    // Enviar para o N8N processar com o Gemini
+    await axios.post(N8N_WEBHOOK_URL, payload);
+    console.log(`[Gather Bot] Mensagem enviada ao N8N para processamento.`);
+  } catch (err) {
+    console.error("[Gather Bot] Erro ao enviar para N8N:", err.message);
 
-```
-GET https://api.trello.com/1/boards/{boardId}/lists
-  ?key={API_KEY}
-  &token={API_TOKEN}
-  &fields=id,name
-```
-
-**Uso:** Identificar a coluna "A fazer hoje" ou equivalente.
-
-#### c) Buscar cards de uma lista filtrados por membro
-
-```
-GET https://api.trello.com/1/lists/{listId}/cards
-  ?key={API_KEY}
-  &token={API_TOKEN}
-  &fields=id,name,desc,due,idMembers,labels
-  &members=true
-```
-
-**Uso:** Principal endpoint. Retorna todos os cards da lista. Filtrar por `idMembers` para pegar só os cards da funcionária em questão.
-
-#### d) Buscar informações de um membro (funcionária)
-
-```
-GET https://api.trello.com/1/members/{username}
-  ?key={API_KEY}
-  &token={API_TOKEN}
-  &fields=id,username,fullName
-```
-
-**Uso:** Uma vez para mapear username → ID de cada funcionária.
-
-### Exemplo de payload retornado
-
-```json
-[
-  {
-    "id": "64abc123def456",
-    "name": "Conciliação bancária — Condomínio Vila Verde",
-    "desc": "Verificar extrato do Bradesco e lançar no sistema",
-    "due": "2026-04-14T17:00:00.000Z",
-    "idMembers": ["64xyz789"],
-    "labels": [
-      { "name": "Urgente", "color": "red" }
-    ]
-  },
-  {
-    "id": "64abc789ghi012",
-    "name": "Lançamento de NFs — Condomínio Alameda",
-    "desc": "NFs de março pendentes",
-    "due": "2026-04-14T17:00:00.000Z",
-    "idMembers": ["64xyz789"],
-    "labels": []
+    // Avisar a funcionária que houve erro
+    game.chat(
+      "DM",
+      [{ name: "", map: mapaId, target: remetenteId }],
+      mapaId,
+      "Desculpe, tive um problema ao processar sua mensagem. Tente novamente em instantes."
+    );
   }
-]
+});
+
+// ─── Endpoint HTTP — receber resposta do N8N ─────────────────
+// O N8N chama esta rota com a resposta gerada pelo Gemini
+const app = express();
+app.use(express.json());
+
+app.post("/responder", (req, res) => {
+  const { funcionaria_id, resposta, mapa_id } = req.body;
+
+  if (!funcionaria_id || !resposta) {
+    return res.status(400).json({ erro: "funcionaria_id e resposta são obrigatórios" });
+  }
+
+  const mapDestino = mapa_id || "main"; // mapa padrão se não informado
+
+  console.log(`[Gather Bot] Enviando resposta para ${funcionaria_id}: ${resposta}`);
+
+  // Enviar DM de volta para a funcionária no Gather
+  game.chat(
+    "DM",
+    [{ name: "", map: mapDestino, target: funcionaria_id }],
+    mapDestino,
+    resposta
+  );
+
+  res.json({ ok: true });
+});
+
+app.listen(BOT_HTTP_PORT, () => {
+  console.log(`[Gather Bot] Endpoint HTTP rodando na porta ${BOT_HTTP_PORT}`);
+});
 ```
-
-### Como conectar com o N8N
-
-O N8N tem nó nativo do Trello. Configuração:
-
-1. No N8N, adicionar credencial do tipo **Trello API**
-2. Preencher: API Key e API Token
-3. Usar o nó **Trello → Get Cards** apontando para a lista correta
-4. Se precisar de filtros mais específicos, usar o nó **HTTP Request** com os endpoints acima
-
-**Fluxo recomendado no N8N:**
-```
-Schedule Trigger (11:30 / 17:00)
-  → HTTP Request: GET /lists/{listId}/cards
-  → Code node: filtrar cards por idMember da funcionária atual
-  → Montar texto: "Hoje você tinha planejado: [lista de tarefas]"
-  → Continua para Evolution API (início da conversa)
-```
-
-### Limitações e Rate Limits
-
-| Limite | Valor |
-|---|---|
-| Por API Key | 300 requisições / 10 segundos |
-| Por Token | 100 requisições / 10 segundos |
-| Endpoint /members/ | 100 requisições / 15 minutos |
-
-Para o volume do Doma Condo (2 funcionárias, 2 coletas/dia), os limites não são problema. A solução fará no máximo ~10 requisições por coleta.
-
-Se o limite for atingido, o Trello retorna **HTTP 429** — o N8N deve ter retry configurado com delay de 30 segundos.
 
 ### Variáveis de ambiente necessárias
 
 ```env
-TRELLO_API_KEY=sua_api_key_aqui
-TRELLO_API_TOKEN=seu_token_aqui
-TRELLO_BOARD_ID=id_do_board_principal
-TRELLO_LIST_ID_HOJE=id_da_coluna_tarefas_do_dia
-TRELLO_MEMBER_ID_FUNCIONARIA_1=id_trello_funcionaria_1
-TRELLO_MEMBER_ID_FUNCIONARIA_2=id_trello_funcionaria_2
+GATHER_API_KEY=sua_api_key_aqui
+GATHER_SPACE_ID=xKj9mN\nome-do-espaco
+N8N_WEBHOOK_URL=http://localhost:5678/webhook/gather-mensagem
+BOT_HTTP_PORT=3500
 ```
+
+**Como obter a API Key:** Acesse https://app.gather.town/apikeys — gere uma chave e guarde.
+
+**Como obter o SPACE_ID:** Abra o espaço no Gather, copie a URL. O ID está no formato `https://app.gather.town/app/ABC123/nome-espaco` → o SPACE_ID é `ABC123\nome-espaco`.
+
+### Como rodar com PM2 na VM
+
+PM2 é o gerenciador de processos que mantém o bot rodando mesmo após reinicialização.
+
+```bash
+# Instalar PM2 globalmente (se ainda não tiver)
+npm install -g pm2
+
+# Iniciar o bot com as variáveis de ambiente
+pm2 start gather-bot.js --name "doma-gather-bot" \
+  --env production
+
+# Salvar para reiniciar automaticamente
+pm2 save
+pm2 startup
+
+# Ver logs em tempo real
+pm2 logs doma-gather-bot
+
+# Reiniciar após mudanças no código
+pm2 restart doma-gather-bot
+```
+
+Arquivo de configuração PM2 (`ecosystem.config.js`):
+
+```javascript
+module.exports = {
+  apps: [
+    {
+      name: "doma-gather-bot",
+      script: "./gather-bot.js",
+      env: {
+        NODE_ENV: "production",
+        GATHER_API_KEY: "sua_api_key",
+        GATHER_SPACE_ID: "ABC123\\nome-espaco",
+        N8N_WEBHOOK_URL: "http://localhost:5678/webhook/gather-mensagem",
+        BOT_HTTP_PORT: "3500",
+      },
+      restart_delay: 5000,     // aguarda 5s antes de reiniciar em caso de crash
+      max_restarts: 10,
+    },
+  ],
+};
+```
+
+### Como configurar no N8N
+
+**Fluxo de entrada (receber mensagem da funcionária):**
+
+1. Adicione um nó **Webhook** no N8N
+   - Método: `POST`
+   - Path: `/gather-mensagem`
+   - Copie a URL gerada — essa é a `N8N_WEBHOOK_URL` do bot
+
+2. Conecte ao nó **Gemini** (Google AI) com o prompt do agente + a mensagem recebida em `{{ $json.mensagem }}`
+
+3. Após o Gemini processar, adicione um nó **HTTP Request**:
+   - Método: `POST`
+   - URL: `http://localhost:3500/responder` (ou o IP da VM)
+   - Body:
+     ```json
+     {
+       "funcionaria_id": "{{ $json.funcionaria_id }}",
+       "resposta": "{{ $json.resposta_gemini }}",
+       "mapa_id": "{{ $json.mapa_id }}"
+     }
+     ```
+
+### Limitações importantes
+
+- **Sem áudio:** A API do Gather não suporta transmissão de voz — apenas texto via DMs
+- **DMs são mais confiáveis** que mensagens globais: mensagens no chat do espaço geral enviadas via API podem não aparecer corretamente no painel de chat do cliente
+- **Sem webhooks nativos:** O bot precisa estar rodando continuamente (por isso o PM2). Não existe sistema de push do Gather para o N8N sem o bot intermediário
+- **Identificação das funcionárias:** O `senderId` retornado é o ID interno do Gather — mapeie para o nome real no Supabase na primeira interação
 
 ---
 
-## 2. Google Drive API
+## 2. Evolution API — WhatsApp (PRIORIDADE 2)
 
-### O que é e qual o papel no sistema
+### O que é e qual o papel
 
-O Google Drive é onde ficam os documentos de trabalho de cada cliente (planilhas de conciliação, notas fiscais, relatórios, etc.). O Gemini pode consultar esses documentos para ter contexto quando a funcionária menciona algo específico.
+Usado exclusivamente para enviar PDFs de relatório para a Jéssica ao final de cada coleta. Não é usado para conversa com as funcionárias (isso é papel do Gather).
 
-**Papel:** Quando o Gemini precisar de contexto detalhado de um cliente durante a conversa (ex: "qual foi o saldo do condomínio X no mês passado?"), o N8N busca o documento relevante no Drive e passa o conteúdo para o Gemini.
+### Endpoints relevantes
 
-### Autenticação
+**Enviar mensagem de texto simples:**
 
-Recomendação: **Service Account** (mais simples para automações, sem necessidade de login humano).
+```http
+POST https://{{EVOLUTION_API_URL}}/message/sendText/{{INSTANCE_NAME}}
+Headers:
+  apikey: {{EVOLUTION_API_KEY}}
+  Content-Type: application/json
 
-**Como configurar:**
-
-1. Acesse [Google Cloud Console](https://console.cloud.google.com/) com a conta Google da Jéssica
-2. Crie um projeto (ex: "Doma Condo Automações")
-3. Ative a **Google Drive API** no projeto
-4. Crie uma **Service Account** (Conta de Serviço):
-   - IAM & Admin → Service Accounts → Create
-   - Nome: `doma-condo-agent`
-   - Faça download do arquivo JSON de credenciais
-5. **Compartilhe** as pastas/arquivos do Drive com o e-mail da Service Account
-   - O e-mail terá formato: `doma-condo-agent@[projeto].iam.gserviceaccount.com`
-   - Compartilhe como "Leitor" (permissão de leitura apenas)
-6. No N8N, adicionar credencial **Google Service Account**
-
-**Alternativa OAuth 2.0:** Se preferir usar a conta pessoal do Google sem Service Account, configurar OAuth — mais complexo pois precisa de tela de consentimento e tokens que expiram.
-
-### Endpoints que serão usados
-
-#### a) Listar arquivos de uma pasta de cliente
-
-```
-GET https://www.googleapis.com/drive/v3/files
-  ?q='FOLDER_ID' in parents and trashed=false
-  &fields=files(id,name,mimeType,modifiedTime)
-  &orderBy=modifiedTime desc
-  &pageSize=20
-Authorization: Bearer {access_token}
-```
-
-**Uso:** Buscar os arquivos mais recentes de uma pasta de cliente específico.
-
-#### b) Baixar conteúdo de um arquivo (texto/PDF)
-
-```
-GET https://www.googleapis.com/drive/v3/files/{fileId}?alt=media
-Authorization: Bearer {access_token}
-```
-
-**Uso:** Baixar o conteúdo de um documento para passar ao Gemini.
-
-#### c) Exportar Google Sheets como CSV (para planilhas)
-
-```
-GET https://www.googleapis.com/drive/v3/files/{fileId}/export
-  ?mimeType=text/csv
-Authorization: Bearer {access_token}
-```
-
-**Uso:** Exportar planilhas do Google Sheets em formato texto para o Gemini processar.
-
-#### d) Buscar arquivo por nome
-
-```
-GET https://www.googleapis.com/drive/v3/files
-  ?q=name contains 'conciliação' and 'FOLDER_ID' in parents
-  &fields=files(id,name,modifiedTime)
-Authorization: Bearer {access_token}
-```
-
-**Uso:** Buscar documento específico quando funcionária menciona pelo nome.
-
-### Exemplo de payload
-
-**Listagem de arquivos:**
-```json
+Body:
 {
-  "files": [
-    {
-      "id": "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs",
-      "name": "Conciliação Março 2026 - Vila Verde",
-      "mimeType": "application/vnd.google-apps.spreadsheet",
-      "modifiedTime": "2026-04-10T14:23:00.000Z"
-    },
-    {
-      "id": "1a2b3c4d5e6f7g8h9i0j",
-      "name": "NFs pendentes - Alameda",
-      "mimeType": "application/pdf",
-      "modifiedTime": "2026-04-12T09:15:00.000Z"
-    }
-  ]
+  "number": "5511999999999",
+  "text": "Relatório do condomínio X pronto. Segue em anexo."
 }
 ```
 
-### Como conectar com o N8N
+**Enviar documento/PDF:**
 
-O N8N tem nó nativo do **Google Drive**. Configuração:
+```http
+POST https://{{EVOLUTION_API_URL}}/message/sendMedia/{{INSTANCE_NAME}}
+Headers:
+  apikey: {{EVOLUTION_API_KEY}}
+  Content-Type: application/json
 
-1. Adicionar credencial **Google Service Account** no N8N
-   - Fazer upload do arquivo JSON da Service Account
-2. Usar nó **Google Drive → List Files** para listar
-3. Usar nó **Google Drive → Download File** para baixar conteúdo
-4. Para planilhas: nó **Google Sheets** lê diretamente sem precisar baixar
-
-**Fluxo recomendado no N8N:**
-```
-[Gemini identifica que precisa de contexto do Cliente X]
-  → Code node: montar query de busca para pasta do Cliente X
-  → Google Drive: List Files (filtrado por pasta do cliente)
-  → Google Drive: Download/Export arquivo mais recente
-  → Code node: extrair texto relevante do documento
-  → Passa texto para o Gemini como contexto adicional
-  → Gemini responde com informação fundamentada
+Body:
+{
+  "number": "5511999999999",
+  "mediatype": "document",
+  "mimetype": "application/pdf",
+  "caption": "Relatório Condomínio Parque Verde — Abril/2026",
+  "media": "https://link-publico-para-o-pdf.com/relatorio.pdf",
+  "fileName": "relatorio-abril-2026.pdf"
+}
 ```
 
-### Estrutura de pastas recomendada no Drive
+O campo `media` aceita URL pública ou base64. Para PDFs gerados dinamicamente, recomenda-se subir para o Google Drive ou Supabase Storage e enviar a URL pública.
 
-```
-📁 Doma Condo — Clientes/
-  📁 Cliente 1 — Vila Verde/
-    📄 Conciliação Bancária/
-    📄 NFs/
-    📄 Relatórios/
-  📁 Cliente 2 — Alameda/
-    ...
+**Verificar status da instância:**
+
+```http
+GET https://{{EVOLUTION_API_URL}}/instance/fetchInstances
+Headers:
+  apikey: {{EVOLUTION_API_KEY}}
 ```
 
-Cada pasta de cliente terá um ID fixo que será mapeado nas variáveis de ambiente.
+### Como configurar no N8N
 
-### Limitações e Rate Limits
+1. Adicione um nó **HTTP Request** no final do fluxo de geração de relatório
+2. Configure conforme os endpoints acima
+3. Use as credenciais via variáveis de ambiente do N8N (Settings → Credentials → Header Auth)
 
-| Limite | Valor |
-|---|---|
-| Requisições por usuário por 100s | 12.000 |
-| Requisições por dia | 1.000.000.000 (praticamente ilimitado) |
-| Tamanho máximo de export | 10MB por arquivo |
-| Arquivos exportáveis via API | Docs, Sheets, Slides (formatos Google nativos) |
-
-Para o volume do Doma Condo, os limites não são problema. A solução consultará documentos raramente (apenas quando o Gemini precisar de contexto específico).
-
-**Atenção:** PDFs e imagens (NFs digitalizadas) não são lidos como texto pela Drive API — para extrair conteúdo de PDFs, é necessário usar Google Cloud Vision API ou similar. Para o MVP, foco em planilhas e documentos de texto.
-
-### Variáveis de ambiente necessárias
+### Variáveis de ambiente
 
 ```env
-GOOGLE_SERVICE_ACCOUNT_JSON=/caminho/para/service-account.json
-# ou o conteúdo JSON diretamente como string:
-GOOGLE_SERVICE_ACCOUNT_KEY={"type":"service_account","project_id":...}
-
-# IDs das pastas de cada cliente no Google Drive:
-GDRIVE_FOLDER_CLIENTE_1=id_pasta_vila_verde
-GDRIVE_FOLDER_CLIENTE_2=id_pasta_alameda
-GDRIVE_FOLDER_CLIENTE_3=id_pasta_cliente_3
-GDRIVE_FOLDER_CLIENTE_4=id_pasta_cliente_4
-GDRIVE_FOLDER_CLIENTE_5=id_pasta_cliente_5
+EVOLUTION_API_URL=https://seu-servidor-evolution.com
+EVOLUTION_API_KEY=sua_chave_evolution
+EVOLUTION_INSTANCE_NAME=doma-condo
+JESSICA_WHATSAPP=5511999999999
 ```
 
 ---
 
-## 3. Gather API
+## 3. Trello API (PRIORIDADE 3)
 
-### O que é e qual o papel esperado no sistema
+### O que é e qual o papel
 
-O Gather é a plataforma de escritório virtual onde a equipe da Jéssica trabalha online. As funcionárias "entram" no escritório virtual e trabalham de lá durante o dia.
+Antes de iniciar a coleta diária de dados com cada funcionária, o agente lê as tarefas do dia no Trello para saber o que precisa ser coletado. Cada funcionária tem cards atribuídos a ela.
 
-**Papel esperado:** Detectar presença das funcionárias no escritório virtual, enviar notificações dentro do ambiente Gather, ou verificar se alguém está online antes de iniciar a coleta no WhatsApp.
+### Endpoints relevantes
 
-### O que a API do Gather realmente oferece
+**Buscar todos os cards de um board:**
 
-A Gather tem uma API HTTP pública (v2), documentada em: [https://gathertown.notion.site/Gather-HTTP-API](https://gathertown.notion.site/Gather-HTTP-API-3bbf6c59325f40aca7ef5ce14c677444)
-
-**Autenticação:** API Key passada no header `apiKey`
-- Obter em: [https://app.gather.town/apikeys](https://app.gather.town/apikeys)
-
-**O que a API permite atualmente:**
-
-| Funcionalidade | Disponível? |
-|---|---|
-| Listar/modificar mapa do espaço | Sim (v2) |
-| Gerenciar guest list (lista de convidados) | Sim |
-| Definir roles/permissões de usuários | Sim |
-| Verificar presença/quem está online | **Limitado** — não há endpoint direto e confiável |
-| Enviar mensagens/notificações dentro do Gather | **Não disponível** via HTTP API |
-| Mover avatar de usuário | Apenas via WebSocket (não HTTP) |
-
-### Limitação crítica
-
-A Gather HTTP API é focada em **configuração de espaços** (mapas, objetos, guest lists), não em **monitoramento em tempo real de presença**. Para saber quem está online, seria necessário usar a API WebSocket deles — que é mais complexa de integrar com N8N.
-
-A API não tem endpoint para:
-- Saber se uma funcionária específica está no escritório virtual agora
-- Enviar uma notificação que apareça na tela do usuário dentro do Gather
-- Acionar algo quando alguém entra ou sai do espaço (via HTTP)
-
-### Endpoints disponíveis (o que dá para fazer)
-
-```
-# Buscar mapa do espaço
-GET https://api.gather.town/api/v2/spaces/{spaceId}/maps/{mapId}
-Headers: apiKey: {API_KEY}
-
-# Gerenciar guest list
-GET/POST https://api.gather.town/api/v2/spaces/{spaceId}/users
-Headers: apiKey: {API_KEY}
-
-# Verificar espaço
-GET https://api.gather.town/api/v2/spaces/{spaceId}
-Headers: apiKey: {API_KEY}
+```http
+GET https://api.trello.com/1/boards/{{BOARD_ID}}/cards
+Query params:
+  key={{TRELLO_API_KEY}}
+  token={{TRELLO_TOKEN}}
+  fields=name,desc,idMembers,due,idList
 ```
 
-**Formato do spaceId:** usa barra invertida como separador (`nomeEmpresa\nomeEspaco`), diferente da URL que usa barra normal.
+**Filtrar cards por membro (funcionária):**
 
-### Avaliação: Vale implementar agora?
+```http
+GET https://api.trello.com/1/members/{{MEMBER_ID}}/cards
+Query params:
+  key={{TRELLO_API_KEY}}
+  token={{TRELLO_TOKEN}}
+  fields=name,desc,due,idList,idBoard
+```
 
-**Recomendação: Não priorizar no MVP.**
+**Buscar listas do board (para identificar "A Fazer hoje", "Em Andamento", etc.):**
 
-A API do Gather não atende bem ao caso de uso principal esperado (verificar presença antes da coleta ou notificar dentro do escritório virtual). Para isso, seriam necessárias integrações mais complexas via WebSocket que aumentam muito a complexidade sem benefício claro no curto prazo.
+```http
+GET https://api.trello.com/1/boards/{{BOARD_ID}}/lists
+Query params:
+  key={{TRELLO_API_KEY}}
+  token={{TRELLO_TOKEN}}
+```
 
-### Alternativas recomendadas
+**Marcar card como concluído (mover para lista "Concluído"):**
 
-Se o objetivo é **verificar se a funcionária está disponível antes de acionar a coleta**:
+```http
+PUT https://api.trello.com/1/cards/{{CARD_ID}}
+Query params:
+  key={{TRELLO_API_KEY}}
+  token={{TRELLO_TOKEN}}
+Body (JSON):
+{
+  "idList": "{{ID_DA_LISTA_CONCLUIDO}}"
+}
+```
 
-| Alternativa | Como funciona | Complexidade |
-|---|---|---|
-| **Simples: não verificar** | O agente envia WhatsApp de qualquer forma, a funcionária responde quando disponível | Baixíssima |
-| **Google Calendar** | Verificar se a funcionária tem compromisso no horário via Google Calendar API | Baixa |
-| **Status no WhatsApp** | Usar metadados da Evolution API para saber se a funcionária está ativa | Baixa |
-| **Webhook no Gather** | Configurar Gather para disparar webhook quando alguém entra/sai (se suportado na versão do espaço) | Média |
-| **WebSocket Gather** | Conexão contínua para monitorar presença em tempo real | Alta |
+### Como obter as credenciais
 
-**Recomendação MVP:** Usar a abordagem simples — o agente dispara no horário programado, independente de presença no Gather. A funcionária responde quando puder. Simples e funciona.
+1. Acesse https://trello.com/app-key — copie a **API Key**
+2. Na mesma página, clique em "Generate a Token" — copie o **Token**
+3. O `BOARD_ID` está na URL do board: `https://trello.com/b/ABC123/nome-do-board` → ID é `ABC123`
 
-### Variáveis de ambiente (se decidir implementar futuramente)
+### Como configurar no N8N
+
+O N8N tem um nó nativo do Trello. Configuração:
+
+1. Settings → Credentials → New → Trello API
+2. Informe a API Key e o Token
+3. No fluxo matinal, adicione o nó **Trello → Get Cards** com o Board ID
+4. Use um nó **Code** ou **Filter** para filtrar apenas os cards da funcionária que está sendo contatada naquele momento
+
+### Variáveis de ambiente
 
 ```env
-GATHER_API_KEY=sua_api_key_gather
-GATHER_SPACE_ID=nomeEmpresa\nomeEspaco
+TRELLO_API_KEY=sua_api_key_trello
+TRELLO_TOKEN=seu_token_trello
+TRELLO_BOARD_ID=id_do_board_principal
 ```
 
 ---
 
-## Prioridade de Implementação
+## 4. Google Drive API (PRIORIDADE 4)
 
-### Fase 1 — Trello (implementar primeiro)
+### O que é e qual o papel
 
-**Por quê primeiro:** É o que mais muda a qualidade da conversa. Hoje o agente pergunta do zero o que foi feito. Com o Trello, o agente chega na conversa já sabendo o que estava planejado e pode perguntar especificamente: "Você planejou fazer a conciliação bancária do Vila Verde — conseguiu fazer?". Impacto imediato na experiência das funcionárias e na qualidade dos dados coletados.
+Os documentos dos clientes (contratos, modelos de relatório, regulamentos de condomínio) ficam no Google Drive. Antes de gerar um relatório, o N8N busca o arquivo do cliente correto e envia o conteúdo como contexto para o Gemini.
 
-**Complexidade:** Baixa. Integração simples, N8N tem nó nativo, autenticação sem OAuth.
+### Autenticação recomendada: Service Account
 
-**Estimativa:** 1 sessão de implementação.
+Service Account é uma conta de serviço que não precisa de login humano. É a forma correta para automações em servidor.
 
-### Fase 2 — Google Drive (implementar em seguida)
+**Como criar:**
 
-**Por quê segundo:** Agrega inteligência ao Gemini. Com acesso aos documentos dos clientes, o agente pode dar contexto às funcionárias durante a conversa e registrar informações mais precisas. Útil quando a funcionária menciona uma NF específica ou precisa confirmar um valor.
+1. Acesse https://console.cloud.google.com/
+2. Crie um projeto (ou use o existente)
+3. APIs & Services → Enable APIs → Ative "Google Drive API"
+4. APIs & Services → Credentials → Create Credentials → Service Account
+5. Baixe o arquivo JSON de credenciais
+6. No Google Drive, compartilhe a pasta dos clientes com o e-mail da Service Account (formato: `nome@projeto.iam.gserviceaccount.com`)
 
-**Complexidade:** Média. Requer configuração de Service Account no Google Cloud e compartilhamento das pastas. Lógica de "quando buscar" precisa ser bem definida para não deixar a conversa lenta.
+### Endpoints relevantes
 
-**Estimativa:** 1-2 sessões de implementação.
+**Listar arquivos de uma pasta:**
 
-### Fase 3 — Gather (implementar no futuro, se necessário)
+```http
+GET https://www.googleapis.com/drive/v3/files
+Query params:
+  q='{{FOLDER_ID}}' in parents and trashed=false
+  fields=files(id,name,mimeType,modifiedTime)
+Headers:
+  Authorization: Bearer {{ACCESS_TOKEN}}
+```
 
-**Por quê por último:** A API atual do Gather tem limitações que impedem o caso de uso mais valioso (monitoramento de presença). Antes de implementar, definir com a Jéssica exatamente o que ela quer que aconteça com a integração do Gather — pode ser que a alternativa simples (sem integração) seja suficiente.
+**Baixar conteúdo de um arquivo de texto (.txt, .csv, .gdoc exportado):**
 
-**Complexidade:** Alta se for presença em tempo real. Baixa se for apenas gerenciar guest list.
+```http
+GET https://www.googleapis.com/drive/v3/files/{{FILE_ID}}/export
+Query params:
+  mimeType=text/plain
+Headers:
+  Authorization: Bearer {{ACCESS_TOKEN}}
+```
 
-**Estimativa:** Requerer reavaliação antes de estimar.
+**Baixar arquivo binário (PDF, imagem):**
 
+```http
+GET https://www.googleapis.com/drive/v3/files/{{FILE_ID}}?alt=media
+Headers:
+  Authorization: Bearer {{ACCESS_TOKEN}}
+```
+
+### Autenticação com Service Account no N8N
+
+1. Settings → Credentials → New → Google API (Service Account)
+2. Cole o conteúdo do arquivo JSON da Service Account
+3. Use o nó **Google Drive → List Files** e **Google Drive → Download File** no fluxo
+
+### Dica de uso com o Gemini
+
+Baixe o conteúdo do documento como texto e injete no prompt:
+
+```
+Contexto do cliente:
+---
+{{conteudo_do_arquivo_drive}}
 ---
 
-## Resumo das Variáveis de Ambiente
+Com base nesse contexto, responda a pergunta da funcionária: {{mensagem}}
+```
 
-Todas as variáveis abaixo devem ser configuradas no N8N (via Settings → Variables) e **nunca** commitadas em repositório Git.
+### Variáveis de ambiente
 
 ```env
-# ============================
-# TRELLO
-# ============================
-TRELLO_API_KEY=
-TRELLO_API_TOKEN=
-TRELLO_BOARD_ID=
-TRELLO_LIST_ID_HOJE=
-TRELLO_MEMBER_ID_FUNCIONARIA_1=
-TRELLO_MEMBER_ID_FUNCIONARIA_2=
-
-# ============================
-# GOOGLE DRIVE
-# ============================
-GOOGLE_SERVICE_ACCOUNT_KEY=  # JSON completo em string
-GDRIVE_FOLDER_CLIENTE_1=
-GDRIVE_FOLDER_CLIENTE_2=
-GDRIVE_FOLDER_CLIENTE_3=
-GDRIVE_FOLDER_CLIENTE_4=
-GDRIVE_FOLDER_CLIENTE_5=
-
-# ============================
-# GATHER (futuro)
-# ============================
-GATHER_API_KEY=
-GATHER_SPACE_ID=
+GOOGLE_SERVICE_ACCOUNT_JSON={"type":"service_account","project_id":"..."}
+GOOGLE_DRIVE_FOLDER_ID=id_da_pasta_raiz_dos_clientes
 ```
 
 ---
 
-## Checklist de Configuração
+## 5. Gemini API — via N8N (PRIORIDADE 1)
 
-### Trello
-- [ ] Criar Power-Up pessoal em trello.com/app-key
-- [ ] Copiar API Key e gerar Token
-- [ ] Identificar ID do board principal (GET /members/me/boards)
-- [ ] Identificar ID da coluna "A fazer hoje" (GET /boards/{id}/lists)
-- [ ] Mapear IDs das funcionárias no Trello
-- [ ] Configurar credencial no N8N
-- [ ] Testar requisição de cards
+### O que é e qual o papel
 
-### Google Drive
-- [ ] Criar projeto no Google Cloud Console
-- [ ] Ativar Google Drive API
-- [ ] Criar Service Account e baixar JSON
-- [ ] Compartilhar pastas dos clientes com o e-mail da Service Account
-- [ ] Anotar IDs das pastas de cada cliente
-- [ ] Configurar credencial no N8N
-- [ ] Testar listagem de arquivos
+O Gemini é o cérebro do agente. Ele processa as mensagens das funcionárias, faz perguntas de coleta, analisa os dados e gera os relatórios em PDF.
 
-### Gather (quando decidir implementar)
-- [ ] Definir com a Jéssica o que exatamente precisa do Gather
-- [ ] Avaliar se alternativas mais simples já resolvem
-- [ ] Se avançar: obter API Key em app.gather.town/apikeys
+### Modelo recomendado
+
+- **`gemini-1.5-pro`** — para conversas longas e geração de relatórios (contexto grande)
+- **`gemini-1.5-flash`** — para respostas rápidas em coleta simples (mais barato)
+
+### Configuração no N8N
+
+1. Settings → Credentials → New → Google Gemini (PaLM) API
+2. Informe a API Key (obtida em https://aistudio.google.com/app/apikey)
+3. Adicione o nó **Basic LLM Chain** ou **AI Agent** no fluxo
+4. Configure o modelo e o system prompt do agente
+
+**System prompt base para o agente Doma Condo:**
+
+```
+Você é o assistente financeiro do Doma Condo, um BPO financeiro de condomínios.
+Sua função é coletar dados financeiros diários das funcionárias (Fulana e Ciclana) e gerar relatórios para os clientes.
+
+Ao iniciar uma conversa, leia as tarefas do dia que serão fornecidas como contexto.
+Faça uma pergunta por vez. Seja objetivo, profissional e amigável.
+Quando tiver todos os dados, confirme com a funcionária antes de fechar a coleta.
+
+Clientes atuais: [listar os 5 clientes administradoras de condomínio]
+```
+
+### Variáveis de ambiente
+
+```env
+GEMINI_API_KEY=sua_api_key_gemini
+```
 
 ---
 
-*Documento gerado em 2026-04-14. Atualizar conforme a implementação avança.*
+## 6. Supabase (PRIORIDADE 1)
+
+### O que é e qual o papel
+
+Banco de dados central do sistema. Armazena:
+- Histórico de conversas entre o bot e as funcionárias
+- Dados coletados em cada sessão
+- Status das tarefas diárias
+- Registros dos relatórios gerados
+- Mapeamento de `funcionaria_id` (Gather) → nome real
+
+### Conexão no N8N
+
+Use o nó **Supabase** nativo do N8N ou o nó **HTTP Request** com a API REST do Supabase.
+
+**Exemplo via HTTP Request (inserir registro de conversa):**
+
+```http
+POST https://{{SUPABASE_URL}}/rest/v1/conversas
+Headers:
+  apikey: {{SUPABASE_ANON_KEY}}
+  Authorization: Bearer {{SUPABASE_ANON_KEY}}
+  Content-Type: application/json
+  Prefer: return=minimal
+
+Body:
+{
+  "funcionaria_id": "gather-id-da-funcionaria",
+  "funcionaria_nome": "Ana",
+  "mensagem": "o valor do condomínio X foi R$ 1.200",
+  "tipo": "coleta",
+  "sessao_id": "ana-1713123456789",
+  "created_at": "2026-04-14T10:00:00Z"
+}
+```
+
+### Variáveis de ambiente
+
+```env
+SUPABASE_URL=https://xyzxyz.supabase.co
+SUPABASE_ANON_KEY=eyJhbGci...
+SUPABASE_SERVICE_KEY=eyJhbGci...
+```
+
+---
+
+## Diagrama de Sequência — Fluxo Completo
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                     FLUXO MATINAL (coleta diária)                │
+└──────────────────────────────────────────────────────────────────┘
+
+6:00 — N8N dispara fluxo agendado
+  │
+  ├─→ [Trello API] Busca tarefas do dia de cada funcionária
+  │
+  ├─→ [Google Drive API] Busca documentos dos clientes relacionados
+  │
+  └─→ [Gather Bot HTTP] Envia mensagem inicial para cada funcionária
+         "Bom dia! Hoje precisamos coletar: [tarefas do Trello]"
+
+──────────────────────────────────────────────────────────────────
+
+DURANTE A CONVERSA (loop por mensagem):
+
+Funcionária digita no Gather
+  │
+  ↓
+[Gather Bot - WebSocket] Captura DM
+  │
+  └─→ POST para N8N webhook { funcionaria_id, mensagem, sessao_id }
+         │
+         ├─→ [Supabase] Salva mensagem no histórico
+         │
+         ├─→ [Gemini API] Processa com contexto do agente + histórico
+         │
+         └─→ POST para [Gather Bot HTTP] /responder { funcionaria_id, resposta }
+                │
+                └─→ Gather Bot envia DM de volta para a funcionária
+
+──────────────────────────────────────────────────────────────────
+
+AO FINAL DA COLETA:
+
+N8N detecta que todos os dados foram coletados
+  │
+  ├─→ [Gemini API] Gera relatório em texto/estruturado
+  │
+  ├─→ [Supabase] Salva relatório gerado
+  │
+  ├─→ [Gather Bot] Envia confirmação para a funcionária no Gather
+  │
+  └─→ [Evolution API - WhatsApp] Envia PDF do relatório para a Jéssica
+```
+
+---
+
+## Checklist de Configuração (na ordem correta)
+
+Execute nesta sequência para garantir que cada dependência esteja pronta antes da próxima:
+
+### Fase 1 — Infraestrutura base
+
+- [ ] **1.** Criar e configurar projeto no Google Cloud (para Drive API e Gemini)
+- [ ] **2.** Gerar Gemini API Key em https://aistudio.google.com/app/apikey
+- [ ] **3.** Criar Service Account para Google Drive e compartilhar pasta dos clientes
+- [ ] **4.** Configurar Supabase: criar tabelas `conversas`, `coletas`, `relatorios`, `funcionarias`
+- [ ] **5.** Instalar N8N na VM (ou usar N8N Cloud) e anotar a URL base
+
+### Fase 2 — Bot do Gather
+
+- [ ] **6.** Obter Gather API Key em https://app.gather.town/apikeys
+- [ ] **7.** Anotar o SPACE_ID do espaço do Doma Condo
+- [ ] **8.** Criar pasta do projeto na VM: `/home/fabricio/doma-gather-bot/`
+- [ ] **9.** Instalar dependências: `npm install @gathertown/gather-game-client express axios`
+- [ ] **10.** Criar o arquivo `gather-bot.js` com o código desta spec
+- [ ] **11.** Criar `ecosystem.config.js` com as variáveis de ambiente
+- [ ] **12.** Iniciar com PM2: `pm2 start ecosystem.config.js`
+- [ ] **13.** Testar: enviar DM no Gather e verificar se o bot recebe (checar `pm2 logs`)
+
+### Fase 3 — N8N e integrações
+
+- [ ] **14.** Criar credenciais no N8N: Gemini, Google Drive (Service Account), Supabase, Trello, Evolution API
+- [ ] **15.** Criar fluxo no N8N com Webhook `/gather-mensagem` (anotar URL e colocar em `N8N_WEBHOOK_URL`)
+- [ ] **16.** Conectar Webhook → Supabase (salvar) → Gemini (processar) → HTTP Request para o bot `/responder`
+- [ ] **17.** Testar o fluxo completo: enviar DM no Gather → aguardar resposta do Gemini
+- [ ] **18.** Criar fluxo matinal agendado (Trello + Drive + mensagem inicial no Gather)
+
+### Fase 4 — WhatsApp e relatórios
+
+- [ ] **19.** Configurar Evolution API e criar instância `doma-condo`
+- [ ] **20.** Conectar WhatsApp na instância (escanear QR code)
+- [ ] **21.** Testar envio de PDF para o número da Jéssica
+- [ ] **22.** Integrar geração de relatório no fluxo do N8N (após coleta completa)
+
+### Fase 5 — Validação final
+
+- [ ] **23.** Simular um dia completo de coleta (manhã → coleta → relatório → envio)
+- [ ] **24.** Confirmar com as funcionárias que o Gather está funcionando bem
+- [ ] **25.** Confirmar com a Jéssica que os PDFs chegam corretamente no WhatsApp
