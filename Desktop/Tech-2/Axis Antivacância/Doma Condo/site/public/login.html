@@ -218,18 +218,17 @@
     }
   })
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const form = document.querySelector('form')
-    if (!form) return
+  // Módulos já são deferred — DOM está pronto, sem precisar de DOMContentLoaded
+  const form = document.querySelector('form')
+  const emailInput    = document.getElementById('email')
+  const passwordInput = document.getElementById('password')
+  const submitBtn     = form?.querySelector('button[type="submit"]')
 
-    const emailInput    = document.getElementById('email')
-    const passwordInput = document.getElementById('password')
-    const submitBtn     = form.querySelector('button[type="submit"]')
-
-    // Cria elemento de erro reutilizável logo acima do botão
+  if (form && submitBtn) {
+    // Criar elemento de erro acima do botão
     const errEl = document.createElement('p')
     errEl.id = 'login-error'
-    errEl.className = 'text-sm font-semibold text-error hidden'
+    errEl.className = 'text-sm font-semibold text-red-600 hidden mt-2'
     submitBtn.parentNode.insertBefore(errEl, submitBtn)
 
     function showErr(msg) {
@@ -274,6 +273,6 @@
         window.location.href = '/dashboard.html'
       }
     })
-  })
+  }
 </script>
 </body></html>
