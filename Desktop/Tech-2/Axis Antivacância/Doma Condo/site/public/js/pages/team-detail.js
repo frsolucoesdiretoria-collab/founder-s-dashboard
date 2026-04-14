@@ -1,6 +1,6 @@
 import { supabase, ORG_ID } from '../supabase-client.js'
 import { requireAuth } from '../auth.js'
-import { showLoading, showEmpty, formatDate, statusBadge, categoryBadge } from '../ui.js'
+import { showLoading, showEmpty, statusBadge } from '../ui.js'
 
 async function init() {
   await requireAuth()

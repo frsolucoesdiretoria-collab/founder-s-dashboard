@@ -182,7 +182,104 @@ async function renderUserName(employeeId) {
   }
 }
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
+// ─── Formulário de Novo Registro ─────────────────────────────────────────────
+
+async function initForm(employeeId) {
+  const [clientsRes, categoriesRes] = await Promise.all([
+    supabase.from('clients').select('id, nome, nome_curto').eq('organization_id', ORG_ID).is('deleted_at', null).order('nome'),
+    supabase.from('categories').select('id, nome').eq('organization_id', ORG_ID).is('deleted_at', null).order('nome'),
+  ])
+
+  const clientSel = document.getElementById('log-client')
+  const catSel    = document.getElementById('log-category')
+
+  if (clientSel && clientsRes.data) {
+    clientsRes.data.forEach((c) => {
+      const opt = new Option(c.nome_curto || c.nome, c.id)
+      clientSel.add(opt)
+    })
+  }
+  if (catSel && categoriesRes.data) {
+    categoriesRes.data.forEach((c) => {
+      const opt = new Option(c.nome, c.id)
+      catSel.add(opt)
+    })
+  }
+
+  const form = document.getElementById('form-new-log')
+  if (!form) return
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    const errorEl = document.getElementById('log-error')
+    if (errorEl) errorEl.classList.add('hidden')
+
+    const clientId   = document.getElementById('log-client')?.value
+    const categoryId = document.getElementById('log-category')?.value
+    const duracao    = parseInt(document.getElementById('log-duracao')?.value, 10) || null
+    const status     = document.getElementById('log-status')?.value || 'Concluido'
+    const descricao  = document.getElementById('log-descricao')?.value?.trim()
+
+    if (!clientId || !categoryId) {
+      if (errorEl) {
+        errorEl.textContent = 'Selecione o cliente e a categoria.'
+        errorEl.classList.remove('hidden')
+      }
+      return
+    }
+
+    const submitBtn = form.querySelector('button[type="submit"]')
+    if (submitBtn) {
+      submitBtn.disabled = true
+      submitBtn.innerHTML = `<span class="material-symbols-outlined text-sm">hourglass_empty</span> Salvando...`
+    }
+
+    const today = new Date().toISOString().split('T')[0]
+
+    const { error } = await supabase.from('work_logs').insert({
+      organization_id: ORG_ID,
+      employee_id:     employeeId || null,
+      client_id:       clientId,
+      category_id:     categoryId,
+      data_execucao:   today,
+      turno:           new Date().getHours() < 13 ? 'manha' : 'tarde',
+      duracao_minutos: duracao,
+      status,
+      descricao:       descricao || null,
+      origem:          'Manual',
+    })
+
+    if (submitBtn) {
+      submitBtn.disabled = false
+      submitBtn.innerHTML = `<span class="material-symbols-outlined" data-icon="save">save</span> + Registrar Atividade`
+    }
+
+    if (error) {
+      if (errorEl) {
+        errorEl.textContent = 'Erro ao salvar: ' + error.message
+        errorEl.classList.remove('hidden')
+      }
+      return
+    }
+
+    form.reset()
+
+    try {
+      const since = sevenDaysAgo()
+      let query = supabase
+        .from('work_logs')
+        .select('*, clients(nome_curto, nome), categories(nome, cor)')
+        .eq('organization_id', ORG_ID)
+        .is('deleted_at', null)
+        .gte('data_execucao', since)
+        .order('data_execucao', { ascending: false })
+      if (employeeId) query = query.eq('employee_id', employeeId)
+      const { data: logs } = await query
+      renderKpis(logs || [])
+      renderActivities(logs || [])
+    } catch (_) {}
+  })
+}
 
 async function init() {
   const user = await requireAuth()
@@ -190,15 +287,11 @@ async function init() {
 
   const employeeId = getMyProfileId(user)
 
-  // Loading nos KPIs
-  const kpiSection = document.querySelector('section.grid.grid-cols-1.md\\:grid-cols-4')
-  // Loading na lista
   const listSection = document.querySelector('.space-y-6.pb-12')
   const oldCard = listSection?.querySelector('.bg-surface-container-lowest.rounded-xl')
   if (oldCard) showLoading(oldCard)
 
   try {
-    // Busca em paralelo: work_logs + nome do employee
     const since = sevenDaysAgo()
 
     let query = supabase
@@ -234,6 +327,6 @@ async function init() {
       listSection.appendChild(errDiv)
     }
   }
-}
 
-init()
+  initForm(employeeId)
+}

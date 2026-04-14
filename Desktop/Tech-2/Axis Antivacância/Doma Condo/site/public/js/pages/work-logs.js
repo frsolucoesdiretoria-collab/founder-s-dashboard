@@ -124,6 +124,12 @@ async function init() {
 
   // Wire up filter selects (month + client + employee + category)
   wireFilters(tbody)
+
+  // Wire up "Nova Atividade" button
+  const btnAdd = document.querySelector('[data-icon="add_circle"]')?.closest('button')
+  if (btnAdd) {
+    btnAdd.addEventListener('click', () => openNewActivityModal(tbody))
+  }
 }
 
 function updateCountLabel(count) {
@@ -137,6 +143,7 @@ function wireFilters(tbody) {
   // Populate client filter
   populateClientSelect(tbody)
   populateEmployeeSelect(tbody)
+  populateCategorySelect()
 
   // Date range filter (if date inputs exist)
   const dateInputs = document.querySelectorAll('input[type="date"]')
@@ -195,6 +202,28 @@ async function populateEmployeeSelect(tbody) {
   })
 }
 
+async function populateCategorySelect() {
+  const { data } = await supabase
+    .from('categories')
+    .select('id, nome')
+    .eq('organization_id', ORG_ID)
+    .is('deleted_at', null)
+    .order('ordem', { ascending: true, nullsFirst: false })
+    .order('nome')
+
+  if (!data) return
+
+  const selects = document.querySelectorAll('select')
+  const catSel = selects[3]
+  if (!catSel) return
+
+  while (catSel.options.length > 1) catSel.remove(1)
+  data.forEach((c) => {
+    const opt = new Option(c.nome, c.id)
+    catSel.add(opt)
+  })
+}
+
 async function applyFilters(tbody) {
   const selects = document.querySelectorAll('select')
   const dateInputs = document.querySelectorAll('input[type="date"]')
@@ -245,5 +274,161 @@ async function applyFilters(tbody) {
     console.error('[work-logs] filter error', err)
   }
 }
+
+// ─── Modal Nova Atividade ────────────────────────────────────────────────────
+
+async function openNewActivityModal(tbody) {
+  const existing = document.getElementById('modal-new-activity')
+  if (existing) existing.remove()
+
+  const [clientsRes, categoriesRes, employeesRes] = await Promise.all([
+    supabase.from('clients').select('id, nome, nome_curto').eq('organization_id', ORG_ID).is('deleted_at', null).order('nome'),
+    supabase.from('categories').select('id, nome').eq('organization_id', ORG_ID).is('deleted_at', null).order('nome'),
+    supabase.from('employees').select('id, nome').eq('organization_id', ORG_ID).is('deleted_at', null).order('nome'),
+  ])
+
+  const clients    = clientsRes.data    || []
+  const categories = categoriesRes.data || []
+  const employees  = employeesRes.data  || []
+  const today = new Date().toISOString().split('T')[0]
+
+  const opts = (items, label = 'nome', val = 'id', short = null) =>
+    items.map(i => `<option value="${i[val]}">${short && i[short] ? i[short] : i[label]}</option>`).join('')
+
+  const modal = document.createElement('div')
+  modal.id = 'modal-new-activity'
+  modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/40'
+  modal.innerHTML = `
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-lg p-8 max-h-[90vh] overflow-y-auto">
+      <h2 class="text-xl font-semibold text-primary mb-6">Nova Atividade</h2>
+      <form id="form-new-activity" class="space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Data</label>
+            <input id="act-data" type="date" value="${today}" required
+              class="w-full border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Turno</label>
+            <select id="act-turno" class="w-full border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
+              <option value="manha">Manhã</option>
+              <option value="tarde">Tarde</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Cliente *</label>
+          <select id="act-client" required class="w-full border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
+            <option value="">Selecione o cliente...</option>
+            ${opts(clients, 'nome', 'id', 'nome_curto')}
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Categoria *</label>
+          <select id="act-category" required class="w-full border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
+            <option value="">Selecione a categoria...</option>
+            ${opts(categories)}
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Responsável</label>
+          <select id="act-employee" class="w-full border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
+            <option value="">Selecione a funcionária...</option>
+            ${opts(employees)}
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Duração (minutos)</label>
+            <input id="act-duracao" type="number" min="1" placeholder="Ex: 60"
+              class="w-full border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Status</label>
+            <select id="act-status" class="w-full border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
+              <option value="Concluido">Concluído</option>
+              <option value="Parcial">Parcial</option>
+              <option value="Pendente">Pendente</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Descrição</label>
+          <textarea id="act-descricao" rows="3" placeholder="Descreva a atividade realizada..."
+            class="w-full border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"></textarea>
+        </div>
+        <div id="act-error" class="text-error text-xs hidden"></div>
+        <div class="flex gap-3 pt-2">
+          <button type="button" id="btn-act-cancel"
+            class="flex-1 py-2.5 rounded-lg border border-outline-variant text-sm font-semibold hover:bg-surface-container-low transition-colors">
+            Cancelar
+          </button>
+          <button type="submit"
+            class="flex-1 py-2.5 rounded-lg bg-primary text-white text-sm font-bold hover:opacity-90 transition-opacity">
+            Salvar Atividade
+          </button>
+        </div>
+      </form>
+    </div>`
+
+  document.body.appendChild(modal)
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove() })
+  modal.querySelector('#btn-act-cancel').addEventListener('click', () => modal.remove())
+
+  modal.querySelector('#form-new-activity').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    const errorEl = modal.querySelector('#act-error')
+    errorEl.classList.add('hidden')
+
+    const clientId   = modal.querySelector('#act-client').value
+    const categoryId = modal.querySelector('#act-category').value
+    const employeeId = modal.querySelector('#act-employee').value || null
+    const dataExec   = modal.querySelector('#act-data').value
+    const turno      = modal.querySelector('#act-turno').value
+    const duracao    = parseInt(modal.querySelector('#act-duracao').value, 10) || null
+    const status     = modal.querySelector('#act-status').value
+    const descricao  = modal.querySelector('#act-descricao').value.trim()
+
+    if (!clientId || !categoryId || !dataExec) {
+      errorEl.textContent = 'Preencha os campos obrigatórios: data, cliente e categoria.'
+      errorEl.classList.remove('hidden')
+      return
+    }
+
+    const submitBtn = modal.querySelector('button[type="submit"]')
+    submitBtn.disabled = true
+    submitBtn.textContent = 'Salvando...'
+
+    const { error } = await supabase.from('work_logs').insert({
+      organization_id: ORG_ID,
+      client_id:       clientId,
+      category_id:     categoryId,
+      employee_id:     employeeId,
+      data_execucao:   dataExec,
+      turno,
+      duracao_minutos: duracao,
+      status,
+      descricao:       descricao || null,
+      origem:          'Manual',
+    })
+
+    if (error) {
+      errorEl.textContent = 'Erro ao salvar: ' + error.message
+      errorEl.classList.remove('hidden')
+      submitBtn.disabled = false
+      submitBtn.textContent = 'Salvar Atividade'
+      return
+    }
+
+    modal.remove()
+    try {
+      const logs = await fetchLogs()
+      renderRows(logs, tbody)
+      updateCountLabel(logs.length)
+    } catch (_) {}
+  })
+}
+
+init()
 
 init()

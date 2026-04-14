@@ -194,38 +194,42 @@
 <span class="material-symbols-outlined text-primary" data-icon="add_circle">add_circle</span>
 <h3 class="text-xl font-semibold text-primary">Novo Registro de Atividade</h3>
 </div>
-<form class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
-<!-- Cliente & Condominio Row -->
+<form id="form-new-log" class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+<!-- Cliente & Categoria Row -->
 <div class="space-y-1">
-<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Cliente</label>
-<input class="w-full bg-surface-container-low border-none rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary/20 text-sm placeholder:text-on-surface-variant/50" placeholder="Nome do Cliente ou Proprietário" type="text"/>
-</div>
-<div class="space-y-1">
-<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Condomínio</label>
-<input class="w-full bg-surface-container-low border-none rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary/20 text-sm placeholder:text-on-surface-variant/50" placeholder="Identificação do Edifício" type="text"/>
-</div>
-<!-- Categoria & Duracao Row -->
-<div class="space-y-1">
-<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Categoria</label>
-<select class="w-full bg-surface-container-low border-none rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary/20 text-sm">
-<option>Financeiro</option>
-<option>Operacional</option>
-<option>Jurídico</option>
-<option>RH/Contábil</option>
+<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Cliente *</label>
+<select id="log-client" required class="w-full bg-surface-container-low border-none rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary/20 text-sm">
+<option value="">Selecione o cliente...</option>
 </select>
 </div>
 <div class="space-y-1">
-<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Duração</label>
+<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Categoria *</label>
+<select id="log-category" required class="w-full bg-surface-container-low border-none rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary/20 text-sm">
+<option value="">Selecione a categoria...</option>
+</select>
+</div>
+<!-- Duração & Status Row -->
+<div class="space-y-1">
+<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Duração (minutos)</label>
 <div class="relative">
-<input class="w-full bg-surface-container-low border-none rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-primary/20 text-sm placeholder:text-on-surface-variant/50" placeholder="Ex: 45 min" type="text"/>
+<input id="log-duracao" class="w-full bg-surface-container-low border-none rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-primary/20 text-sm placeholder:text-on-surface-variant/50" placeholder="Ex: 60" type="number" min="1"/>
 <span class="absolute right-3 top-2 material-symbols-outlined text-on-surface-variant text-sm" data-icon="schedule">schedule</span>
 </div>
+</div>
+<div class="space-y-1">
+<label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Status</label>
+<select id="log-status" class="w-full bg-surface-container-low border-none rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary/20 text-sm">
+<option value="Concluido">Concluído</option>
+<option value="Parcial">Parcial</option>
+<option value="Pendente">Pendente</option>
+</select>
 </div>
 <!-- Description Row (Full Width) -->
 <div class="md:col-span-2 space-y-1">
 <label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Descrição da Atividade</label>
-<textarea class="w-full bg-surface-container-low border-none rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary/20 text-sm placeholder:text-on-surface-variant/50 resize-none" placeholder="Detalhe as ações tomadas nesta atividade..." rows="3"></textarea>
+<textarea id="log-descricao" class="w-full bg-surface-container-low border-none rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary/20 text-sm placeholder:text-on-surface-variant/50 resize-none" placeholder="Detalhe as ações tomadas nesta atividade..." rows="3"></textarea>
 </div>
+<div id="log-error" class="md:col-span-2 text-error text-xs hidden"></div>
 <!-- Submit Button -->
 <div class="md:col-span-2 flex justify-end pt-4">
 <button class="bg-primary text-white font-bold py-3 px-6 rounded-lg shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm" type="submit">

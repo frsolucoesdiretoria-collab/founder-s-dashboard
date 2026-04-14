@@ -120,4 +120,115 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;')
 }
 
+// ─── Novo Cliente ─────────────────────────────────────────────────────────────
+
+function wireNewClientButton() {
+  const btns = document.querySelectorAll('button')
+  for (const btn of btns) {
+    if (btn.textContent.includes('Novo Cliente')) {
+      btn.addEventListener('click', openNewClientModal)
+      break
+    }
+  }
+}
+
+function openNewClientModal() {
+  const existing = document.getElementById('modal-new-client')
+  if (existing) existing.remove()
+
+  const modal = document.createElement('div')
+  modal.id = 'modal-new-client'
+  modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/40'
+  modal.innerHTML = `
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-8">
+      <h2 class="text-xl font-semibold text-primary mb-6">Novo Cliente</h2>
+      <form id="form-new-client" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Nome completo *</label>
+          <input id="client-nome" type="text" required placeholder="Ex: Condomínio Oceano Azul"
+            class="w-full border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Nome curto</label>
+          <input id="client-nome-curto" type="text" placeholder="Ex: Oceano Azul"
+            class="w-full border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Contato — Nome</label>
+          <input id="client-contato-nome" type="text" placeholder="Nome do síndico ou responsável"
+            class="w-full border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Contato — Email</label>
+          <input id="client-contato-email" type="email" placeholder="email@condominio.com.br"
+            class="w-full border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Contato — Telefone</label>
+          <input id="client-contato-telefone" type="tel" placeholder="(11) 99999-9999"
+            class="w-full border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+        </div>
+        <div id="client-error" class="text-error text-xs hidden"></div>
+        <div class="flex gap-3 pt-2">
+          <button type="button" id="btn-client-cancel"
+            class="flex-1 py-2.5 rounded-lg border border-outline-variant text-sm font-semibold hover:bg-surface-container-low transition-colors">
+            Cancelar
+          </button>
+          <button type="submit"
+            class="flex-1 py-2.5 rounded-lg bg-primary text-white text-sm font-bold hover:opacity-90 transition-opacity">
+            Cadastrar Cliente
+          </button>
+        </div>
+      </form>
+    </div>`
+
+  document.body.appendChild(modal)
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove() })
+  modal.querySelector('#btn-client-cancel').addEventListener('click', () => modal.remove())
+
+  modal.querySelector('#form-new-client').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    const errorEl = modal.querySelector('#client-error')
+    errorEl.classList.add('hidden')
+
+    const nome         = modal.querySelector('#client-nome').value.trim()
+    const nomeCurto    = modal.querySelector('#client-nome-curto').value.trim()
+    const contatoNome  = modal.querySelector('#client-contato-nome').value.trim()
+    const contatoEmail = modal.querySelector('#client-contato-email').value.trim()
+    const contatoTel   = modal.querySelector('#client-contato-telefone').value.trim()
+
+    if (!nome) {
+      errorEl.textContent = 'O nome do cliente é obrigatório.'
+      errorEl.classList.remove('hidden')
+      return
+    }
+
+    const submitBtn = modal.querySelector('button[type="submit"]')
+    submitBtn.disabled = true
+    submitBtn.textContent = 'Salvando...'
+
+    const { error } = await supabase.from('clients').insert({
+      organization_id:  ORG_ID,
+      nome,
+      nome_curto:       nomeCurto || null,
+      contato_nome:     contatoNome || null,
+      contato_email:    contatoEmail || null,
+      contato_telefone: contatoTel || null,
+      ativo:            true,
+    })
+
+    if (error) {
+      errorEl.textContent = 'Erro ao cadastrar: ' + error.message
+      errorEl.classList.remove('hidden')
+      submitBtn.disabled = false
+      submitBtn.textContent = 'Cadastrar Cliente'
+      return
+    }
+
+    modal.remove()
+    await loadClients()
+  })
+}
+
 init()
+wireNewClientButton()

@@ -192,6 +192,13 @@ function wireActions(tbody) {
     const editBtn = e.target.closest('.btn-edit')
     const deleteBtn = e.target.closest('.btn-delete')
 
+    if (editBtn) {
+      const id = editBtn.dataset.id
+      const row = tbody.querySelector(`tr[data-id="${id}"]`)
+      const nome = row?.querySelector('td:first-child span.text-sm')?.textContent?.trim() || ''
+      openEditModal(id, nome, tbody)
+    }
+
     if (deleteBtn) {
       const id = deleteBtn.dataset.id
       if (!confirm('Deseja remover esta categoria?')) return
@@ -279,5 +286,72 @@ function openNewModal(tbody) {
 
   form.addEventListener('submit', onSubmit)
 }
+
+function openEditModal(id, nomeAtual, tbody) {
+  const existing = document.getElementById('modal-edit-category')
+  if (existing) existing.remove()
+
+  const modal = document.createElement('div')
+  modal.id = 'modal-edit-category'
+  modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/40'
+  modal.innerHTML = `
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-8">
+      <h2 class="text-xl font-semibold text-primary mb-6">Editar Categoria</h2>
+      <form id="form-edit-category" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Nome</label>
+          <input id="edit-cat-nome" type="text" required
+            class="w-full border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" />
+        </div>
+        <div id="edit-form-error" class="text-error text-xs hidden"></div>
+        <div class="flex gap-3 pt-2">
+          <button type="button" id="btn-edit-cancel"
+            class="flex-1 py-2.5 rounded-lg border border-outline-variant text-sm font-semibold hover:bg-surface-container-low transition-colors">
+            Cancelar
+          </button>
+          <button type="submit"
+            class="flex-1 py-2.5 rounded-lg bg-primary text-white text-sm font-bold hover:opacity-90 transition-opacity">
+            Salvar
+          </button>
+        </div>
+      </form>
+    </div>`
+
+  document.body.appendChild(modal)
+  modal.querySelector('#edit-cat-nome').value = nomeAtual
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove() })
+  modal.querySelector('#btn-edit-cancel').addEventListener('click', () => modal.remove())
+
+  modal.querySelector('#form-edit-category').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    const errorEl = modal.querySelector('#edit-form-error')
+    const nome = modal.querySelector('#edit-cat-nome').value.trim()
+    if (!nome) return
+
+    errorEl.classList.add('hidden')
+    const submitBtn = modal.querySelector('button[type="submit"]')
+    submitBtn.disabled = true
+    submitBtn.textContent = 'Salvando...'
+
+    const { error } = await supabase.from('categories').update({ nome }).eq('id', id)
+
+    if (error) {
+      errorEl.textContent = 'Erro ao salvar: ' + error.message
+      errorEl.classList.remove('hidden')
+      submitBtn.disabled = false
+      submitBtn.textContent = 'Salvar'
+      return
+    }
+
+    modal.remove()
+    const row = tbody.querySelector(`tr[data-id="${id}"]`)
+    if (row) {
+      const nameEl = row.querySelector('td:first-child span.text-sm')
+      if (nameEl) nameEl.textContent = nome
+    }
+  })
+}
+
+init()
 
 init()
