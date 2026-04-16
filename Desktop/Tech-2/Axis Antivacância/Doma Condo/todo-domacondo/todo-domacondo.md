@@ -13,6 +13,14 @@
 5) [x] Criar .env com credendciais do app (adicionar email domacondo@gmail.com) e senha (ver o arquivo /Users/fabricio/Desktop/Tech-2/Axis Antivacância/Doma Condo/todo-domacondo/escopo-de-entrega.md)
 → Arquivo: infra/.env (protegido pelo .gitignore)
 
+7) [ ] **Finalizar integração Trello — Token pendente (Jessica)**
+   - API Key: ✅ válida e reconhecida pelo Trello (`cead830fff...` no infra/.env)
+   - Secret: ✅ salvo no infra/.env
+   - Token: ❌ campo vazio — Jessica precisa gerar acessando:
+     `https://trello.com/1/authorize?expiration=never&name=DomaCondo&scope=read,write&response_type=token&key=cead830fff2cd9aa98f11b972dbc4417`
+   - Depois de autorizar, ela copia o token gerado e você preenche `TRELLO_TOKEN=` no infra/.env
+   - Também preencher `TRELLO_BOARD_ID=` com o ID do quadro do Trello da Doma Condo
+
 ---
 
 ## AUDITORIA COMPLETA DE BOTÕES — 2026-04-14

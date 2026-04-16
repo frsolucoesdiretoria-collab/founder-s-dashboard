@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Configuração do Sistema — Doma Condo</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+            "primary-fixed": "#ffdf94",
+            "on-background": "#191c1e",
+            "surface-dim": "#d9dadc",
+            "surface-tint": "#765b00",
+            "on-tertiary-container": "#005b14",
+            "on-surface": "#191c1e",
+            "primary-fixed-dim": "#f0c038",
+            "on-surface-variant": "#4e4634",
+            "primary-container": "#FAC826",
+            "on-tertiary": "#ffffff",
+            "tertiary-fixed-dim": "#88d982",
+            "secondary": "#705c29",
+            "outline": "#807662",
+            "on-error-container": "#93000a",
+            "on-error": "#ffffff",
+            "error-container": "#ffdad6",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-fixed": "#002204",
+            "on-secondary-fixed": "#251a00",
+            "on-primary-fixed": "#251a00",
+            "surface-container": "#edeef0",
+            "surface-bright": "#f8f9fb",
+            "error": "#ba1a1a",
+            "secondary-fixed-dim": "#dec487",
+            "on-primary-fixed-variant": "#594400",
+            "outline-variant": "#d1c5ae",
+            "secondary-container": "#fbe0a0",
+            "on-secondary": "#ffffff",
+            "on-secondary-fixed-variant": "#564514",
+            "tertiary-container": "#81d27c",
+            "inverse-on-surface": "#f0f1f3",
+            "surface": "#f8f9fb",
+            "surface-container-low": "#f2f4f6",
+            "background": "#f8f9fb",
+            "inverse-primary": "#f0c038",
+            "inverse-surface": "#2e3132",
+            "on-tertiary-fixed-variant": "#005312",
+            "tertiary-fixed": "#a3f69c",
+            "surface-variant": "#e1e2e4",
+            "tertiary": "#1b6d24",
+            "primary": "#765b00",
+            "surface-container-highest": "#e1e2e4",
+            "surface-container-high": "#e7e8ea",
+            "on-primary-container": "#614a00",
+            "on-primary": "#ffffff",
+            "on-secondary-container": "#76622f",
+            "secondary-fixed": "#fbe0a0"
+        },
+        "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+        },
+        "fontFamily": {
+            "headline": ["Raleway"],
+            "body": ["Raleway"],
+            "label": ["Raleway"]
+        }
+      },
+    },
+  }
+</script>
+<style>
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body { font-family: 'Raleway', sans-serif; background-color: #f8f9fb; }
+</style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+
+<!-- ════════════════════════════════════════════════
+     SIDEBAR
+════════════════════════════════════════════════ -->
+<aside class="fixed left-0 top-0 z-40 h-screen w-72 flex flex-col border-none bg-white shadow-[0px_12px_32px_rgba(25,28,30,0.04)] font-['Raleway'] font-medium text-sm">
+  <div class="px-6 py-6">
+    <img src="images/logo.png" alt="Doma Condo Logo" class="w-full max-h-20 object-contain"/>
+  </div>
+  <nav class="flex-1 mt-4">
+    <ul class="space-y-1">
+      <li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="dashboard.html"><span class="material-symbols-outlined" data-icon="dashboard">dashboard</span><span>Dashboard</span></a></li>
+      <li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="priorities.html"><span class="material-symbols-outlined" data-icon="priority_high">priority_high</span><span>Prioridades</span></a></li>
+      <li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="pending.html"><span class="material-symbols-outlined" data-icon="pending_actions">pending_actions</span><span>Pendências</span></a></li>
+      <li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="tasks.html"><span class="material-symbols-outlined" data-icon="task_alt">task_alt</span><span>Tarefas</span></a></li>
+      <li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="work-logs.html"><span class="material-symbols-outlined" data-icon="analytics">analytics</span><span>Registros de Trabalho</span></a></li>
+      <li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="reports.html"><span class="material-symbols-outlined" data-icon="assessment">assessment</span><span>Relatórios</span></a></li>
+      <li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="clients.html"><span class="material-symbols-outlined" data-icon="business_center">business_center</span><span>Clientes</span></a></li>
+      <li><a class="flex items-center gap-4 text-zinc-500 px-6 py-3 hover:text-[#765b00] hover:bg-zinc-50 transition-colors duration-200" href="team.html"><span class="material-symbols-outlined" data-icon="group">group</span><span>Equipe</span></a></li>
+    </ul>
+  </nav>
+  <div class="mt-auto p-4 border-t border-surface-container/50">
+    <ul class="space-y-1">
+      <li>
+        <a class="flex items-center gap-4 text-[#765b00] bg-[#FAC826]/10 border-l-4 border-[#FAC826] font-bold px-6 py-3 transition-all" href="credenciais.html">
+          <span class="material-symbols-outlined" data-icon="settings">settings</span>
+          <span>Configurações</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</aside>
+
+<!-- ════════════════════════════════════════════════
+     TOPBAR
+════════════════════════════════════════════════ -->
+<header class="flex justify-between items-center pl-80 pr-12 w-full fixed top-0 z-30 w-full h-20 bg-[#f8f9fb]/80 backdrop-blur-md">
+  <div class="flex-1">
+    <div class="relative max-w-md">
+      <input class="w-full bg-surface-container-high border-none rounded-full py-2.5 px-6 focus:ring-2 focus:ring-primary/20 text-sm" placeholder="Buscar..." type="text"/>
+      <span class="material-symbols-outlined absolute right-4 top-2.5 text-zinc-400" data-icon="search">search</span>
+    </div>
+  </div>
+  <div class="flex items-center gap-6">
+    <div class="flex items-center gap-4">
+      <button class="text-[#765b00] hover:text-[#FAC826] transition-colors relative">
+        <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+      </button>
+      <button class="text-[#765b00] hover:text-[#FAC826] transition-colors">
+        <span class="material-symbols-outlined" data-icon="support_agent">support_agent</span>
+      </button>
+    </div>
+    <div class="h-10 w-[1px] bg-outline-variant/30 mx-2"></div>
+    <div class="flex items-center gap-3">
+      <div class="text-right">
+        <p class="text-sm font-semibold text-on-surface">Jessica Lima</p>
+        <p class="text-[10px] text-zinc-500 uppercase tracking-tighter">Administradora • Doma Condo</p>
+      </div>
+      <div class="h-10 w-10 rounded-full bg-[#FAC826] flex items-center justify-center text-[#765b00] font-bold text-sm">JL</div>
+    </div>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════════════ -->
+<main class="pl-80 pr-12 pt-28 pb-12">
+
+  <!-- Eyebrow + H1 -->
+  <header class="mb-10">
+    <span class="text-[10px] font-bold tracking-[0.2em] text-primary uppercase mb-2 block">PAINEL ADMINISTRATIVO</span>
+    <h1 class="text-4xl font-semibold text-primary tracking-tight">Configuração do Sistema</h1>
+    <p class="text-sm text-zinc-400 mt-2">Conecte as ferramentas que o sistema usa para funcionar automaticamente.</p>
+  </header>
+
+  <!-- Barra de progresso geral -->
+  <div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] mb-8">
+    <div class="flex items-center justify-between mb-3">
+      <div>
+        <p class="text-sm font-semibold text-on-surface">Progresso da configuração</p>
+        <p class="text-xs text-zinc-400 mt-0.5">Preencha todos os campos para ativar o sistema</p>
+      </div>
+      <div class="text-right">
+        <p id="progress-pct" class="text-2xl font-bold text-primary">0%</p>
+        <p id="progress-label" class="text-xs text-zinc-400">0 de 10 itens</p>
+      </div>
+    </div>
+    <div class="w-full h-2 bg-surface-container rounded-full overflow-hidden">
+      <div id="progress-bar" class="h-full bg-primary rounded-full transition-all duration-500" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Mensagem de status global -->
+  <div id="status-global" class="hidden mb-6"></div>
+
+  <!-- ──────────────────────────────────────────────────
+       SEÇÃO 1 — TRELLO
+  ────────────────────────────────────────────────── -->
+  <div class="bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] mb-6 overflow-hidden">
+    <!-- Cabeçalho da seção -->
+    <button onclick="toggleSection('trello')" class="w-full flex items-center justify-between p-8 text-left hover:bg-surface-container-low/40 transition-colors">
+      <div class="flex items-center gap-5">
+        <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-blue-600" data-icon="view_kanban">view_kanban</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-3">
+            <h3 class="text-xl font-semibold text-primary">Trello</h3>
+            <span id="badge-trello" class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold uppercase tracking-wider">Pendente</span>
+          </div>
+          <p class="text-sm text-zinc-400 mt-0.5">Token de acesso e ID do quadro de trabalho</p>
+        </div>
+      </div>
+      <span id="chev-trello" class="material-symbols-outlined text-zinc-400 transition-transform duration-200" data-icon="expand_more">expand_more</span>
+    </button>
+
+    <!-- Corpo da seção -->
+    <div id="body-trello" class="hidden px-8 pb-8">
+      <div class="border-t border-surface-container/30 pt-6">
+
+        <!-- Contexto -->
+        <div class="flex items-start gap-3 bg-surface-container-low p-4 rounded-xl mb-6">
+          <span class="material-symbols-outlined text-tertiary flex-shrink-0" data-icon="check_circle">check_circle</span>
+          <div>
+            <p class="text-sm font-semibold text-on-surface">Já temos a API Key do Trello configurada</p>
+            <p class="text-xs text-zinc-400 mt-0.5">Só precisamos do seu Token de autorização e do ID do quadro que você quer conectar.</p>
+          </div>
+        </div>
+
+        <!-- Passo 1 -->
+        <div class="mb-6">
+          <div class="flex items-start gap-4 mb-3">
+            <div class="w-8 h-8 rounded-full bg-[#FAC826] flex items-center justify-center flex-shrink-0">
+              <span class="text-[#765b00] font-bold text-sm">1</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-on-surface text-sm">Autorizar o acesso ao Trello</p>
+              <p class="text-xs text-zinc-400 mt-1">Clique no botão abaixo. O Trello vai abrir e pedir sua permissão. Clique em <strong>"Permitir"</strong>.</p>
+            </div>
+          </div>
+          <div class="ml-12">
+            <a href="https://trello.com/1/authorize?expiration=never&name=DomaCondo&scope=read,write&response_type=token&key=cead830fff2cd9aa98f11b972dbc4417"
+               target="_blank"
+               class="inline-flex items-center gap-2 bg-primary text-white font-bold py-2.5 px-5 rounded-lg shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all text-sm">
+              <span class="material-symbols-outlined text-sm" data-icon="open_in_new">open_in_new</span>
+              Clique aqui para autorizar o Trello
+            </a>
+            <div class="mt-3 bg-secondary-container/60 border-l-4 border-[#FAC826] p-3 rounded-r-xl">
+              <p class="text-xs text-on-secondary-container font-semibold">O que vai aparecer:</p>
+              <p class="text-xs text-on-secondary-container mt-1">Depois de clicar em "Permitir", o navegador vai mostrar uma sequência longa de letras e números (parece algo como <code class="bg-white/60 px-1 rounded text-xs">a1b2c3d4e5f6g7...</code>). Copie esse código e cole no campo abaixo.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="ml-12 mb-6">
+          <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Token do Trello</label>
+          <input type="text" id="TRELLO_TOKEN" class="w-full bg-surface-container-low border border-outline-variant/40 rounded-xl py-3 px-4 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-zinc-400"
+                 placeholder="Cole aqui a sequência que apareceu na tela..."
+                 oninput="onInput(this)"/>
+          <p class="text-[11px] text-zinc-400 mt-1.5">Deve ter cerca de 64 caracteres — letras e números sem espaços.</p>
+        </div>
+
+        <!-- Passo 2 -->
+        <div class="mb-6">
+          <div class="flex items-start gap-4 mb-3">
+            <div class="w-8 h-8 rounded-full bg-[#FAC826] flex items-center justify-center flex-shrink-0">
+              <span class="text-[#765b00] font-bold text-sm">2</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-on-surface text-sm">Pegar o ID do quadro</p>
+              <p class="text-xs text-zinc-400 mt-1">Abra o Trello e navegue até o quadro que você usa para organizar os trabalhos da Doma Condo.</p>
+            </div>
+          </div>
+          <div class="ml-12">
+            <div class="bg-surface-container-low p-4 rounded-xl">
+              <p class="text-xs font-semibold text-on-surface mb-2">Olhe o endereço do navegador. Vai ser assim:</p>
+              <div class="bg-white border border-outline-variant/30 rounded-lg p-3 font-mono text-xs text-on-surface break-all">
+                trello.com/b/<span class="bg-[#FAC826]/40 text-[#765b00] font-bold px-0.5 rounded">XXXXXXXX</span>/nome-do-quadro
+              </div>
+              <p class="text-xs text-zinc-400 mt-2">A parte em destaque — depois do <code class="bg-white px-1 rounded">/b/</code> e antes do próximo <code class="bg-white px-1 rounded">/</code> — é o ID. Geralmente tem 8 caracteres.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="ml-12">
+          <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">ID do Quadro (Board ID)</label>
+          <input type="text" id="TRELLO_BOARD_ID" class="w-full bg-surface-container-low border border-outline-variant/40 rounded-xl py-3 px-4 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-zinc-400"
+                 placeholder="Ex: dQHqCohZ"
+                 oninput="onInput(this)"/>
+          <p class="text-[11px] text-zinc-400 mt-1.5">8 caracteres que aparecem na URL do quadro.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────────────────
+       SEÇÃO 2 — GOOGLE DRIVE
+  ────────────────────────────────────────────────── -->
+  <div class="bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] mb-6 overflow-hidden">
+    <button onclick="toggleSection('gdrive')" class="w-full flex items-center justify-between p-8 text-left hover:bg-surface-container-low/40 transition-colors">
+      <div class="flex items-center gap-5">
+        <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-green-600" data-icon="folder_shared">folder_shared</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-3">
+            <h3 class="text-xl font-semibold text-primary">Google Drive</h3>
+            <span id="badge-gdrive" class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold uppercase tracking-wider">Pendente</span>
+          </div>
+          <p class="text-sm text-zinc-400 mt-0.5">Credenciais OAuth para acessar os arquivos automaticamente</p>
+        </div>
+      </div>
+      <span id="chev-gdrive" class="material-symbols-outlined text-zinc-400 transition-transform duration-200" data-icon="expand_more">expand_more</span>
+    </button>
+
+    <div id="body-gdrive" class="hidden px-8 pb-8">
+      <div class="border-t border-surface-container/30 pt-6">
+
+        <div class="flex items-start gap-3 bg-surface-container-low p-4 rounded-xl mb-6">
+          <span class="material-symbols-outlined text-zinc-400 flex-shrink-0" data-icon="schedule">schedule</span>
+          <p class="text-xs text-zinc-500">Esta etapa leva cerca de 10 a 15 minutos. Siga os passos na ordem — cada um depende do anterior.</p>
+        </div>
+
+        <!-- Passo 1 -->
+        <div class="mb-6">
+          <div class="flex items-start gap-4 mb-3">
+            <div class="w-8 h-8 rounded-full bg-[#FAC826] flex items-center justify-center flex-shrink-0">
+              <span class="text-[#765b00] font-bold text-sm">1</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-on-surface text-sm">Abrir o Google Cloud Console com a conta da Doma Condo</p>
+              <p class="text-xs text-zinc-400 mt-1">Use a conta Google da empresa, não uma conta pessoal.</p>
+            </div>
+          </div>
+          <div class="ml-12">
+            <a href="https://console.cloud.google.com" target="_blank" class="inline-flex items-center gap-2 bg-primary text-white font-bold py-2.5 px-5 rounded-lg shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all text-sm">
+              <span class="material-symbols-outlined text-sm" data-icon="open_in_new">open_in_new</span>
+              Abrir Google Cloud Console
+            </a>
+          </div>
+        </div>
+
+        <!-- Passo 2 -->
+        <div class="mb-6">
+          <div class="flex items-start gap-4 mb-3">
+            <div class="w-8 h-8 rounded-full bg-[#FAC826] flex items-center justify-center flex-shrink-0">
+              <span class="text-[#765b00] font-bold text-sm">2</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-on-surface text-sm">Criar um novo projeto</p>
+            </div>
+          </div>
+          <div class="ml-12 bg-surface-container-low p-4 rounded-xl text-xs text-on-surface space-y-1.5">
+            <p>→ No canto superior esquerdo, clique no nome do projeto (onde diz "Selecionar projeto" ou o nome de um projeto existente)</p>
+            <p>→ Clique em <strong>"Novo Projeto"</strong></p>
+            <p>→ Nome: <code class="bg-white border border-outline-variant/30 px-1.5 py-0.5 rounded font-mono">DomaCondo App</code></p>
+            <p>→ Clique em <strong>"Criar"</strong> e aguarde alguns segundos</p>
+          </div>
+        </div>
+
+        <!-- Passo 3 -->
+        <div class="mb-6">
+          <div class="flex items-start gap-4 mb-3">
+            <div class="w-8 h-8 rounded-full bg-[#FAC826] flex items-center justify-center flex-shrink-0">
+              <span class="text-[#765b00] font-bold text-sm">3</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-on-surface text-sm">Ativar a API do Google Drive</p>
+            </div>
+          </div>
+          <div class="ml-12 bg-surface-container-low p-4 rounded-xl text-xs text-on-surface space-y-1.5">
+            <p>→ No menu lateral esquerdo: <strong>APIs e Serviços → Biblioteca</strong></p>
+            <p>→ Na busca, escreva: <code class="bg-white border border-outline-variant/30 px-1.5 py-0.5 rounded font-mono">Google Drive API</code></p>
+            <p>→ Clique no resultado e depois clique em <strong>"Ativar"</strong></p>
+          </div>
+        </div>
+
+        <!-- Passo 4 -->
+        <div class="mb-6">
+          <div class="flex items-start gap-4 mb-3">
+            <div class="w-8 h-8 rounded-full bg-[#FAC826] flex items-center justify-center flex-shrink-0">
+              <span class="text-[#765b00] font-bold text-sm">4</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-on-surface text-sm">Configurar a Tela de Consentimento (só na primeira vez)</p>
+            </div>
+          </div>
+          <div class="ml-12 bg-surface-container-low p-4 rounded-xl text-xs text-on-surface space-y-1.5">
+            <p>→ Menu lateral: <strong>APIs e Serviços → Tela de consentimento do OAuth</strong></p>
+            <p>→ Selecione <strong>"Externo"</strong> → Clique em <strong>"Criar"</strong></p>
+            <p>→ Preencha apenas: <strong>Nome do app</strong> = <code class="bg-white border border-outline-variant/30 px-1.5 py-0.5 rounded font-mono">DomaCondo</code>, e o e-mail nos dois campos de e-mail</p>
+            <p>→ Clique em <strong>"Salvar e Continuar"</strong> em todas as telas até o fim</p>
+            <p>→ Clique em <strong>"Voltar para o painel"</strong></p>
+          </div>
+        </div>
+
+        <!-- Passo 5 -->
+        <div class="mb-6">
+          <div class="flex items-start gap-4 mb-3">
+            <div class="w-8 h-8 rounded-full bg-[#FAC826] flex items-center justify-center flex-shrink-0">
+              <span class="text-[#765b00] font-bold text-sm">5</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-on-surface text-sm">Criar as credenciais OAuth e copiar os dados</p>
+            </div>
+          </div>
+          <div class="ml-12 bg-surface-container-low p-4 rounded-xl text-xs text-on-surface space-y-1.5 mb-3">
+            <p>→ Menu lateral: <strong>APIs e Serviços → Credenciais</strong></p>
+            <p>→ Clique em <strong>"+ Criar Credenciais → ID do cliente OAuth"</strong></p>
+            <p>→ Tipo de aplicativo: <strong>"Aplicativo da Web"</strong></p>
+            <p>→ Nome: <code class="bg-white border border-outline-variant/30 px-1.5 py-0.5 rounded font-mono">DomaCondo Web</code></p>
+            <p>→ Em <strong>"URIs de redirecionamento autorizados"</strong>, clique em <strong>"+ Adicionar URI"</strong> e cole exatamente:</p>
+            <div class="bg-white border border-outline-variant/30 rounded-lg p-2 font-mono text-xs text-on-surface mt-1">
+              http://localhost:3000/auth/google/callback
+            </div>
+            <p>→ Clique em <strong>"Criar"</strong></p>
+          </div>
+          <div class="ml-12 bg-secondary-container/60 border-l-4 border-[#FAC826] p-3 rounded-r-xl">
+            <p class="text-xs font-bold text-on-secondary-container">⚠️ Atenção: vai aparecer uma janela com dois códigos</p>
+            <p class="text-xs text-on-secondary-container mt-1">Copie os dois e cole nos campos abaixo <strong>antes de fechar a janela</strong>. Se fechar sem copiar, precisará criar novamente.</p>
+          </div>
+        </div>
+
+        <div class="ml-12 grid grid-cols-1 gap-4 mb-6">
+          <div>
+            <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Client ID do Google</label>
+            <input type="text" id="GOOGLE_CLIENT_ID" class="w-full bg-surface-container-low border border-outline-variant/40 rounded-xl py-3 px-4 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-zinc-400"
+                   placeholder="Termina com .apps.googleusercontent.com"
+                   oninput="onInput(this)"/>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Client Secret do Google</label>
+            <input type="password" id="GOOGLE_CLIENT_SECRET" class="w-full bg-surface-container-low border border-outline-variant/40 rounded-xl py-3 px-4 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-zinc-400"
+                   placeholder="Começa com GOCSPX-..."
+                   oninput="onInput(this)"/>
+            <p class="text-[11px] text-zinc-400 mt-1.5">Este campo está oculto por segurança — os caracteres aparecem como pontos.</p>
+          </div>
+        </div>
+
+        <!-- Passo 6 -->
+        <div class="mb-6">
+          <div class="flex items-start gap-4 mb-3">
+            <div class="w-8 h-8 rounded-full bg-[#FAC826] flex items-center justify-center flex-shrink-0">
+              <span class="text-[#765b00] font-bold text-sm">6</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-on-surface text-sm">Pegar o ID da pasta principal do Drive</p>
+              <p class="text-xs text-zinc-400 mt-1">Abra o Google Drive e navegue até a pasta principal onde ficam os arquivos dos seus clientes (condomínios).</p>
+            </div>
+          </div>
+          <div class="ml-12 bg-surface-container-low p-4 rounded-xl text-xs mb-3">
+            <p class="text-on-surface font-semibold mb-2">Olhe o endereço do navegador. Vai ser assim:</p>
+            <div class="bg-white border border-outline-variant/30 rounded-lg p-2 font-mono text-xs break-all">
+              drive.google.com/drive/folders/<span class="bg-[#FAC826]/40 text-[#765b00] font-bold px-0.5 rounded">1BxiMVs0XRA5nFMdKv...</span>
+            </div>
+            <p class="text-zinc-400 mt-2">Copie tudo que vem depois de <code class="bg-white px-1 rounded">/folders/</code></p>
+          </div>
+        </div>
+
+        <div class="ml-12">
+          <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">ID da Pasta Principal do Drive</label>
+          <input type="text" id="GOOGLE_DRIVE_FOLDER_ID" class="w-full bg-surface-container-low border border-outline-variant/40 rounded-xl py-3 px-4 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-zinc-400"
+                 placeholder="Ex: 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74"
+                 oninput="onInput(this)"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────────────────
+       SEÇÃO 3 — GATHER
+  ────────────────────────────────────────────────── -->
+  <div class="bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] mb-6 overflow-hidden">
+    <button onclick="toggleSection('gather')" class="w-full flex items-center justify-between p-8 text-left hover:bg-surface-container-low/40 transition-colors">
+      <div class="flex items-center gap-5">
+        <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-purple-600" data-icon="videogame_asset">videogame_asset</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-3">
+            <h3 class="text-xl font-semibold text-primary">Gather — Escritório Virtual</h3>
+            <span id="badge-gather" class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold uppercase tracking-wider">Pendente</span>
+          </div>
+          <p class="text-sm text-zinc-400 mt-0.5">ID do espaço e chave de acesso à API</p>
+        </div>
+      </div>
+      <span id="chev-gather" class="material-symbols-outlined text-zinc-400 transition-transform duration-200" data-icon="expand_more">expand_more</span>
+    </button>
+
+    <div id="body-gather" class="hidden px-8 pb-8">
+      <div class="border-t border-surface-container/30 pt-6">
+
+        <div class="flex items-start gap-3 bg-surface-container-low p-4 rounded-xl mb-6">
+          <span class="material-symbols-outlined text-zinc-400 flex-shrink-0" data-icon="info">info</span>
+          <p class="text-xs text-zinc-500">O Gather é o escritório virtual da Doma Condo. O sistema monitora as entradas e saídas das colaboradoras para registrar os turnos automaticamente.</p>
+        </div>
+
+        <!-- Passo 1 -->
+        <div class="mb-6">
+          <div class="flex items-start gap-4 mb-3">
+            <div class="w-8 h-8 rounded-full bg-[#FAC826] flex items-center justify-center flex-shrink-0">
+              <span class="text-[#765b00] font-bold text-sm">1</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-on-surface text-sm">Pegar o ID do espaço</p>
+              <p class="text-xs text-zinc-400 mt-1">Abra o Gather no navegador e entre no espaço da Doma Condo.</p>
+            </div>
+          </div>
+          <div class="ml-12">
+            <a href="https://app.gather.town" target="_blank" class="inline-flex items-center gap-2 bg-primary text-white font-bold py-2.5 px-5 rounded-lg shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all text-sm mb-3">
+              <span class="material-symbols-outlined text-sm" data-icon="open_in_new">open_in_new</span>
+              Abrir Gather
+            </a>
+            <div class="bg-surface-container-low p-4 rounded-xl text-xs">
+              <p class="text-on-surface font-semibold mb-2">Quando estiver dentro do espaço, olhe o endereço do navegador:</p>
+              <div class="bg-white border border-outline-variant/30 rounded-lg p-2 font-mono text-xs break-all">
+                app.gather.town/app/<span class="bg-[#FAC826]/40 text-[#765b00] font-bold px-0.5 rounded">SPACE_ID</span>/nome-do-espaco
+              </div>
+              <p class="text-zinc-400 mt-2">O Space ID fica entre <code class="bg-white px-1 rounded">/app/</code> e o próximo <code class="bg-white px-1 rounded">/</code>. Pode conter <code class="bg-white px-1 rounded">%2F</code> no meio — copie tudo mesmo assim.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="ml-12 mb-6">
+          <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Space ID do Gather</label>
+          <input type="text" id="GATHER_SPACE_ID" class="w-full bg-surface-container-low border border-outline-variant/40 rounded-xl py-3 px-4 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-zinc-400"
+                 placeholder="Ex: aBcD1234EfGh%2FdomaCondo"
+                 oninput="onInput(this)"/>
+        </div>
+
+        <!-- Passo 2 -->
+        <div class="mb-6">
+          <div class="flex items-start gap-4 mb-3">
+            <div class="w-8 h-8 rounded-full bg-[#FAC826] flex items-center justify-center flex-shrink-0">
+              <span class="text-[#765b00] font-bold text-sm">2</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-on-surface text-sm">Gerar a chave de API</p>
+              <p class="text-xs text-zinc-400 mt-1">Acesse a página de chaves do Gather com a mesma conta.</p>
+            </div>
+          </div>
+          <div class="ml-12">
+            <a href="https://app.gather.town/apikeys" target="_blank" class="inline-flex items-center gap-2 bg-primary text-white font-bold py-2.5 px-5 rounded-lg shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all text-sm mb-3">
+              <span class="material-symbols-outlined text-sm" data-icon="open_in_new">open_in_new</span>
+              Abrir página de API Keys do Gather
+            </a>
+            <div class="bg-surface-container-low p-4 rounded-xl text-xs space-y-1.5 mb-3">
+              <p class="text-on-surface">→ Clique em <strong>"Generate New Key"</strong></p>
+              <p class="text-on-surface">→ Dê o nome: <code class="bg-white border border-outline-variant/30 px-1.5 py-0.5 rounded font-mono">DomaCondo Bot</code></p>
+              <p class="text-on-surface">→ Copie a chave que aparecer imediatamente</p>
+            </div>
+            <div class="bg-error-container/40 border-l-4 border-error p-3 rounded-r-xl">
+              <p class="text-xs font-bold text-on-error-container">⚠️ A chave só é exibida uma vez</p>
+              <p class="text-xs text-on-error-container mt-1">Se fechar a página sem copiar, vai precisar gerar uma nova.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="ml-12">
+          <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">API Key do Gather</label>
+          <input type="password" id="GATHER_API_KEY" class="w-full bg-surface-container-low border border-outline-variant/40 rounded-xl py-3 px-4 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-zinc-400"
+                 placeholder="Cole aqui a chave gerada..."
+                 oninput="onInput(this)"/>
+          <p class="text-[11px] text-zinc-400 mt-1.5">Campo oculto por segurança.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────────────────
+       SEÇÃO 4 — WHATSAPP + FUNCIONÁRIAS
+  ────────────────────────────────────────────────── -->
+  <div class="bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] mb-6 overflow-hidden">
+    <button onclick="toggleSection('whatsapp')" class="w-full flex items-center justify-between p-8 text-left hover:bg-surface-container-low/40 transition-colors">
+      <div class="flex items-center gap-5">
+        <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-green-600" data-icon="smartphone">smartphone</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-3">
+            <h3 class="text-xl font-semibold text-primary">WhatsApp e Equipe</h3>
+            <span id="badge-whatsapp" class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold uppercase tracking-wider">Pendente</span>
+          </div>
+          <p class="text-sm text-zinc-400 mt-0.5">Seu número e os números das colaboradoras</p>
+        </div>
+      </div>
+      <span id="chev-whatsapp" class="material-symbols-outlined text-zinc-400 transition-transform duration-200" data-icon="expand_more">expand_more</span>
+    </button>
+
+    <div id="body-whatsapp" class="hidden px-8 pb-8">
+      <div class="border-t border-surface-container/30 pt-6">
+
+        <div class="bg-secondary-container/60 border-l-4 border-[#FAC826] p-4 rounded-r-xl mb-6">
+          <p class="text-xs font-bold text-on-secondary-container">Como vai funcionar</p>
+          <p class="text-xs text-on-secondary-container mt-1">O sistema vai conectar um número de WhatsApp para enviar os relatórios diários para você e receber os registros das colaboradoras. O número continua funcionando normalmente no celular — o sistema apenas envia e recebe em paralelo.</p>
+        </div>
+
+        <!-- Número do bot -->
+        <div class="mb-6">
+          <div class="flex items-start gap-4 mb-3">
+            <div class="w-8 h-8 rounded-full bg-[#FAC826] flex items-center justify-center flex-shrink-0">
+              <span class="text-[#765b00] font-bold text-sm">1</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-on-surface text-sm">Número do WhatsApp do sistema</p>
+              <p class="text-xs text-zinc-400 mt-1">Qual número será usado para o sistema enviar e receber as mensagens? Pode ser um número dedicado ou o número do escritório.</p>
+            </div>
+          </div>
+          <div class="ml-12">
+            <div class="bg-surface-container-low p-3 rounded-xl text-xs text-zinc-400 mb-3">
+              Formato: <code class="bg-white border border-outline-variant/30 px-1.5 py-0.5 rounded font-mono">5511999999999</code> (55 = Brasil, 11 = DDD, sem espaços)
+            </div>
+            <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Número do WhatsApp do Bot</label>
+            <input type="text" id="WHATSAPP_BOT_NUMBER" class="w-full bg-surface-container-low border border-outline-variant/40 rounded-xl py-3 px-4 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-zinc-400"
+                   placeholder="5511999999999"
+                   oninput="onInput(this)"/>
+          </div>
+        </div>
+
+        <!-- Número da Jéssica -->
+        <div class="mb-6">
+          <div class="flex items-start gap-4 mb-3">
+            <div class="w-8 h-8 rounded-full bg-[#FAC826] flex items-center justify-center flex-shrink-0">
+              <span class="text-[#765b00] font-bold text-sm">2</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-on-surface text-sm">Seu número (Jéssica)</p>
+              <p class="text-xs text-zinc-400 mt-1">Os relatórios diários e notificações serão enviados para este número.</p>
+            </div>
+          </div>
+          <div class="ml-12">
+            <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Seu WhatsApp</label>
+            <input type="text" id="JESSICA_WHATSAPP_NUM" class="w-full bg-surface-container-low border border-outline-variant/40 rounded-xl py-3 px-4 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-zinc-400"
+                   placeholder="5511999999999"
+                   oninput="onInput(this)"/>
+          </div>
+        </div>
+
+        <!-- Funcionárias -->
+        <div>
+          <div class="flex items-start gap-4 mb-3">
+            <div class="w-8 h-8 rounded-full bg-[#FAC826] flex items-center justify-center flex-shrink-0">
+              <span class="text-[#765b00] font-bold text-sm">3</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-on-surface text-sm">Colaboradoras que vão usar o sistema</p>
+              <p class="text-xs text-zinc-400 mt-1">Nome e WhatsApp de cada colaboradora que vai registrar o trabalho diário.</p>
+            </div>
+          </div>
+          <div class="ml-12 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Nome da Colaboradora 1</label>
+              <input type="text" id="FUNCIONARIA_1_NOME" class="w-full bg-surface-container-low border border-outline-variant/40 rounded-xl py-3 px-4 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-zinc-400"
+                     placeholder="Nome completo"
+                     oninput="onInput(this)"/>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">WhatsApp da Colaboradora 1</label>
+              <input type="text" id="FUNCIONARIA_1_WA" class="w-full bg-surface-container-low border border-outline-variant/40 rounded-xl py-3 px-4 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-zinc-400"
+                     placeholder="5511999999999"
+                     oninput="onInput(this)"/>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Nome da Colaboradora 2</label>
+              <input type="text" id="FUNCIONARIA_2_NOME" class="w-full bg-surface-container-low border border-outline-variant/40 rounded-xl py-3 px-4 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-zinc-400"
+                     placeholder="Nome completo"
+                     oninput="onInput(this)"/>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">WhatsApp da Colaboradora 2</label>
+              <input type="text" id="FUNCIONARIA_2_WA" class="w-full bg-surface-container-low border border-outline-variant/40 rounded-xl py-3 px-4 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-zinc-400"
+                     placeholder="5511999999999"
+                     oninput="onInput(this)"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────────────────
+       SEÇÃO 5 — GOOGLE CLOUD
+  ────────────────────────────────────────────────── -->
+  <div class="bg-surface-container-lowest rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)] mb-8 overflow-hidden">
+    <button onclick="toggleSection('gcloud')" class="w-full flex items-center justify-between p-8 text-left hover:bg-surface-container-low/40 transition-colors">
+      <div class="flex items-center gap-5">
+        <div class="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-orange-500" data-icon="cloud">cloud</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-3">
+            <h3 class="text-xl font-semibold text-primary">Google Cloud — Acesso ao Servidor</h3>
+            <span id="badge-gcloud" class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold uppercase tracking-wider">Pendente</span>
+          </div>
+          <p class="text-sm text-zinc-400 mt-0.5">Conceder acesso de gerenciamento ao servidor</p>
+        </div>
+      </div>
+      <span id="chev-gcloud" class="material-symbols-outlined text-zinc-400 transition-transform duration-200" data-icon="expand_more">expand_more</span>
+    </button>
+
+    <div id="body-gcloud" class="hidden px-8 pb-8">
+      <div class="border-t border-surface-container/30 pt-6">
+
+        <div class="flex items-start gap-3 bg-surface-container-low p-4 rounded-xl mb-6">
+          <span class="material-symbols-outlined text-zinc-400 flex-shrink-0" data-icon="info">info</span>
+          <p class="text-xs text-zinc-500">O Fabrício precisa de acesso ao projeto da Doma Condo no Google Cloud para gerenciar o servidor (VM) onde o sistema roda. Isso permite instalar atualizações, corrigir problemas e monitorar o funcionamento.</p>
+        </div>
+
+        <!-- Passo 1 -->
+        <div class="mb-6">
+          <div class="flex items-start gap-4 mb-3">
+            <div class="w-8 h-8 rounded-full bg-[#FAC826] flex items-center justify-center flex-shrink-0">
+              <span class="text-[#765b00] font-bold text-sm">1</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-on-surface text-sm">Conceder acesso de Proprietário</p>
+            </div>
+          </div>
+          <div class="ml-12">
+            <a href="https://console.cloud.google.com/iam-admin/iam" target="_blank" class="inline-flex items-center gap-2 bg-primary text-white font-bold py-2.5 px-5 rounded-lg shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all text-sm mb-3">
+              <span class="material-symbols-outlined text-sm" data-icon="open_in_new">open_in_new</span>
+              Abrir Gerenciamento de Acesso (IAM)
+            </a>
+            <div class="bg-surface-container-low p-4 rounded-xl text-xs space-y-1.5">
+              <p class="text-on-surface">→ Certifique-se que o projeto <strong>DomaCondo App</strong> está selecionado no topo</p>
+              <p class="text-on-surface">→ Clique em <strong>"+ Conceder Acesso"</strong> (botão azul)</p>
+              <p class="text-on-surface">→ No campo de e-mail, cole: <code class="bg-white border border-outline-variant/30 px-1.5 py-0.5 rounded font-mono">frsolucoes.diretoria@gmail.com</code></p>
+              <p class="text-on-surface">→ Em <strong>"Papel (Role)"</strong>, procure e selecione: <strong>"Proprietário (Owner)"</strong></p>
+              <p class="text-on-surface">→ Clique em <strong>"Salvar"</strong></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Passo 2 -->
+        <div class="mb-6">
+          <div class="flex items-start gap-4 mb-3">
+            <div class="w-8 h-8 rounded-full bg-[#FAC826] flex items-center justify-center flex-shrink-0">
+              <span class="text-[#765b00] font-bold text-sm">2</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-on-surface text-sm">Copiar o ID do Projeto</p>
+            </div>
+          </div>
+          <div class="ml-12 bg-surface-container-low p-4 rounded-xl text-xs mb-3">
+            <p class="text-on-surface">→ No canto superior esquerdo, clique no seletor de projeto</p>
+            <p class="text-on-surface mt-1">→ Na janela que abrir, veja a coluna <strong>"ID"</strong> ao lado do nome do projeto</p>
+            <p class="text-on-surface mt-1">→ O ID parece com: <code class="bg-white border border-outline-variant/30 px-1.5 py-0.5 rounded font-mono">domacondo-app-123456</code></p>
+          </div>
+        </div>
+
+        <div class="ml-12">
+          <label class="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">ID do Projeto no Google Cloud</label>
+          <input type="text" id="VM_PROJECT" class="w-full bg-surface-container-low border border-outline-variant/40 rounded-xl py-3 px-4 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-zinc-400"
+                 placeholder="Ex: domacondo-app-123456"
+                 oninput="onInput(this)"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────────────────────────────────────────
+       BOTÃO SALVAR
+  ────────────────────────────────────────────────── -->
+  <div class="bg-surface-container-lowest p-8 rounded-xl shadow-[0px_12px_32px_rgba(25,28,30,0.04)]">
+    <h3 class="text-xl font-semibold text-primary mb-1">Salvar configurações</h3>
+    <p class="text-sm text-zinc-400 mb-6">Quando clicar em salvar, todas as informações preenchidas serão gravadas no sistema. Campos em branco serão ignorados — você pode salvar parcialmente e voltar depois para completar.</p>
+
+    <div id="save-status" class="hidden mb-6 p-4 rounded-xl text-sm font-semibold"></div>
+
+    <button onclick="salvar()" id="btn-salvar" class="bg-primary text-white font-bold py-3 px-8 rounded-lg shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm">
+      <span class="material-symbols-outlined text-base" data-icon="save">save</span>
+      Salvar configurações
+    </button>
+  </div>
+
+</main>
+
+<script>
+  const CAMPOS_PRINCIPAIS = [
+    'TRELLO_TOKEN', 'TRELLO_BOARD_ID',
+    'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'GOOGLE_DRIVE_FOLDER_ID',
+    'GATHER_SPACE_ID', 'GATHER_API_KEY',
+    'WHATSAPP_BOT_NUMBER', 'JESSICA_WHATSAPP_NUM',
+    'VM_PROJECT'
+  ];
+
+  // ─── Acordeão ───────────────────────────────────────────
+  function toggleSection(id) {
+    const body = document.getElementById('body-' + id);
+    const chev = document.getElementById('chev-' + id);
+    const isOpen = !body.classList.contains('hidden');
+    body.classList.toggle('hidden', isOpen);
+    chev.style.transform = isOpen ? '' : 'rotate(180deg)';
+  }
+
+  // ─── Progresso ──────────────────────────────────────────
+  function onInput(el) {
+    atualizarProgresso();
+  }
+
+  function preenchido(id) {
+    const el = document.getElementById(id);
+    return el && el.value && el.value.trim().length > 2;
+  }
+
+  function atualizarProgresso() {
+    const total  = CAMPOS_PRINCIPAIS.length;
+    const feitos = CAMPOS_PRINCIPAIS.filter(preenchido).length;
+    const pct    = Math.round((feitos / total) * 100);
+
+    document.getElementById('progress-bar').style.width = pct + '%';
+    document.getElementById('progress-pct').textContent  = pct + '%';
+    document.getElementById('progress-label').textContent = feitos + ' de ' + total + ' itens';
+
+    atualizarBadge('trello',   ['TRELLO_TOKEN', 'TRELLO_BOARD_ID']);
+    atualizarBadge('gdrive',   ['GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'GOOGLE_DRIVE_FOLDER_ID']);
+    atualizarBadge('gather',   ['GATHER_SPACE_ID', 'GATHER_API_KEY']);
+    atualizarBadge('whatsapp', ['WHATSAPP_BOT_NUMBER', 'JESSICA_WHATSAPP_NUM']);
+    atualizarBadge('gcloud',   ['VM_PROJECT']);
+  }
+
+  function atualizarBadge(secao, campos) {
+    const badge = document.getElementById('badge-' + secao);
+    if (!badge) return;
+    const todos    = campos.every(preenchido);
+    const algum    = campos.some(preenchido);
+    if (todos) {
+      badge.className = 'px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-[10px] font-bold uppercase tracking-wider';
+      badge.textContent = 'Concluído';
+    } else if (algum) {
+      badge.className = 'px-3 py-1 bg-surface-container-highest text-zinc-500 rounded-full text-[10px] font-bold uppercase tracking-wider';
+      badge.textContent = 'Em Andamento';
+    } else {
+      badge.className = 'px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[10px] font-bold uppercase tracking-wider';
+      badge.textContent = 'Pendente';
+    }
+  }
+
+  // ─── Carregar valores já salvos ─────────────────────────
+  async function carregarValores() {
+    try {
+      const res  = await fetch('/api/credentials-status');
+      const data = await res.json();
+      const IGNORE = ['PREENCHER', 'colar_aqui', '55119XXXXXXXX', 'project-3d0a6e55'];
+      for (const [key, val] of Object.entries(data)) {
+        const el = document.getElementById(key);
+        if (el && val && !IGNORE.some(p => val.includes(p))) {
+          el.value = val;
+        }
+      }
+      atualizarProgresso();
+    } catch(e) { /* silencioso */ }
+  }
+
+  // ─── Salvar ─────────────────────────────────────────────
+  async function salvar() {
+    const btn = document.getElementById('btn-salvar');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined text-base" data-icon="hourglass_empty">hourglass_empty</span> Salvando...';
+
+    const formatWA = n => n.replace(/\D/g, '') + '@s.whatsapp.net';
+
+    const dados = {};
+    const map = {
+      'TRELLO_TOKEN':           v => v,
+      'TRELLO_BOARD_ID':        v => v,
+      'GOOGLE_CLIENT_ID':       v => v,
+      'GOOGLE_CLIENT_SECRET':   v => v,
+      'GOOGLE_DRIVE_FOLDER_ID': v => v,
+      'GATHER_SPACE_ID':        v => v,
+      'GATHER_API_KEY':         v => v,
+      'VM_PROJECT':             v => v,
+    };
+
+    for (const [key, fn] of Object.entries(map)) {
+      const el = document.getElementById(key);
+      if (el && el.value.trim()) dados[key] = fn(el.value.trim());
+    }
+
+    const botNum   = document.getElementById('WHATSAPP_BOT_NUMBER');
+    const jessNum  = document.getElementById('JESSICA_WHATSAPP_NUM');
+    const fun1Nome = document.getElementById('FUNCIONARIA_1_NOME');
+    const fun1WA   = document.getElementById('FUNCIONARIA_1_WA');
+    const fun2Nome = document.getElementById('FUNCIONARIA_2_NOME');
+    const fun2WA   = document.getElementById('FUNCIONARIA_2_WA');
+
+    if (botNum?.value.trim())   dados['WHATSAPP_BOT_NUMBER'] = botNum.value.trim().replace(/\D/g,'');
+    if (jessNum?.value.trim())  dados['JESSICA_WHATSAPP']    = formatWA(jessNum.value.trim());
+    if (fun1Nome?.value.trim()) dados['FUNCIONARIA_1_NOME']  = fun1Nome.value.trim();
+    if (fun1WA?.value.trim())   dados['FUNCIONARIA_1_WHATSAPP'] = formatWA(fun1WA.value.trim());
+    if (fun2Nome?.value.trim()) dados['FUNCIONARIA_2_NOME']  = fun2Nome.value.trim();
+    if (fun2WA?.value.trim())   dados['FUNCIONARIA_2_WHATSAPP'] = formatWA(fun2WA.value.trim());
+
+    if (Object.keys(dados).length === 0) {
+      mostrarStatus('warning', 'Nenhum campo foi preenchido ainda.');
+      btn.disabled = false;
+      btn.innerHTML = '<span class="material-symbols-outlined text-base" data-icon="save">save</span> Salvar configurações';
+      return;
+    }
+
+    try {
+      const res  = await fetch('/api/save-credentials', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados)
+      });
+      const data = await res.json();
+      if (data.ok) {
+        mostrarStatus('success', '✓ Configurações salvas com sucesso! ' + data.savedKeys.length + ' campo(s) gravado(s).');
+        atualizarProgresso();
+      } else {
+        mostrarStatus('error', 'Erro ao salvar: ' + (data.error || 'desconhecido'));
+      }
+    } catch(e) {
+      mostrarStatus('error', 'Não foi possível conectar ao servidor. Tente novamente.');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<span class="material-symbols-outlined text-base" data-icon="save">save</span> Salvar configurações';
+    }
+  }
+
+  function mostrarStatus(tipo, msg) {
+    const el  = document.getElementById('save-status');
+    const map = {
+      success: 'bg-tertiary-container text-on-tertiary-container',
+      error:   'bg-error-container text-on-error-container',
+      warning: 'bg-secondary-container text-on-secondary-container'
+    };
+    el.className = 'mb-6 p-4 rounded-xl text-sm font-semibold ' + map[tipo];
+    el.textContent = msg;
+    el.classList.remove('hidden');
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  }
+
+  // ─── Init ────────────────────────────────────────────────
+  window.addEventListener('DOMContentLoaded', () => {
+    carregarValores();
+    toggleSection('trello');
+  });
+</script>
+</body>
+</html>
